@@ -9,20 +9,19 @@
 		"target": "es2023",
 		"sourceMap": true,
 		"outDir": "./dist",
-		"baseUrl": "./",
 		"paths": {
-			"@app/*": ["src/app/*"],
-			"@common/*": ["src/common/*"],
-			"@configs/*": ["src/configs/*"],
-			"@languages/*": ["src/languages/*"],
-			"@modules/*": ["src/modules/*"],
-			"@app": ["src/app"],
-			"@common": ["src/common"],
-			"@configs": ["src/configs"],
-			"@languages": ["src/languages"],
-			"@modules": ["src/modules"],
-			"@shared/*": ["src/shared/*"],
-			"@shared": ["src/shared"]
+			"@app/*": ["./src/app/*"],
+			"@app": ["./src/app"],
+			"@common/*": ["./src/common/*"],
+			"@common": ["./src/common"],
+			"@configs/*": ["./src/configs/*"],
+			"@configs": ["./src/configs"],
+			"@languages/*": ["./src/languages/*"],
+			"@languages": ["./src/languages"],
+			"@modules/*": ["./src/modules/*"],
+			"@modules": ["./src/modules"],
+			"@shared/*": ["./src/shared/*"],
+			"@shared": ["./src/shared"]
 		},
 		"incremental": true,
 		"skipLibCheck": true,
@@ -34,6 +33,7 @@
 		"esModuleInterop": true,
 		"moduleResolution": "nodenext",
 		"resolveJsonModule": true,
-		"strict": true
+		"strict": true,
+		"isolatedModules": true
 	}
 }
