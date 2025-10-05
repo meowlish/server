@@ -1,0 +1,19 @@
+services:
+  api:
+    container_name: nestjs_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgresql
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:prod
+    networks:
+      - api-network
+
+volumes:
+  postgresql_data:
