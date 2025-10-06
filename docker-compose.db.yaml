@@ -28,6 +28,14 @@ services:
     networks:
       - api-network
 
+  dbeaver:
+    image: dbeaver/cloudbeaver:25
+    restart: always
+    ports:
+      - 8978:8978
+    networks:
+      - api-network
+
 networks:
   api-network:
     driver: bridge
