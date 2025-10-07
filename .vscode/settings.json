@@ -19,13 +19,32 @@
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
+	"[dockerfile]": {
+		"editor.defaultFormatter": "ms-vscode-remote.remote-containers"
+	},
+	"[dockercompose]": {
+		"editor.defaultFormatter": "ms-vscode-remote.remote-containers"
+	},
+	"[yaml]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
 	"[prisma]": {
 		"editor.defaultFormatter": "Prisma.prisma",
 		"editor.tabSize": 2
+	},
+	"[github-actions-workflow]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
 	},
 	"files.associations": {
 		"*.y*ml": "yaml"
 	},
 	"files.insertFinalNewline": true,
-	"files.trimTrailingWhitespace": true
+	"files.trimTrailingWhitespace": true,
+	"material-icon-theme.folders.associations": {
+		"entities": "Class",
+		"entity": "Class",
+		"dto": "Messages",
+		"dtos": "Messages"
+	},
+	"material-icon-theme.activeIconPack": "nest"
 }

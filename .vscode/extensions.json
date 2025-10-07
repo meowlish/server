@@ -10,7 +10,8 @@
 		"sanjulaganepola.github-local-actions",
 		"esbenp.prettier-vscode",
 		"yoavbls.pretty-ts-errors",
-		"prisma.prisma"
+		"prisma.prisma",
+		"pkief.material-icon-theme"
 	],
 	"unwantedRecommendations": []
 }
