@@ -16,10 +16,8 @@
 			"@common": ["./src/common"],
 			"@configs/*": ["./src/configs/*"],
 			"@configs": ["./src/configs"],
-			"@languages/*": ["./src/languages/*"],
-			"@languages": ["./src/languages"],
-			"@modules/*": ["./src/modules/*"],
-			"@modules": ["./src/modules"],
+			"@core/*": ["./src/core/*"],
+			"@core": ["./src/core"],
 			"@shared/*": ["./src/shared/*"],
 			"@shared": ["./src/shared"]
 		},

@@ -1,0 +1,4 @@
+model Profile {
+  id       String @id @default(uuid())
+  fullName String @map("full_name") @db.VarChar(255)
+}

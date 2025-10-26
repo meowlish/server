@@ -54,7 +54,8 @@ const loadEnv = (): IEnvVars => ({
 });
 
 // validate and optionally transform your env variables here
-export default (): IEnvVars => {
+
+export const config = (): IEnvVars => {
 	const env = loadEnv();
 	const valResult = envFileSchema.parse(env);
 	return valResult;
