@@ -1,23 +1,25 @@
 import { AuthMailRegisterCommand } from '@core/auth/app/commands/auth.mail-register.command';
+import { Tokens } from '@core/auth/types/tokens.type';
 import { Controller } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 
-import { RegisterMailDto } from '../dtos/req/register-mail.req.dto';
+import { AuthServiceController, AuthServiceControllerMethods } from '@common/generated/auth';
 
+import { RegisterMailDto } from '../../../gateway/auth-gateway/dtos/req/register-mail.req.dto';
+
+@AuthServiceControllerMethods()
 @Controller()
-export class AuthController {
+export class AuthController implements AuthServiceController {
 	constructor(private commandBus: CommandBus) {}
-
-	@MessagePattern({ cmd: 'get_users' })
-	get(@Payload() payload: RegisterMailDto) {
-		console.log(payload);
-		return this.commandBus.execute(new AuthMailRegisterCommand(payload));
-	}
 
 	login() {}
 
-	registerMail() {}
+	async registerMail(request: RegisterMailDto): Promise<Tokens> {
+		console.log('payload', request);
+		const res = await this.commandBus.execute(new AuthMailRegisterCommand(request));
+		throw new Error('holy crap lois');
+		return res;
+	}
 
 	refresh() {}
 

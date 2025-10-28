@@ -1,16 +1,20 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 
 import { AppLoggerService } from './logger.service';
-import { winstonLogger } from './winston.logger';
+import { createWinstonLogger } from './winston.logger';
 
-@Module({
-	providers: [
-		AppLoggerService,
-		{
+@Module({})
+export class LoggerModule {
+	static forRoot(options?: { appName?: string }): DynamicModule {
+		const winstonProvider = {
 			provide: 'winston',
-			useValue: winstonLogger,
-		},
-	],
-	exports: [AppLoggerService],
-})
-export class LoggerModule {}
+			useValue: createWinstonLogger(options?.appName || 'MyApp'),
+		};
+
+		return {
+			module: LoggerModule,
+			providers: [AppLoggerService, winstonProvider],
+			exports: [AppLoggerService],
+		};
+	}
+}

@@ -11,6 +11,9 @@
 		},
 		"typeCheck": true,
 		"tsConfigPath": "tsconfig.json",
-		"assets": [{ "include": "i18n/**/*", "watchAssets": true }]
+		"assets": [
+			{ "include": "i18n/**/*", "watchAssets": true },
+			{ "include": "../proto/**/*.proto", "outDir": "dist/proto", "watchAssets": true }
+		]
 	}
 }

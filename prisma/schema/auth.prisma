@@ -6,18 +6,21 @@ model Credential {
   loginType  String   @map("login_type")
   identity   Identity @relation(fields: [identityId], references: [id])
 
-  @@unique([identifier])
-  @@index([identifier])
+  @@unique([identifier, loginType])
+  @@index([identifier, loginType])
   @@map("credentials")
 }
 
 model Identity {
   id            String         @id @default(uuid())
+  username      String
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
   credentials   Credential[]
   identityRoles IdentityRole[]
 
+  @@unique([username])
   @@map("identities")
 }
 
@@ -25,8 +28,8 @@ model IdentityRole {
   identityId String @map("identity_id")
   roleId     String @map("role_id")
 
-  role     Role     @relation(fields: [roleId], references: [id])
-  identity Identity @relation(fields: [identityId], references: [id])
+  role     Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  identity Identity @relation(fields: [identityId], references: [id], onDelete: Cascade)
 
   @@id([identityId, roleId])
   @@map("identity_roles")

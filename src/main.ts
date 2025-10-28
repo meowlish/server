@@ -3,37 +3,43 @@ import { INestApplicationContext, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+
+import { AUTH_PACKAGE_NAME } from '@common/generated/auth';
 
 import { AppLoggerService } from '@shared/logger/logger.service';
 
-import { AppModule } from './app.module';
+import { GatewayModule } from './core/gateway/gateway.module';
 
-const useLogger = (microservice: INestApplicationContext) => {
-	const logger = microservice.get(AppLoggerService);
-	microservice.useLogger(logger);
+const useLogger = (module: INestApplicationContext) => {
+	const logger = module.get(AppLoggerService);
+	module.useLogger(logger);
 };
 
 async function bootstrap() {
 	// auth module
-	const authApp = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {
-		transport: Transport.TCP,
-		options: { host: '127.0.0.1', port: 4001 },
+	const authModule = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {
+		transport: Transport.GRPC,
+		options: {
+			package: AUTH_PACKAGE_NAME,
+			protoPath: join(process.cwd(), 'proto', 'auth.proto'),
+		},
 	});
-	useLogger(authApp);
-	await authApp.listen();
+	useLogger(authModule);
+	await authModule.listen();
 
-	// gateway/ main app
-	const gateway = await NestFactory.create<NestExpressApplication>(AppModule, {
+	// gateway
+	const gatewayModule = await NestFactory.create<NestExpressApplication>(GatewayModule, {
 		bufferLogs: true,
 	});
-	useLogger(gateway);
-	gateway.setGlobalPrefix('api');
-	gateway.enableVersioning({
+	gatewayModule.setGlobalPrefix('api');
+	gatewayModule.enableVersioning({
 		defaultVersion: '1',
 		type: VersioningType.URI,
 	});
-	gateway.enableCors();
-	await gateway.listen(process.env.PORT ?? 3000);
+	gatewayModule.enableCors();
+	useLogger(gatewayModule);
+	await gatewayModule.listen(process.env.PORT ?? 3000);
 }
 
 bootstrap().catch(console.error);

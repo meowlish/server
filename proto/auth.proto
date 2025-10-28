@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+    rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
+}
+
+// Request
+message RegisterMailDto {
+    string username = 1;
+    string mail = 2;
+    string password = 3;
+}
+
+// Response
+message Tokens {
+    string accessToken = 1;
+    optional string refreshToken = 2;
+}
+
+message Identity {
+    string id = 1;
+    string username = 2;
+    repeated string roles = 3;
+}
+
+message Role {
+    string id = 1;
+    string name = 2;
+    repeated string permissions = 3;
+}

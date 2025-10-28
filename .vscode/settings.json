@@ -46,5 +46,6 @@
 		"dto": "Messages",
 		"dtos": "Messages"
 	},
-	"material-icon-theme.activeIconPack": "nest"
+	"material-icon-theme.activeIconPack": "nest",
+	"prisma.pinToPrisma6": true
 }

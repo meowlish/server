@@ -4,6 +4,10 @@ import bcrypt from 'bcrypt';
 import { IEntity } from '@common/abstract/entity/entity.interface';
 
 export class Credential implements IEntity<Credential> {
+	static newId() {
+		return crypto.randomUUID();
+	}
+
 	public readonly id: string;
 
 	private _isSecretHashed: boolean;
@@ -19,8 +23,9 @@ export class Credential implements IEntity<Credential> {
 			secretHash?: string | null;
 		},
 	) {
-		this.id = constructorOptions?.id || crypto.randomUUID();
-		this._isSecretHashed = constructorOptions?.isSecretHashed || false;
+		this.id = constructorOptions?.id ?? Credential.newId();
+		this._isSecretHashed = constructorOptions?.isSecretHashed ?? false;
+		this._secretHash = constructorOptions?.secretHash ?? null;
 	}
 
 	public get secretHash() {
