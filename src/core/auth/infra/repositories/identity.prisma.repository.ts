@@ -86,7 +86,9 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		});
 
 		// has to fetch again to properly get the role names and permissions
-		return (await this.findOneByUsername(identity.username))!;
+		const result = await this.findOneByUsername(identity.username);
+		if (!result) throw Error();
+		return result;
 	}
 
 	async update(identity: Identity): Promise<Identity> {
@@ -116,7 +118,8 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 				include: identityPrismaIncludeObj,
 			});
 		});
-		return this.mapper.toDomain(updatedIdentity);
+		const mappedIdentity = this.mapper.toDomain(updatedIdentity);
+		return mappedIdentity;
 	}
 
 	async softDelete(identity: Identity): Promise<Identity> {
@@ -125,7 +128,8 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			data: { deletedAt: new Date() },
 			include: identityPrismaIncludeObj,
 		});
-		return this.mapper.toDomain(deletedIdentity);
+		const mappedIdentity = this.mapper.toDomain(deletedIdentity);
+		return mappedIdentity;
 	}
 }
 

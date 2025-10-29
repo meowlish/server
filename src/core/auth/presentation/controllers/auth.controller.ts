@@ -15,9 +15,7 @@ export class AuthController implements AuthServiceController {
 	login() {}
 
 	async registerMail(request: RegisterMailDto): Promise<Tokens> {
-		console.log('payload', request);
 		const res = await this.commandBus.execute(new AuthMailRegisterCommand(request));
-		throw new Error('holy crap lois');
 		return res;
 	}
 

@@ -48,12 +48,14 @@ export class CredentialPrismaRepository implements ICredentialRepository {
 	async create(credential: Credential): Promise<Credential> {
 		const data = this.mapper.toOrm(credential);
 		const createdCred = await this.txHost.tx.credential.create({ data });
-		return this.mapper.toDomain(createdCred);
+		const mappedCred = this.mapper.toDomain(createdCred);
+		return mappedCred;
 	}
 
 	async delete(credential: Credential): Promise<Credential> {
 		const deletedCred = await this.txHost.tx.credential.delete({ where: { id: credential.id } });
-		return this.mapper.toDomain(deletedCred);
+		const mappedCred = this.mapper.toDomain(deletedCred);
+		return mappedCred;
 	}
 
 	async findOne(identifier: string, loginType: LoginType): Promise<Credential | null> {
@@ -69,7 +71,8 @@ export class CredentialPrismaRepository implements ICredentialRepository {
 			where: { id: credential.id },
 			data,
 		});
-		return this.mapper.toDomain(updatedCred);
+		const mappedCred = this.mapper.toDomain(updatedCred);
+		return mappedCred;
 	}
 }
 

@@ -2,10 +2,13 @@ import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
+
+import { Any2RpcExceptionFilter } from '@common/filters/any-to-rpc.filter';
+import { Http2gRPCExceptionFilter } from '@common/filters/http-to-rpc.filter';
 
 import { IEnvVars, config } from '@configs/config';
 import JwtRefreshConfig from '@configs/jwt-refresh.config';
@@ -88,6 +91,14 @@ import { AuthController } from './presentation/controllers';
 		{
 			provide: APP_GUARD,
 			useClass: ClsGuard,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Any2RpcExceptionFilter,
 		},
 	],
 })

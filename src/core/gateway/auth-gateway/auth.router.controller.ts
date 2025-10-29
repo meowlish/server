@@ -1,6 +1,6 @@
 import { RegisterMailDto } from '@core/gateway/auth-gateway/dtos/req/register-mail.req.dto';
 import { Body, Controller, Inject, OnModuleInit, Post } from '@nestjs/common';
-import type { ClientGrpc } from '@nestjs/microservices';
+import { type ClientGrpc } from '@nestjs/microservices';
 
 import { ResponseTransform } from '@common/decorators/response-transform.decorator';
 import { AUTH_SERVICE_NAME, AuthServiceClient } from '@common/generated/auth';
