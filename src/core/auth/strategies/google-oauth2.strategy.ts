@@ -28,6 +28,6 @@ export class GoogleOAuth2Strategy extends PassportStrategy(Strategy, 'google') {
 	validate(accessToken: string, refreshToken: string, profile: Profile): AuthPayload | null {
 		// TODO: finish this
 		console.log(accessToken, refreshToken, profile);
-		return { jti: '', permission: [], roles: [], sub: '' };
+		return { permission: [], roles: [], sub: '' };
 	}
 }

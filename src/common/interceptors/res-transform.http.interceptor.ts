@@ -1,4 +1,10 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+	CallHandler,
+	ExecutionContext,
+	Injectable,
+	InternalServerErrorException,
+	NestInterceptor,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
@@ -57,7 +63,7 @@ export class HttpResponseTransformInterceptor implements NestInterceptor {
 					);
 				}
 				// if nothing matches
-				throw new Error(
+				throw new InternalServerErrorException(
 					`The 'pagination' options only works with return type of ${OffsetPaginatedData.name} or ${CursorPaginatedData.name}`,
 				);
 			}

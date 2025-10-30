@@ -35,6 +35,14 @@ export class AuthMailRegisterCommandHandler implements ICommandHandler<AuthMailR
 		});
 		credential.hashSecret();
 		await this.credentialRepository.create(credential);
-		return this.tokenService.generateTokens({ sub: '123', jti: '123', permission: [], roles: [] });
+		const claims = await this.identityRepository.getClaimsOfId(identity.id);
+		return this.tokenService.generateTokens(
+			{
+				sub: identity.id,
+				permission: claims.permissions,
+				roles: claims.roles,
+			},
+			true,
+		);
 	}
 }

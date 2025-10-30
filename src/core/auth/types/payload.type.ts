@@ -7,7 +7,6 @@ export const payloadSchema = z.object({
 	sub: z.string(),
 	roles: z.array(z.enum(Role)),
 	permission: z.array(z.enum(Permission)),
-	jti: z.string(),
 });
 
 export type AuthPayload = z.infer<typeof payloadSchema>;

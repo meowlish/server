@@ -2,7 +2,7 @@ import { Identity, UserRole } from '@core/auth/domain/entities/identity.entity';
 import { IIdentityRepository } from '@core/auth/domain/repositories/identity.repository';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Identity as PrismaIdentity } from '@prisma/client';
 
 import { Action } from '@common/enums/action.enum';
@@ -68,6 +68,32 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			include: identityPrismaIncludeObj,
 		});
 		return foundIdentity === null ? null : this.mapper.toDomain(foundIdentity);
+	}
+
+	async getClaimsOfId(
+		id: string,
+		deleted: boolean = false,
+	): Promise<{ roles: Role[]; permissions: Permission[] }> {
+		const foundIdentity = await this.txHost.tx.identity.findFirst({
+			where: { id, deletedAt: deleted ? { not: null } : null },
+			include: identityPrismaIncludeObj,
+		});
+		if (!foundIdentity)
+			throw new NotFoundException(`Could not get claims of ${id}, no matching results.`);
+		return {
+			roles: foundIdentity.identityRoles.map(rIdentityRole =>
+				this.mapper.roleMap(rIdentityRole.role.name),
+			),
+			permissions: [
+				...new Set<Permission>(
+					foundIdentity.identityRoles.flatMap(rIdentityRole =>
+						rIdentityRole.role.rolePermissions.map(rPermission =>
+							this.mapper.permissionMap(rPermission.permission.name),
+						),
+					),
+				),
+			],
+		};
 	}
 
 	async create(identity: Identity): Promise<Identity> {

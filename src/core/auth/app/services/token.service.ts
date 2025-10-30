@@ -24,16 +24,14 @@ export class TokenService {
 	}
 
 	private async generateAccessToken(payload: AuthPayload): Promise<string> {
-		return await this.AccessTokenService.signAsync(payload);
+		return await this.AccessTokenService.signAsync({ ...payload, jti: crypto.randomUUID() });
 	}
 
 	private async generateRefreshToken(payload: AuthPayload): Promise<string> {
-		const token = await this.RefreshTokenService.signAsync(refreshPayload(payload));
+		const token = await this.RefreshTokenService.signAsync({
+			...refreshPayload(payload),
+			jti: crypto.randomUUID(),
+		});
 		return token;
-	}
-
-	async validateRefreshToken(token: string): Promise<AuthPayload> {
-		const payload = await this.RefreshTokenService.verifyAsync<AuthPayload>(token);
-		return payload;
 	}
 }
