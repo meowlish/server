@@ -19,6 +19,7 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
 		this.logger.error(
 			`[${this.constructor.name}] Exception Caught ${req.method} ${req.url} ${exception.message}`,
 			'',
+			exception.stack,
 		);
 
 		return res.status(resolved.statusCode).json(resolved);

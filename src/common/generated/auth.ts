@@ -11,10 +11,21 @@ import { Observable } from 'rxjs';
 export const protobufPackage = 'auth';
 
 /** Request */
+export interface Empty {}
+
 export interface RegisterMailDto {
 	username: string;
 	mail: string;
 	password: string;
+}
+
+export interface LoginMailDto {
+	mail: string;
+	password: string;
+}
+
+export interface GetClaimsDto {
+	identityId: string;
 }
 
 /** Response */
@@ -35,10 +46,22 @@ export interface Role {
 	permissions: string[];
 }
 
+export interface Claims {
+	sub: string;
+	roles: string[];
+	permissions: string[];
+}
+
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
 	registerMail(request: RegisterMailDto, metadata?: Metadata): Observable<Tokens>;
+
+	loginMail(request: LoginMailDto, metadata?: Metadata): Observable<Tokens>;
+
+	refresh(request: Empty, metadata?: Metadata): Observable<Tokens>;
+
+	getClaims(request: GetClaimsDto, metadata?: Metadata): Observable<Claims>;
 }
 
 export interface AuthServiceController {
@@ -46,11 +69,23 @@ export interface AuthServiceController {
 		request: RegisterMailDto,
 		metadata?: Metadata,
 	): Promise<Tokens> | Observable<Tokens> | Tokens;
+
+	loginMail(
+		request: LoginMailDto,
+		metadata?: Metadata,
+	): Promise<Tokens> | Observable<Tokens> | Tokens;
+
+	refresh(request: Empty, metadata?: Metadata): Promise<Tokens> | Observable<Tokens> | Tokens;
+
+	getClaims(
+		request: GetClaimsDto,
+		metadata?: Metadata,
+	): Promise<Claims> | Observable<Claims> | Claims;
 }
 
 export function AuthServiceControllerMethods() {
 	return function (constructor: Function) {
-		const grpcMethods: string[] = ['registerMail'];
+		const grpcMethods: string[] = ['registerMail', 'loginMail', 'refresh', 'getClaims'];
 		for (const method of grpcMethods) {
 			const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
 			GrpcMethod('AuthService', method)(constructor.prototype[method], method, descriptor);

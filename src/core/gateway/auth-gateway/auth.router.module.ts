@@ -6,6 +6,8 @@ import { ErrorHandlingGrpcProxy } from '@common/utils/classes/grpc-err-proxy.cla
 
 import { AuthGatewayController } from './auth.router.controller';
 import { AUTH_CLIENT } from './constants/auth';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
 	controllers: [AuthGatewayController],
@@ -18,6 +20,9 @@ import { AUTH_CLIENT } from './constants/auth';
 					protoPath: join(process.cwd(), 'proto', 'auth.proto'),
 				}),
 		},
+		JwtRefreshStrategy,
+		JwtStrategy,
 	],
+	exports: [],
 })
 export class AuthGatewayModule {}

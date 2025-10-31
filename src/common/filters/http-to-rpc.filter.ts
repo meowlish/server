@@ -38,7 +38,11 @@ export class Http2gRPCExceptionFilter implements ExceptionFilter {
 			message: unknown;
 		};
 
-		this.logger.error(`[${this.constructor.name}] Exception Caught ${exception.message}`, '');
+		this.logger.error(
+			`[${this.constructor.name}] Exception Caught ${exception.message}`,
+			'',
+			exception.stack,
+		);
 
 		return throwError(() => ({
 			code: Http2gRPCExceptionFilter.HttpStatusCode[httpStatus] ?? status.UNKNOWN,

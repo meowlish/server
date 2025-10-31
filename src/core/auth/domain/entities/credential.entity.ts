@@ -38,21 +38,26 @@ export class Credential implements IEntity<Credential> {
 	}
 
 	public hashSecret() {
-		// check if secret is null
 		if (this._secretHash === null) {
 			throw Error('Attempted to hash null value');
 		}
-
-		// check if already hashed
 		if (this._isSecretHashed) {
 			console.warn('Attempted to hash already hashed secret');
 			return;
 		}
-
-		// hash
 		this._secretHash = bcrypt.hashSync(this._secretHash, 10);
 		this._isSecretHashed = true;
 		return this;
+	}
+
+	public compareHash(secret: string) {
+		if (this._secretHash === null) {
+			throw Error('Attempted to compare null value');
+		}
+		if (!this._isSecretHashed) {
+			throw Error('Attempted to compare unhashed secret');
+		}
+		return bcrypt.compareSync(secret, this._secretHash);
 	}
 
 	public validate(): boolean {

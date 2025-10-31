@@ -3,9 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { Claims } from '@common/utils/types/claims.type';
+
 import { IEnvVars } from '@configs/config';
 
-import { AuthPayload } from '../types/payload.type';
+import { AuthPayload } from '../../../../common/utils/types/payload.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'access-jwt') {
@@ -16,9 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'access-jwt') {
 		});
 	}
 
-	validate(payload: AuthPayload) {
-		// TODO: finish this
-		console.log(payload);
-		return payload;
+	validate(payload: AuthPayload): Claims {
+		// TODO: Implement Redis and blacklist tokens here
+		return {
+			sub: payload.sub,
+			permissions: payload.permission,
+			roles: payload.roles,
+		};
 	}
 }

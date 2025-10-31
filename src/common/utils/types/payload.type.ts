@@ -11,6 +11,8 @@ export const payloadSchema = z.object({
 
 export type AuthPayload = z.infer<typeof payloadSchema>;
 
+export type AuthRefreshPayload = Pick<AuthPayload, 'sub'>;
+
 // to create new payload from payload extracted from json
 export const recreatePayload = (extractedPayload: AuthPayload) => {
 	const parsedPayload = payloadSchema.parse(extractedPayload);
@@ -18,7 +20,7 @@ export const recreatePayload = (extractedPayload: AuthPayload) => {
 };
 
 // extract payload for refresh token from access token
-export const refreshPayload = (payload: AuthPayload) => {
+export const refreshPayload = (payload: AuthPayload): AuthRefreshPayload => {
 	return {
 		sub: payload.sub,
 	};

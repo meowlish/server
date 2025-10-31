@@ -1,7 +1,8 @@
-import { AuthPayload, refreshPayload } from '@core/auth/types/payload.type';
 import { Tokens } from '@core/auth/types/tokens.type';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+
+import { AuthPayload, refreshPayload } from '@common/utils/types/payload.type';
 
 @Injectable()
 export class TokenService {

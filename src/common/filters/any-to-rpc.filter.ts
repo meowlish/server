@@ -9,7 +9,11 @@ export class Any2RpcExceptionFilter implements ExceptionFilter {
 	constructor(private readonly logger: AppLoggerService) {}
 
 	catch(exception: Error) {
-		this.logger.error(`[${this.constructor.name}] Exception Caught ${exception.message}`, '');
+		this.logger.error(
+			`[${this.constructor.name}] Exception Caught ${exception.message}`,
+			'',
+			exception.stack,
+		);
 
 		return throwError(() => ({
 			code: status.UNKNOWN,
