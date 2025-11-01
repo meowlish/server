@@ -60,10 +60,6 @@ export class Credential implements IEntity<Credential> {
 		return bcrypt.compareSync(secret, this._secretHash);
 	}
 
-	public validate(): boolean {
-		return true;
-	}
-
 	public equals(entity: Credential): boolean {
 		return this.id === entity?.id;
 	}
