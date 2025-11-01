@@ -24,13 +24,13 @@ message LoginMailDto {
 }
 
 message GetClaimsDto {
-    string identityId = 1;
+    string identity_id = 1;
 }
 
 // Response
 message Tokens {
-    string accessToken = 1;
-    optional string refreshToken = 2;
+    string access_token = 1;
+    optional string refresh_token = 2;
 }
 
 message Identity {
