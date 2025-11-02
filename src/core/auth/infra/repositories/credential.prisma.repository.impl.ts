@@ -15,16 +15,11 @@ export class CredentialPrismaMapper {
 	}
 
 	toDomain(from: PrismaCredential): Credential {
-		const credential = new Credential(
-			from.identifier,
-			this.loginTypeMap(from.loginType),
-			from.identityId,
-			{
-				id: from.id,
-				isSecretHashed: true,
-				secretHash: from.secretHash,
-			},
-		);
+		const credential = new Credential({
+			...from,
+			loginType: this.loginTypeMap(from.loginType),
+			isSecretHashed: true, //since result from ORM is from database, and all entries in DB are hashed
+		});
 		return credential;
 	}
 
@@ -45,34 +40,28 @@ export class CredentialPrismaRepository implements ICredentialRepository {
 		private readonly mapper: CredentialPrismaMapper,
 	) {}
 
-	async create(credential: Credential): Promise<Credential> {
-		const data = this.mapper.toOrm(credential);
-		const createdCred = await this.txHost.tx.credential.create({ data });
-		const mappedCred = this.mapper.toDomain(createdCred);
-		return mappedCred;
-	}
-
-	async delete(credential: Credential): Promise<Credential> {
-		const deletedCred = await this.txHost.tx.credential.delete({ where: { id: credential.id } });
-		const mappedCred = this.mapper.toDomain(deletedCred);
-		return mappedCred;
-	}
-
 	async findOne(identifier: string, loginType: LoginType): Promise<Credential | null> {
 		const foundCred = await this.txHost.tx.credential.findUnique({
 			where: { identifier_loginType: { identifier, loginType } },
 		});
-		return foundCred === null ? null : this.mapper.toDomain(foundCred);
+		return foundCred ? this.mapper.toDomain(foundCred) : null;
 	}
 
-	async update(credential: Credential): Promise<Credential> {
+	async create(credential: Credential): Promise<void> {
 		const data = this.mapper.toOrm(credential);
-		const updatedCred = await this.txHost.tx.credential.update({
+		await this.txHost.tx.credential.create({ data });
+	}
+
+	async update(credential: Credential): Promise<void> {
+		const data = this.mapper.toOrm(credential);
+		await this.txHost.tx.credential.update({
 			where: { id: credential.id },
 			data,
 		});
-		const mappedCred = this.mapper.toDomain(updatedCred);
-		return mappedCred;
+	}
+
+	async delete(id: string): Promise<void> {
+		await this.txHost.tx.credential.delete({ where: { id } });
 	}
 }
 

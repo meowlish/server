@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package exam;
+
+service ExamService {
+    rpc Test(Empty) returns (Empty) {}
+}
+
+// Request
+message Empty {}

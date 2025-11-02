@@ -1,4 +1,6 @@
-model Profile {
+model profile {
   id       String @id @default(uuid())
   fullName String @map("full_name") @db.VarChar(255)
+
+  @@map("profiles")
 }

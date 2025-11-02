@@ -23,18 +23,13 @@ export class IdentityPrismaMapper {
 	toOrm(from: Identity): RepoIdentity {
 		return {
 			username: from.username,
-			createdAt: from.createdAt,
 			deletedAt: from.deletedAt,
-			updatedAt: from.updatedAt,
 		};
 	}
 
 	toDomain(from: ExtendedIdentity): Identity {
-		return new Identity(from.username, {
-			id: from.id,
-			createdAt: from.createdAt,
-			updatedAt: from.updatedAt,
-			deletedAt: from.deletedAt,
+		return new Identity({
+			...from,
 			identityRoles: from.identityRoles.map(rIdentityRole => {
 				return new UserRole(rIdentityRole.role.id, {
 					name: this.roleMap(rIdentityRole.role.name),
@@ -59,7 +54,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			where: { id, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity === null ? null : this.mapper.toDomain(foundIdentity);
+		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
 	}
 
 	async findOneByUsername(username: string, deleted: boolean = false): Promise<Identity | null> {
@@ -67,7 +62,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			where: { username: username, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity === null ? null : this.mapper.toDomain(foundIdentity);
+		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
 	}
 
 	async getClaimsOfId(
@@ -96,7 +91,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		};
 	}
 
-	async create(identity: Identity): Promise<Identity> {
+	async create(identity: Identity): Promise<void> {
 		await this.txHost.withTransaction(async () => {
 			// create identity
 			const rIdentity = await this.txHost.tx.identity.create({
@@ -110,17 +105,10 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 				}),
 			});
 		});
-
-		// has to fetch again to properly get the role names and permissions
-		const result = await this.findOneByUsername(identity.username);
-		if (!result) throw Error();
-		return result;
 	}
 
-	async update(identity: Identity): Promise<Identity> {
+	async update(identity: Identity): Promise<void> {
 		const data = this.mapper.toOrm(identity);
-		// I marked the variable with !, might be troublesome later
-		let updatedIdentity!: ExtendedIdentity;
 		await this.txHost.withTransaction(async () => {
 			// add identity-role relationships
 			await this.txHost.tx.identityRole.createMany({
@@ -137,25 +125,19 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			await this.txHost.tx.identityRole.deleteMany({
 				where: { identityId: identity.id, roleId: { in: toBeDeletedIdentityRoles } },
 			});
-			// assigning outside variable within the callback
-			updatedIdentity = await this.txHost.tx.identity.update({
+			// update
+			await this.txHost.tx.identity.update({
 				where: { id: identity.id },
 				data,
-				include: identityPrismaIncludeObj,
 			});
 		});
-		const mappedIdentity = this.mapper.toDomain(updatedIdentity);
-		return mappedIdentity;
 	}
 
-	async softDelete(identity: Identity): Promise<Identity> {
-		const deletedIdentity = await this.txHost.tx.identity.update({
-			where: { id: identity.id },
+	async softDelete(id: string): Promise<void> {
+		await this.txHost.tx.identity.update({
+			where: { id },
 			data: { deletedAt: new Date() },
-			include: identityPrismaIncludeObj,
 		});
-		const mappedIdentity = this.mapper.toDomain(deletedIdentity);
-		return mappedIdentity;
 	}
 }
 
@@ -172,10 +154,10 @@ type ExtendedIdentity = Prisma.IdentityGetPayload<{
 	};
 }>;
 
-type RepoIdentity = Omit<PrismaIdentity, 'id'>;
+type RepoIdentity = Omit<PrismaIdentity, 'id' | 'updatedAt' | 'createdAt'>;
 
 const identityPrismaIncludeObj = {
 	identityRoles: {
 		include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
 	},
-};
+} satisfies Prisma.IdentityInclude;

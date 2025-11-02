@@ -29,8 +29,12 @@ export class AuthMailRegisterCommandHandler implements ICommandHandler<AuthMailR
 	@Transactional()
 	public async execute(command: AuthMailRegisterCommand): Promise<Tokens> {
 		const payload = command.payload;
-		const identity = await this.identityRepository.create(new Identity(payload.username));
-		const credential = new Credential(payload.mail, LoginType.MAIL, identity.id, {
+		const identity = new Identity({ username: payload.username });
+		await this.identityRepository.create(identity);
+		const credential = new Credential({
+			identifier: payload.mail,
+			loginType: LoginType.MAIL,
+			identityId: identity.id,
 			secretHash: payload.password,
 		});
 		credential.hashSecret();

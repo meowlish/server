@@ -1,0 +1,74 @@
+model Exam {
+  id          String   @id @default(uuid())
+  createdBy   String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  title       String
+  description String?
+  status      String
+  // duration in seconds
+  duration    Int
+
+  sections Section[]
+
+  @@map("exams")
+}
+
+model Section {
+  id        String  @id @default(uuid())
+  examId    String  @map("exam_id")
+  parentId  String? @map("parent_id")
+  name      String?
+  directive String
+  order     Int
+
+  exam          Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id])
+  questions     Question[]
+
+  ancestors     SectionClosure[] @relation("Ancestors")
+  descendants   SectionClosure[] @relation("Descendants")
+  childSections Section[]        @relation("SectionParent")
+
+  @@map("sections")
+}
+
+model SectionClosure {
+  ancestorId   String @map("ancestor_id")
+  descendantId String @map("descendant_id")
+  depth        Int
+
+  ancestor   Section @relation("Ancestors", fields: [ancestorId], references: [id], onDelete: Cascade)
+  descendant Section @relation("Descendants", fields: [descendantId], references: [id], onDelete: Cascade)
+
+  @@id([ancestorId, descendantId])
+  @@index([ancestorId])
+  @@index([descendantId])
+  @@map("section_closures")
+}
+
+model Question {
+  id          String @id @default(uuid())
+  sectionId   String @map("section_id")
+  content     String
+  type        String
+  points      Int
+  explanation String
+  order       Int
+
+  answers Answer[]
+  section Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model Answer {
+  id         String  @id @default(uuid())
+  content    String
+  isCorrect  Boolean @map("is_correct")
+  questionId String  @map("question_id")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("answers")
+}

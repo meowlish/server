@@ -30,7 +30,7 @@ import {
 import {
 	IdentityPrismaMapper,
 	IdentityPrismaRepository,
-} from './infra/repositories/identity.prisma.repository';
+} from './infra/repositories/identity.prisma.repository.impl';
 import { AuthController } from './presentation/controllers';
 
 @Module({

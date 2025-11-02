@@ -9,23 +9,27 @@ export class Credential implements IEntity<Credential> {
 	}
 
 	public readonly id: string;
+	public identifier: string;
+	public loginType: LoginType;
+	public identityId: string;
 
 	private _isSecretHashed: boolean;
 	private _secretHash!: string | null;
 
-	constructor(
-		public identifier: string,
-		public loginType: LoginType,
-		public identityId: string,
-		constructorOptions?: {
-			id?: string;
-			isSecretHashed?: boolean;
-			secretHash?: string | null;
-		},
-	) {
-		this.id = constructorOptions?.id ?? Credential.newId();
-		this._isSecretHashed = constructorOptions?.isSecretHashed ?? false;
-		this._secretHash = constructorOptions?.secretHash ?? null;
+	constructor(constructorOptions: {
+		id?: string;
+		identifier: string;
+		loginType: LoginType;
+		identityId: string;
+		isSecretHashed?: boolean;
+		secretHash?: string | null;
+	}) {
+		this.id = constructorOptions.id ?? Credential.newId();
+		this.identifier = constructorOptions.identifier;
+		this.loginType = constructorOptions.loginType;
+		this.identityId = constructorOptions.identityId;
+		this._isSecretHashed = constructorOptions.isSecretHashed ?? false;
+		this._secretHash = constructorOptions.secretHash ?? null;
 	}
 
 	public get secretHash() {

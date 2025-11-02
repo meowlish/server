@@ -29,26 +29,26 @@ export class Identity implements IEntity<Identity> {
 	}
 
 	public readonly id: string;
+	public username: string;
 	public identityRoles: UserRole[];
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public deletedAt: Date | null;
 
-	constructor(
-		public username: string,
-		constructorOptions?: {
-			id?: string;
-			createdAt?: Date;
-			updatedAt?: Date;
-			deletedAt?: Date | null;
-			identityRoles?: UserRole[];
-		},
-	) {
-		this.id = constructorOptions?.id ?? Identity.newId();
-		this.createdAt = constructorOptions?.createdAt ?? new Date();
-		this.updatedAt = constructorOptions?.updatedAt ?? new Date();
-		this.deletedAt = constructorOptions?.deletedAt ?? null;
-		this.identityRoles = constructorOptions?.identityRoles ?? [];
+	constructor(constructorOptions: {
+		id?: string;
+		username: string;
+		createdAt?: Date;
+		updatedAt?: Date;
+		deletedAt?: Date | null;
+		identityRoles?: UserRole[];
+	}) {
+		this.id = constructorOptions.id ?? Identity.newId();
+		this.username = constructorOptions.username;
+		this.createdAt = constructorOptions.createdAt ?? new Date();
+		this.updatedAt = constructorOptions.updatedAt ?? new Date();
+		this.deletedAt = constructorOptions.deletedAt ?? null;
+		this.identityRoles = constructorOptions.identityRoles ?? [];
 	}
 
 	public addRole(role: UserRole) {

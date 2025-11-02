@@ -10,9 +10,9 @@ export interface IIdentityRepository {
 		id: string,
 		deleted?: boolean,
 	): Promise<{ roles: Role[]; permissions: Permission[] }>;
-	create(identity: Identity): Promise<Identity>;
-	update(identity: Identity): Promise<Identity>;
-	softDelete(identity: Identity): Promise<Identity>;
+	create(identity: Identity): Promise<void>;
+	update(identity: Identity): Promise<void>;
+	softDelete(id: string): Promise<void>;
 }
 
 export const IIdentityRepositoryToken = Symbol('IIdentityRepository');

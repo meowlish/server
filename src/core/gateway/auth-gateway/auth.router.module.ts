@@ -16,6 +16,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 			provide: AUTH_CLIENT,
 			useFactory: () =>
 				new ErrorHandlingGrpcProxy({
+					url: '0.0.0.0:50051',
 					package: AUTH_PACKAGE_NAME,
 					protoPath: join(process.cwd(), 'proto', 'auth.proto'),
 				}),

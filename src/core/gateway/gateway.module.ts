@@ -13,6 +13,7 @@ import { LoggerModule } from '@shared/logger/logger.module';
 
 import { config } from '../../configs/config';
 import { AuthGatewayModule } from './auth-gateway/auth.router.module';
+import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { RouteModule } from './router.module';
@@ -38,6 +39,7 @@ import { RouteModule } from './router.module';
 		}),
 		RouteModule,
 		AuthGatewayModule,
+		ExamGatewayModule,
 	],
 	controllers: [GatewayController],
 	providers: [
