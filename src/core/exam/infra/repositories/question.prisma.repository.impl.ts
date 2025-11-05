@@ -6,11 +6,12 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { Injectable } from '@nestjs/common';
 import { Prisma, Question as PrismaQuestion } from '@prisma/client';
 
+import { Action } from '@common/enums/action.enum';
 import { parseEnum } from '@common/utils/functions/string-enum';
 
 @Injectable()
 export class QuestionPrismaMapper {
-	questionTypeMap(from: string): QuestionType {
+	mapQuestionType(from: string): QuestionType {
 		return parseEnum(QuestionType, from);
 	}
 
@@ -18,16 +19,14 @@ export class QuestionPrismaMapper {
 		return new Question({
 			id: from.id,
 			sectionId: from.sectionId,
-			answers: from.answers.map(
-				a => new Answer({ id: a.id, isCorrect: a.isCorrect, content: a.content }),
-			),
+			answers: from.answers.map(a => new Answer({ isCorrect: a.isCorrect, content: a.content })),
 			content: from.content,
 			explanation: from.explanation,
-			order: from.order,
 			points: from.points,
-			type: this.questionTypeMap(from.type),
+			type: this.mapQuestionType(from.type),
 		});
 	}
+
 	toOrm(from: Question): RepoQuestion {
 		return {
 			content: from.content,
@@ -35,7 +34,6 @@ export class QuestionPrismaMapper {
 			points: from.points,
 			sectionId: from.sectionId,
 			type: from.type,
-			order: from.order,
 		};
 	}
 }
@@ -55,14 +53,39 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 		return foundQuestion ? this.mapper.toDomain(foundQuestion) : null;
 	}
 
-	async create(question: Question): Promise<void> {
-		const data = this.mapper.toOrm(question);
-		await this.txHost.tx.question.create({ data });
-	}
-
 	async update(question: Question): Promise<void> {
 		const data = this.mapper.toOrm(question);
-		await this.txHost.tx.question.update({ where: { id: question.id }, data });
+		const answersToAdd: Answer[] = [];
+		const answersToDelete: Answer[] = [];
+		question.answers.forEach(a => {
+			switch (a.action) {
+				case Action.CREATE:
+					answersToAdd.push(a);
+					break;
+
+				case Action.DELETE:
+					answersToDelete.push(a);
+					break;
+
+				default:
+					return;
+			}
+		});
+		await this.txHost.withTransaction(async () => {
+			await this.txHost.tx.answer.createMany({
+				data: answersToAdd.map(a => ({
+					questionId: question.id,
+					content: a.content,
+					isCorrect: a.isCorrect,
+				})),
+			});
+			for (const a of answersToDelete) {
+				await this.txHost.tx.answer.delete({
+					where: { questionId_content: { questionId: question.id, content: a.content } },
+				});
+			}
+			await this.txHost.tx.question.update({ where: { id: question.id }, data });
+		});
 	}
 
 	async delete(id: string): Promise<void> {
@@ -72,11 +95,11 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 // extended question type with JOINS
 type ExtendedQuestion = Prisma.QuestionGetPayload<{
-	include: { answers: { select: { id: true; content: true; isCorrect: true } } };
+	include: { answers: { select: { content: true; isCorrect: true } } };
 }>;
 
-type RepoQuestion = Omit<PrismaQuestion, 'id'>;
+type RepoQuestion = Omit<PrismaQuestion, 'id' | 'order'>;
 
 const questionPrismaIncludeObj = {
-	answers: { select: { id: true, content: true, isCorrect: true } },
+	answers: { select: { content: true, isCorrect: true } },
 } satisfies Prisma.QuestionInclude;

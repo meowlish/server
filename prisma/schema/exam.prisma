@@ -11,16 +11,18 @@ model Exam {
 
   sections Section[]
 
+  @@index([status])
   @@map("exams")
 }
 
 model Section {
-  id        String  @id @default(uuid())
-  examId    String  @map("exam_id")
-  parentId  String? @map("parent_id")
-  name      String?
-  directive String
-  order     Int
+  id          String  @id @default(uuid())
+  examId      String  @map("exam_id")
+  parentId    String? @map("parent_id")
+  name        String?
+  directive   String  @default("")
+  order       Int
+  contentType String  @default("SECTION")
 
   exam          Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
   parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id])
@@ -30,6 +32,7 @@ model Section {
   descendants   SectionClosure[] @relation("Descendants")
   childSections Section[]        @relation("SectionParent")
 
+  @@index([examId])
   @@map("sections")
 }
 
@@ -50,25 +53,27 @@ model SectionClosure {
 model Question {
   id          String @id @default(uuid())
   sectionId   String @map("section_id")
-  content     String
-  type        String
-  points      Int
-  explanation String
+  content     String @default("")
+  type        String @default("MCQ")
+  points      Int    @default(0)
+  explanation String @default("")
   order       Int
 
   answers Answer[]
   section Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
+  @@index([sectionId])
   @@map("questions")
 }
 
 model Answer {
-  id         String  @id @default(uuid())
   content    String
   isCorrect  Boolean @map("is_correct")
   questionId String  @map("question_id")
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
+  @@id([questionId, content])
+  @@index([questionId])
   @@map("answers")
 }

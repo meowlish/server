@@ -12,10 +12,10 @@ import { Inject, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '../../services/token.service';
-import { AuthMailLoginCommand } from '../auth.mail-login.command';
+import { MailLoginCommand } from '../auth.mail-login.command';
 
-@CommandHandler(AuthMailLoginCommand)
-export class AuthMailLoginCommandHandler implements ICommandHandler<AuthMailLoginCommand> {
+@CommandHandler(MailLoginCommand)
+export class MailLoginCommandHandler implements ICommandHandler<MailLoginCommand> {
 	constructor(
 		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
 		@Inject(ICredentialRepositoryToken)
@@ -23,7 +23,7 @@ export class AuthMailLoginCommandHandler implements ICommandHandler<AuthMailLogi
 		private readonly tokenService: TokenService,
 	) {}
 
-	public async execute(command: AuthMailLoginCommand): Promise<Tokens> {
+	public async execute(command: MailLoginCommand): Promise<Tokens> {
 		const payload = command.payload;
 		const credential = await this.credentialRepository.findOne(payload.mail, LoginType.MAIL);
 		if (!credential) throw new UnauthorizedException("Mail doesn't exist");

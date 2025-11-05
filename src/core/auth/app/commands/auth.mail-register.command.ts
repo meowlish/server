@@ -2,7 +2,7 @@ import { Tokens } from '@core/auth/types/tokens.type';
 
 import { Command } from '@common/abstract/command.class';
 
-export class AuthMailRegisterCommandPayload {
+export class MailRegisterCommandPayload {
 	constructor(
 		public readonly mail: string,
 		public readonly username: string,
@@ -10,4 +10,4 @@ export class AuthMailRegisterCommandPayload {
 	) {}
 }
 
-export class AuthMailRegisterCommand extends Command<AuthMailRegisterCommandPayload, Tokens> {}
+export class MailRegisterCommand extends Command<MailRegisterCommandPayload, Tokens> {}

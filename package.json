@@ -20,6 +20,7 @@
 		"prisma:push:dev": "dotenv -e .env.development.local npx prisma db push",
 		"prisma:migrate:prod": "dotenv -e .env.production.local npx prisma migrate deploy",
 		"proto:gen:window": "npx protoc --plugin=protoc-gen-ts_proto=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_out=./src/common/generated/ --ts_proto_opt=nestJs=true --ts_proto_opt=addGrpcMetadata=true -I=./proto ./proto/*.proto",
+		"proto:gen:window:file": "npx protoc --plugin=protoc-gen-ts_proto=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_out=./src/common/generated/ --ts_proto_opt=nestJs=true --ts_proto_opt=addGrpcMetadata=true -I=./proto",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"test": "jest",
 		"test:watch": "jest --watch",

@@ -1,27 +1,7 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 import { IEntity } from '@common/abstract/entity/entity.interface';
-import { IValueObject } from '@common/abstract/value-object.interface';
 import { Action } from '@common/enums/action.enum';
-import { Permission } from '@common/enums/permission.enum';
-import { Role } from '@common/enums/role.enum';
-
-type RolePermission = {
-	name: Role;
-	permission: Permission[];
-};
-
-export class UserRole implements IValueObject<UserRole> {
-	public action: Action = Action.READ;
-	constructor(
-		public readonly id: string,
-		public readonly description?: RolePermission,
-	) {}
-
-	equals(vo: UserRole): boolean {
-		return this.id === vo.id;
-	}
-}
 
 export class Identity implements IEntity<Identity> {
 	static newId() {
@@ -30,7 +10,7 @@ export class Identity implements IEntity<Identity> {
 
 	public readonly id: string;
 	public username: string;
-	public identityRoles: UserRole[];
+	public roleIds: Map<string, Action>;
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public deletedAt: Date | null;
@@ -41,32 +21,30 @@ export class Identity implements IEntity<Identity> {
 		createdAt?: Date;
 		updatedAt?: Date;
 		deletedAt?: Date | null;
-		identityRoles?: UserRole[];
+		roleIds?: string[];
 	}) {
 		this.id = constructorOptions.id ?? Identity.newId();
 		this.username = constructorOptions.username;
 		this.createdAt = constructorOptions.createdAt ?? new Date();
 		this.updatedAt = constructorOptions.updatedAt ?? new Date();
 		this.deletedAt = constructorOptions.deletedAt ?? null;
-		this.identityRoles = constructorOptions.identityRoles ?? [];
+		this.roleIds = new Map(constructorOptions.roleIds?.map(id => [id, Action.READ]));
 	}
 
-	public addRole(role: UserRole) {
-		const rolePos = this.identityRoles.findIndex(r => r.equals(role));
-		if (rolePos === -1) {
-			role.action = Action.CREATE;
-			this.identityRoles.push(role);
-		}
+	public updateDetails(options: { username?: string }): void {
+		if (options.username) this.username = options.username;
 	}
 
-	public removeRole(role: UserRole) {
-		const rolePos = this.identityRoles.findIndex(r => r.equals(role));
-		if (rolePos !== -1) {
-			this.identityRoles[rolePos].action = Action.DELETE;
-		}
+	public addRole(roleId: string): void {
+		if (this.roleIds.get(roleId)) throw new ConflictException('Role already exists');
+		this.roleIds.set(roleId, Action.CREATE);
 	}
 
-	public softDelete() {
+	public removeRole(roleId: string): void {
+		this.roleIds.set(roleId, Action.DELETE);
+	}
+
+	public softDelete(): void {
 		if (this.deletedAt !== null) {
 			throw new NotFoundException('Identity was already deleted');
 		}

@@ -1,7 +1,7 @@
-import { AuthGetClaimsCommand } from '@core/auth/app/commands/auth.get-claims.command';
-import { AuthMailLoginCommand } from '@core/auth/app/commands/auth.mail-login.command';
-import { AuthMailRegisterCommand } from '@core/auth/app/commands/auth.mail-register.command';
-import { AuthRefreshCommand } from '@core/auth/app/commands/auth.refresh.command';
+import { GetClaimsCommand } from '@core/auth/app/commands/auth.get-claims.command';
+import { MailLoginCommand } from '@core/auth/app/commands/auth.mail-login.command';
+import { MailRegisterCommand } from '@core/auth/app/commands/auth.mail-register.command';
+import { RefreshCommand } from '@core/auth/app/commands/auth.refresh.command';
 import { Tokens } from '@core/auth/types/tokens.type';
 import { Metadata } from '@grpc/grpc-js';
 import { Controller, UnauthorizedException } from '@nestjs/common';
@@ -21,12 +21,12 @@ export class AuthController implements AuthServiceController {
 	constructor(private commandBus: CommandBus) {}
 
 	async loginMail(request: LoginMailDto): Promise<Tokens> {
-		const res = await this.commandBus.execute(new AuthMailLoginCommand(request));
+		const res = await this.commandBus.execute(new MailLoginCommand(request));
 		return res;
 	}
 
 	async registerMail(request: RegisterMailDto): Promise<Tokens> {
-		const res = await this.commandBus.execute(new AuthMailRegisterCommand(request));
+		const res = await this.commandBus.execute(new MailRegisterCommand(request));
 		return res;
 	}
 
@@ -35,13 +35,13 @@ export class AuthController implements AuthServiceController {
 		if (!extractedMetadata || !extractedMetadata.sub)
 			throw new UnauthorizedException('Missing authorization metadata');
 		const res = await this.commandBus.execute(
-			new AuthRefreshCommand({ identityId: extractedMetadata.sub }),
+			new RefreshCommand({ identityId: extractedMetadata.sub }),
 		);
 		return res;
 	}
 
 	async getClaims(request: GetClaimsDto): Promise<Claims> {
-		const res = await this.commandBus.execute(new AuthGetClaimsCommand(request));
+		const res = await this.commandBus.execute(new GetClaimsCommand(request));
 		return res;
 	}
 

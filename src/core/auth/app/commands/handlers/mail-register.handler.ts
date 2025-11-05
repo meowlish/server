@@ -15,10 +15,10 @@ import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '../../services/token.service';
-import { AuthMailRegisterCommand } from '../auth.mail-register.command';
+import { MailRegisterCommand } from '../auth.mail-register.command';
 
-@CommandHandler(AuthMailRegisterCommand)
-export class AuthMailRegisterCommandHandler implements ICommandHandler<AuthMailRegisterCommand> {
+@CommandHandler(MailRegisterCommand)
+export class MailRegisterCommandHandler implements ICommandHandler<MailRegisterCommand> {
 	constructor(
 		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
 		@Inject(ICredentialRepositoryToken)
@@ -27,7 +27,7 @@ export class AuthMailRegisterCommandHandler implements ICommandHandler<AuthMailR
 	) {}
 
 	@Transactional()
-	public async execute(command: AuthMailRegisterCommand): Promise<Tokens> {
+	public async execute(command: MailRegisterCommand): Promise<Tokens> {
 		const payload = command.payload;
 		const identity = new Identity({ username: payload.username });
 		await this.identityRepository.create(identity);

@@ -2,9 +2,105 @@ syntax = "proto3";
 
 package exam;
 
-service ExamService {
-    rpc Test(Empty) returns (Empty) {}
+service ExamManagementService {
+	rpc CreateExam(CreateExamDto) returns (Empty) {}
+	rpc CreateSection(CreateSectionDto) returns (Empty) {}
+	rpc CreateQuestion(CreateQuestionDto) returns (Empty) {}
+	rpc UpdateExam(UpdateExamDto) returns (Empty) {}
+	rpc UpdateSection(UpdateSectionDto) returns (Empty) {}
+	rpc UpdateQuestion(UpdateQuestionDto) returns (Empty) {}
+	rpc DeleteExam(DeleteExamDto) returns (Empty) {}
+	rpc DeleteSection(DeleteSectionDto) returns (Empty) {}
+	rpc DeleteQuestion(DeleteQuestionDto) returns (Empty) {}
+	rpc MoveSection(MoveSectionDto) returns (Empty) {}
+	rpc MoveQuestion(MoveQuestionDto) returns (Empty) {}
+	rpc ReviewExam(ReviewExamDto) returns (Empty) {}
 }
 
 // Request
 message Empty {}
+
+message CreateExamDto {
+	string created_by  = 1;
+	string title       = 2;
+	string description = 3;
+	int32  duration    = 4;
+}
+
+message CreateSectionDto {
+	optional string section_id = 1;
+	optional string exam_id    = 2;
+	optional int32  index      = 3;
+}
+
+message CreateQuestionDto {
+	string         section_id = 1;
+	optional int32 index      = 2;
+}
+
+message UpdateExamDto {
+	string          id                   = 1;
+	optional string title                = 2;
+	optional bool   set_description_null = 3;
+	optional string description          = 4;
+	optional int32  duration             = 5;
+}
+
+message UpdateSectionDto {
+	string          id            = 1;
+	optional bool   set_name_null = 2;
+	optional string name          = 3;
+	optional string directive     = 4;
+	optional string content_type  = 5;
+}
+
+message UpdateQuestionDto {
+	string id = 1;
+
+	optional string content     = 2;
+	optional string explanation = 3;
+	optional int32  points      = 4;
+	optional string type        = 5;
+
+	repeated AddAnswer    add_answers    = 6;
+	repeated DeleteAnswer delete_answers = 7;
+}
+
+message AddAnswer {
+	string content    = 1;
+	bool   is_correct = 2;
+}
+
+message DeleteAnswer {
+	string content = 1;
+}
+
+message DeleteExamDto {
+	string id = 1;
+}
+
+message DeleteSectionDto {
+	string id = 1;
+}
+
+message DeleteQuestionDto {
+	string id = 1;
+}
+
+message MoveSectionDto {
+	string          id        = 1;
+	optional int32  index     = 2;
+	optional string parent_id = 3;
+	optional bool   to_root   = 4;
+}
+
+message MoveQuestionDto {
+	string          id         = 1;
+	optional int32  index      = 2;
+	optional string section_id = 3;
+}
+
+message ReviewExamDto {
+	string id     = 1;
+	string status = 2;
+}

@@ -12,10 +12,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Claims } from '@common/utils/types/claims.type';
 
 import { TokenService } from '../../services/token.service';
-import { AuthGetClaimsCommand } from '../auth.get-claims.command';
+import { GetClaimsCommand } from '../auth.get-claims.command';
 
-@CommandHandler(AuthGetClaimsCommand)
-export class AuthGetClaimsCommandHandler implements ICommandHandler<AuthGetClaimsCommand> {
+@CommandHandler(GetClaimsCommand)
+export class GetClaimsCommandHandler implements ICommandHandler<GetClaimsCommand> {
 	constructor(
 		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
 		@Inject(ICredentialRepositoryToken)
@@ -23,7 +23,7 @@ export class AuthGetClaimsCommandHandler implements ICommandHandler<AuthGetClaim
 		private readonly tokenService: TokenService,
 	) {}
 
-	public async execute(command: AuthGetClaimsCommand): Promise<Claims> {
+	public async execute(command: GetClaimsCommand): Promise<Claims> {
 		const payload = command.payload;
 		const claims = await this.identityRepository.getClaimsOfId(payload.identityId);
 		if (!claims) throw new UnauthorizedException();

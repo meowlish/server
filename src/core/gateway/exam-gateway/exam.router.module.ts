@@ -5,10 +5,10 @@ import { EXAM_PACKAGE_NAME } from '@common/generated/exam';
 import { ErrorHandlingGrpcProxy } from '@common/utils/classes/grpc-err-proxy.class';
 
 import { EXAM_CLIENT } from './constants/exam';
-import { ExamGatewayController } from './exam.router.controller';
+import { ExamManagementGatewayController } from './exam.router.controller';
 
 @Module({
-	controllers: [ExamGatewayController],
+	controllers: [ExamManagementGatewayController],
 	providers: [
 		{
 			provide: EXAM_CLIENT,

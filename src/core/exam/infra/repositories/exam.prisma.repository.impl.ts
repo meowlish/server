@@ -1,24 +1,24 @@
-import { Exam } from '@core/exam/domain/entities/exam.entity';
+import { Exam, ExamSectionRef } from '@core/exam/domain/entities/exam.entity';
 import { IExamRepository } from '@core/exam/domain/repositories/exam.repository';
 import { ExamStatus } from '@core/exam/enums/exam-status.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Exam as PrismaExam } from '@prisma/client';
 
 import { parseEnum } from '@common/utils/functions/string-enum';
 
 @Injectable()
 export class ExamPrismaMapper {
-	examStatusMap(from: string): ExamStatus {
+	mapExamStatus(from: string): ExamStatus {
 		return parseEnum(ExamStatus, from);
 	}
 
 	toDomain(from: ExtendedExam): Exam {
 		return new Exam({
 			...from,
-			sections: from.sections.map(s => ({ id: s.id, order: s.order })),
-			status: this.examStatusMap(from.status),
+			sections: from.sections.map(s => new ExamSectionRef(s.id, s.order)),
+			status: this.mapExamStatus(from.status),
 		});
 	}
 
@@ -46,6 +46,39 @@ export class ExamPrismaRepository implements IExamRepository {
 			include: examPrismaIncludeObj,
 		});
 		return foundExam ? this.mapper.toDomain(foundExam) : null;
+	}
+
+	async getStatus(id: string): Promise<ExamStatus | null> {
+		const foundExam = await this.txHost.tx.exam.findUnique({
+			where: { id },
+			select: { status: true },
+		});
+		return foundExam ? this.mapper.mapExamStatus(foundExam.status) : null;
+	}
+
+	async getStatusBySectionId(id: string): Promise<ExamStatus | null> {
+		const foundSection = await this.txHost.tx.section.findUnique({
+			where: { id },
+			select: { exam: { select: { status: true } } },
+		});
+		return foundSection ? this.mapper.mapExamStatus(foundSection.exam.status) : null;
+	}
+
+	async getStatusByQuestionId(id: string): Promise<ExamStatus | null> {
+		const foundQuestion = await this.txHost.tx.question.findUnique({
+			where: { id },
+			select: { section: { select: { exam: { select: { status: true } } } } },
+		});
+		return foundQuestion ? this.mapper.mapExamStatus(foundQuestion.section.exam.status) : null;
+	}
+
+	async getParentExamOfSection(id: string): Promise<Exam> {
+		const foundSection = await this.txHost.tx.section.findUnique({
+			where: { id },
+			include: { exam: { include: examPrismaIncludeObj } },
+		});
+		if (!foundSection) throw new NotFoundException('Section not found.');
+		return this.mapper.toDomain(foundSection.exam);
 	}
 
 	async create(exam: Exam): Promise<void> {

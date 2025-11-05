@@ -10,14 +10,14 @@ import { parseEnum } from '@common/utils/functions/string-enum';
 
 @Injectable()
 export class CredentialPrismaMapper {
-	loginTypeMap(from: string): LoginType {
+	mapLoginType(from: string): LoginType {
 		return parseEnum(LoginType, from);
 	}
 
 	toDomain(from: PrismaCredential): Credential {
 		const credential = new Credential({
 			...from,
-			loginType: this.loginTypeMap(from.loginType),
+			loginType: this.mapLoginType(from.loginType),
 			isSecretHashed: true, //since result from ORM is from database, and all entries in DB are hashed
 		});
 		return credential;

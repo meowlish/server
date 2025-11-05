@@ -1,4 +1,4 @@
-import { Identity, UserRole } from '@core/auth/domain/entities/identity.entity';
+import { Identity } from '@core/auth/domain/entities/identity.entity';
 import { IIdentityRepository } from '@core/auth/domain/repositories/identity.repository';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -12,11 +12,11 @@ import { parseEnum } from '@common/utils/functions/string-enum';
 
 @Injectable()
 export class IdentityPrismaMapper {
-	permissionMap(from: string): Permission {
+	mapPermission(from: string): Permission {
 		return parseEnum(Permission, from);
 	}
 
-	roleMap(from: string): Role {
+	mapRole(from: string): Role {
 		return parseEnum(Role, from);
 	}
 
@@ -30,14 +30,7 @@ export class IdentityPrismaMapper {
 	toDomain(from: ExtendedIdentity): Identity {
 		return new Identity({
 			...from,
-			identityRoles: from.identityRoles.map(rIdentityRole => {
-				return new UserRole(rIdentityRole.role.id, {
-					name: this.roleMap(rIdentityRole.role.name),
-					permission: rIdentityRole.role.rolePermissions.map(rPermission =>
-						this.permissionMap(rPermission.permission.name),
-					),
-				});
-			}),
+			roleIds: from.identityRoles.map(r => r.roleId),
 		});
 	}
 }
@@ -71,19 +64,23 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	): Promise<{ roles: Role[]; permissions: Permission[] }> {
 		const foundIdentity = await this.txHost.tx.identity.findFirst({
 			where: { id, deletedAt: deleted ? { not: null } : null },
-			include: identityPrismaIncludeObj,
+			include: {
+				identityRoles: {
+					include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
+				},
+			},
 		});
 		if (!foundIdentity)
 			throw new NotFoundException(`Could not get claims of ${id}, no matching results.`);
 		return {
 			roles: foundIdentity.identityRoles.map(rIdentityRole =>
-				this.mapper.roleMap(rIdentityRole.role.name),
+				this.mapper.mapRole(rIdentityRole.role.name),
 			),
 			permissions: [
 				...new Set<Permission>(
 					foundIdentity.identityRoles.flatMap(rIdentityRole =>
 						rIdentityRole.role.rolePermissions.map(rPermission =>
-							this.mapper.permissionMap(rPermission.permission.name),
+							this.mapper.mapPermission(rPermission.permission.name),
 						),
 					),
 				),
@@ -94,15 +91,13 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	async create(identity: Identity): Promise<void> {
 		await this.txHost.withTransaction(async () => {
 			// create identity
-			const rIdentity = await this.txHost.tx.identity.create({
+			await this.txHost.tx.identity.create({
 				data: { username: identity.username },
 			});
 
 			// create identity-role relationships
 			await this.txHost.tx.identityRole.createMany({
-				data: identity.identityRoles.map(dRole => {
-					return { identityId: rIdentity.id, roleId: dRole.id };
-				}),
+				data: [...identity.roleIds.keys()].map(id => ({ identityId: identity.id, roleId: id })),
 			});
 		});
 	}
@@ -112,16 +107,16 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		await this.txHost.withTransaction(async () => {
 			// add identity-role relationships
 			await this.txHost.tx.identityRole.createMany({
-				data: identity.identityRoles
-					.filter(dRole => dRole.action === Action.CREATE)
-					.map(dRole => {
-						return { identityId: identity.id, roleId: dRole.id };
+				data: [...identity.roleIds.entries()]
+					.filter(([, v]) => v === Action.CREATE)
+					.map(([k]) => {
+						return { identityId: identity.id, roleId: k };
 					}),
 			});
 			// delete identity-role relationships
-			const toBeDeletedIdentityRoles = identity.identityRoles
-				.filter(dRole => dRole.action === Action.DELETE)
-				.map(dRole => dRole.id);
+			const toBeDeletedIdentityRoles = [...identity.roleIds.entries()]
+				.filter(([, v]) => v === Action.DELETE)
+				.map(([k]) => k);
 			await this.txHost.tx.identityRole.deleteMany({
 				where: { identityId: identity.id, roleId: { in: toBeDeletedIdentityRoles } },
 			});
@@ -145,11 +140,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 type ExtendedIdentity = Prisma.IdentityGetPayload<{
 	include: {
 		identityRoles: {
-			include: {
-				role: {
-					include: { rolePermissions: { include: { permission: true } } };
-				};
-			};
+			select: { roleId: true };
 		};
 	};
 }>;
@@ -158,6 +149,6 @@ type RepoIdentity = Omit<PrismaIdentity, 'id' | 'updatedAt' | 'createdAt'>;
 
 const identityPrismaIncludeObj = {
 	identityRoles: {
-		include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
+		select: { roleId: true },
 	},
 } satisfies Prisma.IdentityInclude;

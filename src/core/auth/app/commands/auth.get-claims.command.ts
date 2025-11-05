@@ -1,8 +1,8 @@
 import { Command } from '@common/abstract/command.class';
 import { Claims } from '@common/utils/types/claims.type';
 
-export class AuthGetClaimsCommandPayload {
+export class GetClaimsCommandPayload {
 	constructor(public readonly identityId: string) {}
 }
 
-export class AuthGetClaimsCommand extends Command<AuthGetClaimsCommandPayload, Claims> {}
+export class GetClaimsCommand extends Command<GetClaimsCommandPayload, Claims> {}

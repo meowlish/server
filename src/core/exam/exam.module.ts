@@ -32,7 +32,7 @@ import {
 	SectionPrismaMapper,
 	SectionPrismaRepository,
 } from './infra/repositories/section.prisma.repository.impl';
-import { ExamController } from './presentation/controllers/exam.controller';
+import { ExamController } from './presentation/controllers/exam-management.controller';
 
 @Module({
 	controllers: [ExamController],

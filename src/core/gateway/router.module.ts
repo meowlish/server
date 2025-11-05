@@ -12,7 +12,7 @@ import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 				module: AuthGatewayModule,
 			},
 			{
-				path: '/exam',
+				path: '/exams',
 				module: ExamGatewayModule,
 			},
 		]),
