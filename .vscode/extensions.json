@@ -12,7 +12,7 @@
 		"yoavbls.pretty-ts-errors",
 		"prisma.prisma",
 		"pkief.material-icon-theme",
-		"zxh404.vscode-proto3"
+		"drblury.protobuf-vsc"
 	],
 	"unwantedRecommendations": []
 }
