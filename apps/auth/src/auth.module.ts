@@ -1,0 +1,107 @@
+import { AuthHandlers } from './app/commands/handlers';
+import { TokenService } from './app/services/token.service';
+import { IEnvVars, config } from './configs/config';
+import JwtRefreshConfig from './configs/jwt-refresh.config';
+import JwtAccessConfig from './configs/jwt.config';
+import { ICredentialRepositoryToken } from './domain/repositories/credential.repository';
+import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
+import {
+	CredentialPrismaMapper,
+	CredentialPrismaRepository,
+} from './infra/repositories/credential.prisma.repository.impl';
+import {
+	IdentityPrismaMapper,
+	IdentityPrismaRepository,
+} from './infra/repositories/identity.prisma.repository.impl';
+import { AuthController } from './presentation/controllers';
+import { ClsPluginTransactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaClient } from '@prisma/client/auth';
+import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
+import { LoggerModule } from '@server/logger';
+import {
+	Any2RpcExceptionFilter,
+	GlobalValidationPipe,
+	Http2gRPCExceptionFilter,
+} from '@server/utils';
+import { ClsGuard, ClsModule } from 'nestjs-cls';
+
+@Module({
+	controllers: [AuthController],
+	imports: [
+		ConfigModule.forRoot({
+			expandVariables: true,
+			cache: true,
+			isGlobal: true,
+			load: [config],
+		}),
+		CqrsModule.forRoot(),
+		DatabaseModule.forRoot(PrismaClient),
+		ClsModule.forRoot({
+			global: true,
+			guard: { mount: false },
+			plugins: [
+				new ClsPluginTransactional({
+					imports: [DatabaseModule],
+					adapter: new TransactionalAdapterPrisma({
+						prismaInjectionToken: DATABASE_SERVICE,
+						sqlFlavor: 'postgresql',
+					}),
+				}),
+			],
+		}),
+		LoggerModule.forRoot({ appName: 'AuthModule' }),
+	],
+	providers: [
+		TokenService,
+		...AuthHandlers,
+		{
+			inject: [ConfigService],
+			provide: 'JWT_ACCESS_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtAccessConfig(configService);
+				return new JwtService(config);
+			},
+		},
+		{
+			inject: [ConfigService],
+			provide: 'JWT_REFRESH_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtRefreshConfig(configService);
+				return new JwtService(config);
+			},
+		},
+		CredentialPrismaMapper,
+		{
+			provide: ICredentialRepositoryToken,
+			useClass: CredentialPrismaRepository,
+		},
+		IdentityPrismaMapper,
+		{
+			provide: IIdentityRepositoryToken,
+			useClass: IdentityPrismaRepository,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ClsGuard,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Any2RpcExceptionFilter,
+		},
+		{
+			provide: APP_PIPE,
+			useClass: GlobalValidationPipe,
+		},
+	],
+})
+export class AuthModule {}

@@ -1,25 +1,25 @@
 syntax = "proto3";
 
+import "common.proto";
+
 package exam;
 
 service ExamManagementService {
-	rpc CreateExam(CreateExamDto) returns (Empty) {}
-	rpc CreateSection(CreateSectionDto) returns (Empty) {}
-	rpc CreateQuestion(CreateQuestionDto) returns (Empty) {}
-	rpc UpdateExam(UpdateExamDto) returns (Empty) {}
-	rpc UpdateSection(UpdateSectionDto) returns (Empty) {}
-	rpc UpdateQuestion(UpdateQuestionDto) returns (Empty) {}
-	rpc DeleteExam(DeleteExamDto) returns (Empty) {}
-	rpc DeleteSection(DeleteSectionDto) returns (Empty) {}
-	rpc DeleteQuestion(DeleteQuestionDto) returns (Empty) {}
-	rpc MoveSection(MoveSectionDto) returns (Empty) {}
-	rpc MoveQuestion(MoveQuestionDto) returns (Empty) {}
-	rpc ReviewExam(ReviewExamDto) returns (Empty) {}
+	rpc CreateExam(CreateExamDto) returns (common.Empty) {}
+	rpc CreateSection(CreateSectionDto) returns (common.Empty) {}
+	rpc CreateQuestion(CreateQuestionDto) returns (common.Empty) {}
+	rpc UpdateExam(UpdateExamDto) returns (common.Empty) {}
+	rpc UpdateSection(UpdateSectionDto) returns (common.Empty) {}
+	rpc UpdateQuestion(UpdateQuestionDto) returns (common.Empty) {}
+	rpc DeleteExam(DeleteExamDto) returns (common.Empty) {}
+	rpc DeleteSection(DeleteSectionDto) returns (common.Empty) {}
+	rpc DeleteQuestion(DeleteQuestionDto) returns (common.Empty) {}
+	rpc MoveSection(MoveSectionDto) returns (common.Empty) {}
+	rpc MoveQuestion(MoveQuestionDto) returns (common.Empty) {}
+	rpc ReviewExam(ReviewExamDto) returns (common.Empty) {}
 }
 
 // Request
-message Empty {}
-
 message CreateExamDto {
 	string created_by  = 1;
 	string title       = 2;

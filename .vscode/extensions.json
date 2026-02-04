@@ -12,7 +12,9 @@
 		"yoavbls.pretty-ts-errors",
 		"prisma.prisma",
 		"pkief.material-icon-theme",
-		"drblury.protobuf-vsc"
+		"drblury.protobuf-vsc",
+		"nrwl.angular-console",
+		"firsttris.vscode-jest-runner"
 	],
 	"unwantedRecommendations": []
 }

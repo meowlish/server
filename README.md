@@ -3,7 +3,7 @@
 This repo requires three separate environment files:
 
 - `.env.development.local` → Development environment
-- `.env.production.local` → Production environment
+- `.env` → Production environment
 - `.env.test.local` → Test environment
 
 ---
@@ -18,7 +18,7 @@ This repo requires three separate environment files:
 | `start:dev`   | Run NestJS in development mode using `.env.development.local` with watch and SWC builder.                                |
 | `start:debug` | Run NestJS in development mode with debugger enabled.                                                                    |
 | `start:stage` | Run the built app with `.env.development.local` (staging-like environment).                                              |
-| `start:prod`  | Run the built app with `.env.production.local`.                                                                          |
+| `start:prod`  | Run the built app with `.env`.                                                                                           |
 
 ### Docker
 
@@ -34,4 +34,4 @@ This repo requires three separate environment files:
 | `prisma:generate`     | Generate Prisma client based on the schema.                                |
 | `prisma:migrate:dev`  | Run migrations in development using `.env.development.local`.              |
 | `prisma:push:dev`     | Push the Prisma schema to the dev database using `.env.development.local`. |
-| `prisma:migrate:prod` | Apply migrations to production database using `.env.production.local`.     |
+| `prisma:migrate:prod` | Apply migrations to production database using `.env`.                      |

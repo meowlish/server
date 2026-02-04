@@ -1,0 +1,26 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"rootDir": ".",
+		"sourceMap": true,
+		"moduleResolution": "nodenext",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"importHelpers": true,
+		"target": "es2023",
+		"module": "nodenext",
+		"lib": ["ES2023", "dom"],
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"baseUrl": "./",
+		"paths": {
+			"@server/database": ["libs/database/src/index.ts"],
+			"@server/logger": ["libs/logger/src/index.ts"],
+			"@server/utils": ["libs/utils/src/index.ts"],
+			"@server/generated": ["libs/generated/src/index.ts"],
+			"@prisma/client/*": ["node_modules/@prisma/client/*"]
+		},
+		"declaration": false
+	},
+	"exclude": ["node_modules", "tmp"]
+}

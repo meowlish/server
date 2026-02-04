@@ -1,0 +1,63 @@
+import { AuthGatewayModule } from './auth-gateway/auth.router.module';
+import { config } from './configs/config';
+import { ExamGatewayModule } from './exam-gateway/exam.router.module';
+import { RouteModule } from './router.module';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { LoggerModule } from '@server/logger';
+import { GlobalHttpExceptionFilter } from '@server/utils';
+import { HttpExceptionFilter } from '@server/utils';
+import { HttpResponseTransformInterceptor } from '@server/utils';
+import { GlobalValidationPipe } from '@server/utils';
+
+@Module({
+	imports: [
+		ConfigModule.forRoot({
+			expandVariables: true,
+			cache: true,
+			isGlobal: true,
+			load: [config],
+		}),
+		CqrsModule.forRoot(),
+		LoggerModule.forRoot({ appName: 'GatewayModule' }),
+		ThrottlerModule.forRoot({
+			throttlers: [
+				{
+					ttl: 60000,
+					limit: 60,
+				},
+			],
+			errorMessage: 'Rate limit reached',
+		}),
+		RouteModule,
+		AuthGatewayModule,
+		ExamGatewayModule,
+	],
+	providers: [
+		{
+			provide: APP_PIPE,
+			useClass: GlobalValidationPipe,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
+
+		{
+			provide: APP_FILTER,
+			useClass: GlobalHttpExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: HttpExceptionFilter,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: HttpResponseTransformInterceptor,
+		},
+	],
+})
+export class GatewayModule {}

@@ -1,0 +1,26 @@
+import { GatewayModule } from './gateway.module';
+import { INestApplicationContext, VersioningType } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppLoggerService } from '@server/logger';
+
+const useLogger = (module: INestApplicationContext) => {
+	const logger = module.get(AppLoggerService);
+	module.useLogger(logger);
+};
+
+async function bootstrap() {
+	const gatewayModule = await NestFactory.create<NestExpressApplication>(GatewayModule, {
+		bufferLogs: true,
+	});
+	gatewayModule.setGlobalPrefix('api');
+	gatewayModule.enableVersioning({
+		defaultVersion: '1',
+		type: VersioningType.URI,
+	});
+	gatewayModule.enableCors();
+	useLogger(gatewayModule);
+	await gatewayModule.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap().catch(console.error);

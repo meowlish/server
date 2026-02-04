@@ -12,15 +12,6 @@
 	"importOrderSortSpecifiers": true,
 	"experimentalTernaries": true,
 	"useTabs": true,
-	"importOrder": [
-		"^@app(/.*)?$",
-		"^@common(/.*)?$",
-		"^@configs(/.*)?$",
-		"^@languages(/.*)?$",
-		"^@modules(/.*)?$",
-		"^@shared(/.*)?$",
-		"^[./]"
-	],
 	"plugins": ["@trivago/prettier-plugin-sort-imports"],
 	"importOrderParserPlugins": ["typescript", "decorators-legacy"]
 }

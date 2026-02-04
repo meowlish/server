@@ -1,52 +1,52 @@
 syntax = "proto3";
 
+import "common.proto";
+
 package auth;
 
 service AuthService {
-    rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
-    rpc LoginMail(LoginMailDto) returns (Tokens) {}
-    rpc Refresh(Empty) returns (Tokens) {}
-    rpc GetClaims(GetClaimsDto) returns (Claims) {}
+	rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
+	rpc LoginMail(LoginMailDto) returns (Tokens) {}
+	rpc Refresh(common.Empty) returns (Tokens) {}
+	rpc GetClaims(GetClaimsDto) returns (Claims) {}
 }
 
 // Request
-message Empty {}
-
 message RegisterMailDto {
-    string username = 1;
-    string mail = 2;
-    string password = 3;
+	string username = 1;
+	string mail     = 2;
+	string password = 3;
 }
 
 message LoginMailDto {
-    string mail = 1;
-    string password = 2;
+	string mail     = 1;
+	string password = 2;
 }
 
 message GetClaimsDto {
-    string identity_id = 1;
+	string identity_id = 1;
 }
 
 // Response
 message Tokens {
-    string access_token = 1;
-    optional string refresh_token = 2;
+	string          access_token  = 1;
+	optional string refresh_token = 2;
 }
 
 message Identity {
-    string id = 1;
-    string username = 2;
-    repeated string roles = 3;
+	string          id       = 1;
+	string          username = 2;
+	repeated string roles    = 3;
 }
 
 message Role {
-    string id = 1;
-    string name = 2;
-    repeated string permissions = 3;
+	string          id          = 1;
+	string          name        = 2;
+	repeated string permissions = 3;
 }
 
 message Claims {
-    string sub = 1;
-    repeated string roles = 2;
-    repeated string permissions = 3;
+	string          sub         = 1;
+	repeated string roles       = 2;
+	repeated string permissions = 3;
 }

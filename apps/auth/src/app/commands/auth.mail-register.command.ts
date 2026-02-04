@@ -1,0 +1,12 @@
+import { Tokens } from '../../types/tokens.type';
+import { Command } from '@server/utils';
+
+export class MailRegisterCommandPayload {
+	constructor(
+		public readonly mail: string,
+		public readonly username: string,
+		public readonly password: string,
+	) {}
+}
+
+export class MailRegisterCommand extends Command<MailRegisterCommandPayload, Tokens> {}
