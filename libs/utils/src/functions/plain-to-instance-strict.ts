@@ -1,6 +1,5 @@
-import { ClassTransformOptions, plainToInstance } from 'class-transformer';
-
 import { ConcreteClass } from '../types/class.type';
+import { ClassTransformOptions, plainToInstance } from 'class-transformer';
 
 /** `plainToInstance` wrapper function with `excludeExtraneousValues` set to `true` */
 export function plainToInstanceStrict<T, V>(

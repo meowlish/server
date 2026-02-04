@@ -1,9 +1,8 @@
-import { Metadata } from '@grpc/grpc-js';
-
 import { GrpcMetadataField } from '../enums/grpc-metadata-field.enum';
 import { Permission } from '../enums/permission.enum';
 import { Role } from '../enums/role.enum';
 import { Claims } from '../types/claims.type';
+import { Metadata } from '@grpc/grpc-js';
 
 export const createMetadata = (from: Partial<Claims>): Metadata => {
 	const metadata = new Metadata();

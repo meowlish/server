@@ -1,6 +1,3 @@
-import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-
 import {
 	type IExamRepository,
 	IExamRepositoryToken,
@@ -11,6 +8,8 @@ import {
 } from '../../../../domain/repositories/section.repository';
 import { ExamStatus } from '../../../../enums/exam-status.enum';
 import { UpdateSectionCommand } from '../../staff/exam.update-section.command';
+import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(UpdateSectionCommand)
 export class UpdateSectionHandler implements ICommandHandler<UpdateSectionCommand> {

@@ -1,8 +1,7 @@
+import { ResponseEntity } from '../data/response-entity.type';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { Request, Response } from 'express';
-
-import { ResponseEntity } from '../data/response-entity.type';
 
 @Catch()
 export class GlobalHttpExceptionFilter implements ExceptionFilter {

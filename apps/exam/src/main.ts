@@ -1,21 +1,26 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Logger } from '@nestjs/common';
+import { ExamModule } from './exam.module';
+import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppLoggerService } from '@server/logger';
+import { join } from 'path';
+
+const useLogger = (module: INestApplicationContext) => {
+	const logger = module.get(AppLoggerService);
+	module.useLogger(logger);
+};
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
-  );
+	const examModule = await NestFactory.createMicroservice<MicroserviceOptions>(ExamModule, {
+		transport: Transport.GRPC,
+		options: {
+			url: '0.0.0.0:50050',
+			package: 'exam',
+			protoPath: join(process.cwd(), 'proto', 'exam.proto'),
+		},
+	});
+	useLogger(examModule);
+	await examModule.listen();
 }
 
-bootstrap();
+bootstrap().catch(console.error);

@@ -13,6 +13,7 @@ export class OffsetPaginatedData<T> {
 	@IsInt()
 	limit = 10;
 
+	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
 	@IsArray()
 	data: T[] = [];
 }
@@ -26,6 +27,7 @@ export class CursorPaginatedData<T> {
 	@IsString()
 	cursor: string;
 
+	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
 	@IsArray()
 	data: T[] = [];
 }

@@ -1,6 +1,3 @@
-import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-
 import { Answer } from '../../../../domain/entities/question.entity';
 import {
 	type IExamRepository,
@@ -12,6 +9,8 @@ import {
 } from '../../../../domain/repositories/question.repository';
 import { ExamStatus } from '../../../../enums/exam-status.enum';
 import { UpdateQuestionCommand } from '../../staff/exam.update-question.command';
+import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(UpdateQuestionCommand)
 export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionCommand> {

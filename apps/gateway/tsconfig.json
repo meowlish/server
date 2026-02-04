@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"files": [],
-	"include": ["./webpack.config.js"],
+	"include": [],
 	"references": [
 		{
 			"path": "./tsconfig.app.json"
