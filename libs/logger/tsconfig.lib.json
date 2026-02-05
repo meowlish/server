@@ -4,7 +4,7 @@
 		"outDir": "../../dist/out-tsc",
 		"declaration": true,
 		"types": ["node"],
-		"target": "esnext",
+		"target": "es2023",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"strictNullChecks": true,

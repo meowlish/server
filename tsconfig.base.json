@@ -9,7 +9,7 @@
 		"importHelpers": true,
 		"target": "es2023",
 		"module": "nodenext",
-		"lib": ["ES2023", "dom"],
+		"lib": ["ES2023"],
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"baseUrl": "./",
@@ -18,9 +18,10 @@
 			"@server/logger": ["libs/logger/src/index.ts"],
 			"@server/utils": ["libs/utils/src/index.ts"],
 			"@server/generated": ["libs/generated/src/index.ts"],
-			"@prisma/client/*": ["node_modules/@prisma/client/*"]
+			"@prisma-client/*": ["node_modules/.prisma/client/*"]
 		},
-		"declaration": false
+		"declaration": true,
+		"esModuleInterop": true
 	},
 	"exclude": ["node_modules", "tmp"]
 }

@@ -15,8 +15,8 @@ async function bootstrap() {
 	const authModule = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {
 		transport: Transport.GRPC,
 		options: {
-			url: '0.0.0.0:50051',
-			package: auth.AUTH_SERVICE_NAME,
+			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50051}`,
+			package: 'auth',
 			protoPath: join(process.cwd(), 'proto', 'auth.proto'),
 		},
 	});

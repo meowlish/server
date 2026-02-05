@@ -8,25 +8,9 @@ const dbVarsSchema = z.object({
 	dbName: z.string(),
 });
 
-const jwtVarsSchema = z.object({
-	accessSecret: z.string(),
-	refreshSecret: z.string(),
-	accessTokenExpiration: z.coerce.number().default(15 * 60), // 15 minutes in seconds
-	refreshTokenExpiration: z.coerce.number().default(7 * 24 * 60 * 60), // 7 days in seconds
-});
-
-const googleOAuth2VarsSchema = z.object({
-	clientId: z.string(),
-	secret: z.string(),
-});
-
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
-	port: z.coerce.number().default(3000),
 	database: dbVarsSchema,
-	jwt: jwtVarsSchema,
-	googleOAuth2: googleOAuth2VarsSchema,
-	hashAlg: z.string(),
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -34,24 +18,12 @@ export type IEnvVars = z.infer<typeof envFileSchema>;
 // map your env vars to ConfigService's properties
 const loadEnv = (): DeepStringify<IEnvVars> => ({
 	env: process.env.NODE_ENV,
-	port: process.env.PORT,
 	database: {
 		port: process.env.POSTGRES_PORT,
 		username: process.env.POSTGRES_USER,
 		password: process.env.POSTGRES_PASSWORD,
 		dbName: process.env.POSTGRES_DB,
 	},
-	jwt: {
-		accessSecret: process.env.JWT_SECRET,
-		refreshSecret: process.env.JWT_REFRESH_SECRET,
-		accessTokenExpiration: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
-		refreshTokenExpiration: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
-	},
-	googleOAuth2: {
-		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
-		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
-	},
-	hashAlg: process.env.PASSWORD_HASH_ALG,
 });
 
 // validate and optionally transform your env variables here

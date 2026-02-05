@@ -4,7 +4,7 @@ import { ExamStatus } from '../../enums/exam-status.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient, Exam as PrismaExam } from '@prisma/client/exam';
+import { Prisma, PrismaClient, Exam as PrismaExam } from '@prisma-client/exam';
 import { parseEnum } from '@server/utils';
 
 @Injectable()

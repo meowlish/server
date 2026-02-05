@@ -22,7 +22,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PrismaClient } from '@prisma/client/exam';
+import { PrismaClient } from '@prisma-client/exam';
 import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
 import { LoggerModule } from '@server/logger';
 import { Any2RpcExceptionFilter } from '@server/utils';

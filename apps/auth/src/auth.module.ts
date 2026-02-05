@@ -21,7 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClient } from '@prisma/client/auth';
+import { PrismaClient } from '@prisma-client/auth';
 import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
 import { LoggerModule } from '@server/logger';
 import {
@@ -41,13 +41,12 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 			load: [config],
 		}),
 		CqrsModule.forRoot(),
-		DatabaseModule.forRoot(PrismaClient),
 		ClsModule.forRoot({
 			global: true,
 			guard: { mount: false },
 			plugins: [
 				new ClsPluginTransactional({
-					imports: [DatabaseModule],
+					imports: [DatabaseModule.forRoot(PrismaClient)],
 					adapter: new TransactionalAdapterPrisma({
 						prismaInjectionToken: DATABASE_SERVICE,
 						sqlFlavor: 'postgresql',

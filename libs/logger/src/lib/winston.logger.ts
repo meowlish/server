@@ -5,11 +5,11 @@ import * as winston from 'winston';
 
 const logDir = path.join(os.tmpdir(), '/logs');
 
-export const createWinstonLogger = (appName: string) => {
+export const createWinstonLogger = (appName: string, logLevel = 'info') => {
 	return winston.createLogger({
 		transports: [
 			new winston.transports.Console({
-				level: process.env[LOG_LEVEL] || 'info',
+				level: logLevel,
 				format: winston.format.combine(
 					winston.format.timestamp(),
 					utilities.format.nestLike(appName, {
@@ -21,7 +21,7 @@ export const createWinstonLogger = (appName: string) => {
 			new winston.transports.File({
 				dirname: logDir,
 				filename: 'app.log',
-				level: process.env[LOG_LEVEL] || 'info',
+				level: logLevel,
 				format: winston.format.combine(
 					winston.format.timestamp(),
 					utilities.format.nestLike(appName, {

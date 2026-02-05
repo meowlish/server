@@ -22,11 +22,9 @@ const googleOAuth2VarsSchema = z.object({
 
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
-	port: z.coerce.number().default(3000),
 	database: dbVarsSchema,
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2VarsSchema,
-	hashAlg: z.string(),
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -34,7 +32,6 @@ export type IEnvVars = z.infer<typeof envFileSchema>;
 // map your env vars to ConfigService's properties
 const loadEnv = (): DeepStringify<IEnvVars> => ({
 	env: process.env.NODE_ENV,
-	port: process.env.PORT,
 	database: {
 		port: process.env.POSTGRES_PORT,
 		username: process.env.POSTGRES_USER,
@@ -51,7 +48,6 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
 		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
 	},
-	hashAlg: process.env.PASSWORD_HASH_ALG,
 });
 
 // validate and optionally transform your env variables here

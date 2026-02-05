@@ -4,7 +4,7 @@ import { SectionType } from '../../enums/section-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient, Section as PrismaSection } from '@prisma/client/exam';
+import { Prisma, PrismaClient, Section as PrismaSection } from '@prisma-client/exam';
 import { Action } from '@server/utils';
 import { parseEnum } from '@server/utils';
 

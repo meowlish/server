@@ -11,7 +11,9 @@
 			"options": {
 				"command": "pnpm exec prisma generate",
 				"cwd": "apps/auth"
-			}
+			},
+			"inputs": ["{projectRoot}/prisma"],
+			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/auth"]
 		},
 		"build": {
 			"executor": "nx:run-commands",
@@ -57,7 +59,7 @@
 			"continuous": true,
 			"executor": "@nx/js:node",
 			"defaultConfiguration": "development",
-			"dependsOn": ["build"],
+			"dependsOn": ["^build"],
 			"options": {
 				"buildTarget": "auth:build",
 				"runBuildTargetDependencies": false
