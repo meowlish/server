@@ -35,4 +35,22 @@ export default [
 			},
 		},
 	},
+	{
+		files: ['{package,project}.json'],
+		languageOptions: {
+			parser: await import('jsonc-eslint-parser'),
+		},
+		rules: {
+			'@nx/dependency-checks': [
+				'error',
+				{
+					buildTargets: ['build'],
+					checkMissingDependencies: true,
+					checkObsoleteDependencies: true,
+					checkVersionMismatches: true,
+					ignoredDependencies: ['express', '@types/express'],
+				},
+			],
+		},
+	},
 ];
