@@ -7,8 +7,10 @@ package auth;
 service AuthService {
 	rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
 	rpc LoginMail(LoginMailDto) returns (Tokens) {}
-	rpc Refresh(common.Empty) returns (Tokens) {}
-	rpc GetClaims(GetClaimsDto) returns (Claims) {}
+	rpc Refresh(RefreshDto) returns (Tokens) {}
+	rpc ValidateRefresh(ValidateRefreshDto) returns (Claims) {}
+	rpc ValidateAccess(ValidateAccessDto) returns (common.Empty) {}
+	rpc LogOutAll(LogOutAllDto) returns (common.Empty) {}
 }
 
 // Request
@@ -23,7 +25,21 @@ message LoginMailDto {
 	string password = 2;
 }
 
-message GetClaimsDto {
+message RefreshDto {
+	string identity_id = 1;
+}
+
+message ValidateRefreshDto {
+	string identity_id = 1;
+	int64  iat         = 2;
+}
+
+message ValidateAccessDto {
+	string identity_id = 1;
+	int64  iat         = 2;
+}
+
+message LogOutAllDto {
 	string identity_id = 1;
 }
 

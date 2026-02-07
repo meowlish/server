@@ -8,6 +8,11 @@ const dbVarsSchema = z.object({
 	dbName: z.string(),
 });
 
+const redisVarsSchema = z.object({
+	host: z.string(),
+	port: z.coerce.number(),
+});
+
 const jwtVarsSchema = z.object({
 	accessSecret: z.string(),
 	refreshSecret: z.string(),
@@ -23,6 +28,7 @@ const googleOAuth2VarsSchema = z.object({
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	database: dbVarsSchema,
+	redis: redisVarsSchema,
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2VarsSchema,
 });
@@ -37,6 +43,10 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 		username: process.env.POSTGRES_USER,
 		password: process.env.POSTGRES_PASSWORD,
 		dbName: process.env.POSTGRES_DB,
+	},
+	redis: {
+		host: process.env.REDIS_HOST,
+		port: process.env.REDIS_PORT,
 	},
 	jwt: {
 		accessSecret: process.env.JWT_SECRET,

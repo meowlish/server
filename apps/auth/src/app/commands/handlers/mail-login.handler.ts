@@ -33,7 +33,7 @@ export class MailLoginCommandHandler implements ICommandHandler<MailLoginCommand
 		return this.tokenService.generateTokens(
 			{
 				sub: credential.identityId,
-				permission: claims.permissions,
+				permissions: claims.permissions,
 				roles: claims.roles,
 			},
 			true,

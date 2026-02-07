@@ -1,11 +1,11 @@
 import { IEnvVars } from '../../configs/config';
 import { AUTH_CLIENT } from '../constants/auth';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
 import { auth } from '@server/generated';
-import { Claims } from '@server/utils';
+import { Claims, refreshPayloadSchema } from '@server/utils';
 import { AuthRefreshPayload } from '@server/utils';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { lastValueFrom } from 'rxjs';
@@ -29,8 +29,14 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt'
 	}
 
 	async validate(payload: AuthRefreshPayload): Promise<Claims> {
-		// TODO: Implement Redis and blacklist tokens here
-		const claims = await lastValueFrom(this.authService.getClaims({ identityId: payload.sub }));
+		const isCorrectSchema = refreshPayloadSchema.parse(payload);
+		if (!isCorrectSchema) {
+			throw new UnauthorizedException('Invalid token');
+		}
+
+		const claims = await lastValueFrom(
+			this.authService.validateRefresh({ identityId: payload.sub, iat: payload.iat }),
+		);
 		return claims as Claims;
 	}
 }

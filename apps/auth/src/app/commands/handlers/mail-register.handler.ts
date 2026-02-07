@@ -42,7 +42,7 @@ export class MailRegisterCommandHandler implements ICommandHandler<MailRegisterC
 		return this.tokenService.generateTokens(
 			{
 				sub: identity.id,
-				permission: claims.permissions,
+				permissions: claims.permissions,
 				roles: claims.roles,
 			},
 			true,

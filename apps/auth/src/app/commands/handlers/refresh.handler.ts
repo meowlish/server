@@ -22,7 +22,7 @@ export class RefreshCommandHandler implements ICommandHandler<RefreshCommand> {
 		return this.tokenService.generateTokens(
 			{
 				sub: payload.identityId,
-				permission: claims.permissions,
+				permissions: claims.permissions,
 				roles: claims.roles,
 			},
 			true,

@@ -8,7 +8,7 @@ import { type ClientGrpc } from '@nestjs/microservices';
 import { auth } from '@server/generated';
 import { IsPublic } from '@server/utils';
 import { ResponseTransform } from '@server/utils';
-import { createMetadata } from '@server/utils';
+import { lastValueFrom } from 'rxjs';
 
 @Controller()
 export class AuthGatewayController implements OnModuleInit {
@@ -38,9 +38,16 @@ export class AuthGatewayController implements OnModuleInit {
 
 	@Post('refresh')
 	@UseGuards(JwtRefreshAuthGuard)
+	@IsPublic()
 	refresh(@Req() req: AuthenticatedRequest) {
-		const metadata = createMetadata(req.user);
-		const res = this.authService.refresh({}, metadata);
+		const res = this.authService.refresh({ identityId: req.user.sub });
 		return res;
+	}
+
+	@Post('logout-all')
+	@ResponseTransform()
+	async logoutAll(@Req() req: AuthenticatedRequest) {
+		await lastValueFrom(this.authService.logOutAll({ identityId: req.user.sub }));
+		return null;
 	}
 }

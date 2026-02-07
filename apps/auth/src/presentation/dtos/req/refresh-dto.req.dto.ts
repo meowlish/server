@@ -3,7 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 @Exclude()
-export class GetClaimsDto implements auth.GetClaimsDto {
+export class RefreshDto implements auth.RefreshDto {
 	@Expose()
 	@IsString()
 	identityId!: string;

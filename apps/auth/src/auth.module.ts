@@ -3,6 +3,7 @@ import { TokenService } from './app/services/token.service';
 import { IEnvVars, config } from './configs/config';
 import JwtRefreshConfig from './configs/jwt-refresh.config';
 import JwtAccessConfig from './configs/jwt.config';
+import { RedisConfig } from './configs/redis.config';
 import { ICredentialRepositoryToken } from './domain/repositories/credential.repository';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import {
@@ -14,6 +15,7 @@ import {
 	IdentityPrismaRepository,
 } from './infra/repositories/identity.prisma.repository.impl';
 import { AuthController } from './presentation/controllers';
+import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
@@ -55,6 +57,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 			],
 		}),
 		LoggerModule.forRoot({ appName: 'AuthModule' }),
+		RedisModule.forRootAsync({
+			inject: [ConfigService],
+			useFactory: RedisConfig as (...args: unknown[]) => RedisModuleOptions,
+		}),
 	],
 	providers: [
 		TokenService,
