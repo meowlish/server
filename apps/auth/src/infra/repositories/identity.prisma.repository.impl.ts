@@ -2,7 +2,7 @@ import { Identity } from '../../domain/entities/identity.entity';
 import { IIdentityRepository } from '../../domain/repositories/identity.repository';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient, Identity as PrismaIdentity } from '@prisma-client/auth';
 import { Action, Permission, Role, parseEnum } from '@server/utils';
 
@@ -87,9 +87,18 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	async create(identity: Identity): Promise<void> {
 		await this.txHost.withTransaction(async () => {
 			// create identity
-			await this.txHost.tx.identity.create({
-				data: { username: identity.username },
-			});
+			try {
+				await this.txHost.tx.identity.create({
+					data: { username: identity.username },
+				});
+			} catch (e) {
+				if (e instanceof Prisma.PrismaClientKnownRequestError) {
+					if (e.code === 'P2002') {
+						const targetFields = ((e.meta?.target as string[]) || []).join(', ');
+						throw new ConflictException(`Duplicate fields ${targetFields}`);
+					}
+				}
+			}
 
 			// create identity-role relationships
 			await this.txHost.tx.identityRole.createMany({

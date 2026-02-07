@@ -97,11 +97,11 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		},
 		{
 			provide: APP_FILTER,
-			useClass: Http2gRPCExceptionFilter,
+			useClass: Any2RpcExceptionFilter,
 		},
 		{
 			provide: APP_FILTER,
-			useClass: Any2RpcExceptionFilter,
+			useClass: Http2gRPCExceptionFilter,
 		},
 		{
 			provide: APP_PIPE,
