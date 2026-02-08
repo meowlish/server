@@ -1,3 +1,5 @@
+import { HasPermissions } from '../auth/decorators/permissions.decorator';
+import { HasRoles } from '../auth/decorators/roles.decorator';
 import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { EXAM_CLIENT } from './constants/exam';
 import { CreateExamDto } from './dtos/req/management/create-exam.req.dto';
@@ -22,7 +24,9 @@ import {
 } from '@nestjs/common';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
+import { Permission, Role } from '@server/utils';
 
+@HasRoles(Role.MODERATOR, Role.ADMIN)
 @Controller('management')
 export class ExamManagementGatewayController implements OnModuleInit {
 	private examManagementService!: exam.ExamManagementServiceClient;
@@ -108,6 +112,7 @@ export class ExamManagementGatewayController implements OnModuleInit {
 	}
 
 	@Patch(':id/review')
+	@HasPermissions(Permission.EXAM_APPROVE)
 	reviewExam(@Param('id') id: string, @Body() body: ReviewExamDto) {
 		const res = this.examManagementService.reviewExam({ ...body, id });
 		return res;

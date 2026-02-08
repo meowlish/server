@@ -1,12 +1,12 @@
+import { IsPublic } from '../auth/decorators/public.decorator';
+import { JwtRefreshAuthGuard } from '../auth/guards/jwt-refresh-auth.guard';
 import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { AUTH_CLIENT } from './constants/auth';
 import { LoginMailDto } from './dtos/req/login-mail.req.dto';
 import { RegisterMailDto } from './dtos/req/register-mail.req.dto';
-import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
 import { Body, Controller, Inject, OnModuleInit, Post, Req, UseGuards } from '@nestjs/common';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { auth } from '@server/generated';
-import { IsPublic } from '@server/utils';
 import { lastValueFrom } from 'rxjs';
 
 @Controller()

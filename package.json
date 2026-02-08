@@ -5,7 +5,7 @@
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"proto:gen:window": "pnpm dlx protoc --plugin=protoc-gen-ts_proto=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_out=./libs/generated/src/ --ts_proto_opt=nestJs=true --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=outputIndex=true --ts_proto_opt=exportCommonSymbols=true -I=./proto ./proto/*.proto",
-		"proto:gen:window:file": "pnpm dlx protoc --plugin=protoc-gen-ts_proto=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_out=./libs/generated/src/ --ts_proto_opt=nestJs=true --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=outputIndex=true --ts_proto_opt=exportCommonSymbols=true -I=./proto"
+		"proto:gen:window:file": "pnpm dlx protoc --plugin=protoc-gen-ts_proto=\".\\node_modules\\.bin\\protoc-gen-ts_proto.cmd\" --ts_proto_out=./libs/generated/src/ --ts_proto_opt=nestJs=true --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=exportCommonSymbols=true -I=./proto"
 	},
 	"private": true,
 	"dependencies": {

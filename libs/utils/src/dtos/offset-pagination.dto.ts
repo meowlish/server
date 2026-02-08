@@ -1,6 +1,7 @@
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { IsInt, IsOptional, IsPositive, Min } from 'class-validator';
 
+@Exclude()
 export class OffsetPaginationDto {
 	@Expose()
 	@Type(() => Number)

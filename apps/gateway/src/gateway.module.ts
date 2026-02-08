@@ -1,4 +1,7 @@
 import { AuthGatewayModule } from './auth-gateway/auth.router.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from './auth/guards/permissions.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 import { config } from './configs/config';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 import { RouteModule } from './router.module';
@@ -44,6 +47,18 @@ import { GlobalValidationPipe } from '@server/utils';
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: PermissionsGuard,
 		},
 		{
 			provide: APP_FILTER,

@@ -1,8 +1,6 @@
-import { JwtAuthGuard } from '../auth-gateway/guards/jwt-auth.guard';
 import { EXAM_CLIENT } from './constants/exam';
 import { ExamManagementGatewayController } from './exam.router.controller';
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { ErrorHandlingGrpcProxy } from '@server/utils';
 import { join } from 'path';
 
@@ -17,10 +15,6 @@ import { join } from 'path';
 					package: 'exam',
 					protoPath: join(process.cwd(), 'proto', 'exam.proto'),
 				}),
-		},
-		{
-			provide: APP_GUARD,
-			useClass: JwtAuthGuard,
 		},
 	],
 	exports: [],
