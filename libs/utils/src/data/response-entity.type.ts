@@ -1,69 +1,56 @@
-import { CursorPaginatedData, OffsetPaginatedData } from './paginated-data.type';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export interface ErrorMessage {
 	[key: string]: string;
 }
 
 export class ResponseEntity<T> {
-	constructor(path: string, statusCode: number, data: T, error?: string | ErrorMessage) {
-		this.path = path;
-		this.statusCode = statusCode;
-		this.timestamp = Date.now();
-		if (error) {
-			this.success = false;
-			this.error = error;
-			this.data = null;
-		} else {
-			this.success = true;
-			this.data = data;
-		}
-	}
-
+	@ApiProperty({
+		description: 'API path',
+		example: '/auth/login',
+	})
 	/** API path */
 	path: string;
 
+	@ApiProperty({
+		description: 'HTTP status code',
+		example: 200,
+	})
 	/** HTTP status code */
 	statusCode: number;
 
+	@ApiProperty({
+		description: 'Request success status',
+		example: true,
+	})
 	success: boolean;
 
+	@ApiProperty({
+		description: 'Response timestamp',
+		example: Date.now(),
+	})
 	timestamp: Date | string | number;
 
+	@ApiPropertyOptional({
+		description: 'Error message if any',
+		example: 'Unauthorized',
+	})
 	/** Error message if there's one */
 	error?: string | ErrorMessage;
 
+	@ApiProperty({
+		description: 'Response payload, null if error and in special cases',
+		nullable: true,
+	})
 	/** Set as null if there's error */
 	data: T | null;
-}
 
-export class OffsetPaginatedResponseEntity<T> extends ResponseEntity<T[]> {
-	constructor(
-		path: string,
-		statusCode: number,
-		paginatedData: OffsetPaginatedData<T>,
-		error?: string,
-	) {
-		super(path, statusCode, paginatedData.data, error);
-		this.page = paginatedData.page;
-		this.amount = paginatedData.data.length;
+	constructor(res: ResponseEntity<T>) {
+		this.path = res.path;
+		this.statusCode = res.statusCode;
+		this.success = res.success;
+		this.timestamp = res.timestamp || Date.now();
+		this.data = res.data;
+		this.error = res.error;
 	}
-
-	page: number;
-	amount: number;
-}
-
-export class CursorPaginatedResponseEntity<T> extends ResponseEntity<T[]> {
-	constructor(
-		path: string,
-		statusCode: number,
-		paginatedData: CursorPaginatedData<T>,
-		error?: string,
-	) {
-		super(path, statusCode, paginatedData.data, error);
-		this.cursor = paginatedData.cursor;
-		this.amount = paginatedData.data.length;
-	}
-
-	cursor: string;
-	amount: number;
 }

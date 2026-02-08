@@ -1,33 +1,29 @@
-import { IsArray, IsInt, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class OffsetPaginatedData<T> {
-	constructor(page: number, limit: number, data: T[]) {
-		this.page = page;
-		this.data = data;
-		this.limit = limit;
-	}
+	@ApiProperty({
+		description: 'Current page number (1-based)',
+		example: 1,
+	})
+	page!: number;
 
-	@IsInt()
-	page = 1;
-
-	@IsInt()
-	limit = 10;
-
-	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
-	@IsArray()
-	data: T[] = [];
+	@ApiProperty({
+		description: 'List of items in the current page',
+		isArray: true,
+	})
+	items!: T[];
 }
 
 export class CursorPaginatedData<T> {
-	constructor(cursor: string, data: T[]) {
-		this.cursor = cursor;
-		this.data = data;
-	}
+	@ApiProperty({
+		description: 'Cursor pointing to the next page',
+		example: 'eyJpZCI6IjEyMyJ9',
+	})
+	cursor!: string;
 
-	@IsString()
-	cursor: string;
-
-	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
-	@IsArray()
-	data: T[] = [];
+	@ApiProperty({
+		description: 'List of items for this cursor',
+		isArray: true,
+	})
+	items!: T[];
 }

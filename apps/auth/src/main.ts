@@ -2,7 +2,6 @@ import { AuthModule } from './auth.module';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { auth } from '@server/generated';
 import { AppLoggerService } from '@server/logger';
 import { join } from 'path';
 

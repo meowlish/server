@@ -24,11 +24,13 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
 	}
 
 	private resolve(exception: unknown, req: Request): ResponseEntity<null> {
-		return new ResponseEntity<null>(
-			req.url,
-			HttpStatus.INTERNAL_SERVER_ERROR,
-			null,
-			'Internal server error',
-		);
+		return new ResponseEntity<null>({
+			path: req.url,
+			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+			data: null,
+			error: 'Internal server error',
+			timestamp: Date.now(),
+			success: false,
+		});
 	}
 }

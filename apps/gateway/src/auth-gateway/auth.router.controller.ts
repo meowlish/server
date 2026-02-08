@@ -7,7 +7,6 @@ import { Body, Controller, Inject, OnModuleInit, Post, Req, UseGuards } from '@n
 import { type ClientGrpc } from '@nestjs/microservices';
 import { auth } from '@server/generated';
 import { IsPublic } from '@server/utils';
-import { ResponseTransform } from '@server/utils';
 import { lastValueFrom } from 'rxjs';
 
 @Controller()
@@ -22,7 +21,6 @@ export class AuthGatewayController implements OnModuleInit {
 
 	@Post('register')
 	@IsPublic()
-	@ResponseTransform()
 	register(@Body() body: RegisterMailDto) {
 		const res = this.authService.registerMail(body);
 		return res;
@@ -30,7 +28,6 @@ export class AuthGatewayController implements OnModuleInit {
 
 	@Post('login')
 	@IsPublic()
-	@ResponseTransform()
 	login(@Body() body: LoginMailDto) {
 		const res = this.authService.loginMail(body);
 		return res;
@@ -45,7 +42,6 @@ export class AuthGatewayController implements OnModuleInit {
 	}
 
 	@Post('logout-all')
-	@ResponseTransform()
 	async logoutAll(@Req() req: AuthenticatedRequest) {
 		await lastValueFrom(this.authService.logOutAll({ identityId: req.user.sub }));
 		return null;

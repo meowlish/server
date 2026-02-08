@@ -1,5 +1,4 @@
 import { ResponseEntity } from '../data/response-entity.type';
-import { ResponseTransform } from '../decorators/response-transform.decorator';
 import { BadRequestException, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import type { ArgumentsHost } from '@nestjs/common';
 import { Catch } from '@nestjs/common';
@@ -13,7 +12,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		private readonly logger: AppLoggerService,
 	) {}
 
-	@ResponseTransform()
 	catch(exception: HttpException, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
 		const res = ctx.getResponse<Response>();
@@ -47,11 +45,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		// 	args: { message: message },
 		// });
 
-		return new ResponseEntity<null>(
-			req.url,
-			exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
-			null,
-			message,
-		);
+		return new ResponseEntity<null>({
+			path: req.url,
+			statusCode: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
+			data: null,
+			error: message || 'Internal server error',
+			timestamp: Date.now(),
+			success: false,
+		});
 	}
 }

@@ -2,7 +2,7 @@ import { status } from '@grpc/grpc-js';
 import { Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { AppLoggerService } from '@server/logger';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Catch(RpcException)
 export class gRPC2HttpExceptionFilter implements ExceptionFilter {
@@ -33,13 +33,6 @@ export class gRPC2HttpExceptionFilter implements ExceptionFilter {
 			`[${this.constructor.name}] Exception Caught ${exception.message}`,
 			'',
 			exception.stack,
-		);
-
-		console.error(
-			new HttpException(
-				(err as { details?: string })?.details || '',
-				gRPC2HttpExceptionFilter.gRPCStatusCode[(err as { code?: number })?.code || status.UNKNOWN],
-			),
 		);
 
 		throw new HttpException(

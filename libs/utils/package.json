@@ -17,6 +17,7 @@
 		"rxjs": "^7.8.1",
 		"zod": "^3.25.67",
 		"tslib": "^2.3.0",
-		"@types/express": "^5.0.0"
+		"@types/express": "^5.0.0",
+		"@nestjs/swagger": "^11.2.6"
 	}
 }
