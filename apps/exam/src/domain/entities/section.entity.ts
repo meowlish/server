@@ -170,8 +170,4 @@ export class Section implements IEntity<Section> {
 			child.action = Action.UPDATE;
 		}
 	}
-
-	public equals(entity: Section): boolean {
-		return this.id === entity.id;
-	}
 }

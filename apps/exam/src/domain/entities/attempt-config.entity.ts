@@ -31,8 +31,4 @@ export class AttemptConfig implements IEntity<AttemptConfig> {
 		this.durationLimit = constructorOptions.durationLimit;
 		this.isStrict = constructorOptions.isStrict ?? false;
 	}
-
-	public equals(entity: AttemptConfig): boolean {
-		return this.id === entity.id;
-	}
 }

@@ -48,8 +48,4 @@ export class Identity implements IEntity<Identity> {
 		}
 		this.deletedAt = new Date();
 	}
-
-	public equals(entity: Identity): boolean {
-		return this.id === entity?.id;
-	}
 }

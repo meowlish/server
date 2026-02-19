@@ -3,8 +3,12 @@ import { IEntity, IValueObject } from '@server/utils';
 export class FinalAttemptAnswer implements IValueObject<FinalAttemptAnswer> {
 	public constructor(public readonly id: string) {}
 
-	equals(vo: FinalAttemptAnswer): boolean {
+	public equals(vo: FinalAttemptAnswer): boolean {
 		return this.id === vo.id;
+	}
+
+	public hashCode(): number {
+		return 1;
 	}
 }
 
@@ -13,6 +17,10 @@ export class AttemptQuestion implements IValueObject<AttemptQuestion> {
 
 	equals(vo: AttemptQuestion): boolean {
 		return this.id === vo.id;
+	}
+
+	public hashCode(): number {
+		return 1;
 	}
 }
 
@@ -42,9 +50,5 @@ export class AttemptEvaluator implements IEntity<AttemptEvaluator> {
 
 	public evaluateScore(): void {
 		return;
-	}
-
-	equals(entity: AttemptEvaluator): boolean {
-		return this.id === entity.id;
 	}
 }

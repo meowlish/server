@@ -183,8 +183,4 @@ export class Exam implements IEntity<Exam> {
 			sectionIds: options.sectionIds,
 		});
 	}
-
-	public equals(entity: Exam): boolean {
-		return this.id === entity.id;
-	}
 }

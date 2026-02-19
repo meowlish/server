@@ -1,6 +1,7 @@
 import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Action, IEntity, IValueObject } from '@server/utils';
+import { hash } from 'immutable';
 
 export class AttemptAnswer implements IValueObject<AttemptAnswer> {
 	public questionId: string;
@@ -25,6 +26,10 @@ export class AttemptAnswer implements IValueObject<AttemptAnswer> {
 
 	public equals(vo: AttemptAnswer): boolean {
 		return this.questionId === vo.questionId;
+	}
+
+	public hashCode(): number {
+		return hash(this.questionId);
 	}
 }
 
@@ -138,9 +143,5 @@ export class Attempt extends AggregateRoot implements IEntity<Attempt> {
 			}
 		}
 		this.endedAt = timeStamp;
-	}
-
-	public equals(entity: Attempt): boolean {
-		return this.id === entity.id;
 	}
 }
