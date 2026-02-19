@@ -1,6 +1,7 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
+import { AttemptConfig } from './attempt-config.entity';
 import { Section } from './section.entity';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { IEntity } from '@server/utils';
 import { ORDER_RANGE_MEDIUM } from '@server/utils';
 import { Action } from '@server/utils';
@@ -17,11 +18,11 @@ export class ExamSectionRef {
 }
 
 export class Exam implements IEntity<Exam> {
-	static newId() {
+	public static newId() {
 		return crypto.randomUUID();
 	}
 
-	static orderRange: number = ORDER_RANGE_MEDIUM;
+	public static readonly orderRange: number = ORDER_RANGE_MEDIUM;
 	public title: string;
 	public duration: number; // in seconds
 	public status: ExamStatus;
@@ -156,6 +157,31 @@ export class Exam implements IEntity<Exam> {
 			section.order = x++ * Exam.orderRange;
 			section.action = Action.UPDATE;
 		}
+	}
+
+	public createAttempt(options: {
+		uid: string;
+		startedAt: Date;
+		isStrict?: boolean;
+		duration?: number;
+		sectionIds?: string[];
+	}): AttemptConfig {
+		if (options.sectionIds) {
+			options.sectionIds = [...new Set(options.sectionIds)];
+			const sectionIdSet = new Set(this.sections.map(s => s.id));
+			const allExist = options.sectionIds.every(id => sectionIdSet.has(id));
+			if (!allExist) throw new ForbiddenException('Section ids must belong to the correct exam id');
+			// if select everything, don't store redundancy
+			if (options.sectionIds.length === this.sections.length) options.sectionIds = undefined;
+		}
+		return new AttemptConfig({
+			attemptedBy: options.uid,
+			isStrict: options.isStrict,
+			durationLimit: options.isStrict ? this.duration : (options.duration ?? this.duration),
+			examId: this.id,
+			startedAt: options.startedAt,
+			sectionIds: options.sectionIds,
+		});
 	}
 
 	public equals(entity: Exam): boolean {

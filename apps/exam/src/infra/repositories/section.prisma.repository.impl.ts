@@ -200,6 +200,6 @@ type ExtendedSection = Prisma.SectionGetPayload<{
 export type RepoSection = Omit<PrismaSection, 'id' | 'order'>;
 
 const sectionPrismaIncludeObject = {
-	childSections: { select: { id: true, order: true } },
-	questions: { select: { id: true, order: true } },
+	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
+	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 } satisfies Prisma.SectionInclude;

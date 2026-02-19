@@ -1,6 +1,6 @@
 model Exam {
   id          String   @id @default(uuid())
-  createdBy   String
+  createdBy   String   @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   title       String
@@ -9,7 +9,8 @@ model Exam {
   // duration in seconds
   duration    Int
 
-  sections Section[]
+  sections     Section[]
+  examAttempts ExamAttempt[]
 
   @@index([status])
   @@map("exams")
@@ -22,15 +23,16 @@ model Section {
   name        String?
   directive   String  @default("")
   order       Int
-  contentType String  @default("SECTION")
+  contentType String  @default("SECTION") @map("content_type")
 
   exam          Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
-  parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id])
+  parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id], onDelete: Cascade)
   questions     Question[]
 
-  ancestors     SectionClosure[] @relation("Ancestors")
-  descendants   SectionClosure[] @relation("Descendants")
-  childSections Section[]        @relation("SectionParent")
+  ancestors       SectionClosure[] @relation("Ancestors")
+  descendants     SectionClosure[] @relation("Descendants")
+  childSections   Section[]        @relation("SectionParent")
+  attemptSections AttemptSection[]
 
   @@index([examId])
   @@map("sections")
@@ -59,8 +61,9 @@ model Question {
   explanation String @default("")
   order       Int
 
-  answers Answer[]
-  section Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  answers        Answer[]
+  section        Section         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  attemptAnswers AttemptAnswer[]
 
   @@index([sectionId])
   @@map("questions")

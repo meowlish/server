@@ -1,5 +1,3 @@
-export class Event {
-	constructor() {
-		return;
-	}
+export class Event<TPayload = void> {
+	constructor(public readonly payload: TPayload) {}
 }

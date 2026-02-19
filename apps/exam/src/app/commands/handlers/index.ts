@@ -5,7 +5,7 @@ import { DeleteExamHandler } from './staff/delete-exam.handler';
 import { DeleteQuestionHandler } from './staff/delete-question.handler';
 import { DeleteSectionHandler } from './staff/delete-section.handler';
 
-export const ExamHandlers = [
+export const ExamManagementHandlers = [
 	CreateExamHandler,
 	CreateQuestionHandler,
 	CreateSectionHandler,
@@ -13,3 +13,5 @@ export const ExamHandlers = [
 	DeleteQuestionHandler,
 	DeleteSectionHandler,
 ];
+
+export const ExamPracticeHandlers = [];

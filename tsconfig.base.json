@@ -10,6 +10,7 @@
 		"target": "es2023",
 		"module": "nodenext",
 		"lib": ["ES2023"],
+		"strict": true,
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
 		"baseUrl": "./",

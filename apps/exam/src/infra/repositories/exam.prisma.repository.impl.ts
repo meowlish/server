@@ -103,5 +103,5 @@ type ExtendedExam = Prisma.ExamGetPayload<{
 type RepoExam = Omit<PrismaExam, 'id' | 'updatedAt' | 'createdAt'>;
 
 const examPrismaIncludeObj = {
-	sections: { select: { id: true, order: true } },
+	sections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 } satisfies Prisma.ExamInclude;

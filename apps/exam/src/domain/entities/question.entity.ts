@@ -23,7 +23,7 @@ export class Answer implements IValueObject<Answer> {
 }
 
 export class Question implements IEntity<Question> {
-	static newId() {
+	public static newId() {
 		return crypto.randomUUID();
 	}
 

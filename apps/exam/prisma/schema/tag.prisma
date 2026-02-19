@@ -1,0 +1,9 @@
+model Tag {
+  id   String @id @default(uuid())
+  name String
+  lft  Int
+  rgt  Int
+
+  @@index([lft, rgt])
+  @@index([name])
+}
