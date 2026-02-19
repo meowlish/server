@@ -10,5 +10,5 @@ export class ValidateAccessDto implements auth.ValidateAccessDto {
 
 	@Expose()
 	@IsNumber()
-	iat: number;
+	iat!: number;
 }

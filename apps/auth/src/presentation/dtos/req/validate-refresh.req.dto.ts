@@ -10,5 +10,5 @@ export class ValidateRefreshDto implements auth.ValidateRefreshDto {
 
 	@Expose()
 	@IsNumber()
-	iat: number;
+	iat!: number;
 }
