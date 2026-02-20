@@ -3,7 +3,6 @@ import { ConflictException } from '@nestjs/common';
 import { IEntity } from '@server/utils';
 import { IValueObject } from '@server/utils';
 import { Action } from '@server/utils';
-import { hash } from 'immutable';
 
 export class Answer implements IValueObject<Answer> {
 	public action: Action = Action.READ;
@@ -20,10 +19,6 @@ export class Answer implements IValueObject<Answer> {
 			this.content === entity.content ||
 			(this.content === entity.content && this.isCorrect === entity.isCorrect)
 		);
-	}
-
-	public hashCode(): number {
-		return hash(this.content);
 	}
 }
 
