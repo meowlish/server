@@ -26,24 +26,25 @@ import { RefreshDto } from '../dtos/req/refresh-dto.req.dto';
 import { RegisterMailDto } from '../dtos/req/register-mail.req.dto';
 import { ValidateAccessDto } from '../dtos/req/validate-access.req.dto';
 import { ValidateRefreshDto } from '../dtos/req/validate-refresh.req.dto';
-import { Controller } from '@nestjs/common';
+import { Controller, UsePipes } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Payload } from '@nestjs/microservices';
 import { auth } from '@server/generated';
-import { Claims } from '@server/utils';
+import { Claims, GlobalValidationPipe } from '@server/utils';
 
 @auth.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements auth.AuthServiceController {
 	constructor(private commandBus: CommandBus) {}
 
-	async loginMail(request: LoginMailDto): Promise<Tokens> {
+	async loginMail(@Payload() request: LoginMailDto): Promise<Tokens> {
 		const res = await this.commandBus.execute(
 			new MailLoginCommand(new MailLoginCommandPayload(request.mail, request.password)),
 		);
 		return res;
 	}
 
-	async registerMail(request: RegisterMailDto): Promise<Tokens> {
+	async registerMail(@Payload() request: RegisterMailDto): Promise<Tokens> {
 		const res = await this.commandBus.execute(
 			new MailRegisterCommand(
 				new MailRegisterCommandPayload(request.mail, request.username, request.password),
@@ -52,14 +53,14 @@ export class AuthController implements auth.AuthServiceController {
 		return res;
 	}
 
-	async refresh(request: RefreshDto): Promise<Tokens> {
+	async refresh(@Payload() request: RefreshDto): Promise<Tokens> {
 		const res = await this.commandBus.execute(
 			new RefreshCommand(new RefreshCommandPayload(request.identityId)),
 		);
 		return res;
 	}
 
-	async validateRefresh(request: ValidateRefreshDto): Promise<Claims> {
+	async validateRefresh(@Payload() request: ValidateRefreshDto): Promise<Claims> {
 		const res = await this.commandBus.execute(
 			new ValidateRefreshCommand(
 				new ValidateRefreshCommandPayload(request.identityId, request.iat),
@@ -68,13 +69,13 @@ export class AuthController implements auth.AuthServiceController {
 		return res;
 	}
 
-	async validateAccess(request: ValidateAccessDto): Promise<void> {
+	async validateAccess(@Payload() request: ValidateAccessDto): Promise<void> {
 		await this.commandBus.execute(
 			new ValidateAccessCommand(new ValidateAccessCommandPayload(request.identityId, request.iat)),
 		);
 	}
 
-	async logOutAll(request: LogOutAllDto): Promise<void> {
+	async logOutAll(@Payload() request: LogOutAllDto): Promise<void> {
 		await this.commandBus.execute(
 			new LogoutAllCommand(new LogoutAllCommandPayload(request.identityId)),
 		);

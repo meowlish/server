@@ -60,6 +60,7 @@ import { UpdateQuestionDto } from '../dtos/req/management/update-question.req.dt
 import { UpdateSectionDto } from '../dtos/req/management/update-section.req.dto';
 import { Controller } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 
 @exam.ExamManagementServiceControllerMethods()
@@ -67,63 +68,63 @@ import { exam } from '@server/generated';
 export class ExamController implements exam.ExamManagementServiceController {
 	constructor(private commandBus: CommandBus) {}
 
-	async createExam(request: CreateExamDto): Promise<void> {
+	async createExam(@Payload() request: CreateExamDto): Promise<void> {
 		await this.commandBus.execute(new CreateExamCommand(new CreateExamCommandPayload(request)));
 	}
 
-	async createSection(request: CreateSectionDto): Promise<void> {
+	async createSection(@Payload() request: CreateSectionDto): Promise<void> {
 		await this.commandBus.execute(
 			new CreateSectionCommand(new CreateSectionCommandPayload(request)),
 		);
 	}
 
-	async createQuestion(request: CreateQuestionDto): Promise<void> {
+	async createQuestion(@Payload() request: CreateQuestionDto): Promise<void> {
 		await this.commandBus.execute(
 			new CreateQuestionCommand(new CreateQuestionCommandPayload(request.sectionId, request.index)),
 		);
 	}
 
-	async updateExam(request: UpdateExamDto): Promise<void> {
+	async updateExam(@Payload() request: UpdateExamDto): Promise<void> {
 		await this.commandBus.execute(new UpdateExamCommand(new UpdateExamCommandPayload(request)));
 	}
 
-	async updateSection(request: UpdateSectionDto): Promise<void> {
+	async updateSection(@Payload() request: UpdateSectionDto): Promise<void> {
 		await this.commandBus.execute(
 			new UpdateSectionCommand(new UpdateSectionCommandPayload(request)),
 		);
 	}
 
-	async updateQuestion(request: UpdateQuestionDto): Promise<void> {
+	async updateQuestion(@Payload() request: UpdateQuestionDto): Promise<void> {
 		await this.commandBus.execute(
 			new UpdateQuestionCommand(new UpdateQuestionCommandPayload(request)),
 		);
 	}
 
-	async deleteExam(request: DeleteExamDto): Promise<void> {
+	async deleteExam(@Payload() request: DeleteExamDto): Promise<void> {
 		await this.commandBus.execute(new DeleteExamCommand(new DeleteExamCommandPayload(request.id)));
 	}
 
-	async deleteSection(request: DeleteSectionDto): Promise<void> {
+	async deleteSection(@Payload() request: DeleteSectionDto): Promise<void> {
 		await this.commandBus.execute(
 			new DeleteSectionCommand(new DeleteSectionCommandPayload(request.id)),
 		);
 	}
 
-	async deleteQuestion(request: DeleteQuestionDto): Promise<void> {
+	async deleteQuestion(@Payload() request: DeleteQuestionDto): Promise<void> {
 		await this.commandBus.execute(
 			new DeleteQuestionCommand(new DeleteQuestionCommandPayload(request.id)),
 		);
 	}
 
-	async moveSection(request: MoveSectionDto): Promise<void> {
+	async moveSection(@Payload() request: MoveSectionDto): Promise<void> {
 		await this.commandBus.execute(new MoveSectionCommand(new MoveSectionCommandPayload(request)));
 	}
 
-	async moveQuestion(request: MoveQuestionDto): Promise<void> {
+	async moveQuestion(@Payload() request: MoveQuestionDto): Promise<void> {
 		await this.commandBus.execute(new MoveQuestionCommand(new MoveQuestionCommandPayload(request)));
 	}
 
-	async reviewExam(request: ReviewExamDto): Promise<void> {
+	async reviewExam(@Payload() request: ReviewExamDto): Promise<void> {
 		await this.commandBus.execute(
 			new ReviewExamCommand(new ReviewExamCommandPayload(request.id, request.status)),
 		);
