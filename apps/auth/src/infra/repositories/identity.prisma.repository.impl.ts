@@ -135,17 +135,27 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	async save(identity: Identity): Promise<void> {
 		const data = this.mapper.toIdentityOrm(identity);
 		await this.txHost.withTransaction(async () => {
+			// update or insert
+			try {
+				await this.txHost.tx.identity.upsert({
+					where: { id: identity.id },
+					create: data,
+					update: data,
+				});
+			} catch (e) {
+				if (e instanceof Prisma.PrismaClientKnownRequestError) {
+					if (e.code === 'P2002') {
+						const targetFields = ((e.meta?.target as string[]) || []).join(', ');
+						throw new ConflictException(`Duplicate field(s): ${targetFields}`);
+					}
+				}
+				throw e;
+			}
+
 			// handle events array
 			for (const event of identity.getUncommittedEvents()) {
 				await this.handle(event);
 			}
-
-			// update or insert
-			await this.txHost.tx.identity.upsert({
-				where: { id: identity.id },
-				create: data,
-				update: data,
-			});
 		});
 	}
 
@@ -187,7 +197,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {
 				if (e.code === 'P2002') {
 					const targetFields = ((e.meta?.target as string[]) || []).join(', ');
-					throw new ConflictException(`Duplicate fields ${targetFields}`);
+					throw new ConflictException(`Duplicate field(s): ${targetFields}`);
 				}
 			}
 			throw e;
@@ -210,7 +220,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {
 				if (e.code === 'P2002') {
 					const targetFields = ((e.meta?.target as string[]) || []).join(', ');
-					throw new ConflictException(`Duplicate fields ${targetFields}`);
+					throw new ConflictException(`Duplicate field(s): ${targetFields}`);
 				}
 			}
 			throw e;
