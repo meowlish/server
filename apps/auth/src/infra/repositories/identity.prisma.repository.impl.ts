@@ -11,7 +11,7 @@ import { IIdentityRepository } from '../../domain/repositories/identity.reposito
 import { LoginType } from '../../enums/login-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import {
 	Prisma,
 	PrismaClient,
@@ -179,9 +179,19 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	}
 
 	private async onCredAdded(event: CredAddedEvent): Promise<void> {
-		await this.txHost.tx.credential.create({
-			data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
-		});
+		try {
+			await this.txHost.tx.credential.create({
+				data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+			});
+		} catch (e) {
+			if (e instanceof Prisma.PrismaClientKnownRequestError) {
+				if (e.code === 'P2002') {
+					const targetFields = ((e.meta?.target as string[]) || []).join(', ');
+					throw new ConflictException(`Duplicate fields ${targetFields}`);
+				}
+			}
+			throw e;
+		}
 	}
 
 	private async onCredDeleted(event: CredDeletedEvent): Promise<void> {
@@ -191,10 +201,20 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	}
 
 	private async onCredUpdated(event: CredUpdatedEvent): Promise<void> {
-		await this.txHost.tx.credential.update({
-			where: { id: event.payload.cred.id },
-			data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
-		});
+		try {
+			await this.txHost.tx.credential.update({
+				where: { id: event.payload.cred.id },
+				data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+			});
+		} catch (e) {
+			if (e instanceof Prisma.PrismaClientKnownRequestError) {
+				if (e.code === 'P2002') {
+					const targetFields = ((e.meta?.target as string[]) || []).join(', ');
+					throw new ConflictException(`Duplicate fields ${targetFields}`);
+				}
+			}
+			throw e;
+		}
 	}
 }
 
