@@ -1,8 +1,4 @@
 import {
-	type ICredentialRepository,
-	ICredentialRepositoryToken,
-} from '../../../domain/repositories/credential.repository';
-import {
 	type IIdentityRepository,
 	IIdentityRepositoryToken,
 } from '../../../domain/repositories/identity.repository';
@@ -16,8 +12,7 @@ import { Claims } from '@server/utils';
 export class ValidateRefreshCommandHandler implements ICommandHandler<ValidateRefreshCommand> {
 	constructor(
 		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
-		@Inject(ICredentialRepositoryToken)
-		private readonly credentialRepository: ICredentialRepository,
+
 		private readonly tokenService: TokenService,
 	) {}
 

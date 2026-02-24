@@ -4,12 +4,7 @@ import { IEnvVars, config } from './configs/config';
 import JwtRefreshConfig from './configs/jwt-refresh.config';
 import JwtAccessConfig from './configs/jwt.config';
 import { RedisConfig } from './configs/redis.config';
-import { ICredentialRepositoryToken } from './domain/repositories/credential.repository';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
-import {
-	CredentialPrismaMapper,
-	CredentialPrismaRepository,
-} from './infra/repositories/credential.prisma.repository.impl';
 import {
 	IdentityPrismaMapper,
 	IdentityPrismaRepository,
@@ -80,11 +75,6 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				const config = JwtRefreshConfig(configService);
 				return new JwtService(config);
 			},
-		},
-		CredentialPrismaMapper,
-		{
-			provide: ICredentialRepositoryToken,
-			useClass: CredentialPrismaRepository,
 		},
 		IdentityPrismaMapper,
 		{

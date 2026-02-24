@@ -1,10 +1,25 @@
+import { Credential } from '../../domain/entities/credential.entity';
 import { Identity } from '../../domain/entities/identity.entity';
+import {
+	CredAddedEvent,
+	CredDeletedEvent,
+	CredUpdatedEvent,
+	RoleAddedEvent,
+	RoleDeletedEvent,
+} from '../../domain/events/identity-update.events';
 import { IIdentityRepository } from '../../domain/repositories/identity.repository';
+import { LoginType } from '../../enums/login-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient, Identity as PrismaIdentity } from '@prisma-client/auth';
-import { Action, Permission, Role, parseEnum } from '@server/utils';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+	Prisma,
+	PrismaClient,
+	Credential as PrismaCredential,
+	Identity as PrismaIdentity,
+} from '@prisma-client/auth';
+import { Permission, Role, parseEnum } from '@server/utils';
+import { Event } from '@server/utils';
 
 @Injectable()
 export class IdentityPrismaMapper {
@@ -16,10 +31,25 @@ export class IdentityPrismaMapper {
 		return parseEnum(Role, from);
 	}
 
-	toOrm(from: Identity): RepoIdentity {
+	mapLoginType(from: string): LoginType {
+		return parseEnum(LoginType, from);
+	}
+
+	toIdentityOrm(from: Identity): RepoIdentity {
 		return {
+			id: from.id,
 			username: from.username,
 			deletedAt: from.deletedAt,
+		};
+	}
+
+	toCredentialOrm(from: Credential, identityId: string): PrismaCredential {
+		return {
+			id: from.id,
+			identifier: from.identifier,
+			loginType: this.mapLoginType(from.loginType),
+			secretHash: from.secretHash,
+			identityId,
 		};
 	}
 
@@ -27,6 +57,13 @@ export class IdentityPrismaMapper {
 		return new Identity({
 			...from,
 			roleIds: from.identityRoles.map(r => r.roleId),
+			credentials: from.credentials.map(
+				cred =>
+					new Credential({
+						...cred,
+						loginType: this.mapLoginType(cred.loginType),
+					}),
+			),
 		});
 	}
 }
@@ -44,6 +81,17 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			include: identityPrismaIncludeObj,
 		});
 		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
+	}
+
+	async findOneCredential(
+		identifier: string,
+		loginType: LoginType,
+	): Promise<{ identityId: string; secretHash: string | null } | null> {
+		const foundCredential = await this.txHost.tx.credential.findFirst({
+			where: { loginType, identifier },
+			select: { identityId: true, secretHash: true },
+		});
+		return foundCredential;
 	}
 
 	async findOneByUsername(username: string, deleted = false): Promise<Identity | null> {
@@ -84,51 +132,19 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		};
 	}
 
-	async create(identity: Identity): Promise<void> {
+	async save(identity: Identity): Promise<void> {
+		const data = this.mapper.toIdentityOrm(identity);
 		await this.txHost.withTransaction(async () => {
-			// create identity
-			try {
-				await this.txHost.tx.identity.create({
-					data: { username: identity.username },
-				});
-			} catch (e) {
-				if (e instanceof Prisma.PrismaClientKnownRequestError) {
-					if (e.code === 'P2002') {
-						const targetFields = ((e.meta?.target as string[]) || []).join(', ');
-						throw new ConflictException(`Duplicate fields ${targetFields}`);
-					}
-				}
+			// handle events array
+			for (const event of identity.getUncommittedEvents()) {
+				await this.handle(event);
 			}
 
-			// create identity-role relationships
-			await this.txHost.tx.identityRole.createMany({
-				data: [...identity.roleIds.keys()].map(id => ({ identityId: identity.id, roleId: id })),
-			});
-		});
-	}
-
-	async update(identity: Identity): Promise<void> {
-		const data = this.mapper.toOrm(identity);
-		await this.txHost.withTransaction(async () => {
-			// add identity-role relationships
-			await this.txHost.tx.identityRole.createMany({
-				data: [...identity.roleIds.entries()]
-					.filter(([, v]) => v === Action.CREATE)
-					.map(([k]) => {
-						return { identityId: identity.id, roleId: k };
-					}),
-			});
-			// delete identity-role relationships
-			const toBeDeletedIdentityRoles = [...identity.roleIds.entries()]
-				.filter(([, v]) => v === Action.DELETE)
-				.map(([k]) => k);
-			await this.txHost.tx.identityRole.deleteMany({
-				where: { identityId: identity.id, roleId: { in: toBeDeletedIdentityRoles } },
-			});
-			// update
-			await this.txHost.tx.identity.update({
+			// update or insert
+			await this.txHost.tx.identity.upsert({
 				where: { id: identity.id },
-				data,
+				create: data,
+				update: data,
 			});
 		});
 	}
@@ -139,6 +155,47 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			data: { deletedAt: new Date() },
 		});
 	}
+
+	private async handle(event: Event<any>): Promise<void> {
+		if (event instanceof RoleAddedEvent) return this.onRoleAdded(event);
+		if (event instanceof RoleDeletedEvent) return this.onRoleDeleted(event);
+		if (event instanceof CredAddedEvent) return this.onCredAdded(event);
+		if (event instanceof CredDeletedEvent) return this.onCredDeleted(event);
+		if (event instanceof CredUpdatedEvent) return this.onCredUpdated(event);
+	}
+
+	private async onRoleAdded(event: RoleAddedEvent): Promise<void> {
+		await this.txHost.tx.identityRole.create({
+			data: { identityId: event.payload.identityId, roleId: event.payload.roleId },
+		});
+	}
+
+	private async onRoleDeleted(event: RoleDeletedEvent): Promise<void> {
+		await this.txHost.tx.identityRole.delete({
+			where: {
+				identityId_roleId: { identityId: event.payload.identityId, roleId: event.payload.roleId },
+			},
+		});
+	}
+
+	private async onCredAdded(event: CredAddedEvent): Promise<void> {
+		await this.txHost.tx.credential.create({
+			data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+		});
+	}
+
+	private async onCredDeleted(event: CredDeletedEvent): Promise<void> {
+		await this.txHost.tx.credential.delete({
+			where: { id: event.payload.credId },
+		});
+	}
+
+	private async onCredUpdated(event: CredUpdatedEvent): Promise<void> {
+		await this.txHost.tx.credential.update({
+			where: { id: event.payload.cred.id },
+			data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+		});
+	}
 }
 
 // extended identity type with JOINS
@@ -147,13 +204,15 @@ type ExtendedIdentity = Prisma.IdentityGetPayload<{
 		identityRoles: {
 			select: { roleId: true };
 		};
+		credentials: true;
 	};
 }>;
 
-type RepoIdentity = Omit<PrismaIdentity, 'id' | 'updatedAt' | 'createdAt'>;
+type RepoIdentity = Omit<PrismaIdentity, 'updatedAt' | 'createdAt'>;
 
 const identityPrismaIncludeObj = {
 	identityRoles: {
 		select: { roleId: true },
 	},
+	credentials: true,
 } satisfies Prisma.IdentityInclude;

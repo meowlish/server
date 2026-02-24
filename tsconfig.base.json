@@ -9,7 +9,7 @@
 		"importHelpers": true,
 		"target": "es2023",
 		"module": "nodenext",
-		"lib": ["ES2023"],
+		"lib": ["ES2024"],
 		"strict": true,
 		"skipLibCheck": true,
 		"skipDefaultLibCheck": true,
