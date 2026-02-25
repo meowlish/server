@@ -1,31 +1,48 @@
-import { Section, SectionChildrenRef } from '../../domain/entities/section.entity';
+import { ExamId } from '../../domain/entities/exam.entity';
+import { Section, SectionChild } from '../../domain/entities/section.entity';
+import {
+	QuestionCreatedEvent,
+	QuestionDeletedEvent,
+	QuestionMovedEvent,
+	SectionCreatedEvent,
+	SectionDeletedEvent,
+	SectionMovedEvent,
+} from '../../domain/events/exam-management.event';
 import { ISectionRepository } from '../../domain/repositories/section.repository';
+import { ExamStatus } from '../../enums/exam-status.enum';
 import { SectionType } from '../../enums/section-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient, Section as PrismaSection } from '@prisma-client/exam';
-import { Action } from '@server/utils';
 import { parseEnum } from '@server/utils';
+import { Event } from '@server/utils';
 
 @Injectable()
 export class SectionPrismaMapper {
+	mapExamStatus(from: string): ExamStatus {
+		return parseEnum(ExamStatus, from);
+	}
+
 	mapSectionType(from: string): SectionType {
 		return parseEnum(SectionType, from);
 	}
 
 	toDomain(from: ExtendedSection): Section {
-		let children: SectionChildrenRef[];
+		let children: SectionChild[];
 		const contentType: SectionType = this.mapSectionType(from.contentType);
 
+		// map children
 		if (contentType === SectionType.QUESTION) {
-			children = from.questions.map(q => new SectionChildrenRef(q.id, q.order));
+			children = from.questions.map(q => new SectionChild(q.id, q.order));
 		} else if (contentType === SectionType.SECTION) {
-			children = from.childSections.map(s => new SectionChildrenRef(s.id, s.order));
+			children = from.childSections.map(s => new SectionChild(s.id, s.order));
 		} else children = [];
 
 		return new Section({
 			...from,
+			examId: new ExamId(from.exam.id, from.exam.version),
+			examStatus: this.mapExamStatus(from.exam.status),
 			children,
 			contentType,
 		});
@@ -33,9 +50,10 @@ export class SectionPrismaMapper {
 
 	toOrm(from: Section): RepoSection {
 		return {
+			id: from.id,
 			contentType: from.contentType,
 			directive: from.directive,
-			examId: from.examId,
+			examId: from.examId.id,
 			name: from.name,
 			parentId: from.parentId,
 		};
@@ -55,15 +73,6 @@ export class SectionPrismaRepository implements ISectionRepository {
 			include: sectionPrismaIncludeObject,
 		});
 		return foundSection ? this.mapper.toDomain(foundSection) : null;
-	}
-
-	async getExamIdOfSection(id: string): Promise<string> {
-		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id },
-			select: { examId: true },
-		});
-		if (!foundSection) throw new NotFoundException('Section not found.');
-		return foundSection.examId;
 	}
 
 	async getParentSectionOfQuestion(id: string): Promise<Section> {
@@ -122,70 +131,76 @@ export class SectionPrismaRepository implements ISectionRepository {
 		return foundSection ? this.mapper.toDomain(foundSection) : null;
 	}
 
-	async update(section: Section): Promise<void> {
+	async save(section: Section): Promise<void> {
 		const data = this.mapper.toOrm(section);
-		const childrenToCreate: SectionChildrenRef[] = [];
-		const childrenToUpdate: SectionChildrenRef[] = [];
-		const idsToDelete: string[] = [];
-		section.children.forEach(c => {
-			switch (c.action) {
-				case Action.CREATE:
-					childrenToCreate.push(c);
-					break;
-
-				case Action.DELETE:
-					idsToDelete.push(c.id);
-					break;
-
-				case Action.UPDATE:
-					childrenToUpdate.push(c);
-					break;
-
-				default:
-					return;
-			}
-		});
 		await this.txHost.withTransaction(async () => {
-			// if contentType is question
-			if (section.contentType === SectionType.QUESTION) {
-				if (childrenToUpdate.length)
-					await this.txHost.tx.question.createMany({
-						data: childrenToCreate.map(q => ({
-							id: q.id,
-							order: q.order,
-							sectionId: section.id,
-						})),
-					});
-				if (idsToDelete.length)
-					await this.txHost.tx.question.deleteMany({ where: { id: { in: idsToDelete } } });
-				for (const q of childrenToUpdate) {
-					await this.txHost.tx.question.update({ where: { id: q.id }, data: q });
-				}
+			// update the main section with lock
+			await this.txHost.tx.section.update({
+				where: { id: section.id, exam: { id: section.examId.id, version: section.examId.version } },
+				data,
+			});
+
+			await this.txHost.tx.exam.update({
+				where: { id: section.examId.id, version: section.examId.version },
+				data: { version: { increment: 1 } },
+			});
+
+			// handle events
+			for (const event of section.getUncommittedEvents()) {
+				await this.handle(event);
 			}
-			// if contentType is section
-			else if (section.contentType === SectionType.SECTION) {
-				if (childrenToUpdate.length)
-					await this.txHost.tx.section.createMany({
-						data: childrenToCreate.map(s => ({
-							id: s.id,
-							order: s.order,
-							sectionId: section.id,
-							examId: section.examId,
-						})),
-					});
-				if (idsToDelete.length)
-					await this.txHost.tx.section.deleteMany({ where: { id: { in: idsToDelete } } });
-				for (const s of childrenToUpdate) {
-					await this.txHost.tx.section.update({ where: { id: s.id }, data: s });
-				}
-			}
-			// update the main section
-			await this.txHost.tx.section.update({ where: { id: section.id }, data });
 		});
 	}
 
-	async delete(id: string): Promise<void> {
-		await this.txHost.tx.section.delete({ where: { id } });
+	private async handle(event: Event<any>): Promise<void> {
+		if (event instanceof QuestionCreatedEvent) return await this.onQuestionCreated(event);
+		if (event instanceof QuestionMovedEvent) return await this.onQuestionMoved(event);
+		if (event instanceof QuestionDeletedEvent) return await this.onQuestionDeleted(event);
+		if (event instanceof SectionCreatedEvent) return await this.onSectionCreated(event);
+		if (event instanceof SectionMovedEvent) return await this.onSectionMoved(event);
+		if (event instanceof SectionDeletedEvent) return await this.onSectionDeleted(event);
+	}
+
+	private async onQuestionCreated(event: QuestionCreatedEvent): Promise<void> {
+		await this.txHost.tx.question.create({
+			data: { ...event.payload.data, sectionId: event.payload.sectionId },
+		});
+	}
+
+	private async onQuestionMoved(event: QuestionMovedEvent): Promise<void> {
+		await this.txHost.tx.question.update({
+			where: { id: event.payload.questionId },
+			data: event.payload.data,
+		});
+	}
+
+	private async onQuestionDeleted(event: QuestionDeletedEvent): Promise<void> {
+		await this.txHost.tx.question.delete({
+			where: { id: event.payload.questionId },
+		});
+	}
+
+	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
+		await this.txHost.tx.section.create({
+			data: {
+				...event.payload.data,
+				examId: event.payload.examId.id,
+				parentId: event.payload.parentId,
+			},
+		});
+	}
+
+	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
+		await this.txHost.tx.section.update({
+			where: { id: event.payload.sectionId },
+			data: event.payload.data,
+		});
+	}
+
+	private async onSectionDeleted(event: SectionDeletedEvent): Promise<void> {
+		await this.txHost.tx.section.delete({
+			where: { id: event.payload.sectionId },
+		});
 	}
 }
 
@@ -194,12 +209,14 @@ type ExtendedSection = Prisma.SectionGetPayload<{
 	include: {
 		childSections: { select: { id: true; order: true } };
 		questions: { select: { id: true; order: true } };
+		exam: { select: { id: true; version: true; status: true } };
 	};
 }>;
 
-export type RepoSection = Omit<PrismaSection, 'id' | 'order'>;
+export type RepoSection = Omit<PrismaSection, 'order'>;
 
 const sectionPrismaIncludeObject = {
 	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
+	exam: { select: { id: true, version: true, status: true } },
 } satisfies Prisma.SectionInclude;

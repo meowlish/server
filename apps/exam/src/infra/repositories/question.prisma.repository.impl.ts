@@ -1,12 +1,19 @@
+import { ExamId } from '../../domain/entities/exam.entity';
 import { Answer, Question } from '../../domain/entities/question.entity';
+import {
+	AnswerCreatedEvent,
+	AnswerDeletedEvent,
+	AnswerUpdatedEvent,
+} from '../../domain/events/exam-management.event';
 import { IQuestionRepository } from '../../domain/repositories/question.repository';
+import { ExamStatus } from '../../enums/exam-status.enum';
 import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaClient, Question as PrismaQuestion } from '@prisma-client/exam';
-import { Action } from '@server/utils';
 import { parseEnum } from '@server/utils';
+import { Event } from '@server/utils';
 
 @Injectable()
 export class QuestionPrismaMapper {
@@ -14,9 +21,15 @@ export class QuestionPrismaMapper {
 		return parseEnum(QuestionType, from);
 	}
 
+	mapExamStatus(from: string): ExamStatus {
+		return parseEnum(ExamStatus, from);
+	}
+
 	toDomain(from: ExtendedQuestion): Question {
 		return new Question({
 			id: from.id,
+			examId: new ExamId(from.section.exam.id, from.section.exam.version),
+			examStatus: this.mapExamStatus(from.section.exam.status),
 			sectionId: from.sectionId,
 			answers: from.answers.map(a => new Answer({ isCorrect: a.isCorrect, content: a.content })),
 			content: from.content,
@@ -28,6 +41,7 @@ export class QuestionPrismaMapper {
 
 	toOrm(from: Question): RepoQuestion {
 		return {
+			id: from.id,
 			content: from.content,
 			explanation: from.explanation,
 			points: from.points,
@@ -52,53 +66,66 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 		return foundQuestion ? this.mapper.toDomain(foundQuestion) : null;
 	}
 
-	async update(question: Question): Promise<void> {
+	async save(question: Question): Promise<void> {
 		const data = this.mapper.toOrm(question);
-		const answersToAdd: Answer[] = [];
-		const answersToDelete: Answer[] = [];
-		question.answers.forEach(a => {
-			switch (a.action) {
-				case Action.CREATE:
-					answersToAdd.push(a);
-					break;
 
-				case Action.DELETE:
-					answersToDelete.push(a);
-					break;
-
-				default:
-					return;
-			}
-		});
 		await this.txHost.withTransaction(async () => {
-			await this.txHost.tx.answer.createMany({
-				data: answersToAdd.map(a => ({
-					questionId: question.id,
-					content: a.content,
-					isCorrect: a.isCorrect,
-				})),
+			// optimistic lock
+			await this.txHost.tx.question.update({
+				where: {
+					id: question.id,
+					section: { exam: { id: question.examId.id, version: question.examId.version } },
+				},
+				data,
 			});
-			for (const a of answersToDelete) {
-				await this.txHost.tx.answer.delete({
-					where: { questionId_content: { questionId: question.id, content: a.content } },
-				});
+
+			await this.txHost.tx.exam.update({
+				where: { id: question.examId.id, version: question.examId.version },
+				data: { version: { increment: 1 } },
+			});
+
+			// handle events
+			for (const event of question.getUncommittedEvents()) {
+				await this.handle(event);
 			}
-			await this.txHost.tx.question.update({ where: { id: question.id }, data });
 		});
 	}
 
-	async delete(id: string): Promise<void> {
-		await this.txHost.tx.question.delete({ where: { id } });
+	private async handle(event: Event<any>): Promise<void> {
+		if (event instanceof AnswerCreatedEvent) return await this.onAnswerCreated(event);
+		if (event instanceof AnswerDeletedEvent) return await this.onAnswerDeleted(event);
+		if (event instanceof AnswerUpdatedEvent) return await this.onAnswerUpdated(event);
+	}
+
+	private async onAnswerCreated(event: AnswerCreatedEvent): Promise<void> {
+		await this.txHost.tx.answer.create({
+			data: { ...event.payload.data, questionId: event.payload.questionId },
+		});
+	}
+
+	private async onAnswerDeleted(event: AnswerDeletedEvent): Promise<void> {
+		await this.txHost.tx.answer.delete({ where: { id: event.payload.answerId } });
+	}
+
+	private async onAnswerUpdated(event: AnswerUpdatedEvent): Promise<void> {
+		await this.txHost.tx.answer.update({
+			where: { id: event.payload.answerId },
+			data: event.payload.data,
+		});
 	}
 }
 
 // extended question type with JOINS
 type ExtendedQuestion = Prisma.QuestionGetPayload<{
-	include: { answers: { select: { content: true; isCorrect: true } } };
+	include: {
+		answers: { select: { content: true; isCorrect: true } };
+		section: { include: { exam: { select: { id: true; version: true; status: true } } } };
+	};
 }>;
 
-type RepoQuestion = Omit<PrismaQuestion, 'id' | 'order'>;
+type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
 	answers: { select: { content: true, isCorrect: true } },
+	section: { include: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

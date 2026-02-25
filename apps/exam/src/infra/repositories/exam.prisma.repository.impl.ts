@@ -1,4 +1,9 @@
-import { Exam, ExamSectionRef } from '../../domain/entities/exam.entity';
+import { Exam, ExamId, ExamSection } from '../../domain/entities/exam.entity';
+import {
+	SectionCreatedEvent,
+	SectionDeletedEvent,
+	SectionMovedEvent,
+} from '../../domain/events/exam-management.event';
 import { IExamRepository } from '../../domain/repositories/exam.repository';
 import { ExamStatus } from '../../enums/exam-status.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
@@ -6,6 +11,7 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient, Exam as PrismaExam } from '@prisma-client/exam';
 import { parseEnum } from '@server/utils';
+import { Event } from '@server/utils';
 
 @Injectable()
 export class ExamPrismaMapper {
@@ -16,7 +22,8 @@ export class ExamPrismaMapper {
 	toDomain(from: ExtendedExam): Exam {
 		return new Exam({
 			...from,
-			sections: from.sections.map(s => new ExamSectionRef(s.id, s.order)),
+			id: new ExamId(from.id, from.version),
+			sections: from.sections.map(s => new ExamSection(s.id, s.order)),
 			status: this.mapExamStatus(from.status),
 		});
 	}
@@ -24,6 +31,8 @@ export class ExamPrismaMapper {
 	toOrm(from: Exam): RepoExam {
 		return {
 			createdBy: from.createdBy,
+			id: from.id.id,
+			version: from.id.version,
 			description: from.description,
 			duration: from.duration,
 			status: from.status,
@@ -47,30 +56,6 @@ export class ExamPrismaRepository implements IExamRepository {
 		return foundExam ? this.mapper.toDomain(foundExam) : null;
 	}
 
-	async getStatus(id: string): Promise<ExamStatus | null> {
-		const foundExam = await this.txHost.tx.exam.findUnique({
-			where: { id },
-			select: { status: true },
-		});
-		return foundExam ? this.mapper.mapExamStatus(foundExam.status) : null;
-	}
-
-	async getStatusBySectionId(id: string): Promise<ExamStatus | null> {
-		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id },
-			select: { exam: { select: { status: true } } },
-		});
-		return foundSection ? this.mapper.mapExamStatus(foundSection.exam.status) : null;
-	}
-
-	async getStatusByQuestionId(id: string): Promise<ExamStatus | null> {
-		const foundQuestion = await this.txHost.tx.question.findUnique({
-			where: { id },
-			select: { section: { select: { exam: { select: { status: true } } } } },
-		});
-		return foundQuestion ? this.mapper.mapExamStatus(foundQuestion.section.exam.status) : null;
-	}
-
 	async getParentExamOfSection(id: string): Promise<Exam> {
 		const foundSection = await this.txHost.tx.section.findUnique({
 			where: { id },
@@ -80,18 +65,51 @@ export class ExamPrismaRepository implements IExamRepository {
 		return this.mapper.toDomain(foundSection.exam);
 	}
 
-	async create(exam: Exam): Promise<void> {
+	async save(exam: Exam): Promise<void> {
 		const data = this.mapper.toOrm(exam);
-		await this.txHost.tx.exam.create({ data });
+		await this.txHost.withTransaction(async () => {
+			// update or insert
+			if (data.version === 0) await this.txHost.tx.exam.create({ data });
+			else
+				await this.txHost.tx.exam.update({
+					where: { id: data.id, version: data.version },
+					data: { ...data, version: { increment: 1 } },
+				});
+
+			// handle events
+			for (const event of exam.getUncommittedEvents()) {
+				await this.handle(event);
+			}
+		});
 	}
 
-	async update(exam: Exam): Promise<void> {
-		const data = this.mapper.toOrm(exam);
-		await this.txHost.tx.exam.update({ where: { id: exam.id }, data });
+	async delete(exam: Exam): Promise<void> {
+		await this.txHost.tx.exam.delete({ where: { id: exam.id.id, version: exam.id.version } });
 	}
 
-	async delete(id: string): Promise<void> {
-		await this.txHost.tx.exam.delete({ where: { id } });
+	private async handle(event: Event<any>): Promise<void> {
+		if (event instanceof SectionCreatedEvent) return await this.onSectionCreated(event);
+		if (event instanceof SectionMovedEvent) return await this.onSectionMoved(event);
+		if (event instanceof SectionDeletedEvent) return await this.onSectionDeleted(event);
+	}
+
+	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
+		await this.txHost.tx.section.create({
+			data: { ...event.payload.data, examId: event.payload.examId.id },
+		});
+	}
+
+	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
+		await this.txHost.tx.section.update({
+			where: { id: event.payload.sectionId },
+			data: event.payload.data,
+		});
+	}
+
+	private async onSectionDeleted(event: SectionDeletedEvent): Promise<void> {
+		await this.txHost.tx.section.delete({
+			where: { id: event.payload.sectionId },
+		});
 	}
 }
 
@@ -100,7 +118,7 @@ type ExtendedExam = Prisma.ExamGetPayload<{
 	include: { sections: { select: { id: true; order: true } } };
 }>;
 
-type RepoExam = Omit<PrismaExam, 'id' | 'updatedAt' | 'createdAt'>;
+type RepoExam = Omit<PrismaExam, 'updatedAt' | 'createdAt'>;
 
 const examPrismaIncludeObj = {
 	sections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },

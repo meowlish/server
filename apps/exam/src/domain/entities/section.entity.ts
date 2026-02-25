@@ -1,29 +1,40 @@
+import { ExamStatus } from '../../enums/exam-status.enum';
 import { SectionType } from '../../enums/section-type.enum';
+import {
+	QuestionCreatedEvent,
+	QuestionDeletedEvent,
+	QuestionMovedEvent,
+	SectionCreatedEvent,
+	SectionDeletedEvent,
+	SectionMovedEvent,
+	SectionUpdatedEvent,
+} from '../events/exam-management.event';
+import { ExamId } from './exam.entity';
 import { Question } from './question.entity';
-import { ConflictException } from '@nestjs/common';
-import { IEntity } from '@server/utils';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { Event, IAggregate, IEntity } from '@server/utils';
 import { ORDER_RANGE_MEDIUM } from '@server/utils';
-import { Action } from '@server/utils';
 
 // reference to the children of a section, infer based on section.contentType
 // if section.contentType is SectionType.SECTION, the children are sections
 // else they are questions
-export class SectionChildrenRef {
+export class SectionChild implements IEntity<SectionChild> {
 	constructor(
 		public readonly id: string,
 		public order: number,
-		public action: Action = Action.READ,
 	) {}
 }
 
-export class Section implements IEntity<Section> {
+export class Section extends AggregateRoot<Event<any>> implements IAggregate<Section> {
 	static newId() {
 		return crypto.randomUUID();
 	}
 
 	static orderRange: number = ORDER_RANGE_MEDIUM;
-	public examId: string;
-	public children: SectionChildrenRef[];
+	public readonly examId: ExamId;
+	public readonly examStatus: ExamStatus;
+	public children: SectionChild[];
 	public readonly id: string;
 	public parentId: string | null;
 	public contentType: SectionType;
@@ -31,16 +42,19 @@ export class Section implements IEntity<Section> {
 	public name: string | null;
 
 	constructor(constructorOptions: {
-		examId: string;
-		children: SectionChildrenRef[];
+		examId: ExamId;
+		examStatus: ExamStatus;
+		children: SectionChild[];
 		id?: string;
 		parentId: string | null;
 		contentType: SectionType;
 		name?: string | null;
 		directive?: string;
 	}) {
+		super();
 		this.id = constructorOptions.id ?? Section.newId();
 		this.examId = constructorOptions.examId;
+		this.examStatus = constructorOptions.examStatus;
 		this.contentType = constructorOptions.contentType;
 		this.children = constructorOptions.children.toSorted((a, b) => a.order - b.order);
 		this.parentId = constructorOptions.parentId ?? null;
@@ -48,11 +62,14 @@ export class Section implements IEntity<Section> {
 		this.directive = constructorOptions.directive ?? '';
 	}
 
-	public updateDetails(options: {
-		directive?: string;
-		name?: string | null;
-		contentType?: SectionType;
-	}): void {
+	private assertModifiable(): void {
+		if (this.examStatus === ExamStatus.APPROVED) {
+			throw new ConflictException('Exam is already approved and can no longer be updated.');
+		}
+	}
+
+	public updateDetails(options: SectionUpdatableProperties): void {
+		this.assertModifiable();
 		if (options.directive) this.directive = options.directive;
 		if (options.name) this.name = options.name;
 		if (options.contentType) {
@@ -62,38 +79,86 @@ export class Section implements IEntity<Section> {
 				);
 			this.contentType = options.contentType;
 		}
+		this.apply(
+			new SectionUpdatedEvent({ examId: this.examId, sectionId: this.id, details: options }),
+		);
 	}
 
 	// These methods are SUPER WRAPPERS...
 	public createQuestion(idx = -1): void {
+		this.assertModifiable();
 		if (this.contentType === SectionType.SECTION)
 			throw new ConflictException('Cannot add questions to section reserved for sections only.');
 		const questionId = Question.newId();
-		this.addQuestion(questionId, idx);
-		if (idx < 0 || idx > this.children.length) idx = this.children.length;
-		this.children[idx].action = Action.CREATE;
+		const question = this.insertChild(questionId, idx);
+		this.apply(new QuestionCreatedEvent({ sectionId: this.id, data: structuredClone(question) }));
 	}
 
 	public createSection(idx = -1): void {
+		this.assertModifiable();
 		if (this.contentType === SectionType.QUESTION)
 			throw new ConflictException('Cannot add sections to section reserved for questions only.');
 		const sectionId = Section.newId();
-		this.addSection(sectionId, idx);
-		if (idx < 0 || idx > this.children.length) idx = this.children.length;
-		this.children[idx].action = Action.CREATE;
+		const section = this.insertChild(sectionId, idx);
+		this.apply(
+			new SectionCreatedEvent({
+				examId: this.examId,
+				parentId: this.id,
+				data: structuredClone(section),
+			}),
+		);
 	}
 
 	// These methods are just wrappers to make the code more readable I hope
 	public addQuestion(id: string, idx = -1): void {
-		if (this.contentType === SectionType.SECTION)
-			throw new ConflictException('Cannot add questions to section reserved for sections only.');
-		this.addChild(id, idx);
+		this.assertModifiable();
+		if (this.contentType !== SectionType.QUESTION)
+			throw new ConflictException(
+				'Cannot add questions to section reserved for non-questions only.',
+			);
+		const question = this.insertChild(id, idx);
+		this.apply(
+			new QuestionMovedEvent({
+				sectionId: this.id,
+				questionId: question.id,
+				data: structuredClone(question),
+			}),
+		);
 	}
 
 	public addSection(id: string, idx = -1): void {
-		if (this.contentType === SectionType.QUESTION)
-			throw new ConflictException('Cannot add sections to section reserved for questions only.');
-		this.addChild(id, idx);
+		this.assertModifiable();
+		if (this.contentType !== SectionType.SECTION)
+			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
+		const section = this.insertChild(id, idx);
+		this.apply(
+			new SectionMovedEvent({
+				examId: this.examId,
+				parentId: this.id,
+				sectionId: section.id,
+				data: structuredClone(section),
+			}),
+		);
+	}
+
+	public removeQuestion(id: string): void {
+		this.assertModifiable();
+		if (this.contentType !== SectionType.SECTION)
+			throw new ConflictException('The section only has non-questions');
+		const idx = this.children.findIndex(c => c.id === id);
+		if (idx === -1) throw new NotFoundException('Question not found');
+		this.children.splice(idx, 1);
+		this.apply(new QuestionDeletedEvent({ questionId: id }));
+	}
+
+	public removeSection(id: string): void {
+		this.assertModifiable();
+		if (this.contentType !== SectionType.SECTION)
+			throw new ConflictException('The section only has non-sections');
+		const idx = this.children.findIndex(c => c.id === id);
+		if (idx === -1) throw new NotFoundException('Section not found');
+		this.children.splice(idx, 1);
+		this.apply(new SectionDeletedEvent({ sectionId: id }));
 	}
 
 	/**
@@ -101,7 +166,7 @@ export class Section implements IEntity<Section> {
 	 * @param id the id of the new section
 	 * @param idx the new index (0-based) of the new section
 	 */
-	private addChild(id: string, idx = -1): void {
+	private insertChild(id: string, idx = -1): SectionChild {
 		if (this.children.find(c => c.id === id)) throw new ConflictException('Child already exists.');
 		const length = this.children.length;
 		if (idx < 0 || idx > length) idx = length;
@@ -121,7 +186,9 @@ export class Section implements IEntity<Section> {
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}
-		this.children.splice(idx, 0, new SectionChildrenRef(id, newOrder, Action.UPDATE));
+		const child = new SectionChild(id, newOrder);
+		this.children.splice(idx, 0);
+		return child;
 	}
 
 	/**
@@ -130,6 +197,7 @@ export class Section implements IEntity<Section> {
 	 * @param toIdx target index (0-based), < 0 means move to tail
 	 */
 	public moveChild(id: string, toIdx = -1): void {
+		this.assertModifiable();
 		const fromIdx = this.children.findIndex(c => c.id === id);
 		if (fromIdx === -1) {
 			throw new Error(`Child ${id} not found`);
@@ -156,18 +224,50 @@ export class Section implements IEntity<Section> {
 		}
 		const child = this.children[fromIdx];
 		child.order = newOrder;
-		child.action = Action.UPDATE;
 		// add to new index
 		this.children.splice(toIdx, 0, child);
 		// remove from list
 		this.children.splice(fromIdx, 1);
+		this.apply(
+			this.contentType === SectionType.QUESTION ?
+				new QuestionMovedEvent({
+					sectionId: this.id,
+					questionId: child.id,
+					data: structuredClone(child),
+				})
+			:	new SectionMovedEvent({
+					examId: this.examId,
+					parentId: this.id,
+					sectionId: child.id,
+					data: structuredClone(child),
+				}),
+		);
 	}
 
-	public rebalance(): void {
+	private rebalance(): void {
 		let x = 0;
 		for (const child of this.children) {
 			child.order = x++ * Section.orderRange;
-			child.action = Action.UPDATE;
+			this.apply(
+				this.contentType === SectionType.QUESTION ?
+					new QuestionMovedEvent({
+						sectionId: this.id,
+						questionId: child.id,
+						data: structuredClone(child),
+					})
+				:	new SectionMovedEvent({
+						examId: this.examId,
+						parentId: this.id,
+						sectionId: child.id,
+						data: structuredClone(child),
+					}),
+			);
 		}
 	}
 }
+
+export type SectionUpdatableProperties = Partial<
+	Pick<Section, 'name' | 'directive' | 'contentType'>
+>;
+
+export type SectionChildUpdatableProperties = Partial<Omit<SectionChild, 'id'>>;

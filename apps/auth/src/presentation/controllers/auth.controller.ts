@@ -26,11 +26,11 @@ import { RefreshDto } from '../dtos/req/refresh-dto.req.dto';
 import { RegisterMailDto } from '../dtos/req/register-mail.req.dto';
 import { ValidateAccessDto } from '../dtos/req/validate-access.req.dto';
 import { ValidateRefreshDto } from '../dtos/req/validate-refresh.req.dto';
-import { Controller, UsePipes } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { auth } from '@server/generated';
-import { Claims, GlobalValidationPipe } from '@server/utils';
+import { Claims } from '@server/utils';
 
 @auth.AuthServiceControllerMethods()
 @Controller()

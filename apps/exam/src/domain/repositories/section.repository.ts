@@ -8,9 +8,7 @@ export interface ISectionRepository {
 	// if we only move the order, we need to fetch the parent
 	getParentSectionOfSection(id: string): Promise<Section | null>;
 	getParentSectionOfQuestion(id: string): Promise<Section>;
-	getExamIdOfSection(id: string): Promise<string>;
-	update(section: Section): Promise<void>;
-	delete(id: string): Promise<void>;
+	save(section: Section): Promise<void>;
 }
 
 export const ISectionRepositoryToken = Symbol('ISectionRepository');

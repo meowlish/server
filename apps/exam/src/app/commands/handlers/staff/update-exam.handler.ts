@@ -18,6 +18,6 @@ export class UpdateExamHandler implements ICommandHandler<UpdateExamCommand> {
 			...payload,
 			description: payload.setDescriptionNull ? null : payload.description,
 		});
-		await this.examRepository.update(exam);
+		await this.examRepository.save(exam);
 	}
 }

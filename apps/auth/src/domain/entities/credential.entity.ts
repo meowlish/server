@@ -17,11 +17,13 @@ export class Credential implements IEntity<Credential> {
 		identifier: string;
 		loginType: LoginType;
 		secretHash?: string | null;
+		isHashed?: boolean;
 	}) {
 		this.id = constructorOptions.id ?? Credential.newId();
 		this.identifier = constructorOptions.identifier;
 		this.loginType = constructorOptions.loginType;
-		this.secretHash = constructorOptions.secretHash ?? null;
+		if (constructorOptions.isHashed) this._secretHash = constructorOptions.secretHash ?? null;
+		else this.secretHash = constructorOptions.secretHash ?? null;
 	}
 
 	public get secretHash() {
@@ -32,8 +34,10 @@ export class Credential implements IEntity<Credential> {
 		this._secretHash = inp ? bcrypt.hashSync(inp, 10) : inp;
 	}
 
-	public update(options: { identifier?: string; secretHash?: string }): void {
+	public update(options: CredentialUpdatableProperties): void {
 		if (options.identifier) this.identifier = options.identifier;
 		if (options.secretHash) this.secretHash = options.secretHash;
 	}
 }
+
+export type CredentialUpdatableProperties = Partial<Pick<Credential, 'identifier' | 'secretHash'>>;

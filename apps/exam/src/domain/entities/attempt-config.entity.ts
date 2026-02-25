@@ -1,13 +1,16 @@
+import { AttemptCreatedEvent } from '../events/attempt.event';
 import { Attempt } from './attempt.entity';
-import { IEntity } from '@server/utils';
+import { ExamId } from './exam.entity';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { Event, IAggregate } from '@server/utils';
 
-export class AttemptConfig implements IEntity<AttemptConfig> {
+export class AttemptConfig extends AggregateRoot<Event<any>> implements IAggregate<AttemptConfig> {
 	public static newId() {
 		return Attempt.newId();
 	}
 
 	public readonly id: string;
-	public examId: string;
+	public examId: ExamId;
 	public sectionIds: string[] | null;
 	public attemptedBy: string;
 	public startedAt: Date;
@@ -16,13 +19,14 @@ export class AttemptConfig implements IEntity<AttemptConfig> {
 
 	public constructor(constructorOptions: {
 		id?: string;
-		examId: string;
+		examId: ExamId;
 		sectionIds?: string[];
 		attemptedBy: string;
 		startedAt: Date;
 		durationLimit: number;
 		isStrict?: boolean;
 	}) {
+		super();
 		this.id = constructorOptions.id ?? AttemptConfig.newId();
 		this.examId = constructorOptions.examId;
 		this.sectionIds = constructorOptions.sectionIds ?? null;
@@ -30,5 +34,7 @@ export class AttemptConfig implements IEntity<AttemptConfig> {
 		this.startedAt = constructorOptions.startedAt;
 		this.durationLimit = constructorOptions.durationLimit;
 		this.isStrict = constructorOptions.isStrict ?? false;
+
+		this.apply(new AttemptCreatedEvent(structuredClone(this)));
 	}
 }

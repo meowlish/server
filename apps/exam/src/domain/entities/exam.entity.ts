@@ -1,25 +1,44 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
+import {
+	ExamDetailsUpdatedEvent,
+	ExamStatusUpdatedEvent,
+	SectionCreatedEvent,
+	SectionDeletedEvent,
+	SectionMovedEvent,
+} from '../events/exam-management.event';
 import { AttemptConfig } from './attempt-config.entity';
+import { Attempt } from './attempt.entity';
 import { Section } from './section.entity';
-import { ConflictException, ForbiddenException } from '@nestjs/common';
-import { IEntity } from '@server/utils';
+import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
 import { ORDER_RANGE_MEDIUM } from '@server/utils';
-import { Action } from '@server/utils';
 
 export class ExamReadModel {}
 
+// id with version for optimistic locking
+export class ExamId implements IValueObject<ExamId> {
+	constructor(
+		public readonly id: string,
+		public readonly version: number,
+	) {}
+
+	equals(other: any): boolean {
+		return other instanceof ExamId && this.id === other.id && this.version === other.version;
+	}
+}
+
 // reference type to sections of exam
-export class ExamSectionRef {
+export class ExamSection implements IEntity<ExamSection> {
 	constructor(
 		public readonly id: string,
 		public order: number,
-		public action: Action = Action.READ,
 	) {}
 }
 
-export class Exam implements IEntity<Exam> {
-	public static newId() {
-		return crypto.randomUUID();
+export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, ExamId> {
+	public static newId(): ExamId {
+		return new ExamId(crypto.randomUUID(), 0);
 	}
 
 	public static readonly orderRange: number = ORDER_RANGE_MEDIUM;
@@ -27,19 +46,20 @@ export class Exam implements IEntity<Exam> {
 	public duration: number; // in seconds
 	public status: ExamStatus;
 	public createdBy: string;
-	public readonly id: string;
+	public readonly id: ExamId;
 	public description: string | null;
-	public sections: ExamSectionRef[];
+	public sections: ExamSection[];
 
-	constructor(constructorOptions: {
-		id?: string;
+	public constructor(constructorOptions: {
+		id?: ExamId;
 		title: string;
 		duration: number;
 		createdBy: string;
 		status: ExamStatus;
 		description: string | null;
-		sections: ExamSectionRef[];
+		sections: ExamSection[];
 	}) {
+		super();
 		this.id = constructorOptions.id ?? Exam.newId();
 		this.title = constructorOptions.title;
 		this.duration = constructorOptions.duration;
@@ -49,24 +69,24 @@ export class Exam implements IEntity<Exam> {
 		this.sections = constructorOptions.sections.toSorted((a, b) => a.order - b.order);
 	}
 
-	public updateDetails(options: {
-		title?: string;
-		duration?: number;
-		description?: string | null;
-	}): void {
+	private assertModifiable(): void {
 		if (this.status === ExamStatus.APPROVED) {
 			throw new ConflictException('Exam is already approved and can no longer be updated.');
 		}
+	}
+
+	public updateDetails(options: ExamUpdatableProperties): void {
+		this.assertModifiable();
 		if (options.title) this.title = options.title;
 		if (options.duration) this.duration = options.duration;
 		if (options.description || options.description === null) this.description = options.description;
+		this.apply(new ExamDetailsUpdatedEvent({ examId: this.id, data: options }));
 	}
 
 	public updateStatus(status: ExamStatus) {
-		if (this.status === ExamStatus.APPROVED) {
-			throw new ConflictException('Exam is already approved and can no longer be updated.');
-		}
+		this.assertModifiable();
 		this.status = status;
+		this.apply(new ExamStatusUpdatedEvent({ examId: this.id, status: status }));
 	}
 
 	/**
@@ -74,11 +94,10 @@ export class Exam implements IEntity<Exam> {
 	 * @param idx the new index (0-based) of the new section
 	 */
 	public createSection(idx = -1): void {
+		this.assertModifiable();
 		const sectionId = Section.newId();
-		this.addSection(sectionId, idx);
-		const length = this.sections.length;
-		if (idx < 0 || idx > length) idx = length;
-		this.sections[idx].action = Action.CREATE;
+		const section = this.insertSection(sectionId, idx);
+		this.apply(new SectionCreatedEvent({ examId: this.id, data: structuredClone(section) }));
 	}
 
 	/**
@@ -87,6 +106,25 @@ export class Exam implements IEntity<Exam> {
 	 * @param idx the new index (0-based) of the new section
 	 */
 	public addSection(id: string, idx = -1): void {
+		this.assertModifiable();
+		const section = this.insertSection(id, idx);
+		this.apply(
+			new SectionMovedEvent({
+				examId: this.id,
+				sectionId: section.id,
+				data: structuredClone(section),
+			}),
+		);
+	}
+
+	/**
+	 * Private function to avoid duplicate code between createSection and addSection
+	 *
+	 * Index below 0 is automatically added to tail (default behavior)
+	 * @param id the id of the new section
+	 * @param idx the new index (0-based) of the new section
+	 */
+	private insertSection(id: string, idx = -1): ExamSection {
 		if (this.sections.findIndex(s => s.id === id))
 			throw new ConflictException('Section already exists.');
 		const length = this.sections.length;
@@ -109,7 +147,17 @@ export class Exam implements IEntity<Exam> {
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}
-		this.sections.splice(idx, 0, new ExamSectionRef(id, newOrder, Action.UPDATE));
+		const section = new ExamSection(id, newOrder);
+		this.sections.splice(idx, 0, section);
+		return section;
+	}
+
+	public removeSection(id: string): void {
+		this.assertModifiable();
+		const idx = this.sections.findIndex(s => s.id === id);
+		if (idx === -1) throw new NotFoundException('Section already exists.');
+		this.sections.splice(idx, 1);
+		this.apply(new SectionDeletedEvent({ sectionId: id }));
 	}
 
 	/**
@@ -118,6 +166,7 @@ export class Exam implements IEntity<Exam> {
 	 * @param toIdx the new index (0-based) of the new section
 	 */
 	public moveSection(id: string, toIdx = -1): void {
+		this.assertModifiable();
 		const fromIdx = this.sections.findIndex(s => s.id === id);
 		if (!fromIdx) {
 			throw new Error(`Child ${id} not found`);
@@ -144,28 +193,34 @@ export class Exam implements IEntity<Exam> {
 		}
 		const section = this.sections[fromIdx];
 		section.order = newOrder;
-		section.action = Action.UPDATE;
 		// add to new index
 		this.sections.splice(toIdx, 0, section);
 		// remove from list
 		this.sections.splice(fromIdx, 1);
+		this.apply(
+			new SectionMovedEvent({
+				examId: this.id,
+				sectionId: section.id,
+				data: structuredClone(section),
+			}),
+		);
 	}
 
-	public rebalance(): void {
+	private rebalance(): void {
 		let x = 0;
 		for (const section of this.sections) {
 			section.order = x++ * Exam.orderRange;
-			section.action = Action.UPDATE;
+			this.apply(
+				new SectionMovedEvent({
+					examId: this.id,
+					sectionId: section.id,
+					data: structuredClone(section),
+				}),
+			);
 		}
 	}
 
-	public createAttempt(options: {
-		uid: string;
-		startedAt: Date;
-		isStrict?: boolean;
-		duration?: number;
-		sectionIds?: string[];
-	}): AttemptConfig {
+	public createAttempt(options: NewAttemptInfo): AttemptConfig {
 		if (options.sectionIds) {
 			options.sectionIds = [...new Set(options.sectionIds)];
 			const sectionIdSet = new Set(this.sections.map(s => s.id));
@@ -175,12 +230,21 @@ export class Exam implements IEntity<Exam> {
 			if (options.sectionIds.length === this.sections.length) options.sectionIds = undefined;
 		}
 		return new AttemptConfig({
-			attemptedBy: options.uid,
+			attemptedBy: options.id,
 			isStrict: options.isStrict,
-			durationLimit: options.isStrict ? this.duration : (options.duration ?? this.duration),
+			durationLimit: options.isStrict ? this.duration : (options.durationLimit ?? this.duration),
 			examId: this.id,
 			startedAt: options.startedAt,
 			sectionIds: options.sectionIds,
 		});
 	}
 }
+
+export type NewAttemptRequiredInfo = Pick<Attempt, 'id' | 'startedAt' | 'isStrict'>;
+export type NewAttemptOptionalInfo = Partial<Pick<Attempt, 'isStrict' | 'durationLimit'>> & {
+	sectionIds?: string[];
+};
+export type NewAttemptInfo = NewAttemptOptionalInfo & NewAttemptRequiredInfo;
+
+export type ExamUpdatableProperties = Partial<Pick<Exam, 'title' | 'duration' | 'description'>>;
+export type ExamSectionUpdatableProperties = Partial<Omit<ExamSection, 'id'>>;

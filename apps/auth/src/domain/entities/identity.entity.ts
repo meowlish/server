@@ -5,11 +5,10 @@ import {
 	RoleAddedEvent,
 	RoleDeletedEvent,
 } from '../events/identity-update.events';
-import { Credential } from './credential.entity';
+import { Credential, type CredentialUpdatableProperties } from './credential.entity';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate } from '@server/utils';
-import { remove } from 'lodash';
 
 export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Identity> {
 	public static newId(): string {
@@ -43,7 +42,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 		this.credentials = constructorOptions.credentials ?? [];
 	}
 
-	public updateDetails(options: { username?: string }): void {
+	public updateDetails(options: IdentityUpdatableProperties): void {
 		if (options.username) this.username = options.username;
 	}
 
@@ -68,7 +67,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 				);
 		}
 		this.credentials.push(cred);
-		this.apply(new CredAddedEvent({ identityId: this.id, cred: cred }));
+		this.apply(new CredAddedEvent({ identityId: this.id, data: structuredClone(cred) }));
 	}
 
 	public deleteCredential(id: string): void {
@@ -78,10 +77,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 		this.apply(new CredDeletedEvent({ identityId: this.id, credId: id }));
 	}
 
-	public updateCredential(
-		credId: string,
-		updateOptions: { identifier?: string; secretHash?: string },
-	): void {
+	public updateCredential(credId: string, updateOptions: CredentialUpdatableProperties): void {
 		if (!Object.keys(updateOptions).length) return;
 		const idx = this.credentials.findIndex(cred => cred.id === credId);
 		const updatedCred = this.credentials[idx];
@@ -96,7 +92,13 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 			throw new ConflictException(
 				'Identity cannot have the same identifier for the same type of credential',
 			);
-		this.apply(new CredUpdatedEvent({ identityId: this.id, cred: updatedCred }));
+		this.apply(
+			new CredUpdatedEvent({
+				identityId: this.id,
+				credId: credId,
+				data: updateOptions,
+			}),
+		);
 	}
 
 	public softDelete(): void {
@@ -105,40 +107,6 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 		}
 		this.deletedAt = new Date();
 	}
-
-	public override apply(
-		event: Event<any>,
-		optionsOrIsFromHistory?: boolean | { fromHistory?: boolean; skipHandler?: boolean },
-	): void {
-		if (event instanceof CredDeletedEvent) {
-			this.normalizeCredEvents(event);
-		} else if (event instanceof RoleDeletedEvent) {
-			this.normalizeRoleEvents(event);
-		}
-		super.apply(event, optionsOrIsFromHistory as boolean);
-	}
-
-	private normalizeCredEvents(event: CredDeletedEvent) {
-		const idx = this.getUncommittedEvents().findLastIndex(
-			e => e instanceof CredDeletedEvent && e.payload.credId === event.payload.credId,
-		);
-		remove(
-			this.getUncommittedEvents(),
-			(e, i) =>
-				i >= idx &&
-				((e instanceof CredUpdatedEvent && e.payload.cred.id === event.payload.credId) ||
-					(e instanceof CredAddedEvent && e.payload.cred.id === event.payload.credId)),
-		);
-	}
-
-	private normalizeRoleEvents(event: RoleDeletedEvent) {
-		const idx = this.getUncommittedEvents().findLastIndex(
-			e => e instanceof RoleDeletedEvent && e.payload.roleId === event.payload.roleId,
-		);
-		remove(
-			this.getUncommittedEvents(),
-			(e, i) =>
-				i >= idx && e instanceof RoleAddedEvent && e.payload.roleId === event.payload.roleId,
-		);
-	}
 }
+
+export type IdentityUpdatableProperties = Partial<Pick<Identity, 'username'>>;

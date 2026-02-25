@@ -19,6 +19,6 @@ export class CreateExamHandler implements ICommandHandler<CreateExamCommand> {
 			sections: [],
 			status: ExamStatus.PENDING,
 		});
-		await this.examRepository.create(exam);
+		await this.examRepository.save(exam);
 	}
 }

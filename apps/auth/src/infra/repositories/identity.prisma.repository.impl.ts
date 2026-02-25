@@ -62,6 +62,7 @@ export class IdentityPrismaMapper {
 					new Credential({
 						...cred,
 						loginType: this.mapLoginType(cred.loginType),
+						isHashed: true,
 					}),
 			),
 		});
@@ -191,7 +192,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	private async onCredAdded(event: CredAddedEvent): Promise<void> {
 		try {
 			await this.txHost.tx.credential.create({
-				data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+				data: { ...event.payload.data, identityId: event.payload.identityId },
 			});
 		} catch (e) {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -213,8 +214,8 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	private async onCredUpdated(event: CredUpdatedEvent): Promise<void> {
 		try {
 			await this.txHost.tx.credential.update({
-				where: { id: event.payload.cred.id },
-				data: this.mapper.toCredentialOrm(event.payload.cred, event.payload.identityId),
+				where: { id: event.payload.credId },
+				data: { ...event.payload.data, identityId: event.payload.identityId },
 			});
 		} catch (e) {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {

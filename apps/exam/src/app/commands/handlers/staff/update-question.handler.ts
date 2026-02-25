@@ -7,9 +7,8 @@ import {
 	type IQuestionRepository,
 	IQuestionRepositoryToken,
 } from '../../../../domain/repositories/question.repository';
-import { ExamStatus } from '../../../../enums/exam-status.enum';
 import { UpdateQuestionCommand } from '../../staff/exam.update-question.command';
-import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(UpdateQuestionCommand)
@@ -23,10 +22,6 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		const payload = command.payload;
 		const question = await this.questionRepository.findOne(payload.id);
 		if (!question) throw new NotFoundException('Question not found');
-		if ((await this.examRepository.getStatusByQuestionId(question.id)) === ExamStatus.APPROVED)
-			throw new ConflictException(
-				'The exam this question belongs to is already approved and can no longer be updated.',
-			);
 		question.updateDetails({
 			...payload,
 		});
@@ -38,6 +33,6 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 				question.addAnswers(new Answer({ content: a.content, isCorrect: a.isCorrect })),
 			);
 		}
-		await this.questionRepository.update(question);
+		await this.questionRepository.save(question);
 	}
 }

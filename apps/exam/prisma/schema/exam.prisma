@@ -3,6 +3,7 @@ model Exam {
   createdBy   String   @map("created_by")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+  version     Int      @default(0)
   title       String
   description String?
   status      String
@@ -13,6 +14,7 @@ model Exam {
   examAttempts ExamAttempt[]
 
   @@index([status])
+  @@index([version])
   @@map("exams")
 }
 
@@ -70,13 +72,13 @@ model Question {
 }
 
 model Answer {
+  id         String  @id @default(uuid())
   content    String
   isCorrect  Boolean @map("is_correct")
   questionId String  @map("question_id")
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  @@id([questionId, content])
   @@index([questionId])
   @@map("answers")
 }

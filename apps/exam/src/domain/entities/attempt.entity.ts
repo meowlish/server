@@ -1,26 +1,28 @@
-import { ConflictException, ForbiddenException } from '@nestjs/common';
+import {
+	AttemptAnswerCreatedEvent,
+	AttemptAnswerUpdatedEvent,
+	AttemptSubmittedEvent,
+} from '../events/attempt.event';
+import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { Action, IEntity, IValueObject } from '@server/utils';
+import { Event, IEntity, IValueObject } from '@server/utils';
 
 export class AttemptAnswer implements IValueObject<AttemptAnswer> {
 	public questionId: string;
 	public isFlagged: boolean;
 	public answer: string | null;
-	public action: Action;
 	public note: string | null;
 
 	public constructor(constructorOptions: {
 		questionId: string;
 		isFlagged?: boolean;
 		answer?: string;
-		action?: Action;
 		note?: string;
 	}) {
 		this.questionId = constructorOptions.questionId;
 		this.isFlagged = constructorOptions.isFlagged ?? false;
 		this.answer = constructorOptions.answer ?? null;
 		this.note = constructorOptions.note ?? null;
-		this.action = constructorOptions.action ?? Action.READ;
 	}
 
 	public equals(vo: AttemptAnswer): boolean {
@@ -28,7 +30,7 @@ export class AttemptAnswer implements IValueObject<AttemptAnswer> {
 	}
 }
 
-export class Attempt extends AggregateRoot implements IEntity<Attempt> {
+export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attempt> {
 	public static newId() {
 		return crypto.randomUUID();
 	}
@@ -92,11 +94,15 @@ export class Attempt extends AggregateRoot implements IEntity<Attempt> {
 		if (existingAnswer) {
 			{
 				existingAnswer.answer = answer.answer;
-				existingAnswer.action = Action.UPDATE;
+				this.apply(
+					new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { answer: answer.answer } }),
+				);
 			}
 		} else {
-			answer.action = Action.CREATE;
 			this.answers.push(answer);
+			this.apply(
+				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(answer) }),
+			);
 		}
 	}
 
@@ -104,39 +110,54 @@ export class Attempt extends AggregateRoot implements IEntity<Attempt> {
 	public deleteAnswer(questionId: string, timeStamp: Date): void {
 		this.assertModifiable(timeStamp);
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
-		if (existingAnswer) {
-			{
-				existingAnswer.answer = null;
-				existingAnswer.action = Action.UPDATE;
-			}
-		}
+		if (!existingAnswer) throw new NotFoundException('Answer not found');
+		existingAnswer.answer = null;
+		this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { answer: null } }));
 	}
 
 	public addNote(questionId: string, note: string): void {
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
 			existingAnswer.note = note;
-			existingAnswer.action = Action.UPDATE;
-		} else this.answers.push(new AttemptAnswer({ questionId, action: Action.CREATE }));
+			this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { note: note } }));
+		} else {
+			const newAnswer = new AttemptAnswer({ questionId, note });
+			this.answers.push(newAnswer);
+			this.apply(
+				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
+			);
+		}
 	}
 
 	public toggleFlag(questionId: string): void {
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
 			existingAnswer.isFlagged = !existingAnswer.isFlagged;
-			existingAnswer.action = Action.UPDATE;
-		} else
-			this.answers.push(new AttemptAnswer({ questionId, isFlagged: true, action: Action.CREATE }));
+			this.apply(
+				new AttemptAnswerUpdatedEvent({
+					attemptId: this.id,
+					data: { isFlagged: existingAnswer.isFlagged },
+				}),
+			);
+		} else {
+			const newAnswer = new AttemptAnswer({ questionId, isFlagged: true });
+			this.answers.push(newAnswer);
+			this.apply(
+				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
+			);
+		}
 	}
 
 	// pass timeStamp in as early as possible
 	public endAttempt(timeStamp: Date): void {
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
 		if (!this.hasAtLeastOneAnswer) {
-			if (this.isWithinAllowedTime(timeStamp)) {
+			if (this.isWithinAllowedTime(timeStamp))
 				throw new ForbiddenException('Must at least answer one question before submitting');
-			}
 		}
 		this.endedAt = timeStamp;
+		this.apply(new AttemptSubmittedEvent({ attemptId: this.id }));
 	}
 }
+
+export type AttemptAnswerUpdatableProperties = Partial<Omit<AttemptAnswer, 'id'>>;

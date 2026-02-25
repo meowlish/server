@@ -6,9 +6,8 @@ import {
 	type ISectionRepository,
 	ISectionRepositoryToken,
 } from '../../../../domain/repositories/section.repository';
-import { ExamStatus } from '../../../../enums/exam-status.enum';
 import { DeleteSectionCommand } from '../../staff/exam.delete-section.command';
-import { ConflictException, Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(DeleteSectionCommand)
@@ -20,10 +19,24 @@ export class DeleteSectionHandler implements ICommandHandler<DeleteSectionComman
 
 	public async execute(command: DeleteSectionCommand): Promise<void> {
 		const payload = command.payload;
-		if ((await this.examRepository.getStatusBySectionId(payload.id)) === ExamStatus.APPROVED)
-			throw new ConflictException(
-				'The exam this section belongs to is already approved and can no longer be updated.',
-			);
-		await this.sectionRepository.delete(payload.id);
+		try {
+			await this.removeFromParentSection(payload.id);
+		} catch (e) {
+			if (e instanceof NotFoundException) await this.removeFromParentExam(payload.id);
+			else throw e;
+		}
+	}
+
+	private async removeFromParentSection(sectionId: string): Promise<void> {
+		const parent = await this.sectionRepository.getParentSectionOfSection(sectionId);
+		if (!parent) throw new NotFoundException('Parent section not found');
+		parent.removeSection(sectionId);
+		await this.sectionRepository.save(parent);
+	}
+
+	private async removeFromParentExam(sectionId: string): Promise<void> {
+		const parent = await this.examRepository.getParentExamOfSection(sectionId);
+		parent.removeSection(sectionId);
+		await this.examRepository.save(parent);
 	}
 }

@@ -19,14 +19,20 @@ export class CreateSectionHandler implements ICommandHandler<CreateSectionComman
 
 	public async execute(command: CreateSectionCommand): Promise<void> {
 		const payload = command.payload;
-		if (payload.examId) {
-			const exam = await this.examRepository.findOne(payload.examId);
-			if (!exam) throw new NotFoundException('Exam not found.');
-			exam.createSection(payload.index);
-		} else if (payload.sectionId) {
-			const section = await this.sectionRepository.findOne(payload.sectionId);
-			if (!section) throw new NotFoundException('Section not found.');
-			section.createSection(payload.index);
-		} else throw new ConflictException('Provide either the id of the exam or the parent section.');
+		if (payload.examId) await this.createExamSection(payload.examId, payload.index);
+		else if (payload.sectionId) await this.createNestedSection(payload.sectionId, payload.index);
+		else throw new ConflictException('Provide either the id of the exam or the parent section.');
+	}
+
+	private async createExamSection(examId: string, idx: number): Promise<void> {
+		const exam = await this.examRepository.findOne(examId);
+		if (!exam) throw new NotFoundException('Exam not found.');
+		exam.createSection(idx);
+	}
+
+	private async createNestedSection(sectionId: string, idx: number): Promise<void> {
+		const section = await this.sectionRepository.findOne(sectionId);
+		if (!section) throw new NotFoundException('Section not found.');
+		section.createSection(idx);
 	}
 }

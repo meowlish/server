@@ -6,9 +6,8 @@ import {
 	type ISectionRepository,
 	ISectionRepositoryToken,
 } from '../../../../domain/repositories/section.repository';
-import { ExamStatus } from '../../../../enums/exam-status.enum';
 import { MoveSectionCommand } from '../../staff/exam.move-section.command';
-import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(MoveSectionCommand)
@@ -21,11 +20,6 @@ export class MoveSectionHandler implements ICommandHandler<MoveSectionCommand> {
 	public async execute(command: MoveSectionCommand): Promise<void> {
 		const { parentId, id: sectionId, index, toRoot } = command.payload;
 
-		// can only update when exam is not approved
-		if ((await this.examRepository.getStatusBySectionId(sectionId)) === ExamStatus.APPROVED)
-			throw new ConflictException(
-				'The exam this section belongs to is already approved and can no longer be moved.',
-			);
 		// move to new section
 		if (parentId) {
 			// can only move to section in the exam
@@ -35,13 +29,13 @@ export class MoveSectionHandler implements ICommandHandler<MoveSectionCommand> {
 			);
 			if (!newParentSection) throw new NotFoundException('Section not found');
 			newParentSection.addSection(sectionId, index);
-			return await this.sectionRepository.update(newParentSection);
+			return await this.sectionRepository.save(newParentSection);
 		}
 		// move to root (child of exam)
 		else if (toRoot) {
 			const exam = await this.examRepository.getParentExamOfSection(sectionId);
 			exam.addSection(sectionId, index);
-			return await this.examRepository.update(exam);
+			return await this.examRepository.save(exam);
 		}
 		// move within existing parent container
 		else {
@@ -50,10 +44,10 @@ export class MoveSectionHandler implements ICommandHandler<MoveSectionCommand> {
 			if (!parentSection) {
 				const exam = await this.examRepository.getParentExamOfSection(sectionId);
 				exam.moveSection(sectionId, index);
-				return await this.examRepository.update(exam);
+				return await this.examRepository.save(exam);
 			} else {
 				parentSection.moveChild(sectionId, index);
-				return await this.sectionRepository.update(parentSection);
+				return await this.sectionRepository.save(parentSection);
 			}
 		}
 	}

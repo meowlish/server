@@ -15,6 +15,6 @@ export class ReviewExamHandler implements ICommandHandler<ReviewExamCommand> {
 		const exam = await this.examRepository.findOne(payload.id);
 		if (!exam) throw new NotFoundException('Exam not found');
 		exam.updateStatus(payload.status);
-		await this.examRepository.update(exam);
+		await this.examRepository.save(exam);
 	}
 }
