@@ -31,12 +31,12 @@ message RefreshDto {
 
 message ValidateRefreshDto {
 	string identity_id = 1;
-	int64  iat         = 2;
+	int32  iat         = 2;
 }
 
 message ValidateAccessDto {
 	string identity_id = 1;
-	int64  iat         = 2;
+	int32  iat         = 2;
 }
 
 message LogOutAllDto {
