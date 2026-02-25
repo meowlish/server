@@ -26,6 +26,7 @@ model AttemptSection {
   section Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@id([attemptId, sectionId])
+  @@map("attempt_sections")
 }
 
 model AttemptAnswer {

@@ -12,8 +12,20 @@
 				"command": "pnpm exec prisma generate",
 				"cwd": "apps/exam"
 			},
-			"inputs": ["{projectRoot}/prisma"],
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
 			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/exam"]
+		},
+		"prisma:push": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/exam"
+			},
+			"configurations": {
+				"development": {
+					"command": "dotenv -e .env.development pnpm exec prisma db push"
+				}
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"]
 		},
 		"build": {
 			"executor": "nx:run-commands",

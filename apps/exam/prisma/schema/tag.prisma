@@ -6,4 +6,5 @@ model Tag {
 
   @@index([lft, rgt])
   @@index([name])
+  @@map("tags")
 }

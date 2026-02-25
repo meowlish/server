@@ -2,6 +2,7 @@ import { DeepStringify } from '@server/utils';
 import { z } from 'zod/v4';
 
 const dbVarsSchema = z.object({
+	host: z.string(),
 	port: z.coerce.number().default(5432),
 	username: z.string(),
 	password: z.string(),
@@ -19,6 +20,7 @@ export type IEnvVars = z.infer<typeof envFileSchema>;
 const loadEnv = (): DeepStringify<IEnvVars> => ({
 	env: process.env.NODE_ENV,
 	database: {
+		host: process.env.POSTGRES_HOST,
 		port: process.env.POSTGRES_PORT,
 		username: process.env.POSTGRES_USER,
 		password: process.env.POSTGRES_PASSWORD,
