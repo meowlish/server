@@ -1,5 +1,5 @@
 import { EXAM_CLIENT } from './constants/exam';
-import { ExamManagementGatewayController } from './exam.router.controller';
+import { ExamManagementGatewayController } from './exam-management.router.controller';
 import { Module } from '@nestjs/common';
 import { ErrorHandlingGrpcProxy } from '@server/utils';
 import { join } from 'path';
