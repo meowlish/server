@@ -6,9 +6,15 @@ const jwtVarsSchema = z.object({
 	refreshSecret: z.string(),
 });
 
+const googleOAuth2Schema = z.object({
+	clientId: z.string(),
+	secret: z.string(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	jwt: jwtVarsSchema,
+	googleOAuth2: googleOAuth2Schema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -19,6 +25,10 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 	jwt: {
 		accessSecret: process.env.JWT_SECRET,
 		refreshSecret: process.env.JWT_REFRESH_SECRET,
+	},
+	googleOAuth2: {
+		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
+		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
 	},
 });
 
