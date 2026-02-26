@@ -125,7 +125,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	 * @param idx the new index (0-based) of the new section
 	 */
 	private insertSection(id: string, idx = -1): ExamSection {
-		if (this.sections.findIndex(s => s.id === id))
+		if (this.sections.findIndex(s => s.id === id) !== -1)
 			throw new ConflictException('Section already exists.');
 		const length = this.sections.length;
 		if (idx < 0 || idx > length) idx = length;
@@ -168,9 +168,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	public moveSection(id: string, toIdx = -1): void {
 		this.assertModifiable();
 		const fromIdx = this.sections.findIndex(s => s.id === id);
-		if (!fromIdx) {
-			throw new Error(`Child ${id} not found`);
-		}
+		if (fromIdx === -1) throw new NotFoundException(`Section not found`);
+		if (fromIdx === toIdx) return;
 		const length = this.sections.length;
 		if (toIdx < 0 || toIdx > length) toIdx = length;
 		let newOrder: number;

@@ -80,6 +80,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	public updateCredential(credId: string, updateOptions: CredentialUpdatableProperties): void {
 		if (!Object.keys(updateOptions).length) return;
 		const idx = this.credentials.findIndex(cred => cred.id === credId);
+		if (idx === -1) throw new NotFoundException('Credential not found');
 		const updatedCred = this.credentials[idx];
 		updatedCred.update(updateOptions);
 		const duplicateCredIdx = this.credentials.findIndex(

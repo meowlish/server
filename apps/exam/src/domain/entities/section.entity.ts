@@ -199,9 +199,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	public moveChild(id: string, toIdx = -1): void {
 		this.assertModifiable();
 		const fromIdx = this.children.findIndex(c => c.id === id);
-		if (fromIdx === -1) {
-			throw new Error(`Child ${id} not found`);
-		}
+		if (fromIdx === -1) throw new NotFoundException('Child not found');
+		if (fromIdx === toIdx) return;
 		const length = this.children.length;
 		if (toIdx < 0 || toIdx > length) toIdx = length;
 		let newOrder: number;
