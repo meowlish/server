@@ -3,8 +3,7 @@ import { Command } from '@server/utils';
 export class UpdateExamCommandPayload {
 	public readonly id: string;
 	public readonly title?: string;
-	public readonly setDescriptionNull?: boolean;
-	public readonly description?: string;
+	public readonly description?: string | null;
 	public readonly duration?: number;
 
 	constructor(constructorOptions: {
@@ -16,8 +15,8 @@ export class UpdateExamCommandPayload {
 	}) {
 		this.id = constructorOptions.id;
 		this.title = constructorOptions.title;
-		this.setDescriptionNull = constructorOptions.setDescriptionNull;
 		this.description = constructorOptions.description;
+		if (constructorOptions.setDescriptionNull) this.description = null;
 		this.duration = constructorOptions.duration;
 	}
 }

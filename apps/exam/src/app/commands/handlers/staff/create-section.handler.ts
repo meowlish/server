@@ -28,11 +28,13 @@ export class CreateSectionHandler implements ICommandHandler<CreateSectionComman
 		const exam = await this.examRepository.findOne(examId);
 		if (!exam) throw new NotFoundException('Exam not found.');
 		exam.createSection(idx);
+		await this.examRepository.save(exam);
 	}
 
 	private async createNestedSection(sectionId: string, idx: number): Promise<void> {
 		const section = await this.sectionRepository.findOne(sectionId);
 		if (!section) throw new NotFoundException('Section not found.');
 		section.createSection(idx);
+		await this.sectionRepository.save(section);
 	}
 }

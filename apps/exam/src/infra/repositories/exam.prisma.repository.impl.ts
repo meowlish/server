@@ -68,18 +68,19 @@ export class ExamPrismaRepository implements IExamRepository {
 	async save(exam: Exam): Promise<void> {
 		const data = this.mapper.toOrm(exam);
 		await this.txHost.withTransaction(async () => {
-			// update or insert
+			// insert if lock is new version
 			if (data.version === 0) await this.txHost.tx.exam.create({ data });
-			else
-				await this.txHost.tx.exam.update({
-					where: { id: data.id, version: data.version },
-					data: { ...data, version: { increment: 1 } },
-				});
 
 			// handle events
 			for (const event of exam.getUncommittedEvents()) {
 				await this.handle(event);
 			}
+
+			// update or insert (because of lock)
+			await this.txHost.tx.exam.update({
+				where: { id: data.id, version: data.version },
+				data: { ...data, version: { increment: 1 } },
+			});
 		});
 	}
 

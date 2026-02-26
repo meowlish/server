@@ -71,7 +71,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	public updateDetails(options: SectionUpdatableProperties): void {
 		this.assertModifiable();
 		if (options.directive) this.directive = options.directive;
-		if (options.name) this.name = options.name;
+		if (options.name || options.name === null) this.name = options.name;
 		if (options.contentType) {
 			if (this.children.length > 0)
 				throw new ConflictException(
@@ -143,7 +143,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 
 	public removeQuestion(id: string): void {
 		this.assertModifiable();
-		if (this.contentType !== SectionType.SECTION)
+		if (this.contentType !== SectionType.QUESTION)
 			throw new ConflictException('The section only has non-questions');
 		const idx = this.children.findIndex(c => c.id === id);
 		if (idx === -1) throw new NotFoundException('Question not found');

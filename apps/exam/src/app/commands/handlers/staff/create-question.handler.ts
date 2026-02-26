@@ -17,5 +17,6 @@ export class CreateQuestionHandler implements ICommandHandler<CreateQuestionComm
 		const section = await this.sectionRepository.findOne(payload.sectionId);
 		if (!section) throw new NotFoundException('Section not found.');
 		section.createQuestion(payload.index);
+		await this.sectionRepository.save(section);
 	}
 }

@@ -3,8 +3,7 @@ import { Command } from '@server/utils';
 
 export class UpdateSectionCommandPayload {
 	public readonly id: string;
-	public readonly setNameNull?: boolean;
-	public readonly name?: string;
+	public readonly name?: string | null;
 	public readonly directive?: string;
 	public readonly contentType?: SectionType;
 
@@ -16,8 +15,8 @@ export class UpdateSectionCommandPayload {
 		contentType?: SectionType;
 	}) {
 		this.id = constructorOptions.id;
-		this.setNameNull = constructorOptions.setNameNull;
 		this.name = constructorOptions.name;
+		if (constructorOptions.setNameNull) this.name = null;
 		this.directive = constructorOptions.directive;
 		this.contentType = constructorOptions.contentType;
 	}

@@ -70,6 +70,11 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 		const data = this.mapper.toOrm(question);
 
 		await this.txHost.withTransaction(async () => {
+			// handle events
+			for (const event of question.getUncommittedEvents()) {
+				await this.handle(event);
+			}
+
 			// optimistic lock
 			await this.txHost.tx.question.update({
 				where: {
@@ -83,11 +88,6 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 				where: { id: question.examId.id, version: question.examId.version },
 				data: { version: { increment: 1 } },
 			});
-
-			// handle events
-			for (const event of question.getUncommittedEvents()) {
-				await this.handle(event);
-			}
 		});
 	}
 

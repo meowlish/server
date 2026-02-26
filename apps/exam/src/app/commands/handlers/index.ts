@@ -4,6 +4,12 @@ import { CreateSectionHandler } from './staff/create-section.handler';
 import { DeleteExamHandler } from './staff/delete-exam.handler';
 import { DeleteQuestionHandler } from './staff/delete-question.handler';
 import { DeleteSectionHandler } from './staff/delete-section.handler';
+import { MoveQuestionHandler } from './staff/move-question.handler';
+import { MoveSectionHandler } from './staff/move-section.handler';
+import { ReviewExamHandler } from './staff/review-exam.handler';
+import { UpdateExamHandler } from './staff/update-exam.handler';
+import { UpdateQuestionHandler } from './staff/update-question.handler';
+import { UpdateSectionHandler } from './staff/update-section.handler';
 
 export const ExamManagementHandlers = [
 	CreateExamHandler,
@@ -12,6 +18,12 @@ export const ExamManagementHandlers = [
 	DeleteExamHandler,
 	DeleteQuestionHandler,
 	DeleteSectionHandler,
+	MoveQuestionHandler,
+	MoveSectionHandler,
+	UpdateExamHandler,
+	UpdateSectionHandler,
+	UpdateQuestionHandler,
+	ReviewExamHandler,
 ];
 
 export const ExamPracticeHandlers = [];

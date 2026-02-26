@@ -1,5 +1,5 @@
 import {
-	ISectionRepository,
+	type ISectionRepository,
 	ISectionRepositoryToken,
 } from '../../../../domain/repositories/section.repository';
 import { DeleteQuestionCommand } from '../../staff/exam.delete-question.command';

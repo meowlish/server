@@ -14,10 +14,7 @@ export class UpdateExamHandler implements ICommandHandler<UpdateExamCommand> {
 		const payload = command.payload;
 		const exam = await this.examRepository.findOne(payload.id);
 		if (!exam) throw new NotFoundException('Exam not found');
-		exam.updateDetails({
-			...payload,
-			description: payload.setDescriptionNull ? null : payload.description,
-		});
+		exam.updateDetails(payload);
 		await this.examRepository.save(exam);
 	}
 }

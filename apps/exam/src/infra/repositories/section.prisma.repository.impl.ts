@@ -134,6 +134,11 @@ export class SectionPrismaRepository implements ISectionRepository {
 	async save(section: Section): Promise<void> {
 		const data = this.mapper.toOrm(section);
 		await this.txHost.withTransaction(async () => {
+			// handle events
+			for (const event of section.getUncommittedEvents()) {
+				await this.handle(event);
+			}
+
 			// update the main section with lock
 			await this.txHost.tx.section.update({
 				where: { id: section.id, exam: { id: section.examId.id, version: section.examId.version } },
@@ -144,11 +149,6 @@ export class SectionPrismaRepository implements ISectionRepository {
 				where: { id: section.examId.id, version: section.examId.version },
 				data: { version: { increment: 1 } },
 			});
-
-			// handle events
-			for (const event of section.getUncommittedEvents()) {
-				await this.handle(event);
-			}
 		});
 	}
 
