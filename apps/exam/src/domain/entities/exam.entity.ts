@@ -128,10 +128,10 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		if (this.sections.findIndex(s => s.id === id) !== -1)
 			throw new ConflictException('Section already exists.');
 		const length = this.sections.length;
-		if (idx < 0 || idx > length) idx = length;
+		if (idx < 0 || idx >= length) idx = length - 1;
 		let newOrder: number;
 		// add tail
-		if (idx === length) {
+		if (idx === length - 1) {
 			const lastSection = this.sections.at(-1);
 			newOrder = lastSection ? lastSection.order + Exam.orderRange : 0;
 		}
@@ -142,8 +142,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		}
 		// add in middle
 		else {
-			const prev = this.sections[idx - 1];
-			const next = this.sections[idx];
+			const prev = this.sections[idx];
+			const next = this.sections[idx + 1];
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}
@@ -169,12 +169,12 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		this.assertModifiable();
 		const fromIdx = this.sections.findIndex(s => s.id === id);
 		if (fromIdx === -1) throw new NotFoundException(`Section not found`);
-		if (fromIdx === toIdx) return;
 		const length = this.sections.length;
-		if (toIdx < 0 || toIdx > length) toIdx = length;
+		if (toIdx < 0 || toIdx >= length) toIdx = length - 1;
+		if (fromIdx === toIdx) return;
 		let newOrder: number;
 		// move tail
-		if (toIdx === length) {
+		if (toIdx === length - 1) {
 			const lastSection = this.sections.at(-1);
 			newOrder = lastSection ? lastSection.order + Exam.orderRange : 0;
 		}
@@ -185,8 +185,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		}
 		// move middle
 		else {
-			const prev = this.sections[toIdx - 1];
-			const next = this.sections[toIdx];
+			const prev = this.sections[toIdx];
+			const next = this.sections[toIdx + 1];
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}

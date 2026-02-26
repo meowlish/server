@@ -9,12 +9,12 @@ export class MoveSectionCommandPayload {
 	constructor(constructorOptions: {
 		id: string;
 		index?: number;
-		sectionId?: string;
+		parentId?: string;
 		toRoot?: boolean;
 	}) {
 		this.id = constructorOptions.id;
 		this.index = constructorOptions.index ?? -1;
-		this.parentId = constructorOptions.sectionId;
+		this.parentId = constructorOptions.parentId;
 		this.toRoot = constructorOptions.toRoot;
 	}
 }

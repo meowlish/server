@@ -88,7 +88,9 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	public createQuestion(idx = -1): void {
 		this.assertModifiable();
 		if (this.contentType === SectionType.SECTION)
-			throw new ConflictException('Cannot add questions to section reserved for sections only.');
+			throw new ConflictException(
+				'Cannot add questions to section reserved for non-questions only.',
+			);
 		const questionId = Question.newId();
 		const question = this.insertChild(questionId, idx);
 		this.apply(new QuestionCreatedEvent({ sectionId: this.id, data: structuredClone(question) }));
@@ -97,7 +99,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	public createSection(idx = -1): void {
 		this.assertModifiable();
 		if (this.contentType === SectionType.QUESTION)
-			throw new ConflictException('Cannot add sections to section reserved for questions only.');
+			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
 		const sectionId = Section.newId();
 		const section = this.insertChild(sectionId, idx);
 		this.apply(
@@ -169,10 +171,10 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	private insertChild(id: string, idx = -1): SectionChild {
 		if (this.children.find(c => c.id === id)) throw new ConflictException('Child already exists.');
 		const length = this.children.length;
-		if (idx < 0 || idx > length) idx = length;
+		if (idx < 0 || idx >= length) idx = length - 1;
 		let newOrder: number;
 		// add tail
-		if (idx === length) {
+		if (idx === length - 1) {
 			const lastSection = this.children.at(-1);
 			newOrder = lastSection ? lastSection.order + Section.orderRange : 0;
 		}
@@ -181,8 +183,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 			const firstSection = this.children.at(0);
 			newOrder = firstSection ? firstSection.order - Section.orderRange : 0;
 		} else {
-			const prev = this.children[idx - 1];
-			const next = this.children[idx];
+			const prev = this.children[idx];
+			const next = this.children[idx + 1];
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}
@@ -200,12 +202,12 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		this.assertModifiable();
 		const fromIdx = this.children.findIndex(c => c.id === id);
 		if (fromIdx === -1) throw new NotFoundException('Child not found');
-		if (fromIdx === toIdx) return;
 		const length = this.children.length;
-		if (toIdx < 0 || toIdx > length) toIdx = length;
+		if (toIdx < 0 || toIdx >= length) toIdx = length - 1;
+		if (fromIdx === toIdx) return;
 		let newOrder: number;
 		// move to tail
-		if (toIdx === length) {
+		if (toIdx === length - 1) {
 			const last = this.children.at(-1);
 			newOrder = last ? last.order + Section.orderRange : 0;
 		}
@@ -216,8 +218,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		}
 		// move in middle
 		else {
-			const prev = this.children[toIdx - 1];
-			const next = this.children[toIdx];
+			const prev = this.children[toIdx];
+			const next = this.children[toIdx + 1];
 			if (next.order - prev.order <= 1) this.rebalance();
 			newOrder = Math.floor((prev.order + next.order) / 2);
 		}

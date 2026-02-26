@@ -31,7 +31,9 @@ export class QuestionPrismaMapper {
 			examId: new ExamId(from.section.exam.id, from.section.exam.version),
 			examStatus: this.mapExamStatus(from.section.exam.status),
 			sectionId: from.sectionId,
-			answers: from.answers.map(a => new Answer({ isCorrect: a.isCorrect, content: a.content })),
+			answers: from.answers.map(
+				a => new Answer({ id: a.id, isCorrect: a.isCorrect, content: a.content }),
+			),
 			content: from.content,
 			explanation: from.explanation,
 			points: from.points,
@@ -118,7 +120,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 // extended question type with JOINS
 type ExtendedQuestion = Prisma.QuestionGetPayload<{
 	include: {
-		answers: { select: { content: true; isCorrect: true } };
+		answers: true;
 		section: { include: { exam: { select: { id: true; version: true; status: true } } } };
 	};
 }>;
@@ -126,6 +128,6 @@ type ExtendedQuestion = Prisma.QuestionGetPayload<{
 type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
-	answers: { select: { content: true, isCorrect: true } },
+	answers: true,
 	section: { include: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

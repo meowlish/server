@@ -103,7 +103,7 @@ export class ExamPrismaRepository implements IExamRepository {
 	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: event.payload.data,
+			data: { ...event.payload.data, parentId: null },
 		});
 	}
 
@@ -116,11 +116,15 @@ export class ExamPrismaRepository implements IExamRepository {
 
 // extended exam type with JOINS
 type ExtendedExam = Prisma.ExamGetPayload<{
-	include: { sections: { select: { id: true; order: true } } };
+	include: { sections: { where: { parentId: null }; select: { id: true; order: true } } };
 }>;
 
 type RepoExam = Omit<PrismaExam, 'updatedAt' | 'createdAt'>;
 
 const examPrismaIncludeObj = {
-	sections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
+	sections: {
+		where: { parentId: null },
+		select: { id: true, order: true },
+		orderBy: { order: 'asc' },
+	},
 } satisfies Prisma.ExamInclude;

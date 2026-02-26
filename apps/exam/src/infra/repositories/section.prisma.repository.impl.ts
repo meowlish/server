@@ -170,7 +170,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	private async onQuestionMoved(event: QuestionMovedEvent): Promise<void> {
 		await this.txHost.tx.question.update({
 			where: { id: event.payload.questionId },
-			data: event.payload.data,
+			data: { ...event.payload.data, sectionId: event.payload.sectionId },
 		});
 	}
 
@@ -193,7 +193,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: event.payload.data,
+			data: { ...event.payload.data, parentId: event.payload.parentId },
 		});
 	}
 

@@ -8,7 +8,7 @@ export class UpdateQuestionCommandPayload {
 	public readonly points?: number;
 	public readonly type?: QuestionType;
 	public readonly addAnswers?: { content: string; isCorrect: boolean }[];
-	public readonly deleteAnswers?: { content: string }[];
+	public readonly deleteAnswersIds?: string[];
 
 	constructor(constructorOptions: {
 		id: string;
@@ -17,7 +17,7 @@ export class UpdateQuestionCommandPayload {
 		points?: number;
 		type?: QuestionType;
 		addAnswers?: { content: string; isCorrect: boolean }[];
-		deleteAnswers?: { content: string }[];
+		deleteAnswersIds?: string[];
 	}) {
 		this.id = constructorOptions.id;
 		this.content = constructorOptions.content;
@@ -25,7 +25,7 @@ export class UpdateQuestionCommandPayload {
 		this.points = constructorOptions.points;
 		this.type = constructorOptions.type;
 		this.addAnswers = constructorOptions.addAnswers;
-		this.deleteAnswers = constructorOptions.deleteAnswers;
+		this.deleteAnswersIds = constructorOptions.deleteAnswersIds;
 	}
 }
 

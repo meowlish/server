@@ -25,8 +25,8 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		question.updateDetails({
 			...payload,
 		});
-		if (payload.deleteAnswers) {
-			payload.deleteAnswers.forEach(a => question.removeAnswer(a.content));
+		if (payload.deleteAnswersIds) {
+			payload.deleteAnswersIds.forEach(id => question.removeAnswer(id));
 		}
 		if (payload.addAnswers) {
 			payload.addAnswers.forEach(a =>

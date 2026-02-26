@@ -24,13 +24,6 @@ class AddAnswer implements exam.AddAnswer {
 }
 
 @Exclude()
-class DeleteAnswer implements exam.DeleteAnswer {
-	@Expose()
-	@IsString()
-	content!: string;
-}
-
-@Exclude()
 export class UpdateQuestionDto implements exam.UpdateQuestionDto {
 	@Expose()
 	@Type(() => AddAnswer)
@@ -45,11 +38,10 @@ export class UpdateQuestionDto implements exam.UpdateQuestionDto {
 	content?: string | undefined;
 
 	@Expose()
-	@Type(() => DeleteAnswer)
 	@IsArray()
 	@IsOptional()
-	@ValidateNested({ each: true })
-	deleteAnswers!: DeleteAnswer[];
+	@IsString({ each: true })
+	deleteAnswersIds!: string[];
 
 	@Expose()
 	@IsOptional()

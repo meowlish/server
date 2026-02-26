@@ -52,16 +52,12 @@ export interface UpdateQuestionDto {
   points?: number | undefined;
   type?: string | undefined;
   addAnswers: AddAnswer[];
-  deleteAnswers: DeleteAnswer[];
+  deleteAnswersIds: string[];
 }
 
 export interface AddAnswer {
   content: string;
   isCorrect: boolean;
-}
-
-export interface DeleteAnswer {
-  content: string;
 }
 
 export interface DeleteExamDto {

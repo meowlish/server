@@ -62,17 +62,13 @@ message UpdateQuestionDto {
 	optional int32  points      = 4;
 	optional string type        = 5;
 
-	repeated AddAnswer    add_answers    = 6;
-	repeated DeleteAnswer delete_answers = 7;
+	repeated AddAnswer add_answers        = 6;
+	repeated string    delete_answers_ids = 7;
 }
 
 message AddAnswer {
 	string content    = 1;
 	bool   is_correct = 2;
-}
-
-message DeleteAnswer {
-	string content = 1;
 }
 
 message DeleteExamDto {
