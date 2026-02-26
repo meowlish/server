@@ -48,6 +48,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trg_section_closure_update ON sections;
+
 CREATE TRIGGER trg_section_closure_update
 AFTER UPDATE OF parent_id ON sections
 FOR EACH ROW

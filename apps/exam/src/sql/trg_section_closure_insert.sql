@@ -22,6 +22,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trg_section_closure_insert ON sections;
+
 CREATE TRIGGER trg_section_closure_insert
 AFTER INSERT ON sections
 FOR EACH ROW
