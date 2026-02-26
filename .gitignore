@@ -97,3 +97,7 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
+.agent
+ARCHITECTURE.md
+ERRORS.md
+GEMINI.md
