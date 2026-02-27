@@ -44,7 +44,6 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public endedAt: Date | null;
 	public durationLimit: number;
 	public questionIds: string[] | null;
-	public hasAtLeastOneAnswer: boolean;
 	public answers: AttemptAnswer[];
 	public isStrict: boolean;
 
@@ -56,7 +55,6 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		endedAt?: Date;
 		durationLimit: number; // in seconds
 		questionIds?: string[];
-		hasAtLeastOneAnswer?: boolean;
 		answers?: AttemptAnswer[];
 		isStrict?: boolean;
 	}) {
@@ -68,7 +66,6 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.startedAt = constructorOptions.startedAt;
 		this.endedAt = constructorOptions.endedAt ?? null;
 		this.durationLimit = constructorOptions.durationLimit;
-		this.hasAtLeastOneAnswer = constructorOptions.hasAtLeastOneAnswer ?? false;
 		this.answers = constructorOptions.answers ?? [];
 		this.isStrict = constructorOptions.isStrict ?? false;
 	}
@@ -151,7 +148,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	// pass timeStamp in as early as possible
 	public endAttempt(timeStamp: Date): void {
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
-		if (!this.hasAtLeastOneAnswer) {
+		if (!this.answers.length) {
 			if (this.isWithinAllowedTime(timeStamp))
 				throw new ForbiddenException('Must at least answer one question before submitting');
 		}
