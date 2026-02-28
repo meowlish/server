@@ -5,28 +5,43 @@ import {
 } from '../events/attempt.event';
 import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { Event, IEntity, IValueObject } from '@server/utils';
+import { Event, IEntity } from '@server/utils';
 
-export class AttemptAnswer implements IValueObject<AttemptAnswer> {
+export class AttemptAnswer implements IEntity<AttemptAnswer> {
+	public static newId(): string {
+		return crypto.randomUUID();
+	}
+
+	public readonly id: string;
 	public questionId: string;
 	public isFlagged: boolean;
 	public answer: string | null;
 	public note: string | null;
 
 	public constructor(constructorOptions: {
+		id?: string;
 		questionId: string;
 		isFlagged?: boolean;
 		answer?: string;
 		note?: string;
 	}) {
+		this.id = AttemptAnswer.newId();
 		this.questionId = constructorOptions.questionId;
 		this.isFlagged = constructorOptions.isFlagged ?? false;
 		this.answer = constructorOptions.answer ?? null;
 		this.note = constructorOptions.note ?? null;
 	}
 
-	public equals(vo: AttemptAnswer): boolean {
-		return this.questionId === vo.questionId;
+	public setAnswer(answer: string | null) {
+		this.answer = answer;
+	}
+
+	public toggleFlag() {
+		this.isFlagged = !this.isFlagged;
+	}
+
+	public setNote(note: string) {
+		this.note = note;
 	}
 }
 
@@ -43,7 +58,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public startedAt: Date;
 	public endedAt: Date | null;
 	public durationLimit: number;
-	public questionIds: string[] | null;
+	public questionIds: Set<string>;
 	public answers: AttemptAnswer[];
 	public isStrict: boolean;
 
@@ -62,7 +77,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.id = constructorOptions.id ?? Attempt.newId();
 		this.attemptedBy = constructorOptions.attemptedBy;
 		this.examId = constructorOptions.examId;
-		this.questionIds = constructorOptions.questionIds ?? null;
+		this.questionIds = new Set(constructorOptions.questionIds);
 		this.startedAt = constructorOptions.startedAt;
 		this.endedAt = constructorOptions.endedAt ?? null;
 		this.durationLimit = constructorOptions.durationLimit;
@@ -85,20 +100,24 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 
 	// check if the question exists in the section in the domain service layer
 	// pass timeStamp in as early as possible
-	public answer(answer: AttemptAnswer, timeStamp: Date): void {
+	public answer(questionId: string, answer: string, timeStamp: Date): void {
 		this.assertModifiable(timeStamp);
-		const existingAnswer = this.answers.find(a => a.equals(answer));
+		if (!this.questionIds.has(questionId))
+			throw new ConflictException("Question isn't included in this attempt");
+		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
-			{
-				existingAnswer.answer = answer.answer;
-				this.apply(
-					new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { answer: answer.answer } }),
-				);
-			}
-		} else {
-			this.answers.push(answer);
+			existingAnswer.setAnswer(answer);
 			this.apply(
-				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(answer) }),
+				new AttemptAnswerUpdatedEvent({
+					attemptId: this.id,
+					data: { answer: answer },
+				}),
+			);
+		} else {
+			const newAnswer = new AttemptAnswer({ questionId, answer });
+			this.answers.push(newAnswer);
+			this.apply(
+				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
 			);
 		}
 	}
@@ -108,14 +127,14 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.assertModifiable(timeStamp);
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (!existingAnswer) throw new NotFoundException('Answer not found');
-		existingAnswer.answer = null;
+		existingAnswer.setAnswer(null);
 		this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { answer: null } }));
 	}
 
 	public addNote(questionId: string, note: string): void {
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
-			existingAnswer.note = note;
+			existingAnswer.setNote(note);
 			this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { note: note } }));
 		} else {
 			const newAnswer = new AttemptAnswer({ questionId, note });
@@ -129,7 +148,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public toggleFlag(questionId: string): void {
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
-			existingAnswer.isFlagged = !existingAnswer.isFlagged;
+			existingAnswer.toggleFlag();
 			this.apply(
 				new AttemptAnswerUpdatedEvent({
 					attemptId: this.id,

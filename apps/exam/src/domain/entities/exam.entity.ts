@@ -9,7 +9,12 @@ import {
 import { AttemptConfig } from './attempt-config.entity';
 import { Attempt } from './attempt.entity';
 import { Section } from './section.entity';
-import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+	ConflictException,
+	ForbiddenException,
+	MethodNotAllowedException,
+	NotFoundException,
+} from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
 import { ORDER_RANGE_MEDIUM } from '@server/utils';
@@ -220,6 +225,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	}
 
 	public createAttempt(options: NewAttemptInfo): AttemptConfig {
+		if (this.status !== ExamStatus.APPROVED)
+			throw new MethodNotAllowedException('Exam must be approved before attempting');
 		if (options.sectionIds) {
 			options.sectionIds = [...new Set(options.sectionIds)];
 			const sectionIdSet = new Set(this.sections.map(s => s.id));
