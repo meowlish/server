@@ -1,8 +1,8 @@
+import { IEntity } from './entity.interface';
 import { Event } from './event.class';
 
 // from @nestjs/cqrs
-export interface IAggregate<T extends IAggregate<T, ID>, ID = string> {
-	id: ID;
+export interface IAggregate<T extends IAggregate<T, ID>, ID = string> extends IEntity<T, ID> {
 	apply(event: Event<any>, isFromHistory?: boolean): void;
 	apply(
 		event: Event<any>,
