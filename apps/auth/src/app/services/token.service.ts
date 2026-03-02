@@ -28,8 +28,8 @@ export class TokenService {
 		]);
 
 		return {
-			accessToken,
-			...(genRefresh && { refreshToken }),
+			accessToken: accessToken,
+			...(genRefresh && { refreshToken: refreshToken }),
 		};
 	}
 

@@ -7,22 +7,22 @@ export class AppLoggerService implements LoggerService {
 	constructor(@Inject('winston') private readonly logger: Logger) {}
 
 	log(message: string, context?: string) {
-		this.logger.info(message, { context });
+		this.logger.info(message, { context: context });
 	}
 
 	error(message: string, trace?: string, context?: string) {
-		this.logger.error(message, { trace, context });
+		this.logger.error(message, { trace: trace, context: context });
 	}
 
 	warn(message: string, context?: string) {
-		this.logger.warn(message, { context });
+		this.logger.warn(message, { context: context });
 	}
 
 	debug(message: string, context?: string) {
-		this.logger.debug(message, { context });
+		this.logger.debug(message, { context: context });
 	}
 
 	verbose?(message: string, context?: string) {
-		this.logger.verbose?.(message, { context });
+		this.logger.verbose?.(message, { context: context });
 	}
 }

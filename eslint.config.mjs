@@ -95,6 +95,7 @@ export default [
 			'@typescript-eslint/no-unused-vars': 'warn',
 			'@typescript-eslint/no-empty-interface': 'error',
 			'@darraghor/nestjs-typed/injectable-should-be-provided': 'off',
+			'object-shorthand': ['warn', 'never'],
 			'perfectionist/sort-decorators': [
 				'error',
 				{

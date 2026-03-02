@@ -65,56 +65,56 @@ export class ExamManagementGatewayController implements OnModuleInit {
 
 	@Patch(':id')
 	updateExam(@Param('id') id: string, @Body() body: UpdateExamDto) {
-		const res = this.examManagementService.updateExam({ ...body, id });
+		const res = this.examManagementService.updateExam({ ...body, id: id });
 		return res;
 	}
 
 	@Patch('sections/:id')
 	updateSection(@Param('id') id: string, @Body() body: UpdateSectionDto) {
-		const res = this.examManagementService.updateSection({ ...body, id });
+		const res = this.examManagementService.updateSection({ ...body, id: id });
 		return res;
 	}
 
 	@Patch('questions/:id')
 	updateQuestion(@Param('id') id: string, @Body() body: UpdateQuestionDto) {
-		const res = this.examManagementService.updateQuestion({ ...body, id });
+		const res = this.examManagementService.updateQuestion({ ...body, id: id });
 		return res;
 	}
 
 	@Delete(':id')
 	deleteExam(@Param('id') id: string) {
-		const res = this.examManagementService.deleteExam({ id });
+		const res = this.examManagementService.deleteExam({ id: id });
 		return res;
 	}
 
 	@Delete('sections/:id')
 	deleteSection(@Param('id') id: string) {
-		const res = this.examManagementService.deleteSection({ id });
+		const res = this.examManagementService.deleteSection({ id: id });
 		return res;
 	}
 
 	@Delete('questions/:id')
 	deleteQuestion(@Param('id') id: string) {
-		const res = this.examManagementService.deleteQuestion({ id });
+		const res = this.examManagementService.deleteQuestion({ id: id });
 		return res;
 	}
 
 	@Patch('sections/:id/move')
 	moveSection(@Param('id') id: string, @Body() body: MoveSectionDto) {
-		const res = this.examManagementService.moveSection({ ...body, id });
+		const res = this.examManagementService.moveSection({ ...body, id: id });
 		return res;
 	}
 
 	@Patch('questions/:id/move')
 	moveQuestion(@Param('id') id: string, @Body() body: MoveQuestionDto) {
-		const res = this.examManagementService.moveQuestion({ ...body, id });
+		const res = this.examManagementService.moveQuestion({ ...body, id: id });
 		return res;
 	}
 
 	@Patch(':id/review')
 	@HasPermissions(Permission.EXAM_APPROVE)
 	reviewExam(@Param('id') id: string, @Body() body: ReviewExamDto) {
-		const res = this.examManagementService.reviewExam({ ...body, id });
+		const res = this.examManagementService.reviewExam({ ...body, id: id });
 		return res;
 	}
 }

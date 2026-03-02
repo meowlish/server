@@ -114,7 +114,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId, answer });
+			const newAnswer = new AttemptAnswer({ questionId: questionId, answer: answer });
 			this.answers.push(newAnswer);
 			this.apply(
 				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
@@ -144,7 +144,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId, note });
+			const newAnswer = new AttemptAnswer({ questionId: questionId, note: note });
 			this.answers.push(newAnswer);
 			this.apply(
 				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
@@ -163,7 +163,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId, isFlagged: true });
+			const newAnswer = new AttemptAnswer({ questionId: questionId, isFlagged: true });
 			this.answers.push(newAnswer);
 			this.apply(
 				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),

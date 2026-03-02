@@ -13,6 +13,7 @@
 			"options": {
 				"command": "pnpm proto:gen:window"
 			}
-		}
+		},
+		"lint": { "executor": "nx:noop" }
 	}
 }

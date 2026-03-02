@@ -60,7 +60,7 @@ export class ExamPrismaRepository implements IExamRepository {
 
 	async findOne(id: string): Promise<Exam | null> {
 		const foundExam = await this.txHost.tx.exam.findUnique({
-			where: { id },
+			where: { id: id },
 			include: examPrismaIncludeObj,
 		});
 		return foundExam ? this.mapper.toDomain(foundExam) : null;
@@ -68,7 +68,7 @@ export class ExamPrismaRepository implements IExamRepository {
 
 	async getParentExamOfSection(id: string): Promise<Exam> {
 		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id },
+			where: { id: id },
 			include: { exam: { include: examPrismaIncludeObj } },
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');

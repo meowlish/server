@@ -44,8 +44,8 @@ export class SectionPrismaMapper {
 			...from,
 			examId: new ExamId(from.exam.id, from.exam.version),
 			examStatus: this.mapExamStatus(from.exam.status),
-			children,
-			contentType,
+			children: children,
+			contentType: contentType,
 		});
 	}
 
@@ -87,7 +87,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	async findOne(id: string): Promise<Section | null> {
 		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id },
+			where: { id: id },
 			include: sectionPrismaIncludeObject,
 		});
 		return foundSection ? this.mapper.toDomain(foundSection) : null;
@@ -95,7 +95,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	async getParentSectionOfQuestion(id: string): Promise<Section> {
 		const foundQuestion = await this.txHost.tx.question.findFirst({
-			where: { id },
+			where: { id: id },
 			include: { section: { include: sectionPrismaIncludeObject } },
 		});
 		if (!foundQuestion) throw new NotFoundException('Question not found.');
@@ -104,7 +104,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	async getParentSectionOfSection(id: string): Promise<Section | null> {
 		const foundSection = await this.txHost.tx.section.findFirst({
-			where: { id },
+			where: { id: id },
 			include: { parentSection: { include: sectionPrismaIncludeObject } },
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');
@@ -125,7 +125,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			throw new NotFoundException(`Section id ${sectionId} could not be found`);
 
 		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id, examId: foundBaseSection.examId },
+			where: { id: id, examId: foundBaseSection.examId },
 			include: sectionPrismaIncludeObject,
 		});
 		return foundSection ? this.mapper.toDomain(foundSection) : null;
@@ -143,7 +143,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 		if (!foundQuestion) throw new NotFoundException(`Question id ${questionId} could not be found`);
 
 		const foundSection = await this.txHost.tx.section.findUnique({
-			where: { id, examId: foundQuestion.section.examId },
+			where: { id: id, examId: foundQuestion.section.examId },
 			include: sectionPrismaIncludeObject,
 		});
 		return foundSection ? this.mapper.toDomain(foundSection) : null;
@@ -160,7 +160,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			// update the main section with lock
 			await this.txHost.tx.section.update({
 				where: { id: section.id, exam: { id: section.examId.id, version: section.examId.version } },
-				data,
+				data: data,
 			});
 
 			await this.txHost.tx.exam.update({

@@ -76,7 +76,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 	async findOne(id: string): Promise<Question | null> {
 		const foundQuestion = await this.txHost.tx.question.findUnique({
-			where: { id },
+			where: { id: id },
 			include: questionPrismaIncludeObj,
 		});
 		return foundQuestion ? this.mapper.toDomain(foundQuestion) : null;
@@ -92,7 +92,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 					id: question.id,
 					section: { exam: { id: question.examId.id, version: question.examId.version } },
 				},
-				data,
+				data: data,
 			});
 
 			// handle events

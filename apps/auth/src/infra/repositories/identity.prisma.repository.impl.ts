@@ -49,7 +49,7 @@ export class IdentityPrismaMapper {
 			identifier: from.identifier,
 			loginType: this.mapLoginType(from.loginType),
 			secretHash: from.secretHash,
-			identityId,
+			identityId: identityId,
 		};
 	}
 
@@ -78,7 +78,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 
 	async findOneById(id: string, deleted = false): Promise<Identity | null> {
 		const foundIdentity = await this.txHost.tx.identity.findFirst({
-			where: { id, deletedAt: deleted ? { not: null } : null },
+			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
 		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
@@ -89,7 +89,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		loginType: LoginType,
 	): Promise<{ identityId: string; secretHash: string | null } | null> {
 		const foundCredential = await this.txHost.tx.credential.findFirst({
-			where: { loginType, identifier },
+			where: { loginType: loginType, identifier: identifier },
 			select: { identityId: true, secretHash: true },
 		});
 		return foundCredential;
@@ -108,7 +108,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		deleted = false,
 	): Promise<{ roles: Role[]; permissions: Permission[] }> {
 		const foundIdentity = await this.txHost.tx.identity.findFirst({
-			where: { id, deletedAt: deleted ? { not: null } : null },
+			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: {
 				identityRoles: {
 					include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
@@ -162,7 +162,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 
 	async softDelete(id: string): Promise<void> {
 		await this.txHost.tx.identity.update({
-			where: { id },
+			where: { id: id },
 			data: { deletedAt: new Date() },
 		});
 	}

@@ -19,7 +19,7 @@ export class HttpResponseTransformInterceptor implements NestInterceptor {
 		const responseTransformer = <T>(data: T): ResponseEntity<T> => {
 			return new ResponseEntity<T>({
 				path: request.url,
-				statusCode,
+				statusCode: statusCode,
 				success: true,
 				timestamp: Date.now(),
 				data: data,
