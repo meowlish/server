@@ -1,3 +1,3 @@
 export class Event<TPayload = void> {
-	constructor(public readonly payload: TPayload) {}
+	constructor(public readonly payload: Readonly<TPayload>) {}
 }

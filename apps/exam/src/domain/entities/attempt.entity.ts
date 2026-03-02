@@ -110,7 +110,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 			this.apply(
 				new AttemptAnswerUpdatedEvent({
 					attemptId: this.id,
-					data: { answer: answer },
+					data: structuredClone(existingAnswer),
 				}),
 			);
 		} else {
@@ -128,14 +128,21 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (!existingAnswer) throw new NotFoundException('Answer not found');
 		existingAnswer.setAnswer(null);
-		this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { answer: null } }));
+		this.apply(
+			new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: structuredClone(existingAnswer) }),
+		);
 	}
 
 	public addNote(questionId: string, note: string): void {
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
 			existingAnswer.setNote(note);
-			this.apply(new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: { note: note } }));
+			this.apply(
+				new AttemptAnswerUpdatedEvent({
+					attemptId: this.id,
+					data: structuredClone(existingAnswer),
+				}),
+			);
 		} else {
 			const newAnswer = new AttemptAnswer({ questionId, note });
 			this.answers.push(newAnswer);
@@ -152,7 +159,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 			this.apply(
 				new AttemptAnswerUpdatedEvent({
 					attemptId: this.id,
-					data: { isFlagged: existingAnswer.isFlagged },
+					data: structuredClone(existingAnswer),
 				}),
 			);
 		} else {

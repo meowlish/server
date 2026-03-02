@@ -81,7 +81,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		if (options.explanation) this.explanation = options.explanation;
 		if (options.points) this.points = options.points;
 		if (options.type) this.type = options.type;
-		this.apply(new QuestionUpdatedEvent({ parentId: this.sectionId, data: options }));
+		this.apply(new QuestionUpdatedEvent({ parentId: this.sectionId, data: structuredClone(this) }));
 	}
 
 	public addAnswers(answer: Answer): void {

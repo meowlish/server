@@ -96,7 +96,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 			new CredUpdatedEvent({
 				identityId: this.id,
 				credId: credId,
-				data: updateOptions,
+				data: structuredClone(credential),
 			}),
 		);
 	}

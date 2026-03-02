@@ -1,4 +1,4 @@
-import { type Credential, type CredentialUpdatableProperties } from '../entities/credential.entity';
+import { type Credential } from '../entities/credential.entity';
 import { Event } from '@server/utils';
 
 // events
@@ -9,5 +9,5 @@ export class CredDeletedEvent extends Event<{ identityId: string; credId: string
 export class CredUpdatedEvent extends Event<{
 	identityId: string;
 	credId: string;
-	data: CredentialUpdatableProperties;
+	data: Credential;
 }> {}

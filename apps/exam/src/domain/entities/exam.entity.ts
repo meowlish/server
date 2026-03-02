@@ -85,7 +85,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		if (options.title) this.title = options.title;
 		if (options.duration) this.duration = options.duration;
 		if (options.description || options.description === null) this.description = options.description;
-		this.apply(new ExamDetailsUpdatedEvent({ examId: this.id, data: options }));
+		this.apply(new ExamDetailsUpdatedEvent({ examId: this.id, data: structuredClone(this) }));
 	}
 
 	public updateStatus(status: ExamStatus) {

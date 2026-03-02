@@ -11,7 +11,12 @@ import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient, Question as PrismaQuestion } from '@prisma-client/exam';
+import {
+	Prisma,
+	Answer as PrismaAnswer,
+	PrismaClient,
+	Question as PrismaQuestion,
+} from '@prisma-client/exam';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
@@ -41,7 +46,16 @@ export class QuestionPrismaMapper {
 		});
 	}
 
-	toOrm(from: Question): RepoQuestion {
+	toAnswerOrm(from: Answer, questionId: string): PrismaAnswer {
+		return {
+			id: from.id,
+			content: from.content,
+			isCorrect: from.isCorrect,
+			questionId: questionId,
+		};
+	}
+
+	toQuestionOrm(from: Question): RepoQuestion {
 		return {
 			id: from.id,
 			content: from.content,
@@ -69,14 +83,9 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 	}
 
 	async save(question: Question): Promise<void> {
-		const data = this.mapper.toOrm(question);
+		const data = this.mapper.toQuestionOrm(question);
 
 		await this.txHost.withTransaction(async () => {
-			// handle events
-			for (const event of question.getUncommittedEvents()) {
-				await this.handle(event);
-			}
-
 			// optimistic lock
 			await this.txHost.tx.question.update({
 				where: {
@@ -85,6 +94,11 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 				},
 				data,
 			});
+
+			// handle events
+			for (const event of question.getUncommittedEvents()) {
+				await this.handle(event);
+			}
 
 			await this.txHost.tx.exam.update({
 				where: { id: question.examId.id, version: question.examId.version },
@@ -101,7 +115,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 	private async onAnswerCreated(event: AnswerCreatedEvent): Promise<void> {
 		await this.txHost.tx.answer.create({
-			data: { ...event.payload.data, questionId: event.payload.questionId },
+			data: this.mapper.toAnswerOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 
@@ -112,7 +126,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 	private async onAnswerUpdated(event: AnswerUpdatedEvent): Promise<void> {
 		await this.txHost.tx.answer.update({
 			where: { id: event.payload.answerId },
-			data: event.payload.data,
+			data: this.mapper.toAnswerOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 }

@@ -1,12 +1,12 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
 import { SectionType } from '../../enums/section-type.enum';
 import {
+	ChildSectionCreatedEvent,
+	ChildSectionMovedEvent,
 	QuestionCreatedEvent,
 	QuestionDeletedEvent,
 	QuestionMovedEvent,
-	SectionCreatedEvent,
 	SectionDeletedEvent,
-	SectionMovedEvent,
 	SectionUpdatedEvent,
 } from '../events/exam-management.event';
 import { ExamId } from './exam.entity';
@@ -80,7 +80,11 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 			this.contentType = options.contentType;
 		}
 		this.apply(
-			new SectionUpdatedEvent({ examId: this.examId, sectionId: this.id, details: options }),
+			new SectionUpdatedEvent({
+				examId: this.examId,
+				sectionId: this.id,
+				details: structuredClone(this),
+			}),
 		);
 	}
 
@@ -103,7 +107,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		const sectionId = Section.newId();
 		const section = this.insertChild(sectionId, idx);
 		this.apply(
-			new SectionCreatedEvent({
+			new ChildSectionCreatedEvent({
 				examId: this.examId,
 				parentId: this.id,
 				data: structuredClone(section),
@@ -134,7 +138,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
 		const section = this.insertChild(id, idx);
 		this.apply(
-			new SectionMovedEvent({
+			new ChildSectionMovedEvent({
 				examId: this.examId,
 				parentId: this.id,
 				sectionId: section.id,
@@ -236,7 +240,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 					questionId: child.id,
 					data: structuredClone(child),
 				})
-			:	new SectionMovedEvent({
+			:	new ChildSectionMovedEvent({
 					examId: this.examId,
 					parentId: this.id,
 					sectionId: child.id,
@@ -256,7 +260,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 						questionId: child.id,
 						data: structuredClone(child),
 					})
-				:	new SectionMovedEvent({
+				:	new ChildSectionMovedEvent({
 						examId: this.examId,
 						parentId: this.id,
 						sectionId: child.id,

@@ -10,6 +10,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient, Exam as PrismaExam } from '@prisma-client/exam';
+import { Section as PrismaSection } from '@prisma/client';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
@@ -28,7 +29,16 @@ export class ExamPrismaMapper {
 		});
 	}
 
-	toOrm(from: Exam): RepoExam {
+	toSectionOrm(from: ExamSection, examId: string): RepoSection {
+		return {
+			id: from.id,
+			examId: examId,
+			order: from.order,
+			parentId: null,
+		};
+	}
+
+	toExamOrm(from: Exam): RepoExam {
 		return {
 			createdBy: from.createdBy,
 			id: from.id.id,
@@ -66,21 +76,21 @@ export class ExamPrismaRepository implements IExamRepository {
 	}
 
 	async save(exam: Exam): Promise<void> {
-		const data = this.mapper.toOrm(exam);
+		const data = this.mapper.toExamOrm(exam);
 		await this.txHost.withTransaction(async () => {
 			// insert if lock is new version
-			if (data.version === 0) await this.txHost.tx.exam.create({ data });
+			if (data.version === 0) await this.txHost.tx.exam.create({ data: { ...data, version: 1 } });
+			// else update
+			else
+				await this.txHost.tx.exam.update({
+					where: { id: data.id, version: data.version },
+					data: { ...data, version: { increment: 1 } },
+				});
 
 			// handle events
 			for (const event of exam.getUncommittedEvents()) {
 				await this.handle(event);
 			}
-
-			// update or insert (because of lock)
-			await this.txHost.tx.exam.update({
-				where: { id: data.id, version: data.version },
-				data: { ...data, version: { increment: 1 } },
-			});
 		});
 	}
 
@@ -96,14 +106,14 @@ export class ExamPrismaRepository implements IExamRepository {
 
 	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
 		await this.txHost.tx.section.create({
-			data: { ...event.payload.data, examId: event.payload.examId.id },
+			data: this.mapper.toSectionOrm(event.payload.data, event.payload.examId.id),
 		});
 	}
 
 	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: { ...event.payload.data, parentId: null },
+			data: this.mapper.toSectionOrm(event.payload.data, event.payload.examId.id),
 		});
 	}
 
@@ -128,3 +138,5 @@ const examPrismaIncludeObj = {
 		orderBy: { order: 'asc' },
 	},
 } satisfies Prisma.ExamInclude;
+
+type RepoSection = Pick<PrismaSection, 'id' | 'order' | 'parentId' | 'examId'>;

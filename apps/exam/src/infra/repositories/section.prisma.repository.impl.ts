@@ -1,12 +1,12 @@
 import { ExamId } from '../../domain/entities/exam.entity';
 import { Section, SectionChild } from '../../domain/entities/section.entity';
 import {
+	ChildSectionCreatedEvent,
+	ChildSectionMovedEvent,
 	QuestionCreatedEvent,
 	QuestionDeletedEvent,
 	QuestionMovedEvent,
-	SectionCreatedEvent,
 	SectionDeletedEvent,
-	SectionMovedEvent,
 } from '../../domain/events/exam-management.event';
 import { ISectionRepository } from '../../domain/repositories/section.repository';
 import { ExamStatus } from '../../enums/exam-status.enum';
@@ -15,6 +15,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient, Section as PrismaSection } from '@prisma-client/exam';
+import { Question as PrismaQuestion } from '@prisma/client';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
@@ -48,7 +49,24 @@ export class SectionPrismaMapper {
 		});
 	}
 
-	toOrm(from: Section): RepoSection {
+	toChildQuestionOrm(from: SectionChild, parentId: string): RepoChildQuestion {
+		return {
+			id: from.id,
+			order: from.order,
+			sectionId: parentId,
+		};
+	}
+
+	toChildSectionOrm(from: SectionChild, parentId: string, examId: string): RepoChildSection {
+		return {
+			id: from.id,
+			order: from.order,
+			parentId: parentId,
+			examId: examId,
+		};
+	}
+
+	toParentSectionOrm(from: Section): RepoSection {
 		return {
 			id: from.id,
 			contentType: from.contentType,
@@ -132,7 +150,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	}
 
 	async save(section: Section): Promise<void> {
-		const data = this.mapper.toOrm(section);
+		const data = this.mapper.toParentSectionOrm(section);
 		await this.txHost.withTransaction(async () => {
 			// handle events
 			for (const event of section.getUncommittedEvents()) {
@@ -156,21 +174,21 @@ export class SectionPrismaRepository implements ISectionRepository {
 		if (event instanceof QuestionCreatedEvent) return await this.onQuestionCreated(event);
 		if (event instanceof QuestionMovedEvent) return await this.onQuestionMoved(event);
 		if (event instanceof QuestionDeletedEvent) return await this.onQuestionDeleted(event);
-		if (event instanceof SectionCreatedEvent) return await this.onSectionCreated(event);
-		if (event instanceof SectionMovedEvent) return await this.onSectionMoved(event);
+		if (event instanceof ChildSectionCreatedEvent) return await this.onChildSectionCreated(event);
+		if (event instanceof ChildSectionMovedEvent) return await this.onChildSectionMoved(event);
 		if (event instanceof SectionDeletedEvent) return await this.onSectionDeleted(event);
 	}
 
 	private async onQuestionCreated(event: QuestionCreatedEvent): Promise<void> {
 		await this.txHost.tx.question.create({
-			data: { ...event.payload.data, sectionId: event.payload.sectionId },
+			data: this.mapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
 		});
 	}
 
 	private async onQuestionMoved(event: QuestionMovedEvent): Promise<void> {
 		await this.txHost.tx.question.update({
 			where: { id: event.payload.questionId },
-			data: { ...event.payload.data, sectionId: event.payload.sectionId },
+			data: this.mapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
 		});
 	}
 
@@ -180,20 +198,24 @@ export class SectionPrismaRepository implements ISectionRepository {
 		});
 	}
 
-	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
+	private async onChildSectionCreated(event: ChildSectionCreatedEvent): Promise<void> {
 		await this.txHost.tx.section.create({
-			data: {
-				...event.payload.data,
-				examId: event.payload.examId.id,
-				parentId: event.payload.parentId,
-			},
+			data: this.mapper.toChildSectionOrm(
+				event.payload.data,
+				event.payload.parentId,
+				event.payload.examId.id,
+			),
 		});
 	}
 
-	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
+	private async onChildSectionMoved(event: ChildSectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: { ...event.payload.data, parentId: event.payload.parentId },
+			data: this.mapper.toChildSectionOrm(
+				event.payload.data,
+				event.payload.parentId,
+				event.payload.examId.id,
+			),
 		});
 	}
 
@@ -213,10 +235,13 @@ type ExtendedSection = Prisma.SectionGetPayload<{
 	};
 }>;
 
-export type RepoSection = Omit<PrismaSection, 'order'>;
+type RepoSection = Omit<PrismaSection, 'order'>;
 
 const sectionPrismaIncludeObject = {
 	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	exam: { select: { id: true, version: true, status: true } },
 } satisfies Prisma.SectionInclude;
+
+type RepoChildSection = Pick<PrismaSection, 'id' | 'parentId' | 'examId' | 'order'>;
+type RepoChildQuestion = Pick<PrismaQuestion, 'id' | 'sectionId' | 'order'>;

@@ -1,8 +1,5 @@
 import { type AttemptConfig } from '../entities/attempt-config.entity';
-import {
-	type AttemptAnswer,
-	type AttemptAnswerUpdatableProperties,
-} from '../entities/attempt.entity';
+import { type AttemptAnswer } from '../entities/attempt.entity';
 import { Event } from '@server/utils';
 
 // events
@@ -14,5 +11,5 @@ export class AttemptAnswerCreatedEvent extends Event<{
 }> {}
 export class AttemptAnswerUpdatedEvent extends Event<{
 	attemptId: string;
-	data: AttemptAnswerUpdatableProperties;
+	data: AttemptAnswer;
 }> {}
