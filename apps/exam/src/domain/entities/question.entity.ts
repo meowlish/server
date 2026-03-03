@@ -58,7 +58,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		this.examStatus = constructorOptions.examStatus;
 		this.sectionId = constructorOptions.sectionId;
 		this.content = constructorOptions.content ?? '';
-		this.type = constructorOptions.type ?? QuestionType.MCQ;
+		this.type = constructorOptions.type ?? QuestionType.MultipleChoiceSingle;
 		this.points = constructorOptions.points ?? 1;
 		this.explanation = constructorOptions.explanation ?? '';
 		this.answers = constructorOptions.answers ?? [];
