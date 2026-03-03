@@ -11,7 +11,7 @@ model Exam {
   duration    Int
 
   sections     Section[]
-  examAttempts ExamAttempt[]
+  examAttempts Attempt[]
 
   @@index([status])
   @@index([version])
@@ -31,9 +31,10 @@ model Section {
   parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id], onDelete: Cascade)
   questions     Question[]
 
-  ancestors     SectionClosure[] @relation("Ancestors")
-  descendants   SectionClosure[] @relation("Descendants")
-  childSections Section[]        @relation("SectionParent")
+  ancestors       SectionClosure[] @relation("Ancestors")
+  descendants     SectionClosure[] @relation("Descendants")
+  childSections   Section[]        @relation("SectionParent")
+  attemptSections AttemptSection[]
 
   @@index([examId])
   @@map("sections")

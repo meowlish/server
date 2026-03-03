@@ -9,8 +9,12 @@ import { ExamStatus } from '../../enums/exam-status.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient, Exam as PrismaExam } from '@prisma-client/exam';
-import { Section as PrismaSection } from '@prisma/client';
+import {
+	Prisma,
+	PrismaClient,
+	Exam as PrismaExam,
+	Section as PrismaSection,
+} from '@prisma-client/exam';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
@@ -20,7 +24,7 @@ export class ExamPrismaMapper {
 		return parseEnum(ExamStatus, from);
 	}
 
-	toDomain(from: ExtendedExam): Exam {
+	toExamAggregate(from: ExtendedExam): Exam {
 		return new Exam({
 			...from,
 			id: new ExamId(from.id, from.version),
@@ -63,7 +67,7 @@ export class ExamPrismaRepository implements IExamRepository {
 			where: { id: id },
 			include: examPrismaIncludeObj,
 		});
-		return foundExam ? this.mapper.toDomain(foundExam) : null;
+		return foundExam ? this.mapper.toExamAggregate(foundExam) : null;
 	}
 
 	async getParentExamOfSection(id: string): Promise<Exam> {
@@ -72,7 +76,7 @@ export class ExamPrismaRepository implements IExamRepository {
 			include: { exam: { include: examPrismaIncludeObj } },
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');
-		return this.mapper.toDomain(foundSection.exam);
+		return this.mapper.toExamAggregate(foundSection.exam);
 	}
 
 	async save(exam: Exam): Promise<void> {
@@ -95,7 +99,8 @@ export class ExamPrismaRepository implements IExamRepository {
 	}
 
 	async delete(exam: Exam): Promise<void> {
-		await this.txHost.tx.exam.delete({ where: { id: exam.id.id, version: exam.id.version } });
+		const data = this.mapper.toExamOrm(exam);
+		await this.txHost.tx.exam.delete({ where: { id: data.id, version: data.version } });
 	}
 
 	private async handle(event: Event<any>): Promise<void> {
@@ -126,7 +131,7 @@ export class ExamPrismaRepository implements IExamRepository {
 
 // extended exam type with JOINS
 type ExtendedExam = Prisma.ExamGetPayload<{
-	include: { sections: { where: { parentId: null }; select: { id: true; order: true } } };
+	include: typeof examPrismaIncludeObj;
 }>;
 
 type RepoExam = Omit<PrismaExam, 'updatedAt' | 'createdAt'>;

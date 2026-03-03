@@ -53,7 +53,7 @@ export class IdentityPrismaMapper {
 		};
 	}
 
-	toDomain(from: ExtendedIdentity): Identity {
+	toIdentityAggregate(from: ExtendedIdentity): Identity {
 		return new Identity({
 			...from,
 			roleIds: from.identityRoles.map(r => r.roleId),
@@ -81,7 +81,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
+		return foundIdentity ? this.mapper.toIdentityAggregate(foundIdentity) : null;
 	}
 
 	async findOneCredential(
@@ -100,7 +100,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			where: { username: username, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity ? this.mapper.toDomain(foundIdentity) : null;
+		return foundIdentity ? this.mapper.toIdentityAggregate(foundIdentity) : null;
 	}
 
 	async getClaimsOfId(
@@ -231,12 +231,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 
 // extended identity type with JOINS
 type ExtendedIdentity = Prisma.IdentityGetPayload<{
-	include: {
-		identityRoles: {
-			select: { roleId: true };
-		};
-		credentials: true;
-	};
+	include: typeof identityPrismaIncludeObj;
 }>;
 
 type RepoIdentity = Omit<PrismaIdentity, 'updatedAt' | 'createdAt'>;

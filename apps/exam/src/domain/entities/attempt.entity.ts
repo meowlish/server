@@ -15,32 +15,42 @@ export class AttemptAnswer implements IEntity<AttemptAnswer> {
 	public readonly id: string;
 	public questionId: string;
 	public isFlagged: boolean;
-	public answer: string | null;
+	public answers: Set<string>;
 	public note: string | null;
 
 	public constructor(constructorOptions: {
 		id?: string;
 		questionId: string;
 		isFlagged?: boolean;
-		answer?: string;
-		note?: string;
+		answers?: string[];
+		note?: string | null;
 	}) {
 		this.id = AttemptAnswer.newId();
 		this.questionId = constructorOptions.questionId;
 		this.isFlagged = constructorOptions.isFlagged ?? false;
-		this.answer = constructorOptions.answer ?? null;
+		this.answers = new Set(constructorOptions.answers);
 		this.note = constructorOptions.note ?? null;
 	}
 
-	public setAnswer(answer: string | null) {
-		this.answer = answer;
+	public setAnswer(answer: string): void {
+		if (this.answers.has(answer)) throw new ConflictException('Duplicate answer option');
+		this.answers.add(answer);
 	}
 
-	public toggleFlag() {
+	public deleteAnswer(answer: string): void {
+		if (!this.answers.has(answer)) throw new NotFoundException('AAnswer not found');
+		this.answers.delete(answer);
+	}
+
+	public clearAnswers(): void {
+		this.answers.clear();
+	}
+
+	public toggleFlag(): void {
 		this.isFlagged = !this.isFlagged;
 	}
 
-	public setNote(note: string) {
+	public setNote(note: string): void {
 		this.note = note;
 	}
 }
@@ -67,7 +77,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		attemptedBy: string;
 		examId: string;
 		startedAt: Date;
-		endedAt?: Date;
+		endedAt?: Date | null;
 		durationLimit: number; // in seconds
 		questionIds?: string[];
 		answers?: AttemptAnswer[];
@@ -114,7 +124,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId: questionId, answer: answer });
+			const newAnswer = new AttemptAnswer({ questionId: questionId, answers: [answer] });
 			this.answers.push(newAnswer);
 			this.apply(
 				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
@@ -122,12 +132,33 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		}
 	}
 
+	public deleteAnswer(questionId: string, answer: string, timeStamp: Date): void;
+	public deleteAnswer(questionId: string, timeStamp: Date): void;
 	// pass timeStamp in as early as possible
-	public deleteAnswer(questionId: string, timeStamp: Date): void {
+	public deleteAnswer(
+		questionId: string,
+		answerOrTimestamp: string | Date,
+		maybeTimeStamp?: Date,
+	): void {
+		let answer: string | null;
+		let timeStamp: Date;
+
+		if (answerOrTimestamp instanceof Date) {
+			answer = null;
+			timeStamp = answerOrTimestamp;
+		} else {
+			answer = answerOrTimestamp;
+			if (!maybeTimeStamp) {
+				throw new Error('Timestamp is required when deleting specific answer');
+			}
+			timeStamp = maybeTimeStamp;
+		}
+
 		this.assertModifiable(timeStamp);
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (!existingAnswer) throw new NotFoundException('Answer not found');
-		existingAnswer.setAnswer(null);
+		if (answer) existingAnswer.deleteAnswer(answer);
+		else existingAnswer.clearAnswers();
 		this.apply(
 			new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: structuredClone(existingAnswer) }),
 		);

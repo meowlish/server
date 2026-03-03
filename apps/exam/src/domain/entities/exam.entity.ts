@@ -224,7 +224,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		}
 	}
 
-	public createAttempt(options: NewAttemptInfo): AttemptConfig {
+	public createAttempt(attemptedBy: string, options: NewAttemptInfo): AttemptConfig {
 		if (this.status !== ExamStatus.APPROVED)
 			throw new MethodNotAllowedException('Exam must be approved before attempting');
 		if (options.sectionIds) {
@@ -236,7 +236,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 			if (options.sectionIds.length === this.sections.length) options.sectionIds = undefined;
 		}
 		return new AttemptConfig({
-			attemptedBy: options.id,
+			attemptedBy: attemptedBy,
 			isStrict: options.isStrict,
 			durationLimit: options.isStrict ? this.duration : (options.durationLimit ?? this.duration),
 			examId: this.id,
@@ -246,7 +246,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	}
 }
 
-export type NewAttemptRequiredInfo = Pick<Attempt, 'id' | 'startedAt' | 'isStrict'>;
+export type NewAttemptRequiredInfo = Pick<Attempt, 'startedAt' | 'isStrict'>;
 export type NewAttemptOptionalInfo = Partial<Pick<Attempt, 'isStrict' | 'durationLimit'>> & {
 	sectionIds?: string[];
 };

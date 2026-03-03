@@ -1,8 +1,13 @@
 import { ExamManagementHandlers } from './app/commands/handlers';
 import { config } from './configs/config';
+import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';
 import { ISectionRepositoryToken } from './domain/repositories/section.repository';
+import {
+	AttemptPrismaMapper,
+	AttemptPrismaRepository,
+} from './infra/repositories/attempt.prisma.repository.impl';
 import {
 	ExamPrismaMapper,
 	ExamPrismaRepository,
@@ -72,6 +77,11 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: IQuestionRepositoryToken,
 			useClass: QuestionPrismaRepository,
+		},
+		AttemptPrismaMapper,
+		{
+			provide: IAttemptRepositoryToken,
+			useClass: AttemptPrismaRepository,
 		},
 		{
 			provide: APP_GUARD,

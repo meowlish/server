@@ -30,7 +30,7 @@ export class QuestionPrismaMapper {
 		return parseEnum(ExamStatus, from);
 	}
 
-	toDomain(from: ExtendedQuestion): Question {
+	toQuestionAggregate(from: ExtendedQuestion): Question {
 		return new Question({
 			id: from.id,
 			examId: new ExamId(from.section.exam.id, from.section.exam.version),
@@ -79,7 +79,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 			where: { id: id },
 			include: questionPrismaIncludeObj,
 		});
-		return foundQuestion ? this.mapper.toDomain(foundQuestion) : null;
+		return foundQuestion ? this.mapper.toQuestionAggregate(foundQuestion) : null;
 	}
 
 	async save(question: Question): Promise<void> {
@@ -133,15 +133,12 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 // extended question type with JOINS
 type ExtendedQuestion = Prisma.QuestionGetPayload<{
-	include: {
-		answers: true;
-		section: { include: { exam: { select: { id: true; version: true; status: true } } } };
-	};
+	include: typeof questionPrismaIncludeObj;
 }>;
 
 type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
 	answers: true,
-	section: { include: { exam: { select: { id: true, version: true, status: true } } } },
+	section: { select: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

@@ -14,8 +14,12 @@ import { SectionType } from '../../enums/section-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient, Section as PrismaSection } from '@prisma-client/exam';
-import { Question as PrismaQuestion } from '@prisma/client';
+import {
+	Prisma,
+	PrismaClient,
+	Question as PrismaQuestion,
+	Section as PrismaSection,
+} from '@prisma-client/exam';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
@@ -29,7 +33,7 @@ export class SectionPrismaMapper {
 		return parseEnum(SectionType, from);
 	}
 
-	toDomain(from: ExtendedSection): Section {
+	toSectionAggregate(from: ExtendedSection): Section {
 		let children: SectionChild[];
 		const contentType: SectionType = this.mapSectionType(from.contentType);
 
@@ -90,7 +94,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: id },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toDomain(foundSection) : null;
+		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
 	}
 
 	async getParentSectionOfQuestion(id: string): Promise<Section> {
@@ -99,7 +103,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			include: { section: { include: sectionPrismaIncludeObject } },
 		});
 		if (!foundQuestion) throw new NotFoundException('Question not found.');
-		return this.mapper.toDomain(foundQuestion.section);
+		return this.mapper.toSectionAggregate(foundQuestion.section);
 	}
 
 	async getParentSectionOfSection(id: string): Promise<Section | null> {
@@ -109,7 +113,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');
 		const foundParentSection = foundSection.parentSection;
-		return foundParentSection ? this.mapper.toDomain(foundParentSection) : null;
+		return foundParentSection ? this.mapper.toSectionAggregate(foundParentSection) : null;
 	}
 
 	// check again
@@ -128,7 +132,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: id, examId: foundBaseSection.examId },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toDomain(foundSection) : null;
+		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
 	}
 
 	// check again
@@ -146,7 +150,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: id, examId: foundQuestion.section.examId },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toDomain(foundSection) : null;
+		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
 	}
 
 	async save(section: Section): Promise<void> {
@@ -159,7 +163,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 			// update the main section with lock
 			await this.txHost.tx.section.update({
-				where: { id: section.id, exam: { id: section.examId.id, version: section.examId.version } },
+				where: { id: data.id, exam: { id: section.examId.id, version: section.examId.version } },
 				data: data,
 			});
 
@@ -228,11 +232,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 // extended section type with JOINS
 type ExtendedSection = Prisma.SectionGetPayload<{
-	include: {
-		childSections: { select: { id: true; order: true } };
-		questions: { select: { id: true; order: true } };
-		exam: { select: { id: true; version: true; status: true } };
-	};
+	include: typeof sectionPrismaIncludeObject;
 }>;
 
 type RepoSection = Omit<PrismaSection, 'order'>;

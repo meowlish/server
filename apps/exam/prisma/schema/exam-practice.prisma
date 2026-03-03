@@ -1,8 +1,7 @@
-model ExamAttempt {
+model Attempt {
   id            String    @id @default(uuid())
   attemptedBy   String    @map("attempted_by")
   examId        String    @map("exam_id")
-  sectionIds    String[]
   startedAt     DateTime  @map("started_at")
   endedAt       DateTime? @map("ended_at")
   durationLimit Int       @map("duration_limit")
@@ -10,12 +9,24 @@ model ExamAttempt {
   totalPoints   Int?      @map("total_points")
   isStrict      Boolean   @map("is_strict")
 
-  exam           Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
-  attemptAnswers AttemptAnswer[]
+  exam            Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
+  attemptAnswers  AttemptAnswer[]
+  attemptSections AttemptSection[]
 
   @@index([attemptedBy])
   @@index([examId])
   @@map("exam_attempts")
+}
+
+model AttemptSection {
+  attemptId String @map("attempt_id")
+  sectionId String @map("section_id")
+
+  attempt Attempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([attemptId, sectionId])
+  @@map("attempt_sections")
 }
 
 model AttemptAnswer {
@@ -26,8 +37,8 @@ model AttemptAnswer {
   isFlagged  Boolean  @default(false) @map("is_flagged")
   note       String?
 
-  attempt  ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([attemptId, questionId])
   @@index([attemptId])
