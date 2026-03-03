@@ -89,7 +89,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 			// optimistic lock
 			await this.txHost.tx.question.update({
 				where: {
-					id: question.id,
+					id: data.id,
 					section: { exam: { id: question.examId.id, version: question.examId.version } },
 				},
 				data: data,
