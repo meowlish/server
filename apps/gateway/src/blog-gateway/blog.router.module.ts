@@ -1,5 +1,5 @@
-import { BLOG_CLIENT } from './constants/blog';
 import { BlogGatewayController } from './blog.router.controller';
+import { BLOG_CLIENT } from './constants/blog';
 import { Module } from '@nestjs/common';
 import { ErrorHandlingGrpcProxy } from '@server/utils';
 import { join } from 'path';

@@ -1,21 +1,21 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Exclude()
 export class RegisterMailDto {
-	@ApiProperty({ example: 'user@example.com', description: 'User email address' })
 	@Expose()
 	@IsEmail()
+	@ApiProperty({ example: 'user@example.com', description: 'User email address' })
 	mail!: string;
 
-	@ApiProperty({ example: 'JohnDoe', description: 'Username for the new account' })
 	@Expose()
 	@IsString()
+	@ApiProperty({ example: 'JohnDoe', description: 'Username for the new account' })
 	username!: string;
 
-	@ApiProperty({ example: 'StrongP@ssw0rd!', description: 'Strong password for the account' })
 	@Expose()
 	@IsStrongPassword()
+	@ApiProperty({ example: 'StrongP@ssw0rd!', description: 'Strong password for the account' })
 	password!: string;
 }

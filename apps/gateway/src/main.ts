@@ -2,9 +2,9 @@ import { GatewayModule } from './gateway.module';
 import { INestApplicationContext, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppLoggerService } from '@server/logger';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { join } from 'path';
+import { AppLoggerService } from '@server/logger';
+
 const useLogger = (module: INestApplicationContext) => {
 	const logger = module.get(AppLoggerService);
 	module.useLogger(logger);

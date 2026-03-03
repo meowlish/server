@@ -192,7 +192,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	private async onCredAdded(event: CredAddedEvent): Promise<void> {
 		try {
 			await this.txHost.tx.credential.create({
-				data: { ...event.payload.data, identityId: event.payload.identityId },
+				data: this.mapper.toCredentialOrm(event.payload.data, event.payload.identityId),
 			});
 		} catch (e) {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {
