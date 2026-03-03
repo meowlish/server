@@ -65,9 +65,8 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 	}
 
 	private assertModifiable(): void {
-		if (this.examStatus === ExamStatus.APPROVED) {
+		if (this.examStatus === ExamStatus.APPROVED)
 			throw new ConflictException('Exam is already approved and can no longer be updated.');
-		}
 	}
 
 	public updateDetails(options: {

@@ -1,3 +1,4 @@
+import { QuestionType } from '../../enums/question-type.enum';
 import {
 	AttemptAnswerCreatedEvent,
 	AttemptAnswerUpdatedEvent,
@@ -68,7 +69,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public startedAt: Date;
 	public endedAt: Date | null;
 	public durationLimit: number;
-	public questionIds: Set<string>;
+	public readonly questions: Map<string, QuestionType>;
 	public answers: AttemptAnswer[];
 	public isStrict: boolean;
 
@@ -79,7 +80,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		startedAt: Date;
 		endedAt?: Date | null;
 		durationLimit: number; // in seconds
-		questionIds?: string[];
+		questions?: { id: string; type: QuestionType }[];
 		answers?: AttemptAnswer[];
 		isStrict?: boolean;
 	}) {
@@ -87,7 +88,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.id = constructorOptions.id ?? Attempt.newId();
 		this.attemptedBy = constructorOptions.attemptedBy;
 		this.examId = constructorOptions.examId;
-		this.questionIds = new Set(constructorOptions.questionIds);
+		this.questions = new Map(constructorOptions.questions?.map(q => [q.id, q.type]));
 		this.startedAt = constructorOptions.startedAt;
 		this.endedAt = constructorOptions.endedAt ?? null;
 		this.durationLimit = constructorOptions.durationLimit;
@@ -112,11 +113,11 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	// pass timeStamp in as early as possible
 	public answer(questionId: string, answer: string, timeStamp: Date): void {
 		this.assertModifiable(timeStamp);
-		if (!this.questionIds.has(questionId))
+		if (!this.questions.has(questionId))
 			throw new ConflictException("Question isn't included in this attempt");
 		const existingAnswer = this.answers.find(a => a.questionId === questionId);
 		if (existingAnswer) {
-			existingAnswer.setAnswer(answer);
+			this.answerBasedOnQuestionType(existingAnswer, answer);
 			this.apply(
 				new AttemptAnswerUpdatedEvent({
 					attemptId: this.id,
@@ -130,6 +131,23 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
 			);
 		}
+	}
+
+	private answerBasedOnQuestionType(attemptAnswer: AttemptAnswer, answer: string): void {
+		const replaceTypes = [
+			QuestionType.FillInTheBlank,
+			QuestionType.MultipleChoiceSingle,
+			QuestionType.Writing,
+		];
+		const questionType = this.questions.get(attemptAnswer.questionId);
+		if (!questionType)
+			throw new ConflictException('Attempting to answer question outside selected sections');
+		if (replaceTypes.includes(questionType)) {
+			attemptAnswer.clearAnswers();
+			attemptAnswer.setAnswer(answer);
+			return;
+		}
+		attemptAnswer.setAnswer(answer);
 	}
 
 	public deleteAnswer(questionId: string, answer: string, timeStamp: Date): void;

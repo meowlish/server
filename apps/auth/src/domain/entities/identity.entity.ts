@@ -78,7 +78,6 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}
 
 	public updateCredential(credId: string, updateOptions: CredentialUpdatableProperties): void {
-		if (!Object.keys(updateOptions).length) return;
 		const credential = this.credentials.find(cred => cred.id === credId);
 		if (!credential) throw new NotFoundException('Credential not found');
 		credential.update(updateOptions);
@@ -102,9 +101,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}
 
 	public softDelete(): void {
-		if (this.deletedAt !== null) {
-			throw new NotFoundException('Identity was already deleted');
-		}
+		if (this.deletedAt !== null) throw new NotFoundException('Identity was already deleted');
 		this.deletedAt = new Date();
 	}
 }

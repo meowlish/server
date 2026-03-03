@@ -2,13 +2,19 @@ import { AttemptConfig } from '../../domain/entities/attempt-config.entity';
 import { AttemptEvaluator } from '../../domain/entities/attempt-evaluator.entity';
 import { Attempt, AttemptAnswer } from '../../domain/entities/attempt.entity';
 import { IAttemptRepository } from '../../domain/repositories/attempt.repository';
+import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
 import { Prisma, Attempt as PrismaAttempt, PrismaClient } from '@prisma-client/exam';
+import { parseEnum } from '@server/utils';
 
 @Injectable()
 export class AttemptPrismaMapper {
+	mapQuestionType(from: string): QuestionType {
+		return parseEnum(QuestionType, from);
+	}
+
 	toAttemptOrm(from: Attempt): RepoAttempt {
 		return { ...from };
 	}
@@ -22,11 +28,11 @@ export class AttemptPrismaMapper {
 	}
 
 	toAttemptAggregate(from: ExtendedAttempt): Attempt {
-		const questionIds = [
-			...from.attemptSections.flatMap(s =>
-				s.section.descendants.flatMap(d => d.descendant.questions.map(q => q.id)),
-			),
-		];
+		const questions = from.attemptSections
+			.map(x => x.section)
+			.flatMap(section => section.descendants)
+			.flatMap(d => d.descendant)
+			.flatMap(d => d.questions.map(x => ({ ...x, type: this.mapQuestionType(x.type) })));
 
 		return new Attempt({
 			id: from.id,
@@ -46,7 +52,7 @@ export class AttemptPrismaMapper {
 						note: a.note,
 					}),
 			),
-			questionIds: questionIds,
+			questions: questions,
 		});
 	}
 }
@@ -93,7 +99,7 @@ const attemptPrismaIncludeObject = {
 			section: {
 				select: {
 					descendants: {
-						select: { descendant: { select: { questions: { select: { id: true } } } } },
+						select: { descendant: { select: { questions: { select: { id: true, type: true } } } } },
 					},
 				},
 			},
