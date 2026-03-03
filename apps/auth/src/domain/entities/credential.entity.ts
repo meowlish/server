@@ -10,7 +10,7 @@ export class Credential implements IEntity<Credential> {
 	public readonly id: string;
 	public identifier: string;
 	public loginType: LoginType;
-	private _secretHash!: string | null;
+	public secretHash: string | null;
 
 	public constructor(constructorOptions: {
 		id?: string;
@@ -22,16 +22,15 @@ export class Credential implements IEntity<Credential> {
 		this.id = constructorOptions.id ?? Credential.newId();
 		this.identifier = constructorOptions.identifier;
 		this.loginType = constructorOptions.loginType;
-		if (constructorOptions.isHashed) this._secretHash = constructorOptions.secretHash ?? null;
-		else this.secretHash = constructorOptions.secretHash ?? null;
+		if (constructorOptions.isHashed) this.secretHash = constructorOptions.secretHash ?? null;
+		else {
+			this.secretHash = constructorOptions.secretHash ?? null; // to shut the TS server up while not violating any rules
+			this.setSecretHash(this.secretHash);
+		}
 	}
 
-	public get secretHash() {
-		return this._secretHash;
-	}
-
-	public set secretHash(inp: string | null) {
-		this._secretHash = inp ? bcrypt.hashSync(inp, 10) : inp;
+	public setSecretHash(inp: string | null) {
+		this.secretHash = inp ? bcrypt.hashSync(inp, 10) : inp;
 	}
 
 	public update(options: CredentialUpdatableProperties): void {
