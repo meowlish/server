@@ -25,7 +25,8 @@
 					"command": "dotenv -e .env.development pnpm exec prisma db push"
 				}
 			},
-			"inputs": ["{projectRoot}/prisma/**/*.prisma"]
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"defaultConfiguration": "development"
 		},
 		"build": {
 			"executor": "nx:run-commands",
