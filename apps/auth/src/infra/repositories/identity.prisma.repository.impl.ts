@@ -77,7 +77,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	) {}
 
 	async findOneById(id: string, deleted = false): Promise<Identity | null> {
-		const foundIdentity = await this.txHost.tx.identity.findFirst({
+		const foundIdentity = await this.txHost.tx.identity.findUnique({
 			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
@@ -88,15 +88,15 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		identifier: string,
 		loginType: LoginType,
 	): Promise<{ identityId: string; secretHash: string | null } | null> {
-		const foundCredential = await this.txHost.tx.credential.findFirst({
-			where: { loginType: loginType, identifier: identifier },
+		const foundCredential = await this.txHost.tx.credential.findUnique({
+			where: { identifier_loginType: { identifier: identifier, loginType: loginType } },
 			select: { identityId: true, secretHash: true },
 		});
 		return foundCredential;
 	}
 
 	async findOneByUsername(username: string, deleted = false): Promise<Identity | null> {
-		const foundIdentity = await this.txHost.tx.identity.findFirst({
+		const foundIdentity = await this.txHost.tx.identity.findUnique({
 			where: { username: username, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
@@ -107,7 +107,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		id: string,
 		deleted = false,
 	): Promise<{ roles: Role[]; permissions: Permission[] }> {
-		const foundIdentity = await this.txHost.tx.identity.findFirst({
+		const foundIdentity = await this.txHost.tx.identity.findUnique({
 			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: {
 				identityRoles: {

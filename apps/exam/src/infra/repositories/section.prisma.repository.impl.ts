@@ -98,7 +98,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	}
 
 	async getParentSectionOfQuestion(id: string): Promise<Section> {
-		const foundQuestion = await this.txHost.tx.question.findFirst({
+		const foundQuestion = await this.txHost.tx.question.findUnique({
 			where: { id: id },
 			include: { section: { include: sectionPrismaIncludeObject } },
 		});
@@ -107,7 +107,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	}
 
 	async getParentSectionOfSection(id: string): Promise<Section | null> {
-		const foundSection = await this.txHost.tx.section.findFirst({
+		const foundSection = await this.txHost.tx.section.findUnique({
 			where: { id: id },
 			include: { parentSection: { include: sectionPrismaIncludeObject } },
 		});

@@ -65,7 +65,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 	) {}
 
 	async findOne(id: string): Promise<Attempt | null> {
-		const foundAttempt = await this.txHost.tx.attempt.findFirst({
+		const foundAttempt = await this.txHost.tx.attempt.findUnique({
 			where: { id: id },
 			include: attemptPrismaIncludeObject,
 		});
