@@ -2,7 +2,7 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { AttemptCommand } from '../../practice/exam.create-attempt.command';
+import { AttemptCommand } from '../../practice/exam.attempt.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 

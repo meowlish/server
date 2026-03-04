@@ -2,7 +2,7 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { ToggleFlagCommand } from '../../practice/exam.flag.command';
+import { ToggleFlagCommand } from '../../practice/exam.toggle-flag.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
