@@ -86,6 +86,10 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			await this.txHost.tx.attempt.create({ data: data });
 		}
 	}
+
+	async deleteMany(ids: string[]): Promise<void> {
+		await this.txHost.tx.attempt.deleteMany({ where: { id: { in: ids } } });
+	}
 }
 
 type ExtendedAttempt = Prisma.AttemptGetPayload<{
