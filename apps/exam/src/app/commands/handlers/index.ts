@@ -1,3 +1,9 @@
+import { AddNoteHandler } from './practice/add-note.handler';
+import { AnswerHandler } from './practice/answer.handler';
+import { AttemptHandler } from './practice/attempt.handler';
+import { RemoveAnswerHandler } from './practice/delete-answer.handler';
+import { EndAttemptHandler } from './practice/end-attempt.handler';
+import { ToggleFlagHandler } from './practice/toggle-flag.handler';
 import { CreateExamHandler } from './staff/create-exam.handler';
 import { CreateQuestionHandler } from './staff/create-question.handler';
 import { CreateSectionHandler } from './staff/create-section.handler';
@@ -26,4 +32,11 @@ export const ExamManagementHandlers = [
 	ReviewExamHandler,
 ];
 
-export const ExamPracticeHandlers = [];
+export const ExamPracticeHandlers = [
+	AnswerHandler,
+	RemoveAnswerHandler,
+	AddNoteHandler,
+	ToggleFlagHandler,
+	AttemptHandler,
+	EndAttemptHandler,
+];

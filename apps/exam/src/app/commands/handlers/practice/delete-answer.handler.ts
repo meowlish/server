@@ -2,12 +2,12 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { DeleteAnswerCommand } from '../../practice/exam.delete-answer.command';
+import { RemoveAnswerCommand } from '../../practice/exam.remove-answer.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-@CommandHandler(DeleteAnswerCommand)
-export class DeleteAnswerHandler implements ICommandHandler<DeleteAnswerCommand> {
+@CommandHandler(RemoveAnswerCommand)
+export class RemoveAnswerHandler implements ICommandHandler<RemoveAnswerCommand> {
 	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
 
 	public async execute(): Promise<void> {

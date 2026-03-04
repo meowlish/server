@@ -2,12 +2,12 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { CreateAttemptCommand } from '../../practice/exam.create-attempt.command';
+import { ToggleFlagCommand } from '../../practice/exam.flag.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-@CommandHandler(CreateAttemptCommand)
-export class CreateAttemptHandler implements ICommandHandler<CreateAttemptCommand> {
+@CommandHandler(ToggleFlagCommand)
+export class ToggleFlagHandler implements ICommandHandler<ToggleFlagCommand> {
 	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
 
 	public async execute(): Promise<void> {

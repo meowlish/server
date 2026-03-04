@@ -2,12 +2,12 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { ScoreCommand } from '../../practice/exam.score.command';
+import { AttemptCommand } from '../../practice/exam.create-attempt.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-@CommandHandler(ScoreCommand)
-export class ScoreHandler implements ICommandHandler<ScoreCommand> {
+@CommandHandler(AttemptCommand)
+export class AttemptHandler implements ICommandHandler<AttemptCommand> {
 	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
 
 	public async execute(): Promise<void> {
