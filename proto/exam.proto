@@ -17,6 +17,14 @@ service ExamManagementService {
 	rpc MoveSection(MoveSectionDto) returns (common.Empty) {}
 	rpc MoveQuestion(MoveQuestionDto) returns (common.Empty) {}
 	rpc ReviewExam(ReviewExamDto) returns (common.Empty) {}
+
+    // for users attempts
+	rpc Attempt(AttemptDto) returns (common.Empty) {}
+	rpc EndAttempt(EndAttemptDto) returns (common.Empty) {}
+	rpc Answer(AnswerDto) returns (common.Empty) {}
+	rpc RemoveAnswer(RemoveAnswerDto) returns (common.Empty) {}
+	rpc AddNote(AddNoteDto) returns (common.Empty) {}
+	rpc ToggleFlag(ToggleFlagDto) returns (common.Empty) {}
 }
 
 // Request
@@ -64,11 +72,11 @@ message UpdateQuestionDto {
 
 	repeated AddAnswer add_answers        = 6;
 	repeated string    delete_answers_ids = 7;
-}
 
-message AddAnswer {
-	string content    = 1;
-	bool   is_correct = 2;
+	message AddAnswer {
+		string content    = 1;
+		bool   is_correct = 2;
+	}
 }
 
 message DeleteExamDto {
@@ -99,4 +107,46 @@ message MoveQuestionDto {
 message ReviewExamDto {
 	string id     = 1;
 	string status = 2;
+}
+
+message AttemptDto {
+	string user_id     = 1;
+	string exam_id     = 2;
+	string attempt_id  = 3;
+	string question_id = 4;
+
+	Options options = 5;
+
+	message Options {
+		bool            is_strict   = 1;
+		int32           duration    = 2;
+		repeated string section_ids = 3;
+	}
+}
+
+message EndAttemptDto {
+	string attempt_id = 1;
+}
+
+message AnswerDto {
+	string attempt_id  = 1;
+	string question_id = 2;
+	string answer      = 3;
+}
+
+message RemoveAnswerDto {
+	string          attempt_id  = 1;
+	string          question_id = 2;
+	optional string answer      = 3;
+}
+
+message AddNoteDto {
+	string attempt_id  = 1;
+	string question_id = 2;
+	string note        = 3;
+}
+
+message ToggleFlagDto {
+	string attempt_id  = 1;
+	string question_id = 2;
 }

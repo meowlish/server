@@ -13,7 +13,7 @@ import {
 } from 'class-validator';
 
 @Exclude()
-class AddAnswer implements exam.AddAnswer {
+class AddAnswer implements exam.UpdateQuestionDto_AddAnswer {
 	@Expose()
 	@IsString()
 	content!: string;
