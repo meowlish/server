@@ -1,18 +1,22 @@
 import {
-	type IExamRepository,
-	IExamRepositoryToken,
-} from '../../../../domain/repositories/exam.repository';
+	type IAttemptRepository,
+	IAttemptRepositoryToken,
+} from '../../../../domain/repositories/attempt.repository';
 import { AddNoteCommand } from '../../practice/exam.add-note.command';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(AddNoteCommand)
 export class AddNoteHandler implements ICommandHandler<AddNoteCommand> {
-	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
+	constructor(
+		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
+	) {}
 
-	public async execute(): Promise<void> {
-		return new Promise<void>(() => {
-			return;
-		});
+	public async execute(command: AddNoteCommand): Promise<void> {
+		const payload = command.payload;
+		const attempt = await this.attemptRepository.findOne(payload.attemptId);
+		if (!attempt) throw new NotFoundException('Attempt not found');
+		attempt.addNote(payload.questionId, payload.note);
+		await this.attemptRepository.save(attempt);
 	}
 }

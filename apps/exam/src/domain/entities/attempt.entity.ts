@@ -39,7 +39,7 @@ export class AttemptAnswer implements IEntity<AttemptAnswer> {
 	}
 
 	public deleteAnswer(answer: string): void {
-		if (!this.answers.has(answer)) throw new NotFoundException('AAnswer not found');
+		if (!this.answers.has(answer)) throw new NotFoundException('Answer not found');
 		this.answers.delete(answer);
 	}
 

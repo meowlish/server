@@ -1,18 +1,35 @@
 import {
+	type IAttemptRepository,
+	IAttemptRepositoryToken,
+} from '../../../../domain/repositories/attempt.repository';
+import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
 import { AttemptCommand } from '../../practice/exam.attempt.command';
-import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Inject, NotFoundException } from '@nestjs/common';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(AttemptCommand)
 export class AttemptHandler implements ICommandHandler<AttemptCommand> {
-	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
+	constructor(
+		@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository,
+		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
+		private eventBus: EventBus,
+	) {}
 
-	public async execute(): Promise<void> {
-		return new Promise<void>(() => {
-			return;
+	public async execute(command: AttemptCommand): Promise<void> {
+		const payload = command.payload;
+		const timeStamp = new Date();
+		const exam = await this.examRepository.findOne(payload.examId);
+		if (!exam) throw new NotFoundException('Exam not found');
+		const attemptConfig = exam.createAttempt(payload.userId, {
+			startedAt: timeStamp,
+			isStrict: payload.options.isStrict,
+			durationLimit: payload.options.duration,
+			sectionIds: payload.options.sectionIds,
 		});
+		await this.attemptRepository.save(attemptConfig);
+		this.eventBus.publishAll(attemptConfig.getUncommittedEvents());
 	}
 }

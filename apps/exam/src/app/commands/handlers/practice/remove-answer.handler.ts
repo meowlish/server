@@ -2,24 +2,23 @@ import {
 	type IAttemptRepository,
 	IAttemptRepositoryToken,
 } from '../../../../domain/repositories/attempt.repository';
-import { EndAttemptCommand } from '../../practice/exam.end-attempt.command';
+import { RemoveAnswerCommand } from '../../practice/exam.remove-answer.command';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-@CommandHandler(EndAttemptCommand)
-export class EndAttemptHandler implements ICommandHandler<EndAttemptCommand> {
+@CommandHandler(RemoveAnswerCommand)
+export class RemoveAnswerHandler implements ICommandHandler<RemoveAnswerCommand> {
 	constructor(
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
-		private eventBus: EventBus,
 	) {}
 
-	public async execute(command: EndAttemptCommand): Promise<void> {
+	public async execute(command: RemoveAnswerCommand): Promise<void> {
 		const payload = command.payload;
 		const timeStamp = new Date();
 		const attempt = await this.attemptRepository.findOne(payload.attemptId);
 		if (!attempt) throw new NotFoundException('Attempt not found');
-		attempt.endAttempt(timeStamp);
+		if (payload.answer) attempt.deleteAnswer(payload.questionId, payload.answer, timeStamp);
+		else attempt.deleteAnswer(payload.questionId, timeStamp);
 		await this.attemptRepository.save(attempt);
-		this.eventBus.publishAll(attempt.getUncommittedEvents());
 	}
 }
