@@ -155,20 +155,6 @@ export interface ExamManagementServiceClient {
   moveQuestion(request: MoveQuestionDto, metadata?: Metadata): Observable<Empty>;
 
   reviewExam(request: ReviewExamDto, metadata?: Metadata): Observable<Empty>;
-
-  /** for users attempts */
-
-  attempt(request: AttemptDto, metadata?: Metadata): Observable<Empty>;
-
-  endAttempt(request: EndAttemptDto, metadata?: Metadata): Observable<Empty>;
-
-  answer(request: AnswerDto, metadata?: Metadata): Observable<Empty>;
-
-  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): Observable<Empty>;
-
-  addNote(request: AddNoteDto, metadata?: Metadata): Observable<Empty>;
-
-  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Observable<Empty>;
 }
 
 export interface ExamManagementServiceController {
@@ -195,20 +181,6 @@ export interface ExamManagementServiceController {
   moveQuestion(request: MoveQuestionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
 
   reviewExam(request: ReviewExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  /** for users attempts */
-
-  attempt(request: AttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  endAttempt(request: EndAttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  answer(request: AnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  addNote(request: AddNoteDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
-
-  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
 }
 
 export function ExamManagementServiceControllerMethods() {
@@ -226,12 +198,6 @@ export function ExamManagementServiceControllerMethods() {
       "moveSection",
       "moveQuestion",
       "reviewExam",
-      "attempt",
-      "endAttempt",
-      "answer",
-      "removeAnswer",
-      "addNote",
-      "toggleFlag",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
@@ -246,3 +212,48 @@ export function ExamManagementServiceControllerMethods() {
 }
 
 export const EXAM_MANAGEMENT_SERVICE_NAME = "ExamManagementService";
+
+export interface ExamPracticeServiceClient {
+  attempt(request: AttemptDto, metadata?: Metadata): Observable<Empty>;
+
+  endAttempt(request: EndAttemptDto, metadata?: Metadata): Observable<Empty>;
+
+  answer(request: AnswerDto, metadata?: Metadata): Observable<Empty>;
+
+  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): Observable<Empty>;
+
+  addNote(request: AddNoteDto, metadata?: Metadata): Observable<Empty>;
+
+  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Observable<Empty>;
+}
+
+export interface ExamPracticeServiceController {
+  attempt(request: AttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  endAttempt(request: EndAttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  answer(request: AnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  addNote(request: AddNoteDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+}
+
+export function ExamPracticeServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["attempt", "endAttempt", "answer", "removeAnswer", "addNote", "toggleFlag"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("ExamPracticeService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("ExamPracticeService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const EXAM_PRACTICE_SERVICE_NAME = "ExamPracticeService";

@@ -17,8 +17,9 @@ service ExamManagementService {
 	rpc MoveSection(MoveSectionDto) returns (common.Empty) {}
 	rpc MoveQuestion(MoveQuestionDto) returns (common.Empty) {}
 	rpc ReviewExam(ReviewExamDto) returns (common.Empty) {}
+}
 
-    // for users attempts
+service ExamPracticeService {
 	rpc Attempt(AttemptDto) returns (common.Empty) {}
 	rpc EndAttempt(EndAttemptDto) returns (common.Empty) {}
 	rpc Answer(AnswerDto) returns (common.Empty) {}
