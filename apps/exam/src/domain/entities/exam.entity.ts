@@ -226,7 +226,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	public createAttempt(attemptedBy: string, options: NewAttemptInfo): AttemptConfig {
 		if (this.status !== ExamStatus.APPROVED)
 			throw new MethodNotAllowedException('Exam must be approved before attempting');
-		if (options.sectionIds) {
+		if (!options.isStrict && options.sectionIds) {
 			options.sectionIds = [...new Set(options.sectionIds)];
 			const sectionIdSet = new Set(this.sections.map(s => s.id));
 			const allExist = options.sectionIds.every(id => sectionIdSet.has(id));
@@ -240,7 +240,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 			durationLimit: options.isStrict ? this.duration : (options.durationLimit ?? this.duration),
 			examId: this.id,
 			startedAt: options.startedAt,
-			sectionIds: options.sectionIds,
+			sectionIds: options.isStrict ? [] : options.sectionIds,
 		});
 	}
 }

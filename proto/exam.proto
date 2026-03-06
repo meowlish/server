@@ -111,9 +111,9 @@ message ReviewExamDto {
 }
 
 message AttemptDto {
-	string           user_id = 1;
-	string           exam_id = 2;
-	optional Options options = 3;
+	string  user_id = 1;
+	string  exam_id = 2;
+	Options options = 3;
 
 	message Options {
 		bool            is_strict   = 1;

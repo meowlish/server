@@ -93,7 +93,7 @@ export interface ReviewExamDto {
 export interface AttemptDto {
   userId: string;
   examId: string;
-  options?: AttemptDto_Options | undefined;
+  options: AttemptDto_Options | undefined;
 }
 
 export interface AttemptDto_Options {
