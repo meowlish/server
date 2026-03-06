@@ -1,5 +1,9 @@
 import { AttemptConfig } from '../../domain/entities/attempt-config.entity';
-import { AttemptEvaluator } from '../../domain/entities/attempt-evaluator.entity';
+import {
+	AttemptEvaluator,
+	AttemptQuestion,
+	FinalAttemptAnswer,
+} from '../../domain/entities/attempt-evaluator.entity';
 import { Attempt, AttemptAnswer } from '../../domain/entities/attempt.entity';
 import { IAttemptRepository } from '../../domain/repositories/attempt.repository';
 import { QuestionType } from '../../enums/question-type.enum';
@@ -25,6 +29,28 @@ export class AttemptPrismaMapper {
 
 	toScoredAttemptOrm(from: AttemptEvaluator): RepoScoredAttempt {
 		return { ...from };
+	}
+
+	toAttemptEvaluatorAggregate(from: PrismaAttemptEvaluator): AttemptEvaluator {
+		const questions = from.attemptSections
+			.map(x => x.section)
+			.flatMap(section => section.descendants)
+			.flatMap(d => d.descendant)
+			.flatMap(d => d.questions.map(x => ({ ...x, type: this.mapQuestionType(x.type) })));
+
+		return new AttemptEvaluator({
+			id: from.id,
+			answers: from.attemptAnswers.map(a => new FinalAttemptAnswer(a.questionId, a.answers)),
+			questions: questions.map(
+				q =>
+					new AttemptQuestion(
+						q.id,
+						this.mapQuestionType(q.type),
+						q.answers.map(a => a.content),
+						q.points,
+					),
+			),
+		});
 	}
 
 	toAttemptAggregate(from: ExtendedAttempt): Attempt {
@@ -72,6 +98,14 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		return foundAttempt ? this.mapper.toAttemptAggregate(foundAttempt) : null;
 	}
 
+	async getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null> {
+		const foundAttempt = await this.txHost.tx.attempt.findUnique({
+			where: { id: attemptId },
+			include: attemptEvaluatorPrismaIncludeObject,
+		});
+		return foundAttempt ? this.mapper.toAttemptEvaluatorAggregate(foundAttempt) : null;
+	}
+
 	async save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void> {
 		if (attempt instanceof Attempt) {
 			const data = this.mapper.toAttemptOrm(attempt);
@@ -104,6 +138,10 @@ type ExtendedAttempt = Prisma.AttemptGetPayload<{
 	include: typeof attemptPrismaIncludeObject;
 }>;
 
+type PrismaAttemptEvaluator = Prisma.AttemptGetPayload<{
+	include: typeof attemptEvaluatorPrismaIncludeObject;
+}>;
+
 const attemptPrismaIncludeObject = {
 	attemptAnswers: true,
 	attemptSections: {
@@ -112,6 +150,34 @@ const attemptPrismaIncludeObject = {
 				select: {
 					descendants: {
 						select: { descendant: { select: { questions: { select: { id: true, type: true } } } } },
+					},
+				},
+			},
+		},
+	},
+} satisfies Prisma.AttemptInclude;
+
+const attemptEvaluatorPrismaIncludeObject = {
+	attemptAnswers: true,
+	attemptSections: {
+		select: {
+			section: {
+				select: {
+					descendants: {
+						select: {
+							descendant: {
+								select: {
+									questions: {
+										select: {
+											id: true,
+											type: true,
+											answers: { where: { isCorrect: true } },
+											points: true,
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},

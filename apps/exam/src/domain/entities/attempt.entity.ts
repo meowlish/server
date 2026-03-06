@@ -73,6 +73,12 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public answers: AttemptAnswer[];
 	public isStrict: boolean;
 
+	static readonly questionTypesWithOnlyOneAnswer = [
+		QuestionType.FillInTheBlank,
+		QuestionType.MultipleChoiceSingle,
+		QuestionType.Writing,
+	];
+
 	public constructor(constructorOptions: {
 		id?: string;
 		attemptedBy: string;
@@ -134,15 +140,10 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	}
 
 	private answerBasedOnQuestionType(attemptAnswer: AttemptAnswer, answer: string): void {
-		const replaceTypes = [
-			QuestionType.FillInTheBlank,
-			QuestionType.MultipleChoiceSingle,
-			QuestionType.Writing,
-		];
 		const questionType = this.questions.get(attemptAnswer.questionId);
 		if (!questionType)
 			throw new ConflictException('Attempting to answer question outside selected sections');
-		if (replaceTypes.includes(questionType)) {
+		if (Attempt.questionTypesWithOnlyOneAnswer.includes(questionType)) {
 			attemptAnswer.clearAnswers();
 			attemptAnswer.setAnswer(answer);
 			return;

@@ -1,4 +1,5 @@
-import { ExamManagementHandlers } from './app/commands/handlers';
+import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/handlers';
+import { ExamEventHandlers } from './app/events/handlers';
 import { config } from './configs/config';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
@@ -63,6 +64,8 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		...ExamManagementHandlers,
+		...ExamPracticeHandlers,
+		...ExamEventHandlers,
 		ExamPrismaMapper,
 		{
 			provide: IExamRepositoryToken,
