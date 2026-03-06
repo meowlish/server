@@ -8,11 +8,14 @@ model Attempt {
   score         Int?
   totalPoints   Int?      @map("total_points")
   isStrict      Boolean   @map("is_strict")
+  order         Int // To ensure no 2 active attempts can co-exist (with same examId and userId), assign order = count(endedAt !== null)
 
   exam            Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
   attemptAnswers  AttemptAnswer[]
   attemptSections AttemptSection[]
 
+  @@unique([examId, attemptedBy, order])
+  @@index([examId, attemptedBy, endedAt])
   @@index([attemptedBy])
   @@index([examId])
   @@map("exam_attempts")

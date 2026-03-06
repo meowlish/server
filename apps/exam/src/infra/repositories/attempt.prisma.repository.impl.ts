@@ -83,7 +83,15 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		}
 		if (attempt instanceof AttemptConfig) {
 			const data = this.mapper.toConfigAttemptOrm(attempt);
-			await this.txHost.tx.attempt.create({ data: data });
+			const finishedAttemptsCount = await this.txHost.tx.attempt.count({
+				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: null },
+			});
+			await this.txHost.tx.attempt.create({
+				data: {
+					...data,
+					order: finishedAttemptsCount,
+				},
+			});
 		}
 	}
 
@@ -111,5 +119,5 @@ const attemptPrismaIncludeObject = {
 	},
 } satisfies Prisma.AttemptInclude;
 
-type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints'>;
+type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints' | 'order'>;
 type RepoScoredAttempt = Pick<PrismaAttempt, 'id' | 'score' | 'totalPoints'>;

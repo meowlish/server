@@ -22,7 +22,7 @@
 			},
 			"configurations": {
 				"development": {
-					"command": "dotenv -e .env.development pnpm exec prisma db push"
+					"command": "dotenv -e .env.development -- pnpm exec prisma db push {args}"
 				}
 			},
 			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
