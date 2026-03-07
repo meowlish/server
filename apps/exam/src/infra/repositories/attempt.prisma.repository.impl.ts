@@ -31,34 +31,45 @@ export class AttemptPrismaMapper {
 		return { ...from };
 	}
 
-	toAttemptEvaluatorAggregate(from: PrismaAttemptEvaluator): AttemptEvaluator {
-		const questions = from.attemptSections
-			.map(x => x.section)
-			.flatMap(section => section.descendants)
-			.flatMap(d => d.descendant)
-			.flatMap(d => d.questions.map(x => ({ ...x, type: this.mapQuestionType(x.type) })));
+	toAttemptEvaluatorAggregate(
+		from: ExtendedAttempt,
+		questions: PrismaAttemptQuestionForEval[],
+	): AttemptEvaluator {
+		const attemptQuestions = questions.map(
+			q =>
+				new AttemptQuestion(
+					q.id,
+					this.mapQuestionType(q.type),
+					q.answers.map(a => a.content),
+					q.points,
+				),
+		);
+
+		const answers = from.attemptAnswers.map(a => new FinalAttemptAnswer(a.questionId, a.answers));
 
 		return new AttemptEvaluator({
 			id: from.id,
-			answers: from.attemptAnswers.map(a => new FinalAttemptAnswer(a.questionId, a.answers)),
-			questions: questions.map(
-				q =>
-					new AttemptQuestion(
-						q.id,
-						this.mapQuestionType(q.type),
-						q.answers.map(a => a.content),
-						q.points,
-					),
-			),
+			answers: answers,
+			questions: attemptQuestions,
 		});
 	}
 
-	toAttemptAggregate(from: ExtendedAttempt): Attempt {
-		const questions = from.attemptSections
-			.map(x => x.section)
-			.flatMap(section => section.descendants)
-			.flatMap(d => d.descendant)
-			.flatMap(d => d.questions.map(x => ({ ...x, type: this.mapQuestionType(x.type) })));
+	toAttemptAggregate(from: ExtendedAttempt, questions: PrismaAttemptQuestion[]): Attempt {
+		const attemptQuestions = questions?.map(q => ({
+			id: q.id,
+			type: this.mapQuestionType(q.type),
+		}));
+
+		const answers = from.attemptAnswers.map(
+			a =>
+				new AttemptAnswer({
+					id: a.attemptId,
+					questionId: a.questionId,
+					isFlagged: a.isFlagged,
+					answers: a.answers,
+					note: a.note,
+				}),
+		);
 
 		return new Attempt({
 			id: from.id,
@@ -68,17 +79,8 @@ export class AttemptPrismaMapper {
 			startedAt: from.startedAt,
 			endedAt: from.endedAt,
 			isStrict: from.isStrict,
-			answers: from.attemptAnswers.map(
-				a =>
-					new AttemptAnswer({
-						id: a.attemptId,
-						questionId: a.questionId,
-						isFlagged: a.isFlagged,
-						answers: a.answers,
-						note: a.note,
-					}),
-			),
-			questions: questions,
+			answers: answers,
+			questions: attemptQuestions,
 		});
 	}
 }
@@ -95,15 +97,49 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			where: { id: id },
 			include: attemptPrismaIncludeObject,
 		});
-		return foundAttempt ? this.mapper.toAttemptAggregate(foundAttempt) : null;
+		if (!foundAttempt) return null;
+		const attemptQuestions =
+			foundAttempt.attemptSections.length ?
+				await this.txHost.tx.question.findMany({
+					where: {
+						section: {
+							ancestors: {
+								some: { ancestorId: { in: foundAttempt.attemptSections.map(s => s.sectionId) } },
+							},
+						},
+					},
+					select: attemptQuestionsPrismaSelectObject,
+				})
+			:	await this.txHost.tx.question.findMany({
+					where: { section: { examId: foundAttempt.examId } },
+					select: attemptQuestionsPrismaSelectObject,
+				});
+		return this.mapper.toAttemptAggregate(foundAttempt, attemptQuestions);
 	}
 
 	async getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null> {
 		const foundAttempt = await this.txHost.tx.attempt.findUnique({
 			where: { id: attemptId },
-			include: attemptEvaluatorPrismaIncludeObject,
+			include: attemptPrismaIncludeObject,
 		});
-		return foundAttempt ? this.mapper.toAttemptEvaluatorAggregate(foundAttempt) : null;
+		if (!foundAttempt) return null;
+		const attemptQuestions =
+			foundAttempt.attemptSections.length ?
+				await this.txHost.tx.question.findMany({
+					where: {
+						section: {
+							ancestors: {
+								some: { ancestorId: { in: foundAttempt.attemptSections.map(s => s.sectionId) } },
+							},
+						},
+					},
+					select: attemptQuestionsForEvalPrismaSelectObject,
+				})
+			:	await this.txHost.tx.question.findMany({
+					where: { section: { examId: foundAttempt.examId } },
+					select: attemptQuestionsForEvalPrismaSelectObject,
+				});
+		return this.mapper.toAttemptEvaluatorAggregate(foundAttempt, attemptQuestions);
 	}
 
 	async save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void> {
@@ -138,52 +174,34 @@ type ExtendedAttempt = Prisma.AttemptGetPayload<{
 	include: typeof attemptPrismaIncludeObject;
 }>;
 
-type PrismaAttemptEvaluator = Prisma.AttemptGetPayload<{
-	include: typeof attemptEvaluatorPrismaIncludeObject;
+type PrismaAttemptQuestion = Prisma.QuestionGetPayload<{
+	select: typeof attemptQuestionsPrismaSelectObject;
+}>;
+
+type PrismaAttemptQuestionForEval = Prisma.QuestionGetPayload<{
+	select: typeof attemptQuestionsForEvalPrismaSelectObject;
 }>;
 
 const attemptPrismaIncludeObject = {
 	attemptAnswers: true,
 	attemptSections: {
 		select: {
-			section: {
-				select: {
-					descendants: {
-						select: { descendant: { select: { questions: { select: { id: true, type: true } } } } },
-					},
-				},
-			},
+			sectionId: true,
 		},
 	},
 } satisfies Prisma.AttemptInclude;
 
-const attemptEvaluatorPrismaIncludeObject = {
-	attemptAnswers: true,
-	attemptSections: {
-		select: {
-			section: {
-				select: {
-					descendants: {
-						select: {
-							descendant: {
-								select: {
-									questions: {
-										select: {
-											id: true,
-											type: true,
-											answers: { where: { isCorrect: true } },
-											points: true,
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	},
-} satisfies Prisma.AttemptInclude;
+const attemptQuestionsPrismaSelectObject = {
+	id: true,
+	type: true,
+} satisfies Prisma.QuestionSelect;
+
+const attemptQuestionsForEvalPrismaSelectObject = {
+	id: true,
+	type: true,
+	answers: { where: { isCorrect: true } },
+	points: true,
+} satisfies Prisma.QuestionSelect;
 
 type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints' | 'order'>;
 type RepoScoredAttempt = Pick<PrismaAttempt, 'id' | 'score' | 'totalPoints'>;
