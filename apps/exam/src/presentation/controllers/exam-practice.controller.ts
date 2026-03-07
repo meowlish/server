@@ -30,6 +30,7 @@ import { RemoveAnswerDto } from '../dtos/req/practice/remove-answer.req.dto';
 import { ToggleFlagDto } from '../dtos/req/practice/toggle-flag.req.dto';
 import { Controller } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 
 @exam.ExamPracticeServiceControllerMethods()
@@ -37,7 +38,7 @@ import { exam } from '@server/generated';
 export class ExamController implements exam.ExamPracticeServiceController {
 	constructor(private commandBus: CommandBus) {}
 
-	async attempt(request: AttemptDto): Promise<void> {
+	async attempt(@Payload() request: AttemptDto): Promise<void> {
 		await this.commandBus.execute(
 			new AttemptCommand(
 				new AttemptCommandPayload(request.userId, request.examId, request.options),
@@ -45,13 +46,13 @@ export class ExamController implements exam.ExamPracticeServiceController {
 		);
 	}
 
-	async endAttempt(request: EndAttemptDto): Promise<void> {
+	async endAttempt(@Payload() request: EndAttemptDto): Promise<void> {
 		await this.commandBus.execute(
 			new EndAttemptCommand(new EndAttemptCommandPayload(request.attemptId)),
 		);
 	}
 
-	async answer(request: AnswerDto): Promise<void> {
+	async answer(@Payload() request: AnswerDto): Promise<void> {
 		await this.commandBus.execute(
 			new AnswerCommand(
 				new AnswerCommandPayload(request.attemptId, request.questionId, request.answer),
@@ -59,7 +60,7 @@ export class ExamController implements exam.ExamPracticeServiceController {
 		);
 	}
 
-	async removeAnswer(request: RemoveAnswerDto): Promise<void> {
+	async removeAnswer(@Payload() request: RemoveAnswerDto): Promise<void> {
 		await this.commandBus.execute(
 			new RemoveAnswerCommand(
 				new RemoveAnswerCommandPayload(request.attemptId, request.questionId, request.answer),
@@ -67,13 +68,13 @@ export class ExamController implements exam.ExamPracticeServiceController {
 		);
 	}
 
-	async toggleFlag(request: ToggleFlagDto): Promise<void> {
+	async toggleFlag(@Payload() request: ToggleFlagDto): Promise<void> {
 		await this.commandBus.execute(
 			new ToggleFlagCommand(new ToggleFlagCommandPayload(request.attemptId, request.questionId)),
 		);
 	}
 
-	async addNote(request: AddNoteDto): Promise<void> {
+	async addNote(@Payload() request: AddNoteDto): Promise<void> {
 		await this.commandBus.execute(
 			new AddNoteCommand(
 				new AddNoteCommandPayload(request.attemptId, request.questionId, request.note),
