@@ -58,7 +58,9 @@ export class AttemptPrismaMapper {
 				),
 		);
 
-		const answers = from.attemptAnswers.map(a => new FinalAttemptAnswer(a.questionId, a.answers));
+		const answers = from.attemptAnswers.map(
+			a => new FinalAttemptAnswer(a.id, a.questionId, a.answers, a.isCorrect),
+		);
 
 		return new AttemptEvaluator({
 			id: from.id,
@@ -168,7 +170,16 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		}
 		if (attempt instanceof AttemptEvaluator) {
 			const data = this.mapper.toScoredAttemptOrm(attempt);
-			await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
+			await this.txHost.withTransaction(async () => {
+				await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
+
+				for (const [, answer] of attempt.answers.entries()) {
+					await this.txHost.tx.answer.update({
+						where: { id: answer.id },
+						data: { isCorrect: answer.isCorrect },
+					});
+				}
+			});
 		}
 		if (attempt instanceof AttemptConfig) {
 			const data = this.mapper.toConfigAttemptOrm(attempt);

@@ -4,20 +4,21 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
 import { isEqual } from 'lodash';
 
-export class FinalAttemptAnswer implements IValueObject<FinalAttemptAnswer> {
+export class FinalAttemptAnswer implements IEntity<FinalAttemptAnswer> {
+	public isCorrect: boolean;
+
 	public constructor(
+		public readonly id: string,
 		public readonly questionId: string,
 		public readonly answers: string[],
+		isCorrect?: boolean | null,
 	) {
 		answers.sort();
+		this.isCorrect = !!isCorrect;
 	}
 
-	equals(other: any): boolean {
-		return (
-			other instanceof FinalAttemptAnswer &&
-			this.questionId === other.questionId &&
-			isEqual(this.answers, other.answers)
-		);
+	public setIsCorrect(isCorrect: boolean): void {
+		this.isCorrect = isCorrect;
 	}
 }
 
@@ -77,7 +78,11 @@ export class AttemptEvaluator
 	private scoreFor(question: AttemptQuestion, answer: FinalAttemptAnswer): number {
 		// TODO: writing score logic later
 		if (question.type === QuestionType.Writing) return 0;
-		if (isEqual(answer.answers, question.correctAnswers)) return question.points;
+		if (isEqual(answer.answers, question.correctAnswers)) {
+			answer.setIsCorrect(true);
+			return question.points;
+		}
+		answer.setIsCorrect(false);
 		return 0;
 	}
 }
