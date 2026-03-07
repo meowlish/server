@@ -5,13 +5,22 @@ import {
 	FinalAttemptAnswer,
 } from '../../domain/entities/attempt-evaluator.entity';
 import { Attempt, AttemptAnswer } from '../../domain/entities/attempt.entity';
+import {
+	AttemptAnswerCreatedEvent,
+	AttemptAnswerUpdatedEvent,
+} from '../../domain/events/attempt.event';
 import { IAttemptRepository } from '../../domain/repositories/attempt.repository';
 import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
-import { Prisma, Attempt as PrismaAttempt, PrismaClient } from '@prisma-client/exam';
-import { parseEnum } from '@server/utils';
+import {
+	Prisma,
+	Attempt as PrismaAttempt,
+	AttemptAnswer as PrismaAttemptAnswer,
+	PrismaClient,
+} from '@prisma-client/exam';
+import { Event, parseEnum } from '@server/utils';
 
 @Injectable()
 export class AttemptPrismaMapper {
@@ -31,9 +40,13 @@ export class AttemptPrismaMapper {
 		return { ...from };
 	}
 
+	toAttemptAnswerOrm(from: AttemptAnswer, attemptId: string): RepoAttemptAnswer {
+		return { ...from, attemptId: attemptId, answers: [...from.answers] };
+	}
+
 	toAttemptEvaluatorAggregate(
 		from: ExtendedAttempt,
-		questions: PrismaAttemptQuestionForEval[],
+		questions: RepoAttemptQuestionForEval[],
 	): AttemptEvaluator {
 		const attemptQuestions = questions.map(
 			q =>
@@ -54,7 +67,7 @@ export class AttemptPrismaMapper {
 		});
 	}
 
-	toAttemptAggregate(from: ExtendedAttempt, questions: PrismaAttemptQuestion[]): Attempt {
+	toAttemptAggregate(from: ExtendedAttempt, questions: RepoAttemptQuestion[]): Attempt {
 		const attemptQuestions = questions?.map(q => ({
 			id: q.id,
 			type: this.mapQuestionType(q.type),
@@ -63,7 +76,7 @@ export class AttemptPrismaMapper {
 		const answers = from.attemptAnswers.map(
 			a =>
 				new AttemptAnswer({
-					id: a.attemptId,
+					id: a.id,
 					questionId: a.questionId,
 					isFlagged: a.isFlagged,
 					answers: a.answers,
@@ -145,7 +158,13 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 	async save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void> {
 		if (attempt instanceof Attempt) {
 			const data = this.mapper.toAttemptOrm(attempt);
-			await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
+			await this.txHost.withTransaction(async () => {
+				await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
+
+				for (const event of attempt.getUncommittedEvents()) {
+					await this.handle(event);
+				}
+			});
 		}
 		if (attempt instanceof AttemptEvaluator) {
 			const data = this.mapper.toScoredAttemptOrm(attempt);
@@ -165,6 +184,24 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		}
 	}
 
+	private async handle(event: Event<any>): Promise<void> {
+		if (event instanceof AttemptAnswerCreatedEvent) return await this.onAttemptAnswerCreated(event);
+		if (event instanceof AttemptAnswerUpdatedEvent) return await this.onAttemptAnswerUpdated(event);
+	}
+
+	private async onAttemptAnswerCreated(event: AttemptAnswerCreatedEvent): Promise<void> {
+		await this.txHost.tx.attemptAnswer.create({
+			data: this.mapper.toAttemptAnswerOrm(event.payload.data, event.payload.attemptId),
+		});
+	}
+
+	private async onAttemptAnswerUpdated(event: AttemptAnswerUpdatedEvent): Promise<void> {
+		await this.txHost.tx.attemptAnswer.update({
+			where: { id: event.payload.data.id },
+			data: this.mapper.toAttemptAnswerOrm(event.payload.data, event.payload.attemptId),
+		});
+	}
+
 	async deleteMany(ids: string[]): Promise<void> {
 		await this.txHost.tx.attempt.deleteMany({ where: { id: { in: ids } } });
 	}
@@ -174,11 +211,11 @@ type ExtendedAttempt = Prisma.AttemptGetPayload<{
 	include: typeof attemptPrismaIncludeObject;
 }>;
 
-type PrismaAttemptQuestion = Prisma.QuestionGetPayload<{
+type RepoAttemptQuestion = Prisma.QuestionGetPayload<{
 	select: typeof attemptQuestionsPrismaSelectObject;
 }>;
 
-type PrismaAttemptQuestionForEval = Prisma.QuestionGetPayload<{
+type RepoAttemptQuestionForEval = Prisma.QuestionGetPayload<{
 	select: typeof attemptQuestionsForEvalPrismaSelectObject;
 }>;
 
@@ -205,3 +242,4 @@ const attemptQuestionsForEvalPrismaSelectObject = {
 
 type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints' | 'order'>;
 type RepoScoredAttempt = Pick<PrismaAttempt, 'id' | 'score' | 'totalPoints'>;
+type RepoAttemptAnswer = Omit<PrismaAttemptAnswer, 'isCorrect'>;

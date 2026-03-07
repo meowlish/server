@@ -1,5 +1,7 @@
 import { QuestionType } from '../../enums/question-type.enum';
-import { IEntity, IValueObject } from '@server/utils';
+import { AttemptScoredEvent } from '../events/attempt.event';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
 import { isEqual } from 'lodash';
 
 export class FinalAttemptAnswer implements IValueObject<FinalAttemptAnswer> {
@@ -30,7 +32,10 @@ export class AttemptQuestion implements IEntity<AttemptQuestion> {
 	}
 }
 
-export class AttemptEvaluator implements IEntity<AttemptEvaluator> {
+export class AttemptEvaluator
+	extends AggregateRoot<Event<any>>
+	implements IAggregate<AttemptEvaluator>
+{
 	public readonly id: string;
 	public readonly questions: AttemptQuestion[];
 	public readonly answers: Map<string, FinalAttemptAnswer>;
@@ -44,6 +49,7 @@ export class AttemptEvaluator implements IEntity<AttemptEvaluator> {
 		score?: number;
 		totalPoints?: number;
 	}) {
+		super();
 		this.id = constructorOptions.id;
 		this.questions = constructorOptions.questions;
 		this.answers = new Map(constructorOptions.answers.map(a => [a.questionId, a]));
@@ -59,6 +65,13 @@ export class AttemptEvaluator implements IEntity<AttemptEvaluator> {
 				this.score += this.scoreFor(question, answer);
 			}
 		});
+		this.apply(
+			new AttemptScoredEvent({
+				attemptId: this.id,
+				score: this.score,
+				totalPoints: this.totalPoints,
+			}),
+		);
 	}
 
 	private scoreFor(question: AttemptQuestion, answer: FinalAttemptAnswer): number {
