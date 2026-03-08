@@ -1,7 +1,7 @@
 import { QuestionType } from '../../enums/question-type.enum';
 import { AttemptScoredEvent } from '../events/attempt.event';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
+import { Event, IAggregate, IEntity } from '@server/utils';
 import { isEqual } from 'lodash';
 
 export class FinalAttemptAnswer implements IEntity<FinalAttemptAnswer> {

@@ -50,6 +50,7 @@ export class QuestionPrismaMapper {
 		return {
 			id: from.id,
 			content: from.content,
+			displayContent: from.displayContent,
 			isCorrect: from.isCorrect,
 			questionId: questionId,
 		};

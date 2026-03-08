@@ -18,11 +18,18 @@ export class Answer implements IEntity<Answer> {
 	public readonly id: string;
 	public isCorrect: boolean;
 	public content: string;
+	public displayContent: string | null;
 
-	public constructor(constructorOptions: { id?: string; isCorrect?: boolean; content?: string }) {
+	public constructor(constructorOptions: {
+		id?: string;
+		isCorrect?: boolean;
+		content?: string;
+		displayContent?: string | null;
+	}) {
 		this.id = constructorOptions.id ?? Answer.newId();
 		this.isCorrect = constructorOptions.isCorrect ?? false;
 		this.content = constructorOptions.content ?? '';
+		this.displayContent = constructorOptions.displayContent ?? null;
 	}
 }
 
