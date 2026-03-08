@@ -29,7 +29,7 @@ export class Answer implements IEntity<Answer> {
 		this.id = constructorOptions.id ?? Answer.newId();
 		this.isCorrect = constructorOptions.isCorrect ?? false;
 		this.content = constructorOptions.content ?? '';
-		this.displayContent = constructorOptions.displayContent ?? null;
+		this.displayContent = constructorOptions.displayContent ?? this.content;
 	}
 }
 

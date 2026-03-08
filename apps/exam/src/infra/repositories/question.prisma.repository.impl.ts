@@ -37,7 +37,13 @@ export class QuestionPrismaMapper {
 			examStatus: this.mapExamStatus(from.section.exam.status),
 			sectionId: from.sectionId,
 			answers: from.answers.map(
-				a => new Answer({ id: a.id, isCorrect: a.isCorrect, content: a.content }),
+				a =>
+					new Answer({
+						id: a.id,
+						isCorrect: a.isCorrect,
+						content: a.content,
+						displayContent: a.displayContent,
+					}),
 			),
 			content: from.content,
 			explanation: from.explanation,
