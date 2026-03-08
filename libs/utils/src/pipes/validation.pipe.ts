@@ -8,7 +8,6 @@ export class GlobalValidationPipe extends ValidationPipe {
 			forbidUnknownValues: true,
 			transform: true,
 			transformOptions: {
-				excludeExtraneousValues: true,
 				exposeUnsetFields: false,
 			},
 		});
