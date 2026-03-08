@@ -30,7 +30,7 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		}
 		if (payload.addAnswers) {
 			payload.addAnswers.forEach(a =>
-				question.addAnswers(new Answer({ content: a.content, isCorrect: a.isCorrect })),
+				question.addAnswer(new Answer({ content: a.content, isCorrect: a.isCorrect })),
 			);
 		}
 		await this.questionRepository.save(question);

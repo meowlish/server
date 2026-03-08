@@ -1,5 +1,5 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
-import { QuestionType } from '../../enums/question-type.enum';
+import { QuestionType, questionTypesWithOnlyOneAnswer } from '../../enums/question-type.enum';
 import {
 	AnswerCreatedEvent,
 	AnswerDeletedEvent,
@@ -90,10 +90,18 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		this.apply(new QuestionUpdatedEvent({ parentId: this.sectionId, data: structuredClone(this) }));
 	}
 
-	public addAnswers(answer: Answer): void {
+	public addAnswer(answer: Answer): void {
 		this.assertModifiable();
 		if (this.answers.some(a => a.id === answer.id))
 			throw new ConflictException('Answer already exists');
+		if (
+			answer.isCorrect &&
+			questionTypesWithOnlyOneAnswer.includes(this.type) &&
+			this.answers.find(a => a.isCorrect)
+		)
+			throw new ConflictException('This type of question only allows one correct answer');
+		if (this.answers.find(a => a.content === answer.content))
+			throw new ConflictException('Answer must not have overlapping key content');
 		this.answers.push(answer);
 		this.apply(new AnswerCreatedEvent({ questionId: this.id, data: structuredClone(answer) }));
 	}

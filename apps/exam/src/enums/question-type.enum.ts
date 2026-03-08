@@ -5,3 +5,9 @@ export enum QuestionType {
 	// Subjective types (manual grading)
 	Writing = 'Writing',
 }
+
+export const questionTypesWithOnlyOneAnswer = [
+	QuestionType.FillInTheBlank,
+	QuestionType.MultipleChoiceSingle,
+	QuestionType.Writing,
+];
