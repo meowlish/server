@@ -1,5 +1,5 @@
 export default {
-	displayName: 'blog-e2e',
+	displayName: 'content-e2e',
 	preset: '../../jest.preset.js',
 	globalSetup: '<rootDir>/src/support/global-setup.ts',
 	globalTeardown: '<rootDir>/src/support/global-teardown.ts',
@@ -14,5 +14,5 @@ export default {
 		],
 	},
 	moduleFileExtensions: ['ts', 'js', 'html'],
-	coverageDirectory: '../../coverage/blog-e2e',
+	coverageDirectory: '../../coverage/content-e2e',
 };

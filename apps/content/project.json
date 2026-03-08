@@ -1,25 +1,26 @@
 {
-	"name": "blog",
+	"name": "content",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "apps/blog/src",
+	"sourceRoot": "apps/content/src",
 	"projectType": "application",
+	"tags": [],
 	"targets": {
 		"prisma:generate": {
 			"executor": "nx:run-commands",
 			"cache": true,
 			"options": {
 				"command": "npx prisma generate",
-				"cwd": "apps/blog"
+				"cwd": "apps/content"
 			},
 			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
-			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/blog"]
+			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/content"]
 		},
 		"build": {
 			"executor": "nx:run-commands",
 			"options": {
 				"command": "webpack-cli build",
 				"args": ["--node-env=production"],
-				"cwd": "apps/blog"
+				"cwd": "apps/content"
 			},
 			"configurations": {
 				"development": {
@@ -33,8 +34,8 @@
 			"cache": true,
 			"executor": "@nx/js:prune-lockfile",
 			"outputs": [
-				"{workspaceRoot}/dist/apps/blog/package.json",
-				"{workspaceRoot}/dist/apps/blog/pnpm-lock.yaml"
+				"{workspaceRoot}/dist/apps/content/package.json",
+				"{workspaceRoot}/dist/apps/content/pnpm-lock.yaml"
 			],
 			"options": {
 				"buildTarget": "build"
@@ -43,7 +44,7 @@
 		"copy-workspace-modules": {
 			"dependsOn": ["build"],
 			"cache": true,
-			"outputs": ["{workspaceRoot}/dist/apps/blog/workspace_modules"],
+			"outputs": ["{workspaceRoot}/dist/apps/content/workspace_modules"],
 			"executor": "@nx/js:copy-workspace-modules",
 			"options": {
 				"buildTarget": "build"
@@ -59,18 +60,17 @@
 			"defaultConfiguration": "development",
 			"dependsOn": ["build"],
 			"options": {
-				"buildTarget": "blog:build",
+				"buildTarget": "content:build",
 				"runBuildTargetDependencies": false
 			},
 			"configurations": {
 				"development": {
-					"buildTarget": "blog:build:development"
+					"buildTarget": "content:build:development"
 				},
 				"production": {
-					"buildTarget": "blog:build:production"
+					"buildTarget": "content:build:production"
 				}
 			}
 		}
-	},
-	"tags": []
+	}
 }

@@ -1,4 +1,4 @@
-import { BlogModule } from './app/blog.module';
+import { AppModule } from './app/app.module';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -11,7 +11,7 @@ const useLogger = (module: INestApplicationContext) => {
 };
 
 async function bootstrap() {
-	const blogModule = await NestFactory.createMicroservice<MicroserviceOptions>(BlogModule, {
+	const appModule = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
 		transport: Transport.GRPC,
 		options: {
 			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50053}`,
@@ -19,8 +19,8 @@ async function bootstrap() {
 			protoPath: join(process.cwd(), 'proto', 'blog.proto'),
 		},
 	});
-	useLogger(blogModule);
-	await blogModule.listen();
+	useLogger(appModule);
+	await appModule.listen();
 }
 
 bootstrap().catch(console.error);
