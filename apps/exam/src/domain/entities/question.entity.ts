@@ -49,26 +49,26 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 	public answers: Answer[];
 
 	public constructor(constructorOptions: {
-		id?: string;
+		id: string;
 		examId: ExamId;
 		examStatus: ExamStatus;
 		sectionId: string;
-		content?: string;
-		type?: QuestionType;
-		points?: number;
-		explanation?: string;
-		answers?: Answer[];
+		content: string;
+		type: QuestionType;
+		points: number;
+		explanation: string;
+		answers: Answer[];
 	}) {
 		super();
-		this.id = constructorOptions.id ?? Question.newId();
+		this.id = constructorOptions.id;
 		this.examId = constructorOptions.examId;
 		this.examStatus = constructorOptions.examStatus;
 		this.sectionId = constructorOptions.sectionId;
-		this.content = constructorOptions.content ?? '';
-		this.type = constructorOptions.type ?? QuestionType.MultipleChoiceSingle;
-		this.points = constructorOptions.points ?? 1;
-		this.explanation = constructorOptions.explanation ?? '';
-		this.answers = constructorOptions.answers ?? [];
+		this.content = constructorOptions.content;
+		this.type = constructorOptions.type;
+		this.points = constructorOptions.points;
+		this.explanation = constructorOptions.explanation;
+		this.answers = constructorOptions.answers;
 	}
 
 	private assertModifiable(): void {

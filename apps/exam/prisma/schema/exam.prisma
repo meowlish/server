@@ -59,7 +59,7 @@ model Question {
   sectionId   String @map("section_id")
   content     String @default("")
   type        String @default("MCQ")
-  points      Int    @default(0)
+  points      Int    @default(1)
   explanation String @default("")
   order       Int
 

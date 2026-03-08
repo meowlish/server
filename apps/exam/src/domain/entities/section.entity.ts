@@ -45,21 +45,21 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		examId: ExamId;
 		examStatus: ExamStatus;
 		children: SectionChild[];
-		id?: string;
-		parentId: string | null;
+		id: string;
+		parentId?: string | null;
 		contentType: SectionType;
 		name?: string | null;
-		directive?: string;
+		directive: string;
 	}) {
 		super();
-		this.id = constructorOptions.id ?? Section.newId();
+		this.id = constructorOptions.id;
 		this.examId = constructorOptions.examId;
 		this.examStatus = constructorOptions.examStatus;
 		this.contentType = constructorOptions.contentType;
 		this.children = constructorOptions.children.toSorted((a, b) => a.order - b.order);
 		this.parentId = constructorOptions.parentId ?? null;
 		this.name = constructorOptions.name ?? null;
-		this.directive = constructorOptions.directive ?? '';
+		this.directive = constructorOptions.directive;
 	}
 
 	private assertModifiable(): void {
