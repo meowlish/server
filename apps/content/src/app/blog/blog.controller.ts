@@ -1,6 +1,5 @@
 import { BlogService } from './blog.service';
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
 import { blog, common } from '@server/generated';
 
 @blog.BlogServiceControllerMethods()

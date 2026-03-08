@@ -39,7 +39,7 @@ export class GoogleOAuth2Strategy extends PassportStrategy(Strategy, 'google') {
 		refreshToken: string,
 		profile: Profile,
 	): Promise<Claims> {
-		const { id, username } = profile;
+		// const { id, username } = profile;
 		// TODO: If can't find info, create new credential and new identity
 		// TODO: If already logged in, add new credential to the identity
 		// TODO: id as identifier, loginType is google, secretHash is null

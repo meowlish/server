@@ -5,6 +5,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { BlogGatewayModule } from './blog-gateway/blog.router.module';
 import { config } from './configs/config';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
+import { FlashCardGatewayModule } from './flashcard-gateway/flashcard.router.module';
 import { RouteModule } from './router.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -40,6 +41,7 @@ import { GlobalValidationPipe } from '@server/utils';
 		AuthGatewayModule,
 		ExamGatewayModule,
 		BlogGatewayModule,
+		FlashCardGatewayModule,
 	],
 	providers: [
 		{
