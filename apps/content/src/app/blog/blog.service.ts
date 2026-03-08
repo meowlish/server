@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Blog, PrismaClient } from '@prisma-client/blog';
+import { Blog, PrismaClient } from '@prisma-client/content';
 import { DATABASE_SERVICE } from '@server/database';
 import { blog } from '@server/generated';
 
