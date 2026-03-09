@@ -3,17 +3,17 @@ import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateExamDto {
 	@IsOptional()
 	@IsString()
-	description?: string | undefined;
+	description?: string;
 
 	@IsNumber()
 	@IsOptional()
-	duration?: number | undefined;
+	duration?: number;
 
 	@IsBoolean()
 	@IsOptional()
-	setDescriptionNull?: boolean | undefined;
+	setDescriptionNull?: boolean;
 
 	@IsOptional()
 	@IsString()
-	title?: string | undefined;
+	title?: string;
 }

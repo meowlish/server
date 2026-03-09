@@ -1,14 +1,14 @@
 import { QuestionType, questionTypesWithOnlyOneAnswer } from '../../enums/question-type.enum';
 import {
-	AttemptAnswerCreatedEvent,
-	AttemptAnswerUpdatedEvent,
+	AttemptResponseCreatedEvent,
+	AttemptResponseUpdatedEvent,
 	AttemptSubmittedEvent,
 } from '../events/attempt.event';
 import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IEntity } from '@server/utils';
 
-export class AttemptAnswer implements IEntity<AttemptAnswer> {
+export class AttemptResponse implements IEntity<AttemptResponse> {
 	public static newId(): string {
 		return crypto.randomUUID();
 	}
@@ -26,7 +26,7 @@ export class AttemptAnswer implements IEntity<AttemptAnswer> {
 		answers?: string[];
 		note?: string | null;
 	}) {
-		this.id = AttemptAnswer.newId();
+		this.id = AttemptResponse.newId();
 		this.questionId = constructorOptions.questionId;
 		this.isFlagged = constructorOptions.isFlagged ?? false;
 		this.answers = new Set(constructorOptions.answers);
@@ -70,7 +70,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public endedAt: Date | null;
 	public durationLimit: number;
 	public readonly questions: Map<string, QuestionType>;
-	public answers: AttemptAnswer[];
+	public responses: AttemptResponse[];
 	public isStrict: boolean;
 
 	public constructor(constructorOptions: {
@@ -81,7 +81,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		endedAt?: Date | null;
 		durationLimit: number; // in seconds
 		questions?: { id: string; type: QuestionType }[];
-		answers?: AttemptAnswer[];
+		responses?: AttemptResponse[];
 		isStrict?: boolean;
 	}) {
 		super();
@@ -92,7 +92,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.startedAt = constructorOptions.startedAt;
 		this.endedAt = constructorOptions.endedAt ?? null;
 		this.durationLimit = constructorOptions.durationLimit;
-		this.answers = constructorOptions.answers ?? [];
+		this.responses = constructorOptions.responses ?? [];
 		this.isStrict = constructorOptions.isStrict ?? false;
 	}
 
@@ -115,34 +115,34 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.assertModifiable(timeStamp);
 		if (!this.questions.has(questionId))
 			throw new ConflictException("Question isn't included in this attempt");
-		const existingAnswer = this.answers.find(a => a.questionId === questionId);
-		if (existingAnswer) {
-			this.answerBasedOnQuestionType(existingAnswer, answer);
+		const existingResponse = this.responses.find(r => r.questionId === questionId);
+		if (existingResponse) {
+			this.answerBasedOnQuestionType(existingResponse, answer);
 			this.apply(
-				new AttemptAnswerUpdatedEvent({
+				new AttemptResponseUpdatedEvent({
 					attemptId: this.id,
-					data: structuredClone(existingAnswer),
+					data: structuredClone(existingResponse),
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId: questionId, answers: [answer] });
-			this.answers.push(newAnswer);
+			const newResponse = new AttemptResponse({ questionId: questionId, answers: [answer] });
+			this.responses.push(newResponse);
 			this.apply(
-				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
+				new AttemptResponseCreatedEvent({ attemptId: this.id, data: structuredClone(newResponse) }),
 			);
 		}
 	}
 
-	private answerBasedOnQuestionType(attemptAnswer: AttemptAnswer, answer: string): void {
-		const questionType = this.questions.get(attemptAnswer.questionId);
+	private answerBasedOnQuestionType(attemptResponse: AttemptResponse, answer: string): void {
+		const questionType = this.questions.get(attemptResponse.questionId);
 		if (!questionType)
 			throw new ConflictException('Attempting to answer question outside selected sections');
 		if (questionTypesWithOnlyOneAnswer.includes(questionType)) {
-			attemptAnswer.clearAnswers();
-			attemptAnswer.setAnswer(answer);
+			attemptResponse.clearAnswers();
+			attemptResponse.setAnswer(answer);
 			return;
 		}
-		attemptAnswer.setAnswer(answer);
+		attemptResponse.setAnswer(answer);
 	}
 
 	public deleteAnswer(questionId: string, answer: string, timeStamp: Date): void;
@@ -168,49 +168,52 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		}
 
 		this.assertModifiable(timeStamp);
-		const existingAnswer = this.answers.find(a => a.questionId === questionId);
-		if (!existingAnswer) throw new NotFoundException('Answer not found');
-		if (answer) existingAnswer.deleteAnswer(answer);
-		else existingAnswer.clearAnswers();
+		const existingResponse = this.responses.find(r => r.questionId === questionId);
+		if (!existingResponse) throw new NotFoundException('Answer not found');
+		if (answer) existingResponse.deleteAnswer(answer);
+		else existingResponse.clearAnswers();
 		this.apply(
-			new AttemptAnswerUpdatedEvent({ attemptId: this.id, data: structuredClone(existingAnswer) }),
+			new AttemptResponseUpdatedEvent({
+				attemptId: this.id,
+				data: structuredClone(existingResponse),
+			}),
 		);
 	}
 
 	public addNote(questionId: string, note: string): void {
-		const existingAnswer = this.answers.find(a => a.questionId === questionId);
-		if (existingAnswer) {
-			existingAnswer.setNote(note);
+		const existingResponse = this.responses.find(r => r.questionId === questionId);
+		if (existingResponse) {
+			existingResponse.setNote(note);
 			this.apply(
-				new AttemptAnswerUpdatedEvent({
+				new AttemptResponseUpdatedEvent({
 					attemptId: this.id,
-					data: structuredClone(existingAnswer),
+					data: structuredClone(existingResponse),
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId: questionId, note: note });
-			this.answers.push(newAnswer);
+			const newResponse = new AttemptResponse({ questionId: questionId, note: note });
+			this.responses.push(newResponse);
 			this.apply(
-				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
+				new AttemptResponseCreatedEvent({ attemptId: this.id, data: structuredClone(newResponse) }),
 			);
 		}
 	}
 
 	public toggleFlag(questionId: string): void {
-		const existingAnswer = this.answers.find(a => a.questionId === questionId);
-		if (existingAnswer) {
-			existingAnswer.toggleFlag();
+		const existingResponse = this.responses.find(r => r.questionId === questionId);
+		if (existingResponse) {
+			existingResponse.toggleFlag();
 			this.apply(
-				new AttemptAnswerUpdatedEvent({
+				new AttemptResponseUpdatedEvent({
 					attemptId: this.id,
-					data: structuredClone(existingAnswer),
+					data: structuredClone(existingResponse),
 				}),
 			);
 		} else {
-			const newAnswer = new AttemptAnswer({ questionId: questionId, isFlagged: true });
-			this.answers.push(newAnswer);
+			const newResponse = new AttemptResponse({ questionId: questionId, isFlagged: true });
+			this.responses.push(newResponse);
 			this.apply(
-				new AttemptAnswerCreatedEvent({ attemptId: this.id, data: structuredClone(newAnswer) }),
+				new AttemptResponseCreatedEvent({ attemptId: this.id, data: structuredClone(newResponse) }),
 			);
 		}
 	}
@@ -218,7 +221,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	// pass timeStamp in as early as possible
 	public endAttempt(timeStamp: Date): void {
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
-		if (!this.answers.length) {
+		if (!this.responses.length) {
 			if (this.isWithinAllowedTime(timeStamp))
 				throw new ForbiddenException('Must at least answer one question before submitting');
 		}
@@ -227,4 +230,4 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	}
 }
 
-export type AttemptAnswerUpdatableProperties = Partial<Omit<AttemptAnswer, 'id'>>;
+export type AttemptResponseUpdatableProperties = Partial<Omit<AttemptResponse, 'id'>>;

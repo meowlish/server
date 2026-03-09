@@ -12,33 +12,64 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class AddAnswer implements exam.UpdateQuestionDto_AddAnswer {
+class AddChoice implements exam.UpdateQuestionDto_AddChoice {
 	@IsString()
-	content!: string;
+	key!: string;
+
+	@IsOptional()
+	@IsString()
+	content?: string;
 
 	@IsBoolean()
 	isCorrect!: boolean;
 }
 
-export class UpdateQuestionDto implements exam.UpdateQuestionDto {
-	@Type(() => AddAnswer)
-	@IsArray()
-	@IsOptional()
-	@ValidateNested({ each: true })
-	addAnswers!: AddAnswer[];
+class UpdateChoice implements exam.UpdateQuestionDto_UpdateChoice {
+	@IsString()
+	id!: string;
 
 	@IsOptional()
 	@IsString()
-	content?: string | undefined;
+	key?: string;
+
+	@IsOptional()
+	@IsString()
+	content?: string;
+
+	@IsBoolean()
+	@IsOptional()
+	isCorrect?: boolean;
+
+	@IsBoolean()
+	@IsOptional()
+	setContentNull?: boolean;
+}
+
+export class UpdateQuestionDto implements exam.UpdateQuestionDto {
+	@Type(() => AddChoice)
+	@IsArray()
+	@IsOptional()
+	@ValidateNested({ each: true })
+	addChoices!: AddChoice[];
 
 	@IsArray()
 	@IsOptional()
 	@IsString({ each: true })
-	deleteAnswersIds!: string[];
+	deleteChoicesIds!: string[];
+
+	@Type(() => UpdateChoice)
+	@IsArray()
+	@IsOptional()
+	@ValidateNested({ each: true })
+	updateChoicesIds!: UpdateChoice[];
 
 	@IsOptional()
 	@IsString()
-	explanation?: string | undefined;
+	content?: string;
+
+	@IsOptional()
+	@IsString()
+	explanation?: string;
 
 	@IsString()
 	id!: string;
@@ -46,9 +77,9 @@ export class UpdateQuestionDto implements exam.UpdateQuestionDto {
 	@IsInt()
 	@IsOptional()
 	@IsPositive()
-	points?: number | undefined;
+	points?: number;
 
 	@IsEnum(QuestionType)
 	@IsOptional()
-	type?: QuestionType | undefined;
+	type?: QuestionType;
 }

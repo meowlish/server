@@ -11,5 +11,5 @@ export class MoveQuestionDto implements exam.MoveQuestionDto {
 
 	@IsOptional()
 	@IsString()
-	sectionId?: string | undefined;
+	sectionId?: string;
 }

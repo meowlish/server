@@ -10,15 +10,15 @@ model Attempt {
   isStrict      Boolean   @map("is_strict")
   order         Int // To ensure no 2 active attempts can co-exist (with same examId and userId), assign order = count(endedAt !== null)
 
-  exam            Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
-  attemptAnswers  AttemptAnswer[]
-  attemptSections AttemptSection[]
+  exam             Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  attemptResponses AttemptResponse[]
+  attemptSections  AttemptSection[]
 
   @@unique([examId, attemptedBy, order])
   @@index([examId, attemptedBy, endedAt])
   @@index([attemptedBy])
   @@index([examId])
-  @@map("exam_attempts")
+  @@map("attempts")
 }
 
 model AttemptSection {
@@ -32,7 +32,7 @@ model AttemptSection {
   @@map("attempt_sections")
 }
 
-model AttemptAnswer {
+model AttemptResponse {
   id         String   @id @default(uuid())
   attemptId  String   @map("attempt_id")
   questionId String   @map("question_id")
@@ -47,5 +47,5 @@ model AttemptAnswer {
   @@unique([attemptId, questionId])
   @@index([attemptId])
   @@index([questionId])
-  @@map("attempt_answers")
+  @@map("attempt_responses")
 }

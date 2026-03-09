@@ -3,13 +3,13 @@ import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 export class MoveSectionDto {
 	@IsInt()
 	@IsOptional()
-	index?: number | undefined;
+	index?: number;
 
 	@IsOptional()
 	@IsString()
-	parentId?: string | undefined;
+	parentId?: string;
 
 	@IsBoolean()
 	@IsOptional()
-	toRoot?: boolean | undefined;
+	toRoot?: boolean;
 }

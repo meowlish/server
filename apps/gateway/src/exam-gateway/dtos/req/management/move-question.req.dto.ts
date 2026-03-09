@@ -7,5 +7,5 @@ export class MoveQuestionDto {
 
 	@IsOptional()
 	@IsString()
-	sectionId?: string | undefined;
+	sectionId?: string;
 }

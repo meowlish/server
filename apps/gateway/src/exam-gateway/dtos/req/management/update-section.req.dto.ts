@@ -3,17 +3,17 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class UpdateSectionDto {
 	@IsOptional()
 	@IsString()
-	contentType?: string | undefined;
+	contentType?: string;
 
 	@IsOptional()
 	@IsString()
-	directive?: string | undefined;
+	directive?: string;
 
 	@IsOptional()
 	@IsString()
-	name?: string | undefined;
+	name?: string;
 
 	@IsBoolean()
 	@IsOptional()
-	setNameNull?: boolean | undefined;
+	setNameNull?: boolean;
 }

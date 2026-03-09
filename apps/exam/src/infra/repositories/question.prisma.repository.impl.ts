@@ -1,9 +1,9 @@
 import { ExamId } from '../../domain/entities/exam.entity';
-import { Answer, Question } from '../../domain/entities/question.entity';
+import { Choice, Question } from '../../domain/entities/question.entity';
 import {
-	AnswerCreatedEvent,
-	AnswerDeletedEvent,
-	AnswerUpdatedEvent,
+	ChoiceCreatedEvent,
+	ChoiceDeletedEvent,
+	ChoiceUpdatedEvent,
 } from '../../domain/events/exam-management.event';
 import { IQuestionRepository } from '../../domain/repositories/question.repository';
 import { ExamStatus } from '../../enums/exam-status.enum';
@@ -13,7 +13,7 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { Injectable } from '@nestjs/common';
 import {
 	Prisma,
-	Answer as PrismaAnswer,
+	Choice as PrismaChoice,
 	PrismaClient,
 	Question as PrismaQuestion,
 } from '@prisma-client/exam';
@@ -36,13 +36,13 @@ export class QuestionPrismaMapper {
 			examId: new ExamId(from.section.exam.id, from.section.exam.version),
 			examStatus: this.mapExamStatus(from.section.exam.status),
 			sectionId: from.sectionId,
-			answers: from.answers.map(
-				a =>
-					new Answer({
-						id: a.id,
-						isCorrect: a.isCorrect,
-						content: a.content,
-						displayContent: a.displayContent,
+			choices: from.choices.map(
+				c =>
+					new Choice({
+						id: c.id,
+						isCorrect: c.isCorrect,
+						key: c.key,
+						content: c.content,
 					}),
 			),
 			content: from.content,
@@ -52,11 +52,11 @@ export class QuestionPrismaMapper {
 		});
 	}
 
-	toAnswerOrm(from: Answer, questionId: string): PrismaAnswer {
+	toChoiceOrm(from: Choice, questionId: string): PrismaChoice {
 		return {
 			id: from.id,
-			content: from.content,
-			displayContent: from.displayContent,
+			key: from.key,
+			content: from.key,
 			isCorrect: from.isCorrect,
 			questionId: questionId,
 		};
@@ -115,25 +115,25 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 	}
 
 	private async handle(event: Event<any>): Promise<void> {
-		if (event instanceof AnswerCreatedEvent) return await this.onAnswerCreated(event);
-		if (event instanceof AnswerDeletedEvent) return await this.onAnswerDeleted(event);
-		if (event instanceof AnswerUpdatedEvent) return await this.onAnswerUpdated(event);
+		if (event instanceof ChoiceCreatedEvent) return await this.onChoiceCreated(event);
+		if (event instanceof ChoiceDeletedEvent) return await this.onChoiceDeleted(event);
+		if (event instanceof ChoiceUpdatedEvent) return await this.onChoiceUpdated(event);
 	}
 
-	private async onAnswerCreated(event: AnswerCreatedEvent): Promise<void> {
-		await this.txHost.tx.answer.create({
-			data: this.mapper.toAnswerOrm(event.payload.data, event.payload.questionId),
+	private async onChoiceCreated(event: ChoiceCreatedEvent): Promise<void> {
+		await this.txHost.tx.choice.create({
+			data: this.mapper.toChoiceOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 
-	private async onAnswerDeleted(event: AnswerDeletedEvent): Promise<void> {
-		await this.txHost.tx.answer.delete({ where: { id: event.payload.answerId } });
+	private async onChoiceDeleted(event: ChoiceDeletedEvent): Promise<void> {
+		await this.txHost.tx.choice.delete({ where: { id: event.payload.choiceId } });
 	}
 
-	private async onAnswerUpdated(event: AnswerUpdatedEvent): Promise<void> {
-		await this.txHost.tx.answer.update({
-			where: { id: event.payload.answerId },
-			data: this.mapper.toAnswerOrm(event.payload.data, event.payload.questionId),
+	private async onChoiceUpdated(event: ChoiceUpdatedEvent): Promise<void> {
+		await this.txHost.tx.choice.update({
+			where: { id: event.payload.choiceId },
+			data: this.mapper.toChoiceOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 }
@@ -146,6 +146,6 @@ type ExtendedQuestion = Prisma.QuestionGetPayload<{
 type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
-	answers: true,
+	choices: true,
 	section: { select: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

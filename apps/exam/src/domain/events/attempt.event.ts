@@ -1,5 +1,5 @@
 import { type AttemptConfig } from '../entities/attempt-config.entity';
-import { type AttemptAnswer } from '../entities/attempt.entity';
+import { type AttemptResponse } from '../entities/attempt.entity';
 import { Event } from '@server/utils';
 
 // events
@@ -10,11 +10,11 @@ export class AttemptScoredEvent extends Event<{
 	score: number;
 	totalPoints: number;
 }> {}
-export class AttemptAnswerCreatedEvent extends Event<{
+export class AttemptResponseCreatedEvent extends Event<{
 	attemptId: string;
-	data: AttemptAnswer;
+	data: AttemptResponse;
 }> {}
-export class AttemptAnswerUpdatedEvent extends Event<{
+export class AttemptResponseUpdatedEvent extends Event<{
 	attemptId: string;
-	data: AttemptAnswer;
+	data: AttemptResponse;
 }> {}

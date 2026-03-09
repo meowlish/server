@@ -1,8 +1,9 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
 import { QuestionType, questionTypesWithOnlyOneAnswer } from '../../enums/question-type.enum';
 import {
-	AnswerCreatedEvent,
-	AnswerDeletedEvent,
+	ChoiceCreatedEvent,
+	ChoiceDeletedEvent,
+	ChoiceUpdatedEvent,
 	QuestionUpdatedEvent,
 } from '../events/exam-management.event';
 import { ExamId } from './exam.entity';
@@ -10,26 +11,32 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity } from '@server/utils';
 
-export class Answer implements IEntity<Answer> {
+export class Choice implements IEntity<Choice> {
 	public static newId(): string {
 		return crypto.randomUUID();
 	}
 
 	public readonly id: string;
 	public isCorrect: boolean;
-	public content: string;
-	public displayContent: string | null;
+	public key: string;
+	public content: string | null;
 
 	public constructor(constructorOptions: {
 		id?: string;
 		isCorrect?: boolean;
-		content?: string;
-		displayContent?: string | null;
+		key?: string;
+		content?: string | null;
 	}) {
-		this.id = constructorOptions.id ?? Answer.newId();
+		this.id = constructorOptions.id ?? Choice.newId();
 		this.isCorrect = constructorOptions.isCorrect ?? false;
-		this.content = constructorOptions.content ?? '';
-		this.displayContent = constructorOptions.displayContent ?? this.content;
+		this.key = constructorOptions.key ?? '';
+		this.content = constructorOptions.content ?? null;
+	}
+
+	public updateDetails(options: ChoiceUpdatableProperties) {
+		if (options.content || options.content === null) this.content = options.content;
+		if (options.isCorrect) this.isCorrect = options.isCorrect;
+		if (options.key) this.key = options.key;
 	}
 }
 
@@ -46,7 +53,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 	public type: QuestionType;
 	public points: number;
 	public explanation: string;
-	public answers: Answer[];
+	public choices: Choice[];
 
 	public constructor(constructorOptions: {
 		id: string;
@@ -57,7 +64,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		type: QuestionType;
 		points: number;
 		explanation: string;
-		answers: Answer[];
+		choices: Choice[];
 	}) {
 		super();
 		this.id = constructorOptions.id;
@@ -68,7 +75,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		this.type = constructorOptions.type;
 		this.points = constructorOptions.points;
 		this.explanation = constructorOptions.explanation;
-		this.answers = constructorOptions.answers;
+		this.choices = constructorOptions.choices;
 	}
 
 	private assertModifiable(): void {
@@ -90,33 +97,47 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		this.apply(new QuestionUpdatedEvent({ parentId: this.sectionId, data: structuredClone(this) }));
 	}
 
-	public addAnswer(answer: Answer): void {
+	public addChoice(choice: Choice): void {
 		this.assertModifiable();
-		if (this.answers.some(a => a.id === answer.id))
-			throw new ConflictException('Answer already exists');
+		if (this.choices.some(c => c.id === choice.id))
+			throw new ConflictException('Choice already exists');
 		if (
-			answer.isCorrect &&
+			choice.isCorrect &&
 			questionTypesWithOnlyOneAnswer.includes(this.type) &&
-			this.answers.find(a => a.isCorrect)
+			this.choices.find(c => c.isCorrect)
 		)
-			throw new ConflictException('This type of question only allows one correct answer');
-		if (this.answers.find(a => a.content === answer.content))
-			throw new ConflictException('Answer must not have overlapping key content');
-		this.answers.push(answer);
-		this.apply(new AnswerCreatedEvent({ questionId: this.id, data: structuredClone(answer) }));
+			throw new ConflictException('This type of question only allows one correct choice');
+		if (this.choices.find(c => c.key === choice.key))
+			throw new ConflictException('Choice must not have duplicate key');
+		this.choices.push(choice);
+		this.apply(new ChoiceCreatedEvent({ questionId: this.id, data: structuredClone(choice) }));
 	}
 
-	public removeAnswer(answerOrAnswerId: string | Answer): void {
+	public removeChoice(choiceOrChoiceId: string | Choice): void {
 		this.assertModifiable();
-		const id = answerOrAnswerId instanceof Answer ? answerOrAnswerId.id : answerOrAnswerId;
-		const idx = this.answers.findIndex(a => a.id === id);
-		if (idx === -1) throw new NotFoundException('Answer option not found');
-		this.answers.splice(idx, 1);
-		this.apply(new AnswerDeletedEvent({ answerId: id }));
+		const choiceId = choiceOrChoiceId instanceof Choice ? choiceOrChoiceId.id : choiceOrChoiceId;
+		const idx = this.choices.findIndex(c => c.id === choiceId);
+		if (idx === -1) throw new NotFoundException('Choice not found');
+		this.choices.splice(idx, 1);
+		this.apply(new ChoiceDeletedEvent({ choiceId: choiceId }));
+	}
+
+	public updateChoice(choiceId: string, options: ChoiceUpdatableProperties) {
+		this.assertModifiable();
+		const choice = this.choices.find(c => c.id === choiceId);
+		if (!choice) throw new NotFoundException('Choice not found');
+		choice.updateDetails(options);
+		this.apply(
+			new ChoiceUpdatedEvent({
+				questionId: this.id,
+				choiceId: choiceId,
+				data: structuredClone(choice),
+			}),
+		);
 	}
 }
 
-export type AnswerUpdatableProperties = Partial<Omit<Answer, 'id'>>;
+export type ChoiceUpdatableProperties = Partial<Pick<Choice, 'content' | 'isCorrect' | 'key'>>;
 export type QuestionUpdatableProperties = Partial<
-	Pick<Question, 'content' | 'points' | 'explanation' | 'answers'>
+	Pick<Question, 'content' | 'points' | 'explanation' | 'choices'>
 >;

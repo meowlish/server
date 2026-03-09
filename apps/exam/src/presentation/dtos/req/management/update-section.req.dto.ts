@@ -5,20 +5,20 @@ import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 export class UpdateSectionDto implements exam.UpdateSectionDto {
 	@IsEnum(SectionType)
 	@IsOptional()
-	contentType?: SectionType | undefined;
+	contentType?: SectionType;
 
 	@IsOptional()
 	@IsString()
-	directive?: string | undefined;
+	directive?: string;
 
 	@IsString()
 	id!: string;
 
 	@IsOptional()
 	@IsString()
-	name?: string | undefined;
+	name?: string;
 
 	@IsBoolean()
 	@IsOptional()
-	setNameNull?: boolean | undefined;
+	setNameNull?: boolean;
 }

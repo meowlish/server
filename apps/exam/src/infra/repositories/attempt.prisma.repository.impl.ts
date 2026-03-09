@@ -2,12 +2,12 @@ import { AttemptConfig } from '../../domain/entities/attempt-config.entity';
 import {
 	AttemptEvaluator,
 	AttemptQuestion,
-	FinalAttemptAnswer,
+	AttemptResponseResult,
 } from '../../domain/entities/attempt-evaluator.entity';
-import { Attempt, AttemptAnswer } from '../../domain/entities/attempt.entity';
+import { Attempt, AttemptResponse } from '../../domain/entities/attempt.entity';
 import {
-	AttemptAnswerCreatedEvent,
-	AttemptAnswerUpdatedEvent,
+	AttemptResponseCreatedEvent,
+	AttemptResponseUpdatedEvent,
 } from '../../domain/events/attempt.event';
 import { IAttemptRepository } from '../../domain/repositories/attempt.repository';
 import { QuestionType } from '../../enums/question-type.enum';
@@ -17,7 +17,7 @@ import { Injectable } from '@nestjs/common';
 import {
 	Prisma,
 	Attempt as PrismaAttempt,
-	AttemptAnswer as PrismaAttemptAnswer,
+	AttemptResponse as PrismaAttemptResponse,
 	PrismaClient,
 } from '@prisma-client/exam';
 import { Event, parseEnum } from '@server/utils';
@@ -40,7 +40,7 @@ export class AttemptPrismaMapper {
 		return { ...from };
 	}
 
-	toAttemptAnswerOrm(from: AttemptAnswer, attemptId: string): RepoAttemptAnswer {
+	toAttemptResponseOrm(from: AttemptResponse, attemptId: string): RepoAttemptResponse {
 		return { ...from, attemptId: attemptId, answers: [...from.answers] };
 	}
 
@@ -53,18 +53,18 @@ export class AttemptPrismaMapper {
 				new AttemptQuestion(
 					q.id,
 					this.mapQuestionType(q.type),
-					q.answers.map(a => a.content),
+					q.choices.map(c => c.key),
 					q.points,
 				),
 		);
 
-		const answers = from.attemptAnswers.map(
-			a => new FinalAttemptAnswer(a.id, a.questionId, a.answers, a.isCorrect),
+		const responses = from.attemptResponses.map(
+			r => new AttemptResponseResult(r.id, r.questionId, r.answers, r.isCorrect),
 		);
 
 		return new AttemptEvaluator({
 			id: from.id,
-			answers: answers,
+			responses: responses,
 			questions: attemptQuestions,
 		});
 	}
@@ -75,14 +75,14 @@ export class AttemptPrismaMapper {
 			type: this.mapQuestionType(q.type),
 		}));
 
-		const answers = from.attemptAnswers.map(
-			a =>
-				new AttemptAnswer({
-					id: a.id,
-					questionId: a.questionId,
-					isFlagged: a.isFlagged,
-					answers: a.answers,
-					note: a.note,
+		const responses = from.attemptResponses.map(
+			r =>
+				new AttemptResponse({
+					id: r.id,
+					questionId: r.questionId,
+					isFlagged: r.isFlagged,
+					answers: r.answers,
+					note: r.note,
 				}),
 		);
 
@@ -94,7 +94,7 @@ export class AttemptPrismaMapper {
 			startedAt: from.startedAt,
 			endedAt: from.endedAt,
 			isStrict: from.isStrict,
-			answers: answers,
+			responses: responses,
 			questions: attemptQuestions,
 		});
 	}
@@ -173,10 +173,10 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			await this.txHost.withTransaction(async () => {
 				await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
 
-				for (const [, answer] of attempt.answers.entries()) {
-					await this.txHost.tx.answer.update({
-						where: { id: answer.id },
-						data: { isCorrect: answer.isCorrect },
+				for (const [, response] of attempt.responses.entries()) {
+					await this.txHost.tx.attemptResponse.update({
+						where: { id: response.id },
+						data: { isCorrect: response.isCorrect },
 					});
 				}
 			});
@@ -196,20 +196,22 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 	}
 
 	private async handle(event: Event<any>): Promise<void> {
-		if (event instanceof AttemptAnswerCreatedEvent) return await this.onAttemptAnswerCreated(event);
-		if (event instanceof AttemptAnswerUpdatedEvent) return await this.onAttemptAnswerUpdated(event);
+		if (event instanceof AttemptResponseCreatedEvent)
+			return await this.onAttemptResponseCreated(event);
+		if (event instanceof AttemptResponseUpdatedEvent)
+			return await this.onAttemptResponseUpdated(event);
 	}
 
-	private async onAttemptAnswerCreated(event: AttemptAnswerCreatedEvent): Promise<void> {
-		await this.txHost.tx.attemptAnswer.create({
-			data: this.mapper.toAttemptAnswerOrm(event.payload.data, event.payload.attemptId),
+	private async onAttemptResponseCreated(event: AttemptResponseCreatedEvent): Promise<void> {
+		await this.txHost.tx.attemptResponse.create({
+			data: this.mapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
 		});
 	}
 
-	private async onAttemptAnswerUpdated(event: AttemptAnswerUpdatedEvent): Promise<void> {
-		await this.txHost.tx.attemptAnswer.update({
+	private async onAttemptResponseUpdated(event: AttemptResponseUpdatedEvent): Promise<void> {
+		await this.txHost.tx.attemptResponse.update({
 			where: { id: event.payload.data.id },
-			data: this.mapper.toAttemptAnswerOrm(event.payload.data, event.payload.attemptId),
+			data: this.mapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
 		});
 	}
 
@@ -231,7 +233,7 @@ type RepoAttemptQuestionForEval = Prisma.QuestionGetPayload<{
 }>;
 
 const attemptPrismaIncludeObject = {
-	attemptAnswers: true,
+	attemptResponses: true,
 	attemptSections: {
 		select: {
 			sectionId: true,
@@ -247,10 +249,10 @@ const attemptQuestionsPrismaSelectObject = {
 const attemptQuestionsForEvalPrismaSelectObject = {
 	id: true,
 	type: true,
-	answers: { where: { isCorrect: true } },
+	choices: { where: { isCorrect: true } },
 	points: true,
 } satisfies Prisma.QuestionSelect;
 
 type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints' | 'order'>;
 type RepoScoredAttempt = Pick<PrismaAttempt, 'id' | 'score' | 'totalPoints'>;
-type RepoAttemptAnswer = Omit<PrismaAttemptAnswer, 'isCorrect'>;
+type RepoAttemptResponse = Omit<PrismaAttemptResponse, 'isCorrect'>;

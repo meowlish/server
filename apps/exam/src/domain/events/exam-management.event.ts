@@ -1,6 +1,6 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
 import { type Exam, type ExamId, type ExamSection } from '../entities/exam.entity';
-import { type Answer, type Question } from '../entities/question.entity';
+import { type Choice, type Question } from '../entities/question.entity';
 import { type Section, type SectionChild } from '../entities/section.entity';
 import { Event } from '@server/utils';
 
@@ -56,10 +56,10 @@ export class QuestionMovedEvent extends Event<{
 	data: SectionChild;
 }> {}
 // question aggregate
-export class AnswerCreatedEvent extends Event<{ questionId: string; data: Answer }> {}
-export class AnswerDeletedEvent extends Event<{ answerId: string }> {}
-export class AnswerUpdatedEvent extends Event<{
+export class ChoiceCreatedEvent extends Event<{ questionId: string; data: Choice }> {}
+export class ChoiceDeletedEvent extends Event<{ choiceId: string }> {}
+export class ChoiceUpdatedEvent extends Event<{
 	questionId: string;
-	answerId: string;
-	data: Answer;
+	choiceId: string;
+	data: Choice;
 }> {}

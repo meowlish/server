@@ -1,4 +1,4 @@
-import { Answer } from '../../../../domain/entities/question.entity';
+import { Choice } from '../../../../domain/entities/question.entity';
 import {
 	type IExamRepository,
 	IExamRepositoryToken,
@@ -25,13 +25,16 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		question.updateDetails({
 			...payload,
 		});
-		if (payload.deleteAnswersIds) {
-			payload.deleteAnswersIds.forEach(id => question.removeAnswer(id));
+		if (payload.deleteChoicesIds) {
+			payload.deleteChoicesIds.forEach(id => question.removeChoice(id));
 		}
-		if (payload.addAnswers) {
-			payload.addAnswers.forEach(a =>
-				question.addAnswer(new Answer({ content: a.content, isCorrect: a.isCorrect })),
+		if (payload.addChoices) {
+			payload.addChoices.forEach(c =>
+				question.addChoice(new Choice({ key: c.key, content: c.content, isCorrect: c.isCorrect })),
 			);
+		}
+		if (payload.updateChoices) {
+			payload.updateChoices.forEach(c => question.updateChoice(c.id, c));
 		}
 		await this.questionRepository.save(question);
 	}

@@ -9,40 +9,74 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class AddAnswer {
+class AddChoice {
 	@IsString()
-	content!: string;
+	key!: string;
+
+	@IsOptional()
+	@IsString()
+	content?: string;
 
 	@IsBoolean()
 	isCorrect!: boolean;
 }
 
-export class UpdateQuestionDto {
-	@Type(() => AddAnswer)
-	@IsArray()
-	@IsOptional()
-	@ValidateNested({ each: true })
-	addAnswers!: AddAnswer[];
+class UpdateChoice {
+	@IsString()
+	id!: string;
 
 	@IsOptional()
 	@IsString()
-	content?: string | undefined;
+	key?: string;
+
+	@IsOptional()
+	@IsString()
+	content?: string;
+
+	@IsBoolean()
+	@IsOptional()
+	isCorrect?: boolean;
+
+	@IsBoolean()
+	@IsOptional()
+	setContentNull?: boolean;
+}
+
+export class UpdateQuestionDto {
+	@Type(() => AddChoice)
+	@IsArray()
+	@IsOptional()
+	@ValidateNested({ each: true })
+	addChoices!: AddChoice[];
 
 	@IsArray()
 	@IsOptional()
 	@IsString({ each: true })
-	deleteAnswersIds!: string[];
+	deleteChoicesIds!: string[];
+
+	@Type(() => UpdateChoice)
+	@IsArray()
+	@IsOptional()
+	@ValidateNested({ each: true })
+	updateChoicesIds!: UpdateChoice[];
 
 	@IsOptional()
 	@IsString()
-	explanation?: string | undefined;
+	content?: string;
+
+	@IsOptional()
+	@IsString()
+	explanation?: string;
+
+	@IsString()
+	id!: string;
 
 	@IsInt()
 	@IsOptional()
 	@IsPositive()
-	points?: number | undefined;
+	points?: number;
 
 	@IsOptional()
 	@IsString()
-	type?: string | undefined;
+	type?: string;
 }

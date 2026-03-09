@@ -4,13 +4,13 @@ import { IsInt, IsOptional, IsString } from 'class-validator';
 export class CreateSectionDto implements exam.CreateSectionDto {
 	@IsOptional()
 	@IsString()
-	examId?: string | undefined;
+	examId?: string;
 
 	@IsInt()
 	@IsOptional()
-	index?: number | undefined;
+	index?: number;
 
 	@IsOptional()
 	@IsString()
-	sectionId?: string | undefined;
+	sectionId?: string;
 }

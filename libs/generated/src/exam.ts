@@ -51,13 +51,23 @@ export interface UpdateQuestionDto {
   explanation?: string | undefined;
   points?: number | undefined;
   type?: string | undefined;
-  addAnswers: UpdateQuestionDto_AddAnswer[];
-  deleteAnswersIds: string[];
+  addChoices: UpdateQuestionDto_AddChoice[];
+  deleteChoicesIds: string[];
+  updateChoicesIds: UpdateQuestionDto_UpdateChoice[];
 }
 
-export interface UpdateQuestionDto_AddAnswer {
-  content: string;
+export interface UpdateQuestionDto_AddChoice {
+  key: string;
+  content?: string | undefined;
   isCorrect: boolean;
+}
+
+export interface UpdateQuestionDto_UpdateChoice {
+  id: string;
+  key?: string | undefined;
+  content?: string | undefined;
+  isCorrect?: boolean | undefined;
+  setContentNull?: boolean | undefined;
 }
 
 export interface DeleteExamDto {
