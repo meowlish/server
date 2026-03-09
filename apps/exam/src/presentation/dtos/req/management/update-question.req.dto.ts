@@ -61,7 +61,7 @@ export class UpdateQuestionDto implements exam.UpdateQuestionDto {
 	@IsArray()
 	@IsOptional()
 	@ValidateNested({ each: true })
-	updateChoicesIds!: UpdateChoice[];
+	updateChoices!: UpdateChoice[];
 
 	@IsOptional()
 	@IsString()

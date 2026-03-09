@@ -53,7 +53,7 @@ export interface UpdateQuestionDto {
   type?: string | undefined;
   addChoices: UpdateQuestionDto_AddChoice[];
   deleteChoicesIds: string[];
-  updateChoicesIds: UpdateQuestionDto_UpdateChoice[];
+  updateChoices: UpdateQuestionDto_UpdateChoice[];
 }
 
 export interface UpdateQuestionDto_AddChoice {

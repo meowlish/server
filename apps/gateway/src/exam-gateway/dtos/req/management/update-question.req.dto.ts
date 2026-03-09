@@ -58,7 +58,7 @@ export class UpdateQuestionDto {
 	@IsArray()
 	@IsOptional()
 	@ValidateNested({ each: true })
-	updateChoicesIds!: UpdateChoice[];
+	updateChoices!: UpdateChoice[];
 
 	@IsOptional()
 	@IsString()

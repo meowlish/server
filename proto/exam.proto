@@ -73,7 +73,7 @@ message UpdateQuestionDto {
 
 	repeated AddChoice    add_choices        = 6;
 	repeated string       delete_choices_ids = 7;
-	repeated UpdateChoice update_choices_ids = 8;
+	repeated UpdateChoice update_choices     = 8;
 
 	message AddChoice {
 		string          key        = 1;
