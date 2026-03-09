@@ -35,7 +35,7 @@ export class Choice implements IEntity<Choice> {
 
 	public updateDetails(options: ChoiceUpdatableProperties) {
 		if (options.content || options.content === null) this.content = options.content;
-		if (options.isCorrect) this.isCorrect = options.isCorrect;
+		if (options.isCorrect !== undefined) this.isCorrect = options.isCorrect;
 		if (options.key) this.key = options.key;
 	}
 }

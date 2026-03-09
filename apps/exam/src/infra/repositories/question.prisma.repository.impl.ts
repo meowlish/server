@@ -56,7 +56,7 @@ export class QuestionPrismaMapper {
 		return {
 			id: from.id,
 			key: from.key,
-			content: from.key,
+			content: from.content,
 			isCorrect: from.isCorrect,
 			questionId: questionId,
 		};
