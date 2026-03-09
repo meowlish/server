@@ -13,7 +13,7 @@ export class UpdateQuestionCommandPayload {
 		id: string;
 		key?: string;
 		content?: string | null;
-		isCorrect: boolean;
+		isCorrect?: boolean;
 	}[];
 
 	constructor(constructorOptions: {
@@ -29,7 +29,7 @@ export class UpdateQuestionCommandPayload {
 			key?: string;
 			content?: string;
 			setContentNull?: boolean;
-			isCorrect: boolean;
+			isCorrect?: boolean;
 		}[];
 	}) {
 		this.id = constructorOptions.id;
