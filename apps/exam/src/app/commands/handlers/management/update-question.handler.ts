@@ -1,9 +1,5 @@
 import { Choice } from '../../../../domain/entities/question.entity';
 import {
-	type IExamRepository,
-	IExamRepositoryToken,
-} from '../../../../domain/repositories/exam.repository';
-import {
 	type IQuestionRepository,
 	IQuestionRepositoryToken,
 } from '../../../../domain/repositories/question.repository';
@@ -14,7 +10,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 @CommandHandler(UpdateQuestionCommand)
 export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionCommand> {
 	constructor(
-		@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository,
 		@Inject(IQuestionRepositoryToken) private readonly questionRepository: IQuestionRepository,
 	) {}
 

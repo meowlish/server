@@ -1,8 +1,4 @@
 import {
-	type IExamRepository,
-	IExamRepositoryToken,
-} from '../../../../domain/repositories/exam.repository';
-import {
 	type ISectionRepository,
 	ISectionRepositoryToken,
 } from '../../../../domain/repositories/section.repository';
@@ -13,7 +9,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 @CommandHandler(MoveQuestionCommand)
 export class MoveQuestionHandler implements ICommandHandler<MoveQuestionCommand> {
 	constructor(
-		@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository,
 		@Inject(ISectionRepositoryToken) private readonly sectionRepository: ISectionRepository,
 	) {}
 
