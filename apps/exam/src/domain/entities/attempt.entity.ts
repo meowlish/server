@@ -221,7 +221,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	// pass timeStamp in as early as possible
 	public endAttempt(timeStamp: Date): void {
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
-		if (!this.responses.length) {
+		if (!this.responses.length && this.questions.entries.length) {
 			if (this.isWithinAllowedTime(timeStamp))
 				throw new ForbiddenException('Must at least answer one question before submitting');
 		}
