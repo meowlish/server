@@ -68,9 +68,6 @@ export class UpdateQuestionDto {
 	@IsString()
 	explanation?: string;
 
-	@IsString()
-	id!: string;
-
 	@IsInt()
 	@IsOptional()
 	@IsPositive()
