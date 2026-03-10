@@ -14,10 +14,9 @@ export class AnswerHandler implements ICommandHandler<AnswerCommand> {
 
 	public async execute(command: AnswerCommand): Promise<void> {
 		const payload = command.payload;
-		const timeStamp = new Date();
 		const attempt = await this.attemptRepository.findOne(payload.attemptId);
 		if (!attempt) throw new NotFoundException('Attempt not found');
-		attempt.answer(payload.questionId, payload.answer, timeStamp);
+		attempt.answer(payload.questionId, payload.answer);
 		await this.attemptRepository.save(attempt);
 	}
 }

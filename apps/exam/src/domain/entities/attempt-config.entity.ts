@@ -20,9 +20,9 @@ export class AttemptConfig extends AggregateRoot<Event<any>> implements IAggrega
 	public constructor(constructorOptions: {
 		id?: string;
 		examId: ExamId;
-		sectionIds?: string[];
+		sectionIds?: string[] | null;
 		attemptedBy: string;
-		startedAt: Date;
+		startedAt?: Date;
 		durationLimit: number;
 		isStrict?: boolean;
 	}) {
@@ -31,7 +31,7 @@ export class AttemptConfig extends AggregateRoot<Event<any>> implements IAggrega
 		this.examId = constructorOptions.examId;
 		this.sectionIds = constructorOptions.sectionIds ?? null;
 		this.attemptedBy = constructorOptions.attemptedBy;
-		this.startedAt = constructorOptions.startedAt;
+		this.startedAt = constructorOptions.startedAt ?? new Date();
 		this.durationLimit = constructorOptions.durationLimit;
 		this.isStrict = constructorOptions.isStrict ?? false;
 

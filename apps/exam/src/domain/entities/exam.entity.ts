@@ -7,7 +7,6 @@ import {
 	SectionMovedEvent,
 } from '../events/exam-management.event';
 import { AttemptConfig } from './attempt-config.entity';
-import { Attempt } from './attempt.entity';
 import { Section } from './section.entity';
 import {
 	ConflictException,
@@ -223,33 +222,31 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		}
 	}
 
-	public createAttempt(attemptedBy: string, options: NewAttemptInfo): AttemptConfig {
+	public createAttempt(attemptedBy: string, options?: NewAttemptInfo): AttemptConfig {
 		if (this.status !== ExamStatus.APPROVED)
 			throw new MethodNotAllowedException('Exam must be approved before attempting');
-		if (!options.isStrict && options.sectionIds) {
-			options.sectionIds = [...new Set(options.sectionIds)];
+		const durationLimit = options?.durationLimit ?? this.duration;
+		let sectionIds = options?.sectionIds ?? null;
+		if (sectionIds?.length) {
+			sectionIds = [...new Set(sectionIds)];
 			const sectionIdSet = new Set(this.sections.map(s => s.id));
-			const allExist = options.sectionIds.every(id => sectionIdSet.has(id));
+			const allExist = sectionIds.every(id => sectionIdSet.has(id));
 			if (!allExist) throw new ForbiddenException('Section ids must belong to the correct exam id');
 			// if select everything, don't store redundancy
-			if (options.sectionIds.length === this.sections.length) options.sectionIds = undefined;
+			if (sectionIds.length === this.sections.length) sectionIds = null;
 		}
+		const isStrict = sectionIds === null && durationLimit === this.duration;
 		return new AttemptConfig({
 			attemptedBy: attemptedBy,
-			isStrict: options.isStrict,
-			durationLimit: options.isStrict ? this.duration : (options.durationLimit ?? this.duration),
+			isStrict: isStrict,
+			durationLimit: durationLimit,
 			examId: this.id,
-			startedAt: options.startedAt,
-			sectionIds: options.isStrict ? [] : options.sectionIds,
+			sectionIds: sectionIds,
 		});
 	}
 }
 
-export type NewAttemptRequiredInfo = Pick<Attempt, 'startedAt' | 'isStrict'>;
-export type NewAttemptOptionalInfo = Partial<Pick<Attempt, 'isStrict' | 'durationLimit'>> & {
-	sectionIds?: string[];
-};
-export type NewAttemptInfo = NewAttemptOptionalInfo & NewAttemptRequiredInfo;
+export type NewAttemptInfo = Partial<Pick<AttemptConfig, 'durationLimit' | 'sectionIds'>>;
 
 export type ExamUpdatableProperties = Partial<Pick<Exam, 'title' | 'duration' | 'description'>>;
 export type ExamSectionUpdatableProperties = Partial<Omit<ExamSection, 'id'>>;

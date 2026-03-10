@@ -1,16 +1,14 @@
 import { exam } from '@server/generated';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 class Options implements exam.AttemptDto_Options {
 	@IsNumber()
 	duration!: number;
 
-	@IsBoolean()
-	isStrict!: boolean;
-
+	@IsOptional()
 	@IsString({ each: true })
-	sectionIds!: string[];
+	sectionIds: string[] = [];
 }
 
 export class AttemptDto implements exam.AttemptDto {
@@ -21,6 +19,7 @@ export class AttemptDto implements exam.AttemptDto {
 	userId!: string;
 
 	@Type(() => Options)
+	@IsOptional()
 	@ValidateNested()
-	options!: Options;
+	options?: Options;
 }

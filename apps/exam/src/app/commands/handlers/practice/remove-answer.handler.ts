@@ -14,11 +14,10 @@ export class RemoveAnswerHandler implements ICommandHandler<RemoveAnswerCommand>
 
 	public async execute(command: RemoveAnswerCommand): Promise<void> {
 		const payload = command.payload;
-		const timeStamp = new Date();
 		const attempt = await this.attemptRepository.findOne(payload.attemptId);
 		if (!attempt) throw new NotFoundException('Attempt not found');
-		if (payload.answer) attempt.deleteAnswer(payload.questionId, payload.answer, timeStamp);
-		else attempt.deleteAnswer(payload.questionId, timeStamp);
+		if (payload.answer) attempt.deleteAnswer(payload.questionId, payload.answer);
+		else attempt.deleteAnswer(payload.questionId);
 		await this.attemptRepository.save(attempt);
 	}
 }

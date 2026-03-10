@@ -15,10 +15,9 @@ export class EndAttemptHandler implements ICommandHandler<EndAttemptCommand> {
 
 	public async execute(command: EndAttemptCommand): Promise<void> {
 		const payload = command.payload;
-		const timeStamp = new Date();
 		const attempt = await this.attemptRepository.findOne(payload.attemptId);
 		if (!attempt) throw new NotFoundException('Attempt not found');
-		attempt.endAttempt(timeStamp);
+		attempt.endAttempt();
 		await this.attemptRepository.save(attempt);
 		this.eventBus.publishAll(attempt.getUncommittedEvents());
 	}

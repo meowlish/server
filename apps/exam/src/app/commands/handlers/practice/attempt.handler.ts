@@ -20,14 +20,11 @@ export class AttemptHandler implements ICommandHandler<AttemptCommand> {
 
 	public async execute(command: AttemptCommand): Promise<void> {
 		const payload = command.payload;
-		const timeStamp = new Date();
 		const exam = await this.examRepository.findOne(payload.examId);
 		if (!exam) throw new NotFoundException('Exam not found');
 		const attemptConfig = exam.createAttempt(payload.userId, {
-			startedAt: timeStamp,
-			isStrict: payload.options.isStrict,
-			durationLimit: payload.options.duration,
-			sectionIds: payload.options.sectionIds,
+			durationLimit: payload.options?.duration,
+			sectionIds: payload.options?.sectionIds,
 		});
 		await this.attemptRepository.save(attemptConfig);
 		this.eventBus.publishAll(attemptConfig.getUncommittedEvents());

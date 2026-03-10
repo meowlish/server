@@ -110,8 +110,8 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	}
 
 	// check if the question exists in the section in the domain service layer
-	// pass timeStamp in as early as possible
-	public answer(questionId: string, answer: string, timeStamp: Date): void {
+	public answer(questionId: string, answer: string): void {
+		const timeStamp = new Date();
 		this.assertModifiable(timeStamp);
 		if (!this.questions.has(questionId))
 			throw new ConflictException("Question isn't included in this attempt");
@@ -145,32 +145,14 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		attemptResponse.setAnswer(answer);
 	}
 
-	public deleteAnswer(questionId: string, answer: string, timeStamp: Date): void;
-	public deleteAnswer(questionId: string, timeStamp: Date): void;
-	// pass timeStamp in as early as possible
-	public deleteAnswer(
-		questionId: string,
-		answerOrTimestamp: string | Date,
-		maybeTimeStamp?: Date,
-	): void {
-		let answer: string | null;
-		let timeStamp: Date;
-
-		if (answerOrTimestamp instanceof Date) {
-			answer = null;
-			timeStamp = answerOrTimestamp;
-		} else {
-			answer = answerOrTimestamp;
-			if (!maybeTimeStamp) {
-				throw new Error('Timestamp is required when deleting specific answer');
-			}
-			timeStamp = maybeTimeStamp;
-		}
-
+	public deleteAnswer(questionId: string, answer?: string): void {
+		const timeStamp = new Date();
 		this.assertModifiable(timeStamp);
 		const existingResponse = this.responses.find(r => r.questionId === questionId);
 		if (!existingResponse) throw new NotFoundException('Answer not found');
+		// if answer was passed in
 		if (answer) existingResponse.deleteAnswer(answer);
+		// else, clear every answers
 		else existingResponse.clearAnswers();
 		this.apply(
 			new AttemptResponseUpdatedEvent({
@@ -218,8 +200,8 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		}
 	}
 
-	// pass timeStamp in as early as possible
-	public endAttempt(timeStamp: Date): void {
+	public endAttempt(): void {
+		const timeStamp = new Date();
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
 		if (!this.responses.length && this.questions.entries.length) {
 			if (this.isWithinAllowedTime(timeStamp))

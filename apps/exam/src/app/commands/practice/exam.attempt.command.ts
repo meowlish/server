@@ -4,8 +4,7 @@ export class AttemptCommandPayload {
 	constructor(
 		public userId: string,
 		public examId: string,
-		public options: {
-			isStrict: boolean;
+		public options?: {
 			duration: number;
 			sectionIds: string[];
 		},

@@ -1,11 +1,20 @@
+import { AuthenticatedRequest } from '../types/authenticated-request';
 import { EXAM_CLIENT } from './constants/exam';
 import { AddNoteDto } from './dtos/req/practice/add-note.req.dto';
 import { AnswerDto } from './dtos/req/practice/answer.req.dto';
 import { AttemptDto } from './dtos/req/practice/attempt.req.dto';
-import { EndAttemptDto } from './dtos/req/practice/end-attempt.req.dto';
 import { RemoveAnswerDto } from './dtos/req/practice/remove-answer.req.dto';
-import { ToggleFlagDto } from './dtos/req/practice/toggle-flag.req.dto';
-import { Body, Controller, Inject, OnModuleInit } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Inject,
+	OnModuleInit,
+	Param,
+	Patch,
+	Post,
+	Req,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 
@@ -21,33 +30,62 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 		);
 	}
 
-	attempt(@Body() body: AttemptDto) {
-		const res = this.examPracticeService.attempt(body);
+	@Post(':id')
+	attempt(@Req() req: AuthenticatedRequest, @Param('id') id: string, @Body() body: AttemptDto) {
+		const res = this.examPracticeService.attempt({ ...body, examId: id, userId: req.user.sub });
 		return res;
 	}
 
-	endAttempt(@Body() body: EndAttemptDto) {
-		const res = this.examPracticeService.endAttempt(body);
+	@Post('attempt/:id/submit')
+	endAttempt(@Param('id') id: string) {
+		const res = this.examPracticeService.endAttempt({ attemptId: id });
 		return res;
 	}
 
-	answer(@Body() body: AnswerDto) {
-		const res = this.examPracticeService.answer(body);
+	@Post('attempt/:id/answers/:questionId')
+	answer(
+		@Param('id') id: string,
+		@Param('questionId') questionId: string,
+		@Body() body: AnswerDto,
+	) {
+		const res = this.examPracticeService.answer({ ...body, attemptId: id, questionId: questionId });
 		return res;
 	}
 
-	removeAnswer(@Body() body: RemoveAnswerDto) {
-		const res = this.examPracticeService.removeAnswer(body);
+	@Delete('attempt/:id/answers/:questionId')
+	removeAnswer(
+		@Param('id') id: string,
+		@Param('questionId') questionId: string,
+		@Body() body: RemoveAnswerDto,
+	) {
+		const res = this.examPracticeService.removeAnswer({
+			...body,
+			attemptId: id,
+			questionId: questionId,
+		});
 		return res;
 	}
 
-	toggleFlag(@Body() body: ToggleFlagDto) {
-		const res = this.examPracticeService.toggleFlag(body);
+	@Patch('attempt/:id/answers/:questionId')
+	toggleFlag(@Param('id') id: string, @Param('questionId') questionId: string) {
+		const res = this.examPracticeService.toggleFlag({
+			attemptId: id,
+			questionId: questionId,
+		});
 		return res;
 	}
 
-	addNote(@Body() body: AddNoteDto) {
-		const res = this.examPracticeService.addNote(body);
+	@Patch('attempt/:id/answers/:questionId')
+	addNote(
+		@Param('id') id: string,
+		@Param('questionId') questionId: string,
+		@Body() body: AddNoteDto,
+	) {
+		const res = this.examPracticeService.addNote({
+			...body,
+			attemptId: id,
+			questionId: questionId,
+		});
 		return res;
 	}
 }
