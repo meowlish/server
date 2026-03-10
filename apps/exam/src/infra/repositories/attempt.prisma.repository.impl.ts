@@ -206,7 +206,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		if (attempt instanceof AttemptConfig) {
 			const data = this.mapper.toConfigAttemptOrm(attempt);
 			const finishedAttemptsCount = await this.txHost.tx.attempt.count({
-				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: null },
+				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: { not: null } },
 			});
 			await this.txHost.tx.attempt.create({
 				data: {
