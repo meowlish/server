@@ -203,7 +203,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	public endAttempt(): void {
 		const timeStamp = new Date();
 		if (this.endedAt) throw new ConflictException('Exam result has already been submitted');
-		if (!this.responses.length && this.questions.entries.length) {
+		if (!this.responses.length && this.questions.size) {
 			if (this.isWithinAllowedTime(timeStamp))
 				throw new ForbiddenException('Must at least answer one question before submitting');
 		}
