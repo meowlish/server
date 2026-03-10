@@ -208,21 +208,28 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			const finishedAttemptsCount = await this.txHost.tx.attempt.count({
 				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: { not: null } },
 			});
-			try {
-				await this.txHost.tx.attempt.create({
-					data: {
-						...data,
-						order: finishedAttemptsCount,
-					},
-				});
-			} catch (e) {
-				if (e instanceof Prisma.PrismaClientKnownRequestError) {
-					if (e.code === 'P2002') {
-						throw new MethodNotAllowedException('Please submit the previous attempt');
+			await this.txHost.withTransaction(async () => {
+				try {
+					await this.txHost.tx.attempt.create({
+						data: {
+							...data,
+							order: finishedAttemptsCount,
+						},
+					});
+				} catch (e) {
+					if (e instanceof Prisma.PrismaClientKnownRequestError) {
+						if (e.code === 'P2002') {
+							throw new MethodNotAllowedException('Please submit the previous attempt');
+						}
 					}
+					throw e;
 				}
-				throw e;
-			}
+
+				if (attempt.sectionIds)
+					await this.txHost.tx.attemptSection.createMany({
+						data: attempt.sectionIds.map(s => ({ sectionId: s, attemptId: attempt.id })),
+					});
+			});
 		}
 	}
 
