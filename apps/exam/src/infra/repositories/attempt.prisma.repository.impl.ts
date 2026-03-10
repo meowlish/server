@@ -29,19 +29,41 @@ export class AttemptPrismaMapper {
 	}
 
 	toAttemptOrm(from: Attempt): RepoAttempt {
-		return { ...from };
+		return {
+			id: from.id,
+			attemptedBy: from.attemptedBy,
+			examId: from.examId,
+			durationLimit: from.durationLimit,
+			startedAt: from.startedAt,
+			endedAt: from.endedAt,
+			isStrict: from.isStrict,
+		};
 	}
 
-	toConfigAttemptOrm(from: AttemptConfig): RepoAttempt {
-		return { ...from, examId: from.examId.id, endedAt: null };
+	toConfigAttemptOrm(from: AttemptConfig): RepoAttemptConfig {
+		return {
+			id: from.id,
+			attemptedBy: from.attemptedBy,
+			examId: from.examId.id,
+			durationLimit: from.durationLimit,
+			isStrict: from.isStrict,
+			startedAt: from.startedAt,
+		};
 	}
 
 	toScoredAttemptOrm(from: AttemptEvaluator): RepoScoredAttempt {
-		return { ...from };
+		return { id: from.id, score: from.score, totalPoints: from.totalPoints };
 	}
 
 	toAttemptResponseOrm(from: AttemptResponse, attemptId: string): RepoAttemptResponse {
-		return { ...from, attemptId: attemptId, answers: [...from.answers] };
+		return {
+			id: from.id,
+			isFlagged: from.isFlagged,
+			note: from.note,
+			questionId: from.questionId,
+			attemptId: attemptId,
+			answers: [...from.answers],
+		};
 	}
 
 	toAttemptEvaluatorAggregate(
@@ -254,5 +276,6 @@ const attemptQuestionsForEvalPrismaSelectObject = {
 } satisfies Prisma.QuestionSelect;
 
 type RepoAttempt = Omit<PrismaAttempt, 'score' | 'totalPoints' | 'order'>;
+type RepoAttemptConfig = Omit<RepoAttempt, 'endedAt'>;
 type RepoScoredAttempt = Pick<PrismaAttempt, 'id' | 'score' | 'totalPoints'>;
 type RepoAttemptResponse = Omit<PrismaAttemptResponse, 'isCorrect'>;

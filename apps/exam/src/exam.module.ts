@@ -21,7 +21,8 @@ import {
 	SectionPrismaMapper,
 	SectionPrismaRepository,
 } from './infra/repositories/section.prisma.repository.impl';
-import { ExamController } from './presentation/controllers/exam-management.controller';
+import { ExamManagementController } from './presentation/controllers/exam-management.controller';
+import { ExamPracticeController } from './presentation/controllers/exam-practice.controller';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
@@ -37,7 +38,7 @@ import { GlobalValidationPipe } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
 @Module({
-	controllers: [ExamController],
+	controllers: [ExamManagementController, ExamPracticeController],
 	imports: [
 		ConfigModule.forRoot({
 			expandVariables: true,

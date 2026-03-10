@@ -45,7 +45,10 @@ export class SectionPrismaMapper {
 		} else children = [];
 
 		return new Section({
-			...from,
+			id: from.id,
+			directive: from.directive,
+			name: from.name,
+			parentId: from.parentId,
 			examId: new ExamId(from.exam.id, from.exam.version),
 			examStatus: this.mapExamStatus(from.exam.status),
 			children: children,

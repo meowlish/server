@@ -26,7 +26,10 @@ export class ExamPrismaMapper {
 
 	toExamAggregate(from: ExtendedExam): Exam {
 		return new Exam({
-			...from,
+			title: from.title,
+			duration: from.duration,
+			createdBy: from.createdBy,
+			description: from.description,
 			id: new ExamId(from.id, from.version),
 			sections: from.sections.map(s => new ExamSection(s.id, s.order)),
 			status: this.mapExamStatus(from.status),

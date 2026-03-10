@@ -65,7 +65,7 @@ import { exam } from '@server/generated';
 
 @exam.ExamManagementServiceControllerMethods()
 @Controller()
-export class ExamController implements exam.ExamManagementServiceController {
+export class ExamManagementController implements exam.ExamManagementServiceController {
 	constructor(private commandBus: CommandBus) {}
 
 	async createExam(@Payload() request: CreateExamDto): Promise<void> {

@@ -55,7 +55,11 @@ export class IdentityPrismaMapper {
 
 	toIdentityAggregate(from: ExtendedIdentity): Identity {
 		return new Identity({
-			...from,
+			id: from.id,
+			username: from.username,
+			createdAt: from.createdAt,
+			deletedAt: from.deletedAt,
+			updatedAt: from.updatedAt,
 			roleIds: from.identityRoles.map(r => r.roleId),
 			credentials: from.credentials.map(
 				cred =>
