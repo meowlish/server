@@ -1,3 +1,3 @@
-import { AttemptSubmittedEvent } from '../../../domain/events/attempt.event';
+import { AttemptSubmittedHandler } from './attempt-submitted.handler';
 
-export const ExamEventHandlers = [AttemptSubmittedEvent];
+export const ExamEventHandlers = [AttemptSubmittedHandler];

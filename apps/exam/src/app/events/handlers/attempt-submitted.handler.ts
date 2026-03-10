@@ -3,13 +3,15 @@ import {
 	type IAttemptRepository,
 	IAttemptRepositoryToken,
 } from '../../../domain/repositories/attempt.repository';
-import { Inject, Logger, NotFoundException } from '@nestjs/common';
-import { IEventHandler } from '@nestjs/cqrs';
+import { Inject, NotFoundException } from '@nestjs/common';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { AppLoggerService } from '@server/logger';
 
+@EventsHandler(AttemptSubmittedEvent)
 export class AttemptSubmittedHandler implements IEventHandler<AttemptSubmittedEvent> {
 	constructor(
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
-		private readonly logger = new Logger(AttemptSubmittedHandler.name),
+		private readonly logger: AppLoggerService,
 	) {}
 
 	async handle(event: AttemptSubmittedEvent) {
@@ -20,7 +22,7 @@ export class AttemptSubmittedHandler implements IEventHandler<AttemptSubmittedEv
 			attempt.evaluateScore();
 			await this.attemptRepository.save(attempt);
 		} catch (e) {
-			this.logger.error(e);
+			this.logger.error(e as string);
 		}
 	}
 }

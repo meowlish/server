@@ -31,8 +31,8 @@ model Section {
   parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id], onDelete: Cascade)
   questions     Question[]
 
-  ancestors       SectionClosure[] @relation("Ancestors")
-  descendants     SectionClosure[] @relation("Descendants")
+  ancestors       SectionClosure[] @relation("Descendants")
+  descendants     SectionClosure[] @relation("Ancestors")
   childSections   Section[]        @relation("SectionParent")
   attemptSections AttemptSection[]
 

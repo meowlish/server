@@ -10,7 +10,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 export class EndAttemptHandler implements ICommandHandler<EndAttemptCommand> {
 	constructor(
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
-		private eventBus: EventBus,
+		private readonly eventBus: EventBus,
 	) {}
 
 	public async execute(command: EndAttemptCommand): Promise<void> {

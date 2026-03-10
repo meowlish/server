@@ -15,7 +15,7 @@ export class AttemptHandler implements ICommandHandler<AttemptCommand> {
 	constructor(
 		@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository,
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
-		private eventBus: EventBus,
+		private readonly eventBus: EventBus,
 	) {}
 
 	public async execute(command: AttemptCommand): Promise<void> {
