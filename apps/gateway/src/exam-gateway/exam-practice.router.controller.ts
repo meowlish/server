@@ -66,7 +66,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 		return res;
 	}
 
-	@Patch('attempt/:id/answers/:questionId')
+	@Patch('attempt/:id/answers/:questionId/flag')
 	toggleFlag(@Param('id') id: string, @Param('questionId') questionId: string) {
 		const res = this.examPracticeService.toggleFlag({
 			attemptId: id,
@@ -75,7 +75,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 		return res;
 	}
 
-	@Patch('attempt/:id/answers/:questionId')
+	@Patch('attempt/:id/answers/:questionId/note')
 	addNote(
 		@Param('id') id: string,
 		@Param('questionId') questionId: string,

@@ -26,7 +26,7 @@ export class AttemptResponse implements IEntity<AttemptResponse> {
 		answers?: string[];
 		note?: string | null;
 	}) {
-		this.id = AttemptResponse.newId();
+		this.id = constructorOptions.id ?? AttemptResponse.newId();
 		this.questionId = constructorOptions.questionId;
 		this.isFlagged = constructorOptions.isFlagged ?? false;
 		this.answers = new Set(constructorOptions.answers);
