@@ -13,7 +13,7 @@ import { IAttemptRepository } from '../../domain/repositories/attempt.repository
 import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import {
 	Prisma,
 	Attempt as PrismaAttempt,
@@ -208,12 +208,21 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			const finishedAttemptsCount = await this.txHost.tx.attempt.count({
 				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: { not: null } },
 			});
-			await this.txHost.tx.attempt.create({
-				data: {
-					...data,
-					order: finishedAttemptsCount,
-				},
-			});
+			try {
+				await this.txHost.tx.attempt.create({
+					data: {
+						...data,
+						order: finishedAttemptsCount,
+					},
+				});
+			} catch (e) {
+				if (e instanceof Prisma.PrismaClientKnownRequestError) {
+					if (e.code === 'P2002') {
+						throw new MethodNotAllowedException('Please submit the previous attempt');
+					}
+				}
+				throw e;
+			}
 		}
 	}
 

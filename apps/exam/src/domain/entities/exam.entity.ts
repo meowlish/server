@@ -9,6 +9,7 @@ import {
 import { AttemptConfig } from './attempt-config.entity';
 import { Section } from './section.entity';
 import {
+	BadRequestException,
 	ConflictException,
 	ForbiddenException,
 	MethodNotAllowedException,
@@ -66,6 +67,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		super();
 		this.id = constructorOptions.id ?? Exam.newId();
 		this.title = constructorOptions.title;
+		if (constructorOptions.duration <= 0)
+			throw new BadRequestException('Duration must be positive');
 		this.duration = constructorOptions.duration;
 		this.createdBy = constructorOptions.createdBy;
 		this.status = constructorOptions.status;
@@ -235,7 +238,8 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 			// if select everything, don't store redundancy
 			if (sectionIds.length === this.sections.length) sectionIds = null;
 		}
-		const isStrict = sectionIds === null && durationLimit === this.duration;
+		const isStrict =
+			(sectionIds === null || sectionIds.length === 0) && durationLimit === this.duration;
 		return new AttemptConfig({
 			attemptedBy: attemptedBy,
 			isStrict: isStrict,

@@ -5,7 +5,7 @@ export class AttemptCommandPayload {
 		public userId: string,
 		public examId: string,
 		public options?: {
-			duration: number;
+			duration?: number;
 			sectionIds: string[];
 		},
 	) {}

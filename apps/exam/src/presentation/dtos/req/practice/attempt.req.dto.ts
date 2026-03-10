@@ -1,10 +1,12 @@
 import { exam } from '@server/generated';
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from 'class-validator';
 
 class Options implements exam.AttemptDto_Options {
 	@IsNumber()
-	duration!: number;
+	@IsOptional()
+	@IsPositive()
+	duration?: number;
 
 	@IsOptional()
 	@IsString({ each: true })

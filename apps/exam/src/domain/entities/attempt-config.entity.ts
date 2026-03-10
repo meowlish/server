@@ -1,6 +1,7 @@
 import { AttemptCreatedEvent } from '../events/attempt.event';
 import { Attempt } from './attempt.entity';
 import { ExamId } from './exam.entity';
+import { BadRequestException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate } from '@server/utils';
 
@@ -32,6 +33,8 @@ export class AttemptConfig extends AggregateRoot<Event<any>> implements IAggrega
 		this.sectionIds = constructorOptions.sectionIds ?? null;
 		this.attemptedBy = constructorOptions.attemptedBy;
 		this.startedAt = constructorOptions.startedAt ?? new Date();
+		if (constructorOptions.durationLimit <= 0)
+			throw new BadRequestException('Duration limit must be positive');
 		this.durationLimit = constructorOptions.durationLimit;
 		this.isStrict = constructorOptions.isStrict ?? false;
 
