@@ -18,7 +18,8 @@ import {
 	Credential as PrismaCredential,
 	Identity as PrismaIdentity,
 } from '@prisma-client/auth';
-import { Permission, Role, parseEnum } from '@server/utils';
+import { Permission, Role } from '@server/typing';
+import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
 @Injectable()

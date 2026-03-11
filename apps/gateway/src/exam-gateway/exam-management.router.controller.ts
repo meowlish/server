@@ -24,7 +24,7 @@ import {
 } from '@nestjs/common';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
-import { Permission, Role } from '@server/utils';
+import { Permission, Role } from '@server/typing';
 
 @HasRoles(Role.MODERATOR, Role.ADMIN)
 @Controller('management')

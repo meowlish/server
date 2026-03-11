@@ -1,5 +1,4 @@
-import { Permission } from '../enums/permission.enum';
-import { Role } from '../enums/role.enum';
+import { Permission, Role } from '@server/typing';
 import { z } from 'zod/v4';
 
 export const payloadSchema = z.object({

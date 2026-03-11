@@ -1,4 +1,4 @@
-import { DeepStringify } from '@server/utils';
+import { DeepStringify } from '@server/typing';
 import { z } from 'zod/v4';
 
 const jwtVarsSchema = z.object({

@@ -4,7 +4,8 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role, parseEnum } from '@server/utils';
+import { Role } from '@server/typing';
+import { parseEnum } from '@server/utils';
 
 @Injectable()
 export class RolesGuard extends JwtAuthGuard implements CanActivate {

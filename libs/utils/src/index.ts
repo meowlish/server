@@ -3,7 +3,6 @@ export * from './classes';
 export * from './constants';
 export * from './data';
 export * from './dtos';
-export * from './enums';
 export * from './filters';
 export * from './functions';
 export * from './interceptors';

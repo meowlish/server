@@ -1,7 +1,6 @@
 import { LoginType } from '../../enums/login-type.enum';
 import { Identity } from '../entities/identity.entity';
-import { Permission } from '@server/utils';
-import { Role } from '@server/utils';
+import { Permission, Role } from '@server/typing';
 
 export interface IIdentityRepository {
 	findOneById(id: string, deleted?: boolean): Promise<Identity | null>;

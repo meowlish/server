@@ -1,0 +1,21 @@
+{
+	"name": "typing",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/typing/src",
+	"projectType": "library",
+	"tags": [],
+	"// targets": "to see all targets run: nx show project typing --web",
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/typing",
+				"tsConfig": "libs/typing/tsconfig.lib.json",
+				"packageJson": "libs/typing/package.json",
+				"main": "libs/typing/src/index.ts",
+				"assets": ["libs/typing/*.md"]
+			}
+		}
+	}
+}
