@@ -22,10 +22,23 @@
 			},
 			"configurations": {
 				"development": {
-					"command": "dotenv -e .env.development -- pnpm exec prisma db push {args}"
+					"command": "pnpm exec prisma db push {args}"
 				}
 			},
 			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"defaultConfiguration": "development"
+		},
+		"prisma:seed": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/exam"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma db seed {args}"
+				}
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma", "{projectRoot}/prisma/seed.ts"],
 			"defaultConfiguration": "development"
 		},
 		"build": {

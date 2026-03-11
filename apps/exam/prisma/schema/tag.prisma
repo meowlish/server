@@ -1,5 +1,7 @@
 model TagTableLock {
   version Int @id @default(0)
+
+  @@map("tags_table_lock")
 }
 
 model Tag {
