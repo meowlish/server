@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6380}:6379"
-      - "${REDIS_INSIGHT_PORT:-8001}:8001"
+      - "${REDIS_INSIGHT_PORT:-8002}:8001"
     networks:
       - api-network
     volumes:
