@@ -36,7 +36,7 @@ import { exam } from '@server/generated';
 @exam.ExamPracticeServiceControllerMethods()
 @Controller()
 export class ExamPracticeController implements exam.ExamPracticeServiceController {
-	constructor(private commandBus: CommandBus) {}
+	constructor(private readonly commandBus: CommandBus) {}
 
 	async attempt(@Payload() request: AttemptDto): Promise<void> {
 		await this.commandBus.execute(

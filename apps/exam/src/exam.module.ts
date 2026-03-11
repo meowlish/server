@@ -1,10 +1,12 @@
 import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/handlers';
 import { ExamEventHandlers } from './app/events/handlers';
+import { TagService } from './app/services/tag.service';
 import { config } from './configs/config';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';
 import { ISectionRepositoryToken } from './domain/repositories/section.repository';
+import { ITagRepositoryToken } from './domain/repositories/tag.repository';
 import {
 	AttemptPrismaMapper,
 	AttemptPrismaRepository,
@@ -21,8 +23,10 @@ import {
 	SectionPrismaMapper,
 	SectionPrismaRepository,
 } from './infra/repositories/section.prisma.repository.impl';
+import { TagPrismaRepository } from './infra/repositories/tag.prisma.repository.impl';
 import { ExamManagementController } from './presentation/controllers/exam-management.controller';
 import { ExamPracticeController } from './presentation/controllers/exam-practice.controller';
+import { TagController } from './presentation/controllers/tag.controller';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
@@ -38,7 +42,7 @@ import { GlobalValidationPipe } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
 @Module({
-	controllers: [ExamManagementController, ExamPracticeController],
+	controllers: [ExamManagementController, ExamPracticeController, TagController],
 	imports: [
 		ConfigModule.forRoot({
 			expandVariables: true,
@@ -67,6 +71,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		...ExamManagementHandlers,
 		...ExamPracticeHandlers,
 		...ExamEventHandlers,
+		TagService,
 		ExamPrismaMapper,
 		{
 			provide: IExamRepositoryToken,
@@ -86,6 +91,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: IAttemptRepositoryToken,
 			useClass: AttemptPrismaRepository,
+		},
+		{
+			provide: ITagRepositoryToken,
+			useClass: TagPrismaRepository,
 		},
 		{
 			provide: APP_GUARD,

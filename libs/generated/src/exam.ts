@@ -138,6 +138,25 @@ export interface ToggleFlagDto {
   questionId: string;
 }
 
+export interface AddTagDto {
+  name: string;
+  parentId?: string | undefined;
+}
+
+export interface DeleteTagDto {
+  id: string;
+}
+
+export interface UpdateTagDto {
+  id: string;
+  name: string;
+}
+
+export interface MoveTagDto {
+  id: string;
+  parentId?: string | undefined;
+}
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<Empty>;
 
@@ -264,3 +283,40 @@ export function ExamPracticeServiceControllerMethods() {
 }
 
 export const EXAM_PRACTICE_SERVICE_NAME = "ExamPracticeService";
+
+export interface TagServiceClient {
+  addTag(request: AddTagDto, metadata?: Metadata): Observable<Empty>;
+
+  deleteTag(request: DeleteTagDto, metadata?: Metadata): Observable<Empty>;
+
+  updateTag(request: UpdateTagDto, metadata?: Metadata): Observable<Empty>;
+
+  moveTag(request: MoveTagDto, metadata?: Metadata): Observable<Empty>;
+}
+
+export interface TagServiceController {
+  addTag(request: AddTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  deleteTag(request: DeleteTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  updateTag(request: UpdateTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+
+  moveTag(request: MoveTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+}
+
+export function TagServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["addTag", "deleteTag", "updateTag", "moveTag"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("TagService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("TagService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const TAG_SERVICE_NAME = "TagService";

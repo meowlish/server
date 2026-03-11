@@ -28,6 +28,13 @@ service ExamPracticeService {
 	rpc ToggleFlag(ToggleFlagDto) returns (common.Empty) {}
 }
 
+service TagService {
+	rpc AddTag(AddTagDto) returns (common.Empty) {}
+	rpc DeleteTag(DeleteTagDto) returns (common.Empty) {}
+	rpc UpdateTag(UpdateTagDto) returns (common.Empty) {}
+	rpc MoveTag(MoveTagDto) returns (common.Empty) {}
+}
+
 // Request
 message CreateExamDto {
 	string created_by  = 1;
@@ -156,4 +163,23 @@ message AddNoteDto {
 message ToggleFlagDto {
 	string attempt_id  = 1;
 	string question_id = 2;
+}
+
+message AddTagDto {
+	string          name      = 1;
+	optional string parent_id = 2;
+}
+
+message DeleteTagDto {
+	string id = 1;
+}
+
+message UpdateTagDto {
+	string id   = 1;
+	string name = 2;
+}
+
+message MoveTagDto {
+	string          id        = 1;
+	optional string parent_id = 2;
 }

@@ -1,6 +1,10 @@
+model TagTableLock {
+  version Int @id @default(0)
+}
+
 model Tag {
   id   String @id @default(uuid())
-  name String
+  name String @unique
   lft  Int
   rgt  Int
 

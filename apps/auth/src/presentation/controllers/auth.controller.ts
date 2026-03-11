@@ -35,7 +35,7 @@ import { Claims } from '@server/utils';
 @auth.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements auth.AuthServiceController {
-	constructor(private commandBus: CommandBus) {}
+	constructor(private readonly commandBus: CommandBus) {}
 
 	async loginMail(@Payload() request: LoginMailDto): Promise<Tokens> {
 		const res = await this.commandBus.execute(
