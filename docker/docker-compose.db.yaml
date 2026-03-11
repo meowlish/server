@@ -3,7 +3,7 @@ services:
     image: postgres:18-alpine
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     container_name: englishdb
     user: ${POSTGRES_USER:-postgres}
     environment:
