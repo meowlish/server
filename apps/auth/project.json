@@ -42,6 +42,18 @@
 			"inputs": ["{projectRoot}/prisma/**/*.prisma", "{projectRoot}/prisma/seed.ts"],
 			"defaultConfiguration": "development"
 		},
+		"prisma:migrate": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/auth"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma migrate dev {args}"
+				}
+			},
+			"defaultConfiguration": "development"
+		},
 		"build": {
 			"executor": "nx:run-commands",
 			"cache": true,
