@@ -1,4 +1,4 @@
-import { FileModule } from './app/app.module';
+import { FileModule } from './file.module';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
