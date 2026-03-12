@@ -1,6 +1,8 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
 const { join } = require('path');
 
+const isWindows = process.platform === 'win32';
+
 module.exports = {
 	output: {
 		path: join(__dirname, '../../dist/apps/file-service'),
@@ -12,7 +14,7 @@ module.exports = {
 	plugins: [
 		new NxAppWebpackPlugin({
 			target: 'node',
-			compiler: 'swc',
+			compiler: isWindows ? 'swc' : 'tsc',
 			main: './src/main.ts',
 			tsConfig: './tsconfig.app.json',
 			// assets: ['./src/assets'],
