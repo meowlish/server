@@ -2,9 +2,13 @@ import { IEnvVars } from './config';
 import { ConfigService } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
 
-export default (configService: ConfigService<IEnvVars>): JwtModuleOptions => ({
-	secret: configService.getOrThrow('jwt', { infer: true }).accessSecret,
-	signOptions: {
-		expiresIn: configService.getOrThrow('jwt', { infer: true }).accessTokenExpiration,
-	},
-});
+export default (configService: ConfigService<IEnvVars>): JwtModuleOptions => {
+	const jwtEnvs = configService.getOrThrow('jwt', { infer: true });
+
+	return {
+		secret: jwtEnvs.accessSecret,
+		signOptions: {
+			expiresIn: jwtEnvs.accessTokenExpiration,
+		},
+	};
+};
