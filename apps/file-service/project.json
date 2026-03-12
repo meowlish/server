@@ -5,6 +5,41 @@
 	"projectType": "application",
 	"tags": [],
 	"targets": {
+		"prisma:generate": {
+			"executor": "nx:run-commands",
+			"cache": true,
+			"options": {
+				"command": "pnpm exec prisma generate",
+				"cwd": "apps/file-service"
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/file"]
+		},
+		"prisma:push": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/file-service"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma db push {args}"
+				}
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"defaultConfiguration": "development"
+		},
+		"prisma:migrate": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/file-service"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma migrate dev {args}"
+				}
+			},
+			"defaultConfiguration": "development"
+		},
 		"build": {
 			"executor": "nx:run-commands",
 			"options": {
@@ -16,7 +51,8 @@
 				"development": {
 					"args": ["--node-env=development"]
 				}
-			}
+			},
+			"dependsOn": ["prisma:generate"]
 		},
 		"prune-lockfile": {
 			"dependsOn": ["build"],

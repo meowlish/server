@@ -51,7 +51,6 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 			load: [config],
 		}),
 		CqrsModule.forRoot(),
-		DatabaseModule,
 		ClsModule.forRoot({
 			global: true,
 			guard: { mount: false },
