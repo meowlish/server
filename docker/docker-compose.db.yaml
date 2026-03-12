@@ -3,7 +3,7 @@ services:
     image: postgres:18-alpine
     restart: unless-stopped
     ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     container_name: englishdb
     user: ${POSTGRES_USER:-postgres}
     environment:
@@ -29,7 +29,7 @@ services:
     container_name: redis
     restart: unless-stopped
     ports:
-      - "${REDIS_PORT:-6380}:6379"
+      - "${REDIS_PORT:-6379}:6379"
       - "${REDIS_INSIGHT_PORT:-8002}:8001"
     networks:
       - api-network
