@@ -34,6 +34,7 @@
 		"dotenv-cli": "^10.0.0",
 		"ioredis": "^5.9.2",
 		"lodash": "^4.17.23",
+		"minio": "^8.0.7",
 		"nest-winston": "^1.10.2",
 		"nestjs-cls": "^6.1.0",
 		"nestjs-form-data": "^1.9.93",
