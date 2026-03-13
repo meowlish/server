@@ -1,5 +1,17 @@
 const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
+const path = require('path');
 const { join } = require('path');
+
+class SwcrcDirPlugin {
+	apply(compiler) {
+		const rule = compiler.options.module.rules.find(rule => rule?.loader?.includes('swc-loader'));
+
+		if (rule) {
+			rule.options = rule.options || {};
+			rule.options.configFile = path.join(compiler.context, '.swcrc');
+		}
+	}
+}
 
 module.exports = {
 	output: {
@@ -21,5 +33,6 @@ module.exports = {
 			generatePackageJson: true,
 			sourceMap: true,
 		}),
+		new SwcrcDirPlugin(),
 	],
 };
