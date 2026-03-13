@@ -1,3 +1,4 @@
+import { LoginType } from '../src/enums/login-type.enum';
 import { PrismaClient } from '@prisma-client/auth';
 import { Permission, Role } from '@server/typing';
 import bcrypt from 'bcrypt';
@@ -82,14 +83,14 @@ async function seedAdminUser() {
 		where: {
 			identifier_loginType: {
 				identifier: 'admin@gmail.com',
-				loginType: 'password',
+				loginType: LoginType.MAIL,
 			},
 		},
 		update: {},
 		create: {
 			identityId: identity.id,
 			identifier: 'admin@gmail.com',
-			loginType: 'password',
+			loginType: LoginType.MAIL,
 			secretHash: passwordHash,
 		},
 	});
