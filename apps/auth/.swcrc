@@ -8,8 +8,7 @@
 			"decorators": true,
 			"dynamicImport": true
 		},
-		"baseUrl": "./",
-		"loose": false
+		"baseUrl": "./"
 	},
 	"minify": false
 }
