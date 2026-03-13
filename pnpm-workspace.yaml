@@ -1,3 +1,4 @@
+autoInstallPeers: true
 blockExoticSubdeps: true
 
 onlyBuiltDependencies:
@@ -8,10 +9,9 @@ onlyBuiltDependencies:
   - "@scarf/scarf"
   - "@swc/core"
   - bcrypt
+  - esbuild
   - less
   - nx
   - prisma
   - protobufjs
   - unrs-resolver
-
-autoInstallPeers: true
