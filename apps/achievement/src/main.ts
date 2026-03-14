@@ -1,4 +1,4 @@
-import { AuthModule } from './auth.module';
+import { AchievementModule } from './achievement.module';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -11,16 +11,19 @@ const useLogger = (module: INestApplicationContext) => {
 };
 
 async function bootstrap() {
-	const authModule = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {
-		transport: Transport.GRPC,
-		options: {
-			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
-			package: 'auth',
-			protoPath: join(process.cwd(), 'proto', 'auth.proto'),
+	const achievementModule = await NestFactory.createMicroservice<MicroserviceOptions>(
+		AchievementModule,
+		{
+			transport: Transport.GRPC,
+			options: {
+				url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
+				package: 'achievement',
+				protoPath: join(process.cwd(), 'proto', 'achievement.proto'),
+			},
 		},
-	});
-	useLogger(authModule);
-	await authModule.listen();
+	);
+	useLogger(achievementModule);
+	await achievementModule.listen();
 }
 
 bootstrap().catch(console.error);

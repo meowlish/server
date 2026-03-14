@@ -11,16 +11,16 @@ const useLogger = (module: INestApplicationContext) => {
 };
 
 async function bootstrap() {
-	const examModule = await NestFactory.createMicroservice<MicroserviceOptions>(FileModule, {
+	const fileModule = await NestFactory.createMicroservice<MicroserviceOptions>(FileModule, {
 		transport: Transport.GRPC,
 		options: {
-			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50052}`,
-			package: 'exam',
-			protoPath: join(process.cwd(), 'proto', 'exam.proto'),
+			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
+			package: 'file',
+			protoPath: join(process.cwd(), 'proto', 'file.proto'),
 		},
 	});
-	useLogger(examModule);
-	await examModule.listen();
+	useLogger(fileModule);
+	await fileModule.listen();
 }
 
 bootstrap().catch(console.error);

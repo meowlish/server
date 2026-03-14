@@ -60,6 +60,21 @@
 			"skipFiles": ["<node_internals>/**"],
 			"sourceMaps": true,
 			"outFiles": ["${workspaceFolder}/apps/file-service/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug achievement with Nx",
+			"runtimeExecutable": "pnpm exec",
+			"runtimeArgs": ["nx", "serve", "achievement"],
+			"env": {
+				"NODE_OPTIONS": "--inspect=9233"
+			},
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"skipFiles": ["<node_internals>/**"],
+			"sourceMaps": true,
+			"outFiles": ["${workspaceFolder}/apps/achievement/dist/**/*.(m|c|)js", "!**/node_modules/**"]
 		}
 	]
 }
