@@ -4,7 +4,6 @@ services:
     restart: unless-stopped
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
-    container_name: englishdb
     user: ${POSTGRES_USER:-postgres}
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -26,7 +25,6 @@ services:
 
   redis:
     image: redis/redis-stack:7.4.0-v8
-    container_name: redis
     restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6379}:6379"
@@ -59,6 +57,18 @@ services:
     networks:
       - api-network
 
+  rabbit-mq:
+    image: rabbitmq:4.2-management-alpine
+    restart: unless-stopped
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MNGMNT_PORT:-15672}:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-user}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password}
+    volumes:
+      - rabbitmq_data:/data
+
 networks:
   api-network:
     driver: bridge
@@ -67,3 +77,4 @@ volumes:
   postgresql-data:
   redis-data:
   minio-data:
+  rabbitmq_data:
