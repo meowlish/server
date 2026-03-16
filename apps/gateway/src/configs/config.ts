@@ -11,10 +11,18 @@ const googleOAuth2Schema = z.object({
 	secret: z.string(),
 });
 
+export const servicePortsSchema = z.object({
+	auth: z.coerce.number(),
+	exam: z.coerce.number(),
+	file: z.coerce.number(),
+	achievement: z.coerce.number(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2Schema,
+	microservicePorts: servicePortsSchema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -29,6 +37,12 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 	googleOAuth2: {
 		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
 		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
+	},
+	microservicePorts: {
+		auth: process.env.AUTH_SERVICE_PORT,
+		exam: process.env.EXAM_SERVICE_PORT,
+		file: process.env.FILE_SERVICE_PORT,
+		achievement: process.env.ACHIEVEMENT_SERVICE_PORT,
 	},
 });
 
