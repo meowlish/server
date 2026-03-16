@@ -5,6 +5,55 @@
 	"projectType": "application",
 	"tags": [],
 	"targets": {
+		"prisma:generate": {
+			"executor": "nx:run-commands",
+			"cache": true,
+			"options": {
+				"command": "pnpm exec prisma generate",
+				"cwd": "apps/achievement"
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"outputs": ["{workspaceRoot}/node_modules/.prisma/client/achievement"]
+		},
+
+		"prisma:push": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/achievement"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma db push {args}"
+				}
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma"],
+			"defaultConfiguration": "development"
+		},
+		"prisma:seed": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/achievement"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma db seed {args}"
+				}
+			},
+			"inputs": ["{projectRoot}/prisma/**/*.prisma", "{projectRoot}/prisma/seed.ts"],
+			"defaultConfiguration": "development"
+		},
+		"prisma:migrate": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/achievement"
+			},
+			"configurations": {
+				"development": {
+					"command": "pnpm exec prisma migrate dev {args}"
+				}
+			},
+			"defaultConfiguration": "development"
+		},
 		"build": {
 			"executor": "nx:run-commands",
 			"options": {
