@@ -1,7 +1,7 @@
 import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/handlers';
-import { ExamEventHandlers } from './app/events/handlers';
 import { TagService } from './app/services/tag.service';
 import { config } from './configs/config';
+import { ExamEventHandlers } from './domain/events/handlers';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';

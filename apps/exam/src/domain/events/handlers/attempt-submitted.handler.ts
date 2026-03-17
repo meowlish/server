@@ -1,8 +1,8 @@
-import { AttemptSubmittedEvent } from '../../../domain/events/attempt.event';
 import {
 	type IAttemptRepository,
 	IAttemptRepositoryToken,
-} from '../../../domain/repositories/attempt.repository';
+} from '../../repositories/attempt.repository';
+import { AttemptSubmittedEvent } from '../attempt.event';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { AppLoggerService } from '@server/logger';
