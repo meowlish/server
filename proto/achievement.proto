@@ -4,4 +4,6 @@ import "common.proto";
 
 package achievement;
 
-service AchievementService {}
+service AchievementService {
+	rpc Placeholder(common.Empty) returns(common.Empty) {}
+}

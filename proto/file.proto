@@ -4,4 +4,6 @@ import "common.proto";
 
 package file;
 
-service FileService {}
+service FileService {
+	rpc Placeholder(common.Empty) returns(common.Empty) {}
+}
