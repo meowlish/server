@@ -1,10 +1,10 @@
-import { MyService } from './app/events/handlers/test.handler';
 import { config } from './configs/config';
-import { MessageHandlerErrorBehavior, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { rmqConfig } from './configs/rmq.config';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaClient } from '@prisma-client/auth';
@@ -39,18 +39,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
-		RabbitMQModule.forRoot({
-			exchanges: [
-				{
-					name: 'eventbus',
-					type: 'topic',
-					options: { durable: true },
-				},
-			],
-			uri: `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
-			connectionInitOptions: { wait: true },
-			defaultSubscribeErrorBehavior: MessageHandlerErrorBehavior.REQUEUE,
-		}),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
 		LoggerModule.forRoot({ appName: 'AchievementModule' }),
 	],
 	providers: [

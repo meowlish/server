@@ -3,7 +3,7 @@ import { TokenService } from './app/services/token.service';
 import { IEnvVars, config } from './configs/config';
 import JwtRefreshConfig from './configs/jwt-refresh.config';
 import JwtAccessConfig from './configs/jwt.config';
-import { RedisConfig } from './configs/redis.config';
+import { redisConfig } from './configs/redis.config';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import {
 	IdentityPrismaMapper,
@@ -54,7 +54,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		LoggerModule.forRoot({ appName: 'AuthModule' }),
 		RedisModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: RedisConfig as (...args: unknown[]) => RedisModuleOptions,
+			useFactory: redisConfig as (...args: unknown[]) => RedisModuleOptions,
 		}),
 	],
 	providers: [
