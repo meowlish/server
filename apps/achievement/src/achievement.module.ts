@@ -1,4 +1,6 @@
+import { MyService } from './app/events/handlers/test.handler';
 import { config } from './configs/config';
+import { MessageHandlerErrorBehavior, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
@@ -36,6 +38,18 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 					}),
 				}),
 			],
+		}),
+		RabbitMQModule.forRoot({
+			exchanges: [
+				{
+					name: 'eventbus',
+					type: 'topic',
+					options: { durable: true },
+				},
+			],
+			uri: `amqp://${process.env.RMQ_USER}:${process.env.RMQ_PASS}@${process.env.RMQ_HOST}:${process.env.RMQ_PORT}`,
+			connectionInitOptions: { wait: true },
+			defaultSubscribeErrorBehavior: MessageHandlerErrorBehavior.REQUEUE,
 		}),
 		LoggerModule.forRoot({ appName: 'AchievementModule' }),
 	],

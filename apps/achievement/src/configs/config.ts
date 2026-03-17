@@ -9,9 +9,17 @@ const dbVarsSchema = z.object({
 	dbName: z.string(),
 });
 
+export const mqSchema = z.object({
+	user: z.string(),
+	password: z.string(),
+	host: z.string(),
+	port: z.coerce.number(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	database: dbVarsSchema,
+	messageQueque: mqSchema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -25,6 +33,12 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 		username: process.env.POSTGRES_USER,
 		password: process.env.POSTGRES_PASSWORD,
 		dbName: process.env.POSTGRES_DB,
+	},
+	messageQueque: {
+		host: process.env.RMQ_HOST,
+		port: process.env.RMQ_PORT,
+		user: process.env.RMQ_USER,
+		password: process.env.RMQ_PASS,
 	},
 });
 
