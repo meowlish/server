@@ -12,7 +12,9 @@ import { join } from 'path';
 			provide: EXAM_CLIENT,
 			useFactory: () =>
 				new ErrorHandlingGrpcProxy({
-					url: '0.0.0.0:50050',
+					url:
+						process.env.EXAM_SERVICE_URL ??
+						`${process.env.EXAM_SERVICE_HOST}:${process.env.EXAM_SERVICE_PORT}`,
 					package: 'exam',
 					protoPath: join(process.cwd(), 'proto', 'exam.proto'),
 				}),

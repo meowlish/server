@@ -13,7 +13,9 @@ import { join } from 'path';
 			provide: AUTH_CLIENT,
 			useFactory: () =>
 				new ErrorHandlingGrpcProxy({
-					url: '0.0.0.0:50051',
+					url:
+						process.env.AUTH_SERVICE_URL ??
+						`${process.env.AUTH_SERVICE_HOST}:${process.env.AUTH_SERVICE_PORT}`,
 					package: 'auth',
 					protoPath: join(process.cwd(), 'proto', 'auth.proto'),
 				}),

@@ -11,18 +11,30 @@ const googleOAuth2Schema = z.object({
 	secret: z.string(),
 });
 
-export const servicePortsSchema = z.object({
-	auth: z.coerce.number(),
-	exam: z.coerce.number(),
-	file: z.coerce.number(),
-	achievement: z.coerce.number(),
+export const servicesSchema = z.object({
+	auth: z.object({
+		port: z.coerce.number(),
+		host: z.string(),
+	}),
+	exam: z.object({
+		port: z.coerce.number(),
+		host: z.string(),
+	}),
+	file: z.object({
+		port: z.coerce.number(),
+		host: z.string(),
+	}),
+	achievement: z.object({
+		port: z.coerce.number(),
+		host: z.string(),
+	}),
 });
 
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2Schema,
-	microservicePorts: servicePortsSchema,
+	microservicesConnection: servicesSchema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -38,11 +50,23 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
 		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
 	},
-	microservicePorts: {
-		auth: process.env.AUTH_SERVICE_PORT,
-		exam: process.env.EXAM_SERVICE_PORT,
-		file: process.env.FILE_SERVICE_PORT,
-		achievement: process.env.ACHIEVEMENT_SERVICE_PORT,
+	microservicesConnection: {
+		auth: {
+			port: process.env.AUTH_SERVICE_PORT,
+			host: process.env.AUTH_SERVICE_HOST,
+		},
+		exam: {
+			port: process.env.EXAM_SERVICE_PORT,
+			host: process.env.EXAM_SERVICE_HOST,
+		},
+		file: {
+			port: process.env.FILE_SERVICE_PORT,
+			host: process.env.FILE_SERVICE_HOST,
+		},
+		achievement: {
+			port: process.env.ACHIEVEMENT_SERVICE_PORT,
+			host: process.env.ACHIEVEMENT_SERVICE_HOST,
+		},
 	},
 });
 
