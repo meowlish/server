@@ -6,7 +6,6 @@ import {
 	RabbitPayload,
 	RabbitSubscribe,
 	defaultNackErrorHandler,
-	requeueErrorHandler,
 } from '@golevelup/nestjs-rabbitmq';
 import { Inject, Injectable } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
