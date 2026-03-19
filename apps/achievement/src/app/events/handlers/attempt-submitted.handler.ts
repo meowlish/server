@@ -2,8 +2,13 @@ import {
 	type IBadgeManagerRepository,
 	IBadgeManagerRepositoryToken,
 } from '../../../domain/repositories/badge-manager.repository';
-import { RabbitPayload, RabbitSubscribe, requeueErrorHandler } from '@golevelup/nestjs-rabbitmq';
+import {
+	RabbitPayload,
+	RabbitSubscribe,
+	defaultNackErrorHandler,
+} from '@golevelup/nestjs-rabbitmq';
 import { Inject, Injectable } from '@nestjs/common';
+import { AppLoggerService } from '@server/logger';
 import { IsString } from 'class-validator';
 
 class AttemptSubmittedEvent {
@@ -19,18 +24,28 @@ export class AttemptSubmittedHandler {
 	constructor(
 		@Inject(IBadgeManagerRepositoryToken)
 		private readonly badgeManagerRepository: IBadgeManagerRepository,
+		private readonly logger: AppLoggerService,
 	) {}
 
 	@RabbitSubscribe({
 		exchange: 'eventbus',
 		routingKey: '*.attempt.submitted',
 		queue: 'achievement.events.attempt.submitted',
-		errorHandler: requeueErrorHandler,
+		queueOptions: {
+			durable: true,
+			deadLetterExchange: 'achievement.dlx',
+			deadLetterRoutingKey: 'attempt.submitted.failed',
+		},
+		errorHandler: defaultNackErrorHandler,
 	})
 	async handle(@RabbitPayload() payload: AttemptSubmittedEvent) {
-		const attemptCounterBadgeManager =
-			await this.badgeManagerRepository.getAttemptCounterBadgeManager(payload.attemptedBy);
-		attemptCounterBadgeManager.updateProgress(1);
-		await this.badgeManagerRepository.saveAttemptCounterBadgeManager(attemptCounterBadgeManager);
+		try {
+			const attemptCounterBadgeManager =
+				await this.badgeManagerRepository.getAttemptCounterBadgeManager(payload.attemptedBy);
+			attemptCounterBadgeManager.updateProgress(1);
+			await this.badgeManagerRepository.saveAttemptCounterBadgeManager(attemptCounterBadgeManager);
+		} catch (e) {
+			this.logger.error(e as string);
+		}
 	}
 }

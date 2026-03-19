@@ -1,5 +1,13 @@
+import { RABBIT_CONTEXT_TYPE_KEY } from '@golevelup/nestjs-rabbitmq';
 import { status } from '@grpc/grpc-js';
-import { Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+	ArgumentsHost,
+	Catch,
+	ContextType,
+	ExceptionFilter,
+	HttpException,
+	HttpStatus,
+} from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { Observable, throwError } from 'rxjs';
 
@@ -30,7 +38,10 @@ export class Http2gRPCExceptionFilter implements ExceptionFilter {
 		[HttpStatus.PRECONDITION_FAILED]: status.FAILED_PRECONDITION,
 	};
 
-	catch(exception: HttpException): Observable<never> | void {
+	catch(exception: HttpException, host: ArgumentsHost): Observable<never> | void {
+		const contextType = host.getType<ContextType | typeof RABBIT_CONTEXT_TYPE_KEY>();
+		if (contextType === RABBIT_CONTEXT_TYPE_KEY) throw exception;
+
 		const httpStatus = exception.getStatus();
 		const httpRes = exception.getResponse() as {
 			details?: unknown;
