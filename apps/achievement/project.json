@@ -65,7 +65,8 @@
 				"development": {
 					"args": ["--node-env=development"]
 				}
-			}
+			},
+			"dependsOn": ["prisma:generate"]
 		},
 		"prune-lockfile": {
 			"dependsOn": ["build"],
