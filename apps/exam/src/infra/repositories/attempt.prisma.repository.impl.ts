@@ -13,7 +13,7 @@ import { IAttemptRepository } from '../../domain/repositories/attempt.repository
 import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable, MethodNotAllowedException } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
 import {
 	Prisma,
 	Attempt as PrismaAttempt,
@@ -152,6 +152,15 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 					select: attemptQuestionsPrismaSelectObject,
 				});
 		return this.mapper.toAttemptAggregate(foundAttempt, attemptQuestions);
+	}
+
+	async getAttemptedUser(attemptId: string): Promise<string> {
+		const attempt = await this.txHost.tx.attempt.findUnique({
+			where: { id: attemptId },
+			select: { attemptedBy: true },
+		});
+		if (!attempt) throw new NotFoundException('Attempt not found');
+		return attempt.attemptedBy;
 	}
 
 	async getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null> {

@@ -1,6 +1,8 @@
 import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/handlers';
+import { IntegrationEventPublishers } from './app/events/publishers';
 import { TagService } from './app/services/tag.service';
 import { config } from './configs/config';
+import { rmqConfig } from './configs/rmq.config';
 import { ExamEventHandlers } from './domain/events/handlers';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
@@ -27,10 +29,11 @@ import { TagPrismaRepository } from './infra/repositories/tag.prisma.repository.
 import { ExamManagementController } from './presentation/controllers/exam-management.controller';
 import { ExamPracticeController } from './presentation/controllers/exam-practice.controller';
 import { TagController } from './presentation/controllers/tag.controller';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaClient } from '@prisma-client/exam';
@@ -64,12 +67,14 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
 		LoggerModule.forRoot({ appName: 'ExamModule' }),
 	],
 	providers: [
 		...ExamManagementHandlers,
 		...ExamPracticeHandlers,
 		...ExamEventHandlers,
+		...IntegrationEventPublishers,
 		TagService,
 		ExamPrismaMapper,
 		{

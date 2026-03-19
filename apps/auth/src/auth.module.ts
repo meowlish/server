@@ -1,15 +1,18 @@
 import { AuthHandlers } from './app/commands/handlers';
+import { IntegrationEventPublishers } from './app/events/publisher';
 import { TokenService } from './app/services/token.service';
 import { IEnvVars, config } from './configs/config';
 import JwtRefreshConfig from './configs/jwt-refresh.config';
 import JwtAccessConfig from './configs/jwt.config';
 import { redisConfig } from './configs/redis.config';
+import { rmqConfig } from './configs/rmq.config';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import {
 	IdentityPrismaMapper,
 	IdentityPrismaRepository,
 } from './infra/repositories/identity.prisma.repository.impl';
 import { AuthController } from './presentation/controllers';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -51,6 +54,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
 		LoggerModule.forRoot({ appName: 'AuthModule' }),
 		RedisModule.forRootAsync({
 			inject: [ConfigService],
@@ -60,6 +64,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	providers: [
 		TokenService,
 		...AuthHandlers,
+		...IntegrationEventPublishers,
 		{
 			inject: [ConfigService],
 			provide: 'JWT_ACCESS_TOKEN',

@@ -1,0 +1,70 @@
+import { Badge } from '../../enums/badge.enum';
+import { BadgeAddedEvent } from '../events/badge.event';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { Event, IAggregate } from '@server/utils';
+
+export class LoginBadgeManager
+	extends AggregateRoot<Event<any>>
+	implements IAggregate<LoginBadgeManager>
+{
+	public readonly id: string;
+	public version: number;
+	public total: number;
+	public longestStreak: number;
+	public startedAt: Date;
+	public lastLogin: Date;
+	public badges: Set<Badge>;
+
+	public constructor(constructorOptions: {
+		id: string;
+		version: number;
+		total: number;
+		longestStreak: number;
+		startedAt: Date;
+		lastLogin: Date;
+		badges: Badge[];
+	}) {
+		super();
+		this.id = constructorOptions.id;
+		this.version = constructorOptions.version;
+		this.total = constructorOptions.total;
+		this.longestStreak = constructorOptions.longestStreak;
+		this.startedAt = constructorOptions.startedAt;
+		this.lastLogin = constructorOptions.lastLogin;
+		this.badges = new Set(constructorOptions.badges);
+	}
+
+	updateProgress(loginTime: Date) {
+		// update recorded time
+		const diffMs = this.toDateOnly(loginTime).getTime() - this.toDateOnly(this.lastLogin).getTime();
+		const diffDays = diffMs / (1000 * 60 * 60 * 24);
+		if (diffDays >= 1) this.total++;
+		if (diffDays >= 2) this.startedAt = loginTime;
+		this.lastLogin = loginTime;
+		if (this.total >= 7) this.addBadge(Badge.LOGIN_SEVEN_DAYS);
+		if (this.total >= 30) this.addBadge(Badge.LOGIN_ONE_MONTH);
+		if (this.total >= 365) this.addBadge(Badge.LOGIN_ONE_YEAR);
+		// update streak
+		const diffStreakMs =
+			this.toDateOnly(this.lastLogin).getTime() - this.toDateOnly(this.startedAt).getTime();
+		const newStreak = diffStreakMs / (1000 * 60 * 60 * 24);
+		if (newStreak >= this.longestStreak) {
+			this.longestStreak = newStreak;
+			if (this.longestStreak >= 7) this.addBadge(Badge.LOGIN_SEVEN_DAYS_STREAK);
+			if (this.longestStreak >= 30) this.addBadge(Badge.LOGIN_ONE_MONTH_STREAK);
+			if (this.longestStreak >= 365) this.addBadge(Badge.LOGIN_ONE_YEAR_STREAK);
+		}
+	}
+
+	private addBadge(badge: Badge) {
+		if (!this.badges.has(badge)) {
+			this.badges.add(badge);
+			this.apply(new BadgeAddedEvent({ uid: this.id, badge: badge }));
+		}
+	}
+
+	// convert time to 00:00:00 of the same date
+	private toDateOnly(d: Date) {
+		return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+	}
+}

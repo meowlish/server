@@ -4,6 +4,7 @@ import { Attempt } from '../entities/attempt.entity';
 
 export interface IAttemptRepository {
 	findOne(id: string): Promise<Attempt | null>;
+	getAttemptedUser(attemptId: string): Promise<string>;
 	getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null>;
 	save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void>;
 	deleteMany(ids: string[]): Promise<void>;

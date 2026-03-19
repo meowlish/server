@@ -26,12 +26,20 @@ const googleOAuth2VarsSchema = z.object({
 	secret: z.string(),
 });
 
+export const mqSchema = z.object({
+	user: z.string(),
+	password: z.string(),
+	host: z.string(),
+	port: z.coerce.number(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	database: dbVarsSchema,
 	redis: redisVarsSchema,
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2VarsSchema,
+	messageQueue: mqSchema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -59,6 +67,12 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 	googleOAuth2: {
 		clientId: process.env.GOOGLE_OA2_CLIENT_ID,
 		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
+	},
+	messageQueue: {
+		host: process.env.RMQ_HOST,
+		port: process.env.RMQ_PORT,
+		user: process.env.RMQ_USER,
+		password: process.env.RMQ_PASS,
 	},
 });
 

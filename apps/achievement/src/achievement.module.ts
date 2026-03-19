@@ -1,5 +1,11 @@
+import { IntegrationEventHandlers } from './app/events/handlers';
 import { config } from './configs/config';
 import { rmqConfig } from './configs/rmq.config';
+import { IBadgeManagerRepositoryToken } from './domain/repositories/badge-manager.repository';
+import {
+	BadgeManagerPrismaMapper,
+	BadgeManagerPrismaRepositoryImpl,
+} from './infra/repositories/badge-manager.prisma.repository.impl';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -7,7 +13,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PrismaClient } from '@prisma-client/auth';
+import { PrismaClient } from '@prisma-client/achievement';
 import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
 import { LoggerModule } from '@server/logger';
 import {
@@ -43,6 +49,12 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		LoggerModule.forRoot({ appName: 'AchievementModule' }),
 	],
 	providers: [
+		...IntegrationEventHandlers,
+		BadgeManagerPrismaMapper,
+		{
+			provide: IBadgeManagerRepositoryToken,
+			useClass: BadgeManagerPrismaRepositoryImpl,
+		},
 		{
 			provide: APP_GUARD,
 			useClass: ClsGuard,
