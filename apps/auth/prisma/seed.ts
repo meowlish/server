@@ -2,7 +2,6 @@ import { LoginType } from '../src/enums/login-type.enum';
 import { PrismaClient } from '@prisma-client/auth';
 import { Permission, Role } from '@server/typing';
 import bcrypt from 'bcrypt';
-import 'reflect-metadata';
 
 const prisma = new PrismaClient();
 
