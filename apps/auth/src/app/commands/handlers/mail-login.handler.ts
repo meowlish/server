@@ -23,7 +23,7 @@ export class MailLoginCommandHandler implements ICommandHandler<MailLoginCommand
 		const payload = command.payload;
 		const credential = await this.identityRepository.findOneCredential(
 			payload.mail,
-			LoginType.MAIL,
+			LoginType.Mail,
 		);
 		if (!credential) throw new UnauthorizedException("Mail doesn't exist");
 		if (!credential.secretHash || !bcrypt.compareSync(payload.password, credential.secretHash))

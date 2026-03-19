@@ -77,7 +77,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	}
 
 	private assertModifiable(): void {
-		if (this.status === ExamStatus.APPROVED)
+		if (this.status === ExamStatus.Approved)
 			throw new ConflictException('Exam is already approved and can no longer be updated.');
 	}
 
@@ -226,7 +226,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	}
 
 	public createAttempt(attemptedBy: string, options?: NewAttemptInfo): AttemptConfig {
-		if (this.status !== ExamStatus.APPROVED)
+		if (this.status !== ExamStatus.Approved)
 			throw new MethodNotAllowedException('Exam must be approved before attempting');
 		const durationLimit = options?.durationLimit ?? this.duration;
 		let sectionIds = options?.sectionIds ?? null;

@@ -38,9 +38,9 @@ export class SectionPrismaMapper {
 		const contentType: SectionType = this.mapSectionType(from.contentType);
 
 		// map children
-		if (contentType === SectionType.QUESTION) {
+		if (contentType === SectionType.Question) {
 			children = from.questions.map(q => new SectionChild(q.id, q.order));
-		} else if (contentType === SectionType.SECTION) {
+		} else if (contentType === SectionType.Section) {
 			children = from.childSections.map(s => new SectionChild(s.id, s.order));
 		} else children = [];
 

@@ -41,18 +41,18 @@ export class LoginBadgeManager
 		if (diffDays >= 1) this.total++;
 		if (diffDays >= 2) this.startedAt = loginTime;
 		this.lastLogin = loginTime;
-		if (this.total >= 7) this.addBadge(Badge.LOGIN_SEVEN_DAYS);
-		if (this.total >= 30) this.addBadge(Badge.LOGIN_ONE_MONTH);
-		if (this.total >= 365) this.addBadge(Badge.LOGIN_ONE_YEAR);
+		if (this.total >= 7) this.addBadge(Badge.LoginSevenDays);
+		if (this.total >= 30) this.addBadge(Badge.LoginOneMonth);
+		if (this.total >= 365) this.addBadge(Badge.LoginOneYear);
 		// update streak
 		const diffStreakMs =
 			this.toDateOnly(this.lastLogin).getTime() - this.toDateOnly(this.startedAt).getTime();
 		const newStreak = diffStreakMs / (1000 * 60 * 60 * 24);
 		if (newStreak >= this.longestStreak) {
 			this.longestStreak = newStreak;
-			if (this.longestStreak >= 7) this.addBadge(Badge.LOGIN_SEVEN_DAYS_STREAK);
-			if (this.longestStreak >= 30) this.addBadge(Badge.LOGIN_ONE_MONTH_STREAK);
-			if (this.longestStreak >= 365) this.addBadge(Badge.LOGIN_ONE_YEAR_STREAK);
+			if (this.longestStreak >= 7) this.addBadge(Badge.LoginSevenDaysStreak);
+			if (this.longestStreak >= 30) this.addBadge(Badge.LoginOneMonthStreak);
+			if (this.longestStreak >= 365) this.addBadge(Badge.LoginOneYearStreak);
 		}
 	}
 

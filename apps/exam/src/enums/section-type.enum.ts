@@ -1,4 +1,4 @@
 export enum SectionType {
-	SECTION = 'SECTION',
-	QUESTION = 'QUESTION',
+	Section = 'SECTION',
+	Question = 'QUESTION',
 }

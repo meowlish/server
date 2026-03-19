@@ -26,7 +26,7 @@ import { type ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 import { Permission, Role } from '@server/typing';
 
-@HasRoles(Role.MODERATOR, Role.ADMIN)
+@HasRoles(Role.Mod, Role.Admin)
 @Controller('management')
 export class ExamManagementGatewayController implements OnModuleInit {
 	private examManagementService!: exam.ExamManagementServiceClient;

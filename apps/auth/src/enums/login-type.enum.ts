@@ -1,4 +1,4 @@
 export enum LoginType {
-	GOOGLE = 'GOOGLE',
-	MAIL = 'MAIL',
+	Google = 'GOOGLE',
+	Mail = 'MAIL',
 }

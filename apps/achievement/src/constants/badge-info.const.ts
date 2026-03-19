@@ -4,93 +4,93 @@ export const BADGE_INFORMATION: Record<
 	Badge,
 	{ displayName: string; description: string; type: BadgeType }
 > = {
-	[Badge.LOGIN_SEVEN_DAYS_STREAK]: {
+	[Badge.LoginSevenDaysStreak]: {
 		displayName: 'Regular',
 		description: 'Logged in 7 days in a row',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_TWO_WEEKS_STREAK]: {
+	[Badge.LoginTwoWeeksStreak]: {
 		displayName: 'Busy Bee',
 		description: 'Logged in 14 days consecutively',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_ONE_MONTH_STREAK]: {
+	[Badge.LoginOneMonthStreak]: {
 		displayName: 'No pain, no gain',
 		description: 'Maintained a 30-day login streak',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_ONE_YEAR_STREAK]: {
+	[Badge.LoginOneYearStreak]: {
 		displayName: 'V.I.P',
 		description: 'Logged in every day for a year',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
 
-	[Badge.LOGIN_SEVEN_DAYS]: {
+	[Badge.LoginSevenDays]: {
 		displayName: 'Getting Into the Groove',
 		description: 'Logged in for 7 total days',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_TWO_WEEKS]: {
+	[Badge.LoginTwoWeeks]: {
 		displayName: 'Consistent Explorer',
 		description: 'Logged in for 14 total days',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_ONE_MONTH]: {
+	[Badge.LoginOneMonth]: {
 		displayName: 'Dedicated Learner',
 		description: 'Logged in for 30 total days',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
-	[Badge.LOGIN_ONE_YEAR]: {
+	[Badge.LoginOneYear]: {
 		displayName: 'Anniversary Goal',
 		description: 'Logged in for 365 total days',
-		type: BadgeType.LOGIN,
+		type: BadgeType.Login,
 	},
 
-	[Badge.FIRST_COMPLETE_ATTEMPT]: {
+	[Badge.FirstCompleteAttempt]: {
 		displayName: 'First Step Taken',
 		description: 'Completed your first attempt',
-		type: BadgeType.ATTEMPT_COUNT,
+		type: BadgeType.AttemptCount,
 	},
-	[Badge.TENTH_COMPLETE_ATTEMPT]: {
+	[Badge.TenthCompleteAttempt]: {
 		displayName: 'Warming Up',
 		description: 'Completed 10 attempts',
-		type: BadgeType.ATTEMPT_COUNT,
+		type: BadgeType.AttemptCount,
 	},
-	[Badge.HUNDREDTH_COMPLETE_ATTEMPT]: {
+	[Badge.HundredthCompleteAttempt]: {
 		displayName: 'Centurion of Effort',
 		description: 'Completed 100 attempts',
-		type: BadgeType.ATTEMPT_COUNT,
+		type: BadgeType.AttemptCount,
 	},
 
-	[Badge.FIRST_GOOD_SCORE]: {
+	[Badge.FirstGoodScore]: {
 		displayName: 'Nice One',
 		description: 'Achieved your first good score',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
-	[Badge.TENTH_GOOD_SCORE]: {
+	[Badge.TenthGoodScore]: {
 		displayName: 'Sharpening Skills',
 		description: 'Achieved 10 good scores',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
-	[Badge.HUNDREDTH_GOOD_SCORE]: {
+	[Badge.HundredthGoodScore]: {
 		displayName: 'Excellence Habit',
 		description: 'Achieved 100 good scores',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
 
-	[Badge.FIRST_PERFECT_SCORE]: {
+	[Badge.FirstPerfectScore]: {
 		displayName: 'Flawless Start',
 		description: 'Achieved your first perfect score',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
-	[Badge.TENTH_PERFECT_SCORE]: {
+	[Badge.TenthPerfectScore]: {
 		displayName: 'Precision Pro',
 		description: 'Achieved 10 perfect scores',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
-	[Badge.HUNDREDTH_PERFECT_SCORE]: {
+	[Badge.HundredthPerfectScore]: {
 		displayName: 'Perfectionist',
 		description: 'Achieved 100 perfect scores',
-		type: BadgeType.ATTEMPT_SCORE,
+		type: BadgeType.AttemptScore,
 	},
 };

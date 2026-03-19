@@ -63,7 +63,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	}
 
 	private assertModifiable(): void {
-		if (this.examStatus === ExamStatus.APPROVED)
+		if (this.examStatus === ExamStatus.Approved)
 			throw new ConflictException('Exam is already approved and can no longer be updated.');
 	}
 
@@ -90,7 +90,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	// These methods are SUPER WRAPPERS...
 	public createQuestion(idx = -1): void {
 		this.assertModifiable();
-		if (this.contentType === SectionType.SECTION)
+		if (this.contentType === SectionType.Section)
 			throw new ConflictException(
 				'Cannot add questions to section reserved for non-questions only.',
 			);
@@ -101,7 +101,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 
 	public createSection(idx = -1): void {
 		this.assertModifiable();
-		if (this.contentType === SectionType.QUESTION)
+		if (this.contentType === SectionType.Question)
 			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
 		const sectionId = Section.newId();
 		const section = this.insertChild(sectionId, idx);
@@ -117,7 +117,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	// These methods are just wrappers to make the code more readable I hope
 	public addQuestion(id: string, idx = -1): void {
 		this.assertModifiable();
-		if (this.contentType !== SectionType.QUESTION)
+		if (this.contentType !== SectionType.Question)
 			throw new ConflictException(
 				'Cannot add questions to section reserved for non-questions only.',
 			);
@@ -133,7 +133,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 
 	public addSection(id: string, idx = -1): void {
 		this.assertModifiable();
-		if (this.contentType !== SectionType.SECTION)
+		if (this.contentType !== SectionType.Section)
 			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
 		const section = this.insertChild(id, idx);
 		this.apply(
@@ -148,7 +148,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 
 	public removeQuestion(id: string): void {
 		this.assertModifiable();
-		if (this.contentType !== SectionType.QUESTION)
+		if (this.contentType !== SectionType.Question)
 			throw new ConflictException('The section only has non-questions');
 		const idx = this.children.findIndex(c => c.id === id);
 		if (idx === -1) throw new NotFoundException('Question not found');
@@ -158,7 +158,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 
 	public removeSection(id: string): void {
 		this.assertModifiable();
-		if (this.contentType !== SectionType.SECTION)
+		if (this.contentType !== SectionType.Section)
 			throw new ConflictException('The section only has non-sections');
 		const idx = this.children.findIndex(c => c.id === id);
 		if (idx === -1) throw new NotFoundException('Section not found');
@@ -233,7 +233,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		// remove from list
 		this.children.splice(fromIdx, 1);
 		this.apply(
-			this.contentType === SectionType.QUESTION ?
+			this.contentType === SectionType.Question ?
 				new QuestionMovedEvent({
 					sectionId: this.id,
 					questionId: child.id,
@@ -253,7 +253,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		for (const child of this.children) {
 			child.order = x++ * Section.orderRange;
 			this.apply(
-				this.contentType === SectionType.QUESTION ?
+				this.contentType === SectionType.Question ?
 					new QuestionMovedEvent({
 						sectionId: this.id,
 						questionId: child.id,

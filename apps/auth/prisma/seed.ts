@@ -32,9 +32,9 @@ async function seedRolePermissions() {
 	const roleMap = new Map(roles.map(r => [r.name, r.id]));
 
 	const rolePermissions: Record<Role, Permission[]> = {
-		[Role.ADMIN]: Object.values(Permission),
-		[Role.MODERATOR]: [Permission.EXAM_WRITE, Permission.EXAM_REVIEW, Permission.USER_LOCK],
-		[Role.USER]: [],
+		[Role.Admin]: Object.values(Permission),
+		[Role.Mod]: [Permission.EXAM_WRITE, Permission.EXAM_REVIEW, Permission.USER_LOCK],
+		[Role.User]: [],
 	};
 
 	for (const [roleName, perms] of Object.entries(rolePermissions) as [Role, Permission[]][]) {
@@ -68,7 +68,7 @@ async function seedAdminUser() {
 	const passwordHash = await bcrypt.hash('admin', 10);
 
 	const adminRole = await prisma.role.findFirstOrThrow({
-		where: { name: Role.ADMIN },
+		where: { name: Role.Admin },
 	});
 
 	const identity = await prisma.identity.upsert({
@@ -83,14 +83,14 @@ async function seedAdminUser() {
 		where: {
 			identifier_loginType: {
 				identifier: 'admin@gmail.com',
-				loginType: LoginType.MAIL,
+				loginType: LoginType.Mail,
 			},
 		},
 		update: {},
 		create: {
 			identityId: identity.id,
 			identifier: 'admin@gmail.com',
-			loginType: LoginType.MAIL,
+			loginType: LoginType.Mail,
 			secretHash: passwordHash,
 		},
 	});

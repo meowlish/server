@@ -27,9 +27,9 @@ export class AttemptCounterBadgeManager
 
 	public updateProgress(attemptCount = 1) {
 		this.total += attemptCount;
-		if (this.total >= 1) this.addBadge(Badge.FIRST_COMPLETE_ATTEMPT);
-		if (this.total >= 10) this.addBadge(Badge.TENTH_COMPLETE_ATTEMPT);
-		if (this.total >= 100) this.addBadge(Badge.HUNDREDTH_COMPLETE_ATTEMPT);
+		if (this.total >= 1) this.addBadge(Badge.FirstCompleteAttempt);
+		if (this.total >= 10) this.addBadge(Badge.TenthCompleteAttempt);
+		if (this.total >= 100) this.addBadge(Badge.HundredthCompleteAttempt);
 	}
 
 	private addBadge(badge: Badge) {

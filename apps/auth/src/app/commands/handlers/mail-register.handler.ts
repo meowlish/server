@@ -23,7 +23,7 @@ export class MailRegisterCommandHandler implements ICommandHandler<MailRegisterC
 		const identity = new Identity({ username: payload.username });
 		const credential = new Credential({
 			identifier: payload.mail,
-			loginType: LoginType.MAIL,
+			loginType: LoginType.Mail,
 			secretHash: payload.password,
 		});
 		identity.addCredential(credential);

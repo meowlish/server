@@ -87,7 +87,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 		if (!foundManager)
 			foundManager = await this.txHost.tx.attemptCriteria.create({ data: { uid: uid } });
 		const badges = await this.txHost.tx.userBadge.findMany({
-			where: { uid: uid, badge: { type: BadgeType.ATTEMPT_COUNT } },
+			where: { uid: uid, badge: { type: BadgeType.AttemptCount } },
 		});
 		const manager = this.mapper.toAttemptCounterBadgeManager(foundManager, badges);
 		return manager;
@@ -98,7 +98,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 		if (!foundManager)
 			foundManager = await this.txHost.tx.attemptCriteria.create({ data: { uid: uid } });
 		const badges = await this.txHost.tx.userBadge.findMany({
-			where: { uid: uid, badge: { type: BadgeType.ATTEMPT_SCORE } },
+			where: { uid: uid, badge: { type: BadgeType.AttemptScore } },
 		});
 		const manager = this.mapper.toAttemptScoreBadgeManager(foundManager, badges);
 		return manager;
@@ -111,7 +111,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 				data: { uid: uid, startedAt: new Date(), lastLogin: new Date() },
 			});
 		const badges = await this.txHost.tx.userBadge.findMany({
-			where: { uid: uid, badge: { type: BadgeType.LOGIN } },
+			where: { uid: uid, badge: { type: BadgeType.Login } },
 		});
 		const manager = this.mapper.toLoginBadgeManager(foundManager, badges);
 		return manager;

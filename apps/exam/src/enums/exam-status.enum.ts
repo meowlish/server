@@ -1,5 +1,5 @@
 export enum ExamStatus {
-	APPROVED = 'APPROVED',
-	PENDING = 'PENDING',
-	REJECTED = 'REJECTED',
+	Approved = 'APPROVED',
+	Pending = 'PENDING',
+	Rejected = 'REJECTED',
 }

@@ -32,16 +32,16 @@ export class AttemptScoreBadgeManager
 		const rank = totalPoints === 0 ? 0 : score / totalPoints;
 		if (rank >= 0.8) {
 			this.good++;
-			if (this.good >= 1) this.addBadge(Badge.FIRST_GOOD_SCORE);
-			if (this.good >= 10) this.addBadge(Badge.TENTH_GOOD_SCORE);
-			if (this.good >= 100) this.addBadge(Badge.HUNDREDTH_GOOD_SCORE);
+			if (this.good >= 1) this.addBadge(Badge.FirstGoodScore);
+			if (this.good >= 10) this.addBadge(Badge.TenthGoodScore);
+			if (this.good >= 100) this.addBadge(Badge.HundredthGoodScore);
 		}
 
 		if (rank === 1) {
 			this.perfect++;
-			if (this.perfect >= 1) this.addBadge(Badge.FIRST_PERFECT_SCORE);
-			if (this.perfect >= 10) this.addBadge(Badge.TENTH_PERFECT_SCORE);
-			if (this.perfect >= 100) this.addBadge(Badge.HUNDREDTH_PERFECT_SCORE);
+			if (this.perfect >= 1) this.addBadge(Badge.FirstPerfectScore);
+			if (this.perfect >= 10) this.addBadge(Badge.TenthPerfectScore);
+			if (this.perfect >= 100) this.addBadge(Badge.HundredthPerfectScore);
 		}
 	}
 
