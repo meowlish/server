@@ -36,7 +36,8 @@ export class LoginBadgeManager
 
 	updateProgress(loginTime: Date) {
 		// update recorded time
-		const diffMs = this.toDateOnly(loginTime).getTime() - this.toDateOnly(this.lastLogin).getTime();
+		const diffMs =
+			this.toDateOnlyUTC(loginTime).getTime() - this.toDateOnlyUTC(this.lastLogin).getTime();
 		const diffDays = diffMs / (1000 * 60 * 60 * 24);
 		if (diffDays >= 1) this.total++;
 		if (diffDays >= 2) this.startedAt = loginTime;
@@ -46,7 +47,7 @@ export class LoginBadgeManager
 		if (this.total >= 365) this.addBadge(Badge.LoginOneYear);
 		// update streak
 		const diffStreakMs =
-			this.toDateOnly(this.lastLogin).getTime() - this.toDateOnly(this.startedAt).getTime();
+			this.toDateOnlyUTC(this.lastLogin).getTime() - this.toDateOnlyUTC(this.startedAt).getTime();
 		const newStreak = diffStreakMs / (1000 * 60 * 60 * 24);
 		if (newStreak >= this.longestStreak) {
 			this.longestStreak = newStreak;
@@ -64,7 +65,7 @@ export class LoginBadgeManager
 	}
 
 	// convert time to 00:00:00 of the same date
-	private toDateOnly(d: Date) {
-		return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+	private toDateOnlyUTC(d: Date): Date {
+		return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 	}
 }
