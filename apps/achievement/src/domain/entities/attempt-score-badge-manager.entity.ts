@@ -30,14 +30,12 @@ export class AttemptScoreBadgeManager
 
 	updateProgress(score: number, totalPoints: number) {
 		const rank = totalPoints === 0 ? 0 : score / totalPoints;
-		if (rank >= 0.8) {
+		if (rank >= 0.8 && rank < 1) {
 			this.good++;
 			if (this.good >= 1) this.addBadge(Badge.FirstGoodScore);
 			if (this.good >= 10) this.addBadge(Badge.TenthGoodScore);
 			if (this.good >= 100) this.addBadge(Badge.HundredthGoodScore);
-		}
-
-		if (rank === 1) {
+		} else if (rank === 1) {
 			this.perfect++;
 			if (this.perfect >= 1) this.addBadge(Badge.FirstPerfectScore);
 			if (this.perfect >= 10) this.addBadge(Badge.TenthPerfectScore);
