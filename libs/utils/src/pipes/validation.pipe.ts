@@ -4,7 +4,6 @@ export class GlobalValidationPipe extends ValidationPipe {
 	constructor() {
 		super({
 			whitelist: true,
-			forbidNonWhitelisted: true,
 			forbidUnknownValues: true,
 			transform: true,
 			transformOptions: {

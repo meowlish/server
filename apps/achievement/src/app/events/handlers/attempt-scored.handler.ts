@@ -13,9 +13,6 @@ import { IsNumber, IsString } from 'class-validator';
 
 class AttemptScoredEvent {
 	@IsString()
-	attemptId!: string;
-
-	@IsString()
 	attemptedBy!: string;
 
 	@IsNumber()
