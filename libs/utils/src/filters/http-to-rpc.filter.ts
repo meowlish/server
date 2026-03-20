@@ -39,20 +39,20 @@ export class Http2gRPCExceptionFilter implements ExceptionFilter {
 	};
 
 	catch(exception: HttpException, host: ArgumentsHost): Observable<never> | void {
-		const contextType = host.getType<ContextType | typeof RABBIT_CONTEXT_TYPE_KEY>();
-		if (contextType === RABBIT_CONTEXT_TYPE_KEY) throw exception;
-
 		const httpStatus = exception.getStatus();
 		const httpRes = exception.getResponse() as {
 			details?: unknown;
-			message: unknown;
+			message: string;
 		};
 
 		this.logger.error(
-			`[${this.constructor.name}] Exception Caught ${exception.message}`,
+			`[${this.constructor.name}] Exception Caught - ${exception.message}: ${httpRes.message}`,
 			'',
 			exception.stack,
 		);
+
+		const contextType = host.getType<ContextType | typeof RABBIT_CONTEXT_TYPE_KEY>();
+		if (contextType === RABBIT_CONTEXT_TYPE_KEY) throw exception;
 
 		return throwError(() => ({
 			code: Http2gRPCExceptionFilter.HttpStatusCode[httpStatus] ?? status.UNKNOWN,

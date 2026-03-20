@@ -15,7 +15,7 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
 		const resolved = this.resolve(exception, req);
 
 		this.logger.error(
-			`[${this.constructor.name}] Exception Caught ${req.method} ${req.url} ${exception.message}`,
+			`[${this.constructor.name}] Exception Caught - ${req.method} ${req.url} ${exception.message}`,
 			'',
 			exception.stack,
 		);
