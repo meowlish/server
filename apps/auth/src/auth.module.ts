@@ -5,7 +5,8 @@ import { IEnvVars, config } from './configs/config';
 import JwtRefreshConfig from './configs/jwt-refresh.config';
 import JwtAccessConfig from './configs/jwt.config';
 import { redisConfig } from './configs/redis.config';
-import { rmqConfig } from './configs/rmq.config';
+import { rmqPubConfig } from './configs/rmq.pub.config';
+import { rmqSubConfig } from './configs/rmq.sub.config';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import {
 	IdentityPrismaMapper,
@@ -54,7 +55,8 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
-		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqPubConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqSubConfig }),
 		LoggerModule.forRoot({ appName: 'AuthModule' }),
 		RedisModule.forRootAsync({
 			inject: [ConfigService],

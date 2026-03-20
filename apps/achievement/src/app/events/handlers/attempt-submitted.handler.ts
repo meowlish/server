@@ -25,6 +25,7 @@ export class AttemptSubmittedHandler {
 	) {}
 
 	@RabbitSubscribe({
+		connection: 'sub',
 		exchange: 'eventbus',
 		routingKey: '*.attempt.submitted',
 		queue: 'achievement.events.attempt.submitted',

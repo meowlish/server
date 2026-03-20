@@ -1,6 +1,7 @@
 import { IntegrationEventHandlers } from './app/events/handlers';
 import { config } from './configs/config';
-import { rmqConfig } from './configs/rmq.config';
+import { rmqPubConfig } from './configs/rmq.pub.config';
+import { rmqSubConfig } from './configs/rmq.sub.config';
 import { IBadgeManagerRepositoryToken } from './domain/repositories/badge-manager.repository';
 import {
 	BadgeManagerPrismaMapper,
@@ -45,7 +46,8 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
-		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqSubConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqPubConfig }),
 		LoggerModule.forRoot({ appName: 'AchievementModule' }),
 	],
 	providers: [

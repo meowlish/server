@@ -2,7 +2,8 @@ import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/han
 import { IntegrationEventPublishers } from './app/events/publishers';
 import { TagService } from './app/services/tag.service';
 import { config } from './configs/config';
-import { rmqConfig } from './configs/rmq.config';
+import { rmqPubConfig } from './configs/rmq.pub.config';
+import { rmqSubConfig } from './configs/rmq.sub.config';
 import { ExamEventHandlers } from './domain/events/handlers';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
@@ -67,7 +68,8 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				}),
 			],
 		}),
-		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqPubConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqSubConfig }),
 		LoggerModule.forRoot({ appName: 'ExamModule' }),
 	],
 	providers: [

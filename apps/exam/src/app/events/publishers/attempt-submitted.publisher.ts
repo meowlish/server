@@ -4,8 +4,8 @@ import {
 	IAttemptRepositoryToken,
 } from '../../../domain/repositories/attempt.repository';
 import { AttemptSubmittedIntegrationEvent } from '../attempt-submitted.event';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { Inject } from '@nestjs/common';
+import { AmqpConnectionManager } from '@golevelup/nestjs-rabbitmq';
+import { Inject, InternalServerErrorException } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { AppLoggerService } from '@server/logger';
 
@@ -13,9 +13,15 @@ import { AppLoggerService } from '@server/logger';
 export class AttemptSubmittedPublisher implements IEventHandler<AttemptSubmittedEvent> {
 	constructor(
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
-		private readonly amqpConnection: AmqpConnection,
+		private readonly amqpConnectionManager: AmqpConnectionManager,
 		private readonly logger: AppLoggerService,
 	) {}
+
+	get amqpConnection() {
+		const connection = this.amqpConnectionManager.getConnection('pub');
+		if (!connection) throw new InternalServerErrorException('AMQP "pub" connection not available');
+		return connection;
+	}
 
 	async handle(event: AttemptSubmittedEvent) {
 		try {

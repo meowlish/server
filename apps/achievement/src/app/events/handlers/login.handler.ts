@@ -30,6 +30,7 @@ export class LoginHandler {
 	) {}
 
 	@RabbitSubscribe({
+		connection: 'sub',
 		exchange: 'eventbus',
 		routingKey: '*.user.login',
 		queue: 'achievement.events.user.login',

@@ -1,16 +1,14 @@
 import { IEnvVars } from './config';
 import { MessageHandlerErrorBehavior, RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 import { ConfigService } from '@nestjs/config';
+import { defaultRmqExchanges } from '@server/utils';
 
-export const rmqConfig = (configService: ConfigService<IEnvVars>): RabbitMQConfig => {
+export const rmqSubConfig = (configService: ConfigService<IEnvVars>): RabbitMQConfig => {
 	const rmqConfig = configService.getOrThrow('messageQueue', { infer: true });
 	return {
+		name: 'sub',
 		exchanges: [
-			{
-				name: 'eventbus',
-				type: 'topic',
-				options: { durable: true },
-			},
+			...defaultRmqExchanges,
 			{
 				name: 'achievement.dlx',
 				type: 'topic',
