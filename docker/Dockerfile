@@ -6,11 +6,11 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG NODE_VERSION=22.12.0
+ARG NODE_VERSION=24.13.0
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:22.12.0-alpine AS base
+FROM node:24.13.0-alpine AS base
 
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
