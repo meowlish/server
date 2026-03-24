@@ -1,4 +1,5 @@
-import { IsInt, IsOptional, IsPositive, Min } from 'class-validator';
+import { SortDirection } from '@server/typing';
+import { IsEnum, IsInt, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 
 export class OffsetPaginationDto {
 	@IsInt()
@@ -10,4 +11,12 @@ export class OffsetPaginationDto {
 	@IsOptional()
 	@IsPositive()
 	limit = 10;
+
+	@IsOptional()
+	@IsString()
+	sortBy = 'id';
+
+	@IsEnum(SortDirection)
+	@IsString()
+	sortDirection = SortDirection.DESC;
 }
