@@ -4,6 +4,7 @@ import { PermissionsGuard } from './auth/guards/permissions.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { config } from './configs/config';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
+import { FileGatewayModule } from './file-gateway/file.router.module';
 import { RouteModule } from './router.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -42,6 +43,7 @@ import { GlobalValidationPipe } from '@server/utils';
 		RouteModule,
 		AuthGatewayModule,
 		ExamGatewayModule,
+		FileGatewayModule,
 	],
 	providers: [
 		{
