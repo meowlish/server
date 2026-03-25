@@ -10,4 +10,7 @@ export class PresignedUrlResponseDto implements file.PresignedUrlResponse {
 
 	@Expose()
 	uploadUrl!: string;
+
+	@Expose()
+	formData!: Record<string, string>;
 }

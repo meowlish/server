@@ -19,6 +19,12 @@ export interface PresignedUrlResponse {
   id: string;
   uploadUrl: string;
   fileName: string;
+  formData: { [key: string]: string };
+}
+
+export interface PresignedUrlResponse_FormDataEntry {
+  key: string;
+  value: string;
 }
 
 export interface FileServiceClient {

@@ -1,23 +1,76 @@
+import { IFileRepository, IFileRepositoryToken } from '../../domain/repositories/file.repository';
 import { FileMetadata } from '../../types/file-metadata.type';
-import { Inject, Injectable } from '@nestjs/common';
-import { Client } from 'minio';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Client, PostPolicy } from 'minio';
 import { MINIO_CONNECTION } from 'nestjs-minio';
 
 @Injectable()
-export class FileService {
-	constructor(@Inject(MINIO_CONNECTION) private readonly minioClient: Client) {}
-
+export class FileService implements OnModuleInit {
 	private readonly MINIO_BUCKET_NAME = 'public';
+	private readonly MAX_FILE_SIZE = 10 * 1024 * 1024;
+	private readonly ALLOWED_MIME_TYPES = [
+		'image/jpeg',
+		'image/png',
+		'application/pdf',
+		'video/mp4',
+		'audio/mpeg',
+	];
+
+	constructor(
+		@Inject(MINIO_CONNECTION) private readonly minioClient: Client,
+		@Inject(IFileRepositoryToken) private readonly fileRepository: IFileRepository,
+	) {}
+
+	async onModuleInit() {
+		try {
+			await this.minioClient.makeBucket(this.MINIO_BUCKET_NAME);
+		} catch (err: unknown) {
+			if (
+				typeof err === 'object' &&
+				err !== null &&
+				'code' in err &&
+				((err as { code: string }).code === 'BucketAlreadyOwnedByYou' ||
+					(err as { code: string }).code === 'BucketAlreadyExists')
+			) {
+				// bucket already exists, safe to ignore
+			} else {
+				throw err;
+			}
+		}
+	}
 
 	async getPresignedUrl(fileMetadata: FileMetadata): Promise<{
 		id: string;
 		uploadUrl: string;
+		formData: Record<string, string>;
 		fileName: string;
 	}> {
-		const url = await this.minioClient.presignedPutObject(this.MINIO_BUCKET_NAME, 'postgres_id');
+		const id = await this.fileRepository.create(fileMetadata);
+
+		if (fileMetadata.fileSize > this.MAX_FILE_SIZE) {
+			throw new Error(`File is too large. Maximum allowed size is 10MB.`);
+		}
+
+		if (!this.ALLOWED_MIME_TYPES.includes(fileMetadata.contentType)) {
+			throw new Error(`Invalid file type. Allowed types: ${this.ALLOWED_MIME_TYPES.join(', ')}`);
+		}
+
+		// Create POST policy
+		const policy = new PostPolicy();
+		policy.setBucket(this.MINIO_BUCKET_NAME);
+		policy.setKey(id);
+		policy.setContentLengthRange(1, fileMetadata.fileSize);
+		// TODO: Find a way to actually enforce contentType with signed url
+		// DOES NOT ACTUALLY VALIDATE THE OBJECT CONTENT TYPE, JUST THE HEADER. CLIENT MUST PARSE CAREFULLY IG CUZ I DO NOT HAVE TIME FOR THIS YET
+		policy.setContentType(fileMetadata.contentType);
+
+		// Generate presigned POST
+		const presigned = await this.minioClient.presignedPostPolicy(policy);
+
 		return {
-			id: 'postgres_id',
-			uploadUrl: url,
+			id: id,
+			uploadUrl: presigned.postURL,
+			formData: presigned.formData,
 			fileName: fileMetadata.fileName,
 		};
 	}
