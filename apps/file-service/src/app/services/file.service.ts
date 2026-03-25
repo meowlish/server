@@ -37,6 +37,23 @@ export class FileService implements OnModuleInit {
 				throw err;
 			}
 		}
+
+		const publicReadPolicy = {
+			Version: '2012-10-17',
+			Statement: [
+				{
+					Effect: 'Allow',
+					Principal: { AWS: ['*'] }, // everyone
+					Action: ['s3:GetObject'], // only allow reading objects
+					Resource: [`arn:aws:s3:::${this.MINIO_BUCKET_NAME}/*`], // all objects in bucket
+				},
+			],
+		};
+
+		await this.minioClient.setBucketPolicy(
+			this.MINIO_BUCKET_NAME,
+			JSON.stringify(publicReadPolicy),
+		);
 	}
 
 	async getPresignedUrl(fileMetadata: FileMetadata): Promise<{
