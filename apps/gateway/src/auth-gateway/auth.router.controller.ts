@@ -4,10 +4,20 @@ import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { AUTH_CLIENT } from './constants/auth';
 import { LoginMailDto } from './dtos/req/login-mail.req.dto';
 import { RegisterMailDto } from './dtos/req/register-mail.req.dto';
-import { Body, Controller, Inject, OnModuleInit, Post, Req, UseGuards } from '@nestjs/common';
+import { ResponseAuthDto } from './dtos/res/auth.res.dto';
+import {
+	Body,
+	Controller,
+	Inject,
+	OnModuleInit,
+	Post,
+	Req,
+	SerializeOptions,
+	UseGuards,
+} from '@nestjs/common';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { auth } from '@server/generated';
-import { lastValueFrom } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 
 @Controller()
 export class AuthGatewayController implements OnModuleInit {
@@ -21,14 +31,16 @@ export class AuthGatewayController implements OnModuleInit {
 
 	@Post('register')
 	@IsPublic()
-	register(@Body() body: RegisterMailDto) {
+	@SerializeOptions({ type: ResponseAuthDto })
+	register(@Body() body: RegisterMailDto): Observable<ResponseAuthDto> {
 		const res = this.authService.registerMail(body);
 		return res;
 	}
 
 	@Post('login')
 	@IsPublic()
-	login(@Body() body: LoginMailDto) {
+	@SerializeOptions({ type: ResponseAuthDto })
+	login(@Body() body: LoginMailDto): Observable<ResponseAuthDto> {
 		const res = this.authService.loginMail(body);
 		return res;
 	}
@@ -36,7 +48,8 @@ export class AuthGatewayController implements OnModuleInit {
 	@Post('refresh')
 	@UseGuards(JwtRefreshAuthGuard)
 	@IsPublic()
-	refresh(@Req() req: AuthenticatedRequest) {
+	@SerializeOptions({ type: ResponseAuthDto })
+	refresh(@Req() req: AuthenticatedRequest): Observable<ResponseAuthDto> {
 		const res = this.authService.refresh({ identityId: req.user.sub });
 		return res;
 	}

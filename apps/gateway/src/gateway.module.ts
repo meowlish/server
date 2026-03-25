@@ -11,7 +11,11 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from '@server/logger';
-import { GlobalHttpExceptionFilter, gRPC2HttpExceptionFilter } from '@server/utils';
+import {
+	GlobalClassSerializerInterceptor,
+	GlobalHttpExceptionFilter,
+	gRPC2HttpExceptionFilter,
+} from '@server/utils';
 import { HttpExceptionFilter } from '@server/utils';
 import { HttpResponseTransformInterceptor } from '@server/utils';
 import { GlobalValidationPipe } from '@server/utils';
@@ -75,6 +79,10 @@ import { GlobalValidationPipe } from '@server/utils';
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: HttpResponseTransformInterceptor,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: GlobalClassSerializerInterceptor,
 		},
 	],
 })

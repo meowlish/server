@@ -1,5 +1,5 @@
 export type FileMetadata = {
-	filename: string;
+	fileName: string;
 	fileSize: number;
 	contentType: string;
 };

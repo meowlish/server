@@ -50,5 +50,6 @@
 			"inputs": ["production", "^production"]
 		}
 	},
-	"analytics": false
+	"analytics": false,
+	"neverConnectToCloud": true
 }

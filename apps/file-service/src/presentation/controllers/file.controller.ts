@@ -1,13 +1,19 @@
 import { FileService } from '../../app/services/file.service';
 import { GetPresignedUrlDto } from '../dtos/req/get-presigned-url.req.dto';
-import { Body, Controller, Post } from '@nestjs/common';
+import { PresignedUrlResponseDto } from '../dtos/res/presigned-url.res.dto';
+import { Body, Controller, Post, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { file } from '@server/generated';
+import { GlobalClassSerializerInterceptor } from '@server/utils';
 
-Controller();
-export class FileController {
+@file.FileServiceControllerMethods()
+@Controller()
+export class FileController implements file.FileServiceController {
 	constructor(private readonly fileService: FileService) {}
 
 	@Post()
-	async getPresignedUrl(@Body() body: GetPresignedUrlDto) {
+	@UseInterceptors(GlobalClassSerializerInterceptor)
+	@SerializeOptions({ type: PresignedUrlResponseDto })
+	async getPresignedUrl(@Body() body: GetPresignedUrlDto): Promise<PresignedUrlResponseDto> {
 		return await this.fileService.getPresignedUrl(body);
 	}
 }

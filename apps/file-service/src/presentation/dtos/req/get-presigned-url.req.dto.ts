@@ -1,8 +1,9 @@
+import { file } from '@server/generated';
 import { IsMimeType, IsNumber, IsString } from 'class-validator';
 
-export class GetPresignedUrlDto {
+export class GetPresignedUrlDto implements file.GetPresignedUrlDto {
 	@IsString()
-	filename!: string;
+	fileName!: string;
 
 	@IsNumber()
 	fileSize!: number;

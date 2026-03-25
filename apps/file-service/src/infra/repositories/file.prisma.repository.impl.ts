@@ -11,7 +11,7 @@ export class FilePrismaRepository implements IFileRepository {
 		const newFile = await this.txHost.tx.file.create({
 			data: {
 				size: fileMetadata.fileSize,
-				name: fileMetadata.filename,
+				name: fileMetadata.fileName,
 				mimeType: fileMetadata.contentType,
 			},
 		});

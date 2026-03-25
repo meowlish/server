@@ -18,7 +18,7 @@ export class FileService {
 		return {
 			id: 'postgres_id',
 			uploadUrl: url,
-			fileName: fileMetadata.filename,
+			fileName: fileMetadata.fileName,
 		};
 	}
 }
