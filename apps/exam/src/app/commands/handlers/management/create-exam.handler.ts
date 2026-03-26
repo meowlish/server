@@ -18,6 +18,7 @@ export class CreateExamHandler implements ICommandHandler<CreateExamCommand> {
 			...payload,
 			sections: [],
 			status: ExamStatus.Pending,
+			tags: [],
 		});
 		await this.examRepository.save(exam);
 	}

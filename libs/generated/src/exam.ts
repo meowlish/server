@@ -35,6 +35,8 @@ export interface UpdateExamDto {
   setDescriptionNull?: boolean | undefined;
   description?: string | undefined;
   duration?: number | undefined;
+  addTags: string[];
+  removeTags: string[];
 }
 
 export interface UpdateSectionDto {
@@ -43,6 +45,10 @@ export interface UpdateSectionDto {
   name?: string | undefined;
   directive?: string | undefined;
   contentType?: string | undefined;
+  addTags: string[];
+  removeTags: string[];
+  addFiles: string[];
+  removeFiles: string[];
 }
 
 export interface UpdateQuestionDto {
@@ -54,6 +60,10 @@ export interface UpdateQuestionDto {
   addChoices: UpdateQuestionDto_AddChoice[];
   deleteChoicesIds: string[];
   updateChoices: UpdateQuestionDto_UpdateChoice[];
+  addTags: string[];
+  removeTags: string[];
+  addFiles: string[];
+  removeFiles: string[];
 }
 
 export interface UpdateQuestionDto_AddChoice {

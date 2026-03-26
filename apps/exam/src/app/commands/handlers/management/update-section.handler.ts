@@ -17,6 +17,10 @@ export class UpdateSectionHandler implements ICommandHandler<UpdateSectionComman
 		const section = await this.sectionRepository.findOne(payload.id);
 		if (!section) throw new NotFoundException('Section not found');
 		section.updateDetails(payload);
+		if (payload.addTags) payload.addTags.forEach(t => section.addTag(t));
+		if (payload.removeTags) payload.removeTags.forEach(t => section.removeTag(t));
+		if (payload.addFiles) payload.addFiles.forEach(t => section.addFile(t));
+		if (payload.removeFiles) payload.removeFiles.forEach(t => section.removeFile(t));
 		await this.sectionRepository.save(section);
 	}
 }

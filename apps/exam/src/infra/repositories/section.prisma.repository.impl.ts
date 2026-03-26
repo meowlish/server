@@ -7,6 +7,10 @@ import {
 	QuestionDeletedEvent,
 	QuestionMovedEvent,
 	SectionDeletedEvent,
+	SectionFileAdded,
+	SectionFileRemoved,
+	SectionTagAdded,
+	SectionTagRemoved,
 } from '../../domain/events/exam-management.event';
 import { ISectionRepository } from '../../domain/repositories/section.repository';
 import { ExamStatus } from '../../enums/exam-status.enum';
@@ -53,6 +57,8 @@ export class SectionPrismaMapper {
 			examStatus: this.mapExamStatus(from.exam.status),
 			children: children,
 			contentType: contentType,
+			fileIds: from.sectionFiles.map(f => f.fileId),
+			tags: from.sectionTags.map(t => t.tagId),
 		});
 	}
 
@@ -184,6 +190,10 @@ export class SectionPrismaRepository implements ISectionRepository {
 		if (event instanceof ChildSectionCreatedEvent) return await this.onChildSectionCreated(event);
 		if (event instanceof ChildSectionMovedEvent) return await this.onChildSectionMoved(event);
 		if (event instanceof SectionDeletedEvent) return await this.onSectionDeleted(event);
+		if (event instanceof SectionTagAdded) return await this.onSectionTagAdded(event);
+		if (event instanceof SectionTagRemoved) return await this.onSectionTagRemoved(event);
+		if (event instanceof SectionFileAdded) return await this.onSectionFileAdded(event);
+		if (event instanceof SectionFileRemoved) return await this.onSectionFileRemoved(event);
 	}
 
 	private async onQuestionCreated(event: QuestionCreatedEvent): Promise<void> {
@@ -231,6 +241,34 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: event.payload.sectionId },
 		});
 	}
+
+	private async onSectionTagAdded(event: SectionTagAdded): Promise<void> {
+		await this.txHost.tx.sectionTag.create({
+			data: { sectionId: event.payload.sectionId, tagId: event.payload.tag },
+		});
+	}
+
+	private async onSectionTagRemoved(event: SectionTagRemoved): Promise<void> {
+		await this.txHost.tx.sectionTag.delete({
+			where: {
+				sectionId_tagId: { sectionId: event.payload.sectionId, tagId: event.payload.tag },
+			},
+		});
+	}
+
+	private async onSectionFileAdded(event: SectionFileAdded): Promise<void> {
+		await this.txHost.tx.sectionFile.create({
+			data: { sectionId: event.payload.sectionId, fileId: event.payload.fileId },
+		});
+	}
+
+	private async onSectionFileRemoved(event: SectionFileRemoved): Promise<void> {
+		await this.txHost.tx.sectionFile.delete({
+			where: {
+				sectionId_fileId: { sectionId: event.payload.sectionId, fileId: event.payload.fileId },
+			},
+		});
+	}
 }
 
 // extended section type with JOINS
@@ -242,6 +280,8 @@ type RepoSection = Omit<PrismaSection, 'order'>;
 
 const sectionPrismaIncludeObject = {
 	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
+	sectionTags: { select: { tagId: true } },
+	sectionFiles: { select: { fileId: true } },
 	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	exam: { select: { id: true, version: true, status: true } },
 } satisfies Prisma.SectionInclude;

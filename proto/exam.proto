@@ -60,6 +60,8 @@ message UpdateExamDto {
 	optional bool   set_description_null = 3;
 	optional string description          = 4;
 	optional int32  duration             = 5;
+	repeated string add_tags             = 6;
+	repeated string remove_tags          = 7;
 }
 
 message UpdateSectionDto {
@@ -68,6 +70,10 @@ message UpdateSectionDto {
 	optional string name          = 3;
 	optional string directive     = 4;
 	optional string content_type  = 5;
+	repeated string add_tags      = 6;
+	repeated string remove_tags   = 7;
+	repeated string add_files     = 8;
+	repeated string remove_files  = 9;
 }
 
 message UpdateQuestionDto {
@@ -81,6 +87,11 @@ message UpdateQuestionDto {
 	repeated AddChoice    add_choices        = 6;
 	repeated string       delete_choices_ids = 7;
 	repeated UpdateChoice update_choices     = 8;
+
+	repeated string add_tags     = 9;
+	repeated string remove_tags  = 10;
+	repeated string add_files    = 11;
+	repeated string remove_files = 12;
 
 	message AddChoice {
 		string          key        = 1;

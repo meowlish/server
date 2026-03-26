@@ -4,6 +4,10 @@ import {
 	ChoiceCreatedEvent,
 	ChoiceDeletedEvent,
 	ChoiceUpdatedEvent,
+	QuestionFileAdded,
+	QuestionFileRemoved,
+	QuestionTagAdded,
+	QuestionTagRemoved,
 	QuestionUpdatedEvent,
 } from '../events/exam-management.event';
 import { ExamId } from './exam.entity';
@@ -54,6 +58,8 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 	public points: number;
 	public explanation: string;
 	public choices: Choice[];
+	public tags: Set<string>;
+	public fileIds: Set<string>;
 
 	public constructor(constructorOptions: {
 		id: string;
@@ -65,6 +71,8 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		points: number;
 		explanation: string;
 		choices: Choice[];
+		tags: string[];
+		fileIds: string[];
 	}) {
 		super();
 		this.id = constructorOptions.id;
@@ -76,6 +84,8 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		this.points = constructorOptions.points;
 		this.explanation = constructorOptions.explanation;
 		this.choices = constructorOptions.choices;
+		this.tags = new Set(constructorOptions.tags);
+		this.fileIds = new Set(constructorOptions.fileIds);
 	}
 
 	private assertModifiable(): void {
@@ -95,6 +105,31 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 		if (options.points) this.points = options.points;
 		if (options.type) this.type = options.type;
 		this.apply(new QuestionUpdatedEvent({ parentId: this.sectionId, data: structuredClone(this) }));
+	}
+	public addTag(tag: string) {
+		if (this.tags.has(tag)) throw new ConflictException('Tag already exists');
+		this.tags.add(tag);
+		this.apply(new QuestionTagAdded({ questionId: this.id, tag: tag }));
+	}
+
+	public removeTag(tag: string) {
+		if (!this.tags.has(tag)) throw new NotFoundException('Tag not found');
+		this.tags.delete(tag);
+		this.apply(new QuestionTagRemoved({ questionId: this.id, tag: tag }));
+	}
+
+	public addFile(fileId: string) {
+		this.assertModifiable();
+		if (this.fileIds.has(fileId)) throw new ConflictException('File already exists');
+		this.fileIds.add(fileId);
+		this.apply(new QuestionFileAdded({ questionId: this.id, fileId: fileId }));
+	}
+
+	public removeFile(fileId: string) {
+		this.assertModifiable();
+		if (!this.fileIds.has(fileId)) throw new NotFoundException('File not found');
+		this.fileIds.delete(fileId);
+		this.apply(new QuestionFileRemoved({ questionId: this.id, fileId: fileId }));
 	}
 
 	public addChoice(choice: Choice): void {

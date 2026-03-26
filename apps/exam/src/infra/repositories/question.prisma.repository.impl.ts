@@ -4,6 +4,10 @@ import {
 	ChoiceCreatedEvent,
 	ChoiceDeletedEvent,
 	ChoiceUpdatedEvent,
+	QuestionFileAdded,
+	QuestionFileRemoved,
+	QuestionTagAdded,
+	QuestionTagRemoved,
 } from '../../domain/events/exam-management.event';
 import { IQuestionRepository } from '../../domain/repositories/question.repository';
 import { ExamStatus } from '../../enums/exam-status.enum';
@@ -49,6 +53,8 @@ export class QuestionPrismaMapper {
 			explanation: from.explanation,
 			points: from.points,
 			type: this.mapQuestionType(from.type),
+			fileIds: from.questionFiles.map(f => f.fileId),
+			tags: from.questionTags.map(t => t.tagId),
 		});
 	}
 
@@ -118,6 +124,10 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 		if (event instanceof ChoiceCreatedEvent) return await this.onChoiceCreated(event);
 		if (event instanceof ChoiceDeletedEvent) return await this.onChoiceDeleted(event);
 		if (event instanceof ChoiceUpdatedEvent) return await this.onChoiceUpdated(event);
+		if (event instanceof QuestionTagAdded) return await this.onQuestionTagAdded(event);
+		if (event instanceof QuestionTagRemoved) return await this.onQuestionTagRemoved(event);
+		if (event instanceof QuestionFileAdded) return await this.onQuestionFileAdded(event);
+		if (event instanceof QuestionFileRemoved) return await this.onQuestionFileRemoved(event);
 	}
 
 	private async onChoiceCreated(event: ChoiceCreatedEvent): Promise<void> {
@@ -136,6 +146,34 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 			data: this.mapper.toChoiceOrm(event.payload.data, event.payload.questionId),
 		});
 	}
+
+	private async onQuestionTagAdded(event: QuestionTagAdded): Promise<void> {
+		await this.txHost.tx.questionTag.create({
+			data: { questionId: event.payload.questionId, tagId: event.payload.tag },
+		});
+	}
+
+	private async onQuestionTagRemoved(event: QuestionTagRemoved): Promise<void> {
+		await this.txHost.tx.questionTag.delete({
+			where: {
+				questionId_tagId: { questionId: event.payload.questionId, tagId: event.payload.tag },
+			},
+		});
+	}
+
+	private async onQuestionFileAdded(event: QuestionFileAdded): Promise<void> {
+		await this.txHost.tx.questionFile.create({
+			data: { questionId: event.payload.questionId, fileId: event.payload.fileId },
+		});
+	}
+
+	private async onQuestionFileRemoved(event: QuestionFileRemoved): Promise<void> {
+		await this.txHost.tx.questionFile.delete({
+			where: {
+				questionId_fileId: { questionId: event.payload.questionId, fileId: event.payload.fileId },
+			},
+		});
+	}
 }
 
 // extended question type with JOINS
@@ -147,5 +185,7 @@ type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
 	choices: true,
+	questionTags: { select: { tagId: true } },
+	questionFiles: { select: { fileId: true } },
 	section: { select: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

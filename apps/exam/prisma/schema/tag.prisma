@@ -5,10 +5,13 @@ model TagTableLock {
 }
 
 model Tag {
-  id   String @id @default(uuid())
-  name String @unique
-  lft  Int
-  rgt  Int
+  id           String        @id @default(uuid())
+  name         String        @unique
+  lft          Int
+  rgt          Int
+  examTags     ExamTag[]
+  sectionTags  SectionTag[]
+  questionTags QuestionTag[]
 
   @@index([lft, rgt])
   @@index([name])
@@ -19,7 +22,8 @@ model ExamTag {
   examId String @map("exam_id")
   tagId  String @map("tag_id")
 
-  exam Exam @relation(fields: [examId], references: [id])
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([examId, tagId])
   @@map("exam_tags")
@@ -30,6 +34,7 @@ model SectionTag {
   tagId     String @map("tag_id")
 
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([sectionId, tagId])
   @@map("section_tags")
@@ -40,6 +45,7 @@ model QuestionTag {
   tagId      String @map("tag_id")
 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([questionId, tagId])
   @@map("question_tags")

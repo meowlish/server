@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+	ArrayUnique,
 	IsArray,
 	IsBoolean,
 	IsInt,
@@ -76,4 +77,28 @@ export class UpdateQuestionDto {
 	@IsOptional()
 	@IsString()
 	type?: string;
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	addTags!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	removeTags!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	addFiles!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	removeFiles!: string[];
 }

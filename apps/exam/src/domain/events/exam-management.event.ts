@@ -63,3 +63,15 @@ export class ChoiceUpdatedEvent extends Event<{
 	choiceId: string;
 	data: Choice;
 }> {}
+// tags
+export class ExamTagAdded extends Event<{ examId: string; tag: string }> {}
+export class SectionTagAdded extends Event<{ sectionId: string; tag: string }> {}
+export class QuestionTagAdded extends Event<{ questionId: string; tag: string }> {}
+export class ExamTagRemoved extends Event<{ examId: string; tag: string }> {}
+export class SectionTagRemoved extends Event<{ sectionId: string; tag: string }> {}
+export class QuestionTagRemoved extends Event<{ questionId: string; tag: string }> {}
+// files
+export class SectionFileAdded extends Event<{ sectionId: string; fileId: string }> {}
+export class QuestionFileAdded extends Event<{ questionId: string; fileId: string }> {}
+export class SectionFileRemoved extends Event<{ sectionId: string; fileId: string }> {}
+export class QuestionFileRemoved extends Event<{ questionId: string; fileId: string }> {}

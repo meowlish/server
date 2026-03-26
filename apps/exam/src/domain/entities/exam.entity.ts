@@ -2,6 +2,8 @@ import { ExamStatus } from '../../enums/exam-status.enum';
 import {
 	ExamDetailsUpdatedEvent,
 	ExamStatusUpdatedEvent,
+	ExamTagAdded,
+	ExamTagRemoved,
 	SectionCreatedEvent,
 	SectionDeletedEvent,
 	SectionMovedEvent,
@@ -54,6 +56,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	public readonly id: ExamId;
 	public description: string | null;
 	public sections: ExamSection[];
+	public tags: Set<string>;
 
 	public constructor(constructorOptions: {
 		id?: ExamId;
@@ -63,6 +66,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		status: ExamStatus;
 		description: string | null;
 		sections: ExamSection[];
+		tags: string[];
 	}) {
 		super();
 		this.id = constructorOptions.id ?? Exam.newId();
@@ -74,6 +78,7 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		this.status = constructorOptions.status;
 		this.description = constructorOptions.description ?? null;
 		this.sections = constructorOptions.sections.toSorted((a, b) => a.order - b.order);
+		this.tags = new Set(constructorOptions.tags);
 	}
 
 	private assertModifiable(): void {
@@ -93,6 +98,18 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 		this.assertModifiable();
 		this.status = status;
 		this.apply(new ExamStatusUpdatedEvent({ examId: this.id, status: status }));
+	}
+
+	public addTag(tag: string) {
+		if (this.tags.has(tag)) throw new ConflictException('Tag already exists');
+		this.tags.add(tag);
+		this.apply(new ExamTagAdded({ examId: this.id.id, tag: tag }));
+	}
+
+	public removeTag(tag: string) {
+		if (!this.tags.has(tag)) throw new NotFoundException('Tag not found');
+		this.tags.delete(tag);
+		this.apply(new ExamTagRemoved({ examId: this.id.id, tag: tag }));
 	}
 
 	/**

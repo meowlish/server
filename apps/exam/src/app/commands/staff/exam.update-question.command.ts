@@ -15,6 +15,10 @@ export class UpdateQuestionCommandPayload {
 		content?: string | null;
 		isCorrect?: boolean;
 	}[];
+	public readonly addTags?: string[];
+	public readonly removeTags?: string[];
+	public readonly addFiles?: string[];
+	public readonly removeFiles?: string[];
 
 	constructor(constructorOptions: {
 		id: string;
@@ -31,6 +35,10 @@ export class UpdateQuestionCommandPayload {
 			setContentNull?: boolean;
 			isCorrect?: boolean;
 		}[];
+		addTags?: string[];
+		removeTags?: string[];
+		addFiles?: string[];
+		removeFiles?: string[];
 	}) {
 		this.id = constructorOptions.id;
 		this.content = constructorOptions.content;
@@ -43,6 +51,10 @@ export class UpdateQuestionCommandPayload {
 			...c,
 			content: c.setContentNull ? null : c.content,
 		}));
+		this.addTags = constructorOptions.addTags;
+		this.removeTags = constructorOptions.removeTags;
+		this.addFiles = constructorOptions.addFiles;
+		this.removeFiles = constructorOptions.removeFiles;
 	}
 }
 

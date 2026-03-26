@@ -1,5 +1,7 @@
 import { Exam, ExamId, ExamSection } from '../../domain/entities/exam.entity';
 import {
+	ExamTagAdded,
+	ExamTagRemoved,
 	SectionCreatedEvent,
 	SectionDeletedEvent,
 	SectionMovedEvent,
@@ -33,6 +35,7 @@ export class ExamPrismaMapper {
 			id: new ExamId(from.id, from.version),
 			sections: from.sections.map(s => new ExamSection(s.id, s.order)),
 			status: this.mapExamStatus(from.status),
+			tags: from.examTags.map(t => t.tagId),
 		});
 	}
 
@@ -110,6 +113,8 @@ export class ExamPrismaRepository implements IExamRepository {
 		if (event instanceof SectionCreatedEvent) return await this.onSectionCreated(event);
 		if (event instanceof SectionMovedEvent) return await this.onSectionMoved(event);
 		if (event instanceof SectionDeletedEvent) return await this.onSectionDeleted(event);
+		if (event instanceof ExamTagAdded) return await this.onExamTagAdded(event);
+		if (event instanceof ExamTagRemoved) return await this.onExamTagRemoved(event);
 	}
 
 	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
@@ -130,6 +135,18 @@ export class ExamPrismaRepository implements IExamRepository {
 			where: { id: event.payload.sectionId },
 		});
 	}
+
+	private async onExamTagAdded(event: ExamTagAdded): Promise<void> {
+		await this.txHost.tx.examTag.create({
+			data: { examId: event.payload.examId, tagId: event.payload.tag },
+		});
+	}
+
+	private async onExamTagRemoved(event: ExamTagRemoved): Promise<void> {
+		await this.txHost.tx.examTag.delete({
+			where: { examId_tagId: { examId: event.payload.examId, tagId: event.payload.tag } },
+		});
+	}
 }
 
 // extended exam type with JOINS
@@ -145,6 +162,7 @@ const examPrismaIncludeObj = {
 		select: { id: true, order: true },
 		orderBy: { order: 'asc' },
 	},
+	examTags: { select: { tagId: true } },
 } satisfies Prisma.ExamInclude;
 
 type RepoSection = Pick<PrismaSection, 'id' | 'order' | 'parentId' | 'examId'>;

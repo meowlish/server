@@ -2,6 +2,7 @@ import { QuestionType } from '../../../../enums/question-type.enum';
 import { exam } from '@server/generated';
 import { Type } from 'class-transformer';
 import {
+	ArrayUnique,
 	IsArray,
 	IsBoolean,
 	IsEnum,
@@ -82,4 +83,28 @@ export class UpdateQuestionDto implements exam.UpdateQuestionDto {
 	@IsEnum(QuestionType)
 	@IsOptional()
 	type?: QuestionType;
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	addTags!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	removeTags!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	addFiles!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	removeFiles!: string[];
 }

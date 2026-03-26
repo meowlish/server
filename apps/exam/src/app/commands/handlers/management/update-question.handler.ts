@@ -20,17 +20,16 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		question.updateDetails({
 			...payload,
 		});
-		if (payload.deleteChoicesIds) {
-			payload.deleteChoicesIds.forEach(id => question.removeChoice(id));
-		}
-		if (payload.addChoices) {
+		if (payload.deleteChoicesIds) payload.deleteChoicesIds.forEach(id => question.removeChoice(id));
+		if (payload.addChoices)
 			payload.addChoices.forEach(c =>
 				question.addChoice(new Choice({ key: c.key, content: c.content, isCorrect: c.isCorrect })),
 			);
-		}
-		if (payload.updateChoices) {
-			payload.updateChoices.forEach(c => question.updateChoice(c.id, c));
-		}
+		if (payload.updateChoices) payload.updateChoices.forEach(c => question.updateChoice(c.id, c));
+		if (payload.addTags) payload.addTags.forEach(t => question.addTag(t));
+		if (payload.removeTags) payload.removeTags.forEach(t => question.removeTag(t));
+		if (payload.addFiles) payload.addFiles.forEach(t => question.addFile(t));
+		if (payload.removeFiles) payload.removeFiles.forEach(t => question.removeFile(t));
 		await this.questionRepository.save(question);
 	}
 }

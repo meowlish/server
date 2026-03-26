@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayUnique, IsArray, IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateExamDto {
 	@IsOptional()
@@ -16,4 +16,16 @@ export class UpdateExamDto {
 	@IsOptional()
 	@IsString()
 	title?: string;
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	addTags!: string[];
+
+	@IsArray()
+	@IsOptional()
+	@IsString({ each: true })
+	@ArrayUnique()
+	removeTags!: string[];
 }

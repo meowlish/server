@@ -7,6 +7,10 @@ import {
 	QuestionDeletedEvent,
 	QuestionMovedEvent,
 	SectionDeletedEvent,
+	SectionFileAdded,
+	SectionFileRemoved,
+	SectionTagAdded,
+	SectionTagRemoved,
 	SectionUpdatedEvent,
 } from '../events/exam-management.event';
 import { ExamId } from './exam.entity';
@@ -40,6 +44,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	public contentType: SectionType;
 	public directive: string;
 	public name: string | null;
+	public tags: Set<string>;
+	public fileIds: Set<string>;
 
 	constructor(constructorOptions: {
 		examId: ExamId;
@@ -50,6 +56,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		contentType: SectionType;
 		name?: string | null;
 		directive: string;
+		tags: string[];
+		fileIds: string[];
 	}) {
 		super();
 		this.id = constructorOptions.id;
@@ -60,6 +68,8 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		this.parentId = constructorOptions.parentId ?? null;
 		this.name = constructorOptions.name ?? null;
 		this.directive = constructorOptions.directive;
+		this.tags = new Set(constructorOptions.tags);
+		this.fileIds = new Set(constructorOptions.fileIds);
 	}
 
 	private assertModifiable(): void {
@@ -85,6 +95,32 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 				details: structuredClone(this),
 			}),
 		);
+	}
+
+	public addTag(tag: string) {
+		if (this.tags.has(tag)) throw new ConflictException('Tag already exists');
+		this.tags.add(tag);
+		this.apply(new SectionTagAdded({ sectionId: this.id, tag: tag }));
+	}
+
+	public removeTag(tag: string) {
+		if (!this.tags.has(tag)) throw new NotFoundException('Tag not found');
+		this.tags.delete(tag);
+		this.apply(new SectionTagRemoved({ sectionId: this.id, tag: tag }));
+	}
+
+	public addFile(fileId: string) {
+		this.assertModifiable();
+		if (this.fileIds.has(fileId)) throw new ConflictException('File already exists');
+		this.fileIds.add(fileId);
+		this.apply(new SectionFileAdded({ sectionId: this.id, fileId: fileId }));
+	}
+
+	public removeFile(fileId: string) {
+		this.assertModifiable();
+		if (!this.fileIds.has(fileId)) throw new NotFoundException('File not found');
+		this.fileIds.delete(fileId);
+		this.apply(new SectionFileRemoved({ sectionId: this.id, fileId: fileId }));
 	}
 
 	// These methods are SUPER WRAPPERS...
