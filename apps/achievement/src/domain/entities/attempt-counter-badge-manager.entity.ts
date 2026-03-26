@@ -8,7 +8,7 @@ export class AttemptCounterBadgeManager
 	implements IAggregate<AttemptCounterBadgeManager>
 {
 	public readonly id: string;
-	public version: number;
+	public readonly version: number;
 	public total: number;
 	public badges: Set<Badge>;
 

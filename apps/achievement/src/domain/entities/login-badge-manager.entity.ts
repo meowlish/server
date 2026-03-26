@@ -8,7 +8,7 @@ export class LoginBadgeManager
 	implements IAggregate<LoginBadgeManager>
 {
 	public readonly id: string;
-	public version: number;
+	public readonly version: number;
 	public total: number;
 	public longestStreak: number;
 	public startedAt: Date;

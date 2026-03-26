@@ -8,7 +8,7 @@ export class AttemptScoreBadgeManager
 	implements IAggregate<AttemptScoreBadgeManager>
 {
 	public readonly id: string;
-	public version: number;
+	public readonly version: number;
 	public perfect: number;
 	public good: number;
 	public badges: Set<Badge>;

@@ -16,6 +16,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}
 
 	public readonly id: string;
+	public readonly version: number;
 	public username: string;
 	public roleIds: Set<string>;
 	public credentials: Credential[];
@@ -25,6 +26,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 
 	public constructor(constructorOptions: {
 		id?: string;
+		version?: number;
 		username: string;
 		createdAt?: Date;
 		updatedAt?: Date;
@@ -34,6 +36,7 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}) {
 		super();
 		this.id = constructorOptions.id ?? Identity.newId();
+		this.version = constructorOptions.version ?? 0;
 		this.username = constructorOptions.username;
 		this.createdAt = constructorOptions.createdAt ?? new Date();
 		this.updatedAt = constructorOptions.updatedAt ?? new Date();

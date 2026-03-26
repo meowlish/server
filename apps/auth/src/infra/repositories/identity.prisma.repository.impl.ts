@@ -39,6 +39,7 @@ export class IdentityPrismaMapper {
 	toIdentityOrm(from: Identity): RepoIdentity {
 		return {
 			id: from.id,
+			version: from.version,
 			username: from.username,
 			deletedAt: from.deletedAt,
 		};
@@ -143,11 +144,14 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		await this.txHost.withTransaction(async () => {
 			// update or insert
 			try {
-				await this.txHost.tx.identity.upsert({
-					where: { id: identity.id },
-					create: data,
-					update: data,
-				});
+				// insert if lock is new version
+				if (data.version === 0)
+					await this.txHost.tx.identity.create({ data: { ...data, version: 1 } });
+				else
+					await this.txHost.tx.identity.update({
+						where: { id: data.id, version: data.version },
+						data: { ...data, version: { increment: 1 } },
+					});
 			} catch (e) {
 				if (e instanceof Prisma.PrismaClientKnownRequestError) {
 					if (e.code === 'P2002') {
