@@ -67,7 +67,7 @@ export class AttemptPrismaMapper {
 	}
 
 	toAttemptEvaluatorAggregate(
-		from: ExtendedAttempt,
+		from: ExtendedAttemptForEval,
 		questions: RepoAttemptQuestionForEval[],
 	): AttemptEvaluator {
 		const attemptQuestions = questions.map(
@@ -166,7 +166,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 	async getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null> {
 		const foundAttempt = await this.txHost.tx.attempt.findUnique({
 			where: { id: attemptId },
-			include: attemptPrismaIncludeObject,
+			include: attemptEvalPrismaIncludeObject,
 		});
 		if (!foundAttempt) return null;
 		const attemptQuestions =
@@ -271,6 +271,10 @@ type ExtendedAttempt = Prisma.AttemptGetPayload<{
 	include: typeof attemptPrismaIncludeObject;
 }>;
 
+type ExtendedAttemptForEval = Prisma.AttemptGetPayload<{
+	include: typeof attemptEvalPrismaIncludeObject;
+}>;
+
 type RepoAttemptQuestion = Prisma.QuestionGetPayload<{
 	select: typeof attemptQuestionsPrismaSelectObject;
 }>;
@@ -285,6 +289,14 @@ const attemptPrismaIncludeObject = {
 		select: {
 			sectionId: true,
 		},
+	},
+} satisfies Prisma.AttemptInclude;
+
+const attemptEvalPrismaIncludeObject = {
+	...attemptPrismaIncludeObject,
+	attemptResponses: {
+		where: { answers: { isEmpty: false } },
+		select: { id: true, answers: true, questionId: true, isCorrect: true },
 	},
 } satisfies Prisma.AttemptInclude;
 

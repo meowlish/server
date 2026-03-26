@@ -14,3 +14,33 @@ model Tag {
   @@index([name])
   @@map("tags")
 }
+
+model ExamTag {
+  examId String @map("exam_id")
+  tagId  String @map("tag_id")
+
+  exam Exam @relation(fields: [examId], references: [id])
+
+  @@id([examId, tagId])
+  @@map("exam_tags")
+}
+
+model SectionTag {
+  sectionId String @map("section_id")
+  tagId     String @map("tag_id")
+
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([sectionId, tagId])
+  @@map("section_tags")
+}
+
+model QuestionTag {
+  questionId String @map("question_id")
+  tagId      String @map("tag_id")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, tagId])
+  @@map("question_tags")
+}
