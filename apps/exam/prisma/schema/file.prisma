@@ -17,3 +17,9 @@ model QuestionFile {
   @@id([questionId, fileId])
   @@map("question_files")
 }
+
+model DeletedFile {
+  fileId String @id @map("file_id")
+
+  @@map("deleted_files")
+}

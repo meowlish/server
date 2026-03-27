@@ -91,4 +91,9 @@ export class FileService implements OnModuleInit {
 			fileName: fileMetadata.fileName,
 		};
 	}
+
+	async deleteFiles(fileNames: string[]): Promise<void> {
+		await this.fileRepository.remove(fileNames);
+		await this.minioClient.removeObjects(this.MINIO_BUCKET_NAME, fileNames);
+	}
 }

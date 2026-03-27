@@ -1,9 +1,10 @@
 model File {
-  id       String @id @default(uuid())
-  name     String
-  size     Int
-  mimeType String @map("mime_type")
-  refCount Int    @default(0) @map("ref_count")
+  id        String   @id @default(uuid())
+  name      String
+  size      Int
+  mimeType  String   @map("mime_type")
+  refCount  Int      @default(0) @map("ref_count")
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("files")
 }

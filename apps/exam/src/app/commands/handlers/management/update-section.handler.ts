@@ -4,12 +4,13 @@ import {
 } from '../../../../domain/repositories/section.repository';
 import { UpdateSectionCommand } from '../../staff/exam.update-section.command';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(UpdateSectionCommand)
 export class UpdateSectionHandler implements ICommandHandler<UpdateSectionCommand> {
 	constructor(
 		@Inject(ISectionRepositoryToken) private readonly sectionRepository: ISectionRepository,
+		private readonly eventBus: EventBus,
 	) {}
 
 	public async execute(command: UpdateSectionCommand): Promise<void> {
@@ -22,5 +23,6 @@ export class UpdateSectionHandler implements ICommandHandler<UpdateSectionComman
 		if (payload.addFiles) payload.addFiles.forEach(t => section.addFile(t));
 		if (payload.removeFiles) payload.removeFiles.forEach(t => section.removeFile(t));
 		await this.sectionRepository.save(section);
+		this.eventBus.publishAll(section.getUncommittedEvents());
 	}
 }

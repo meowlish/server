@@ -1,16 +1,18 @@
 autoInstallPeers: true
+
 blockExoticSubdeps: true
 
 onlyBuiltDependencies:
-  - "@nestjs/core"
-  - "@parcel/watcher"
-  - "@prisma/client"
-  - "@prisma/engines"
-  - "@scarf/scarf"
-  - "@swc/core"
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@scarf/scarf'
+  - '@swc/core'
   - bcrypt
   - esbuild
   - less
+  - msgpackr-extract
   - nx
   - prisma
   - protobufjs

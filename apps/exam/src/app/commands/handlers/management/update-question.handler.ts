@@ -5,12 +5,13 @@ import {
 } from '../../../../domain/repositories/question.repository';
 import { UpdateQuestionCommand } from '../../staff/exam.update-question.command';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(UpdateQuestionCommand)
 export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionCommand> {
 	constructor(
 		@Inject(IQuestionRepositoryToken) private readonly questionRepository: IQuestionRepository,
+		private readonly eventBus: EventBus,
 	) {}
 
 	public async execute(command: UpdateQuestionCommand): Promise<void> {
@@ -31,5 +32,6 @@ export class UpdateQuestionHandler implements ICommandHandler<UpdateQuestionComm
 		if (payload.addFiles) payload.addFiles.forEach(t => question.addFile(t));
 		if (payload.removeFiles) payload.removeFiles.forEach(t => question.removeFile(t));
 		await this.questionRepository.save(question);
+		this.eventBus.publishAll(question.getUncommittedEvents());
 	}
 }
