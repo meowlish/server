@@ -29,7 +29,6 @@ export class FileAddedHandler {
 		},
 	})
 	async handle(@RabbitPayload() payload: FileAddedEvent) {
-		console.log('handling it');
 		try {
 			await this.fileRepository.incrementRef([payload.fileId]);
 		} catch (e) {
