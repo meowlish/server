@@ -2,7 +2,10 @@ import {
 	type IAttemptRepository,
 	IAttemptRepositoryToken,
 } from '../../../../domain/repositories/attempt.repository';
-import { ToggleFlagCommand } from '../../practice/exam.toggle-flag.command';
+import {
+	ToggleFlagCommand,
+	ToggleFlagCommandResult,
+} from '../../practice/exam.toggle-flag.command';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
@@ -12,11 +15,12 @@ export class ToggleFlagHandler implements ICommandHandler<ToggleFlagCommand> {
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
 	) {}
 
-	public async execute(command: ToggleFlagCommand): Promise<void> {
+	public async execute(command: ToggleFlagCommand): Promise<ToggleFlagCommandResult> {
 		const payload = command.payload;
 		const attempt = await this.attemptRepository.findOne(payload.attemptId);
 		if (!attempt) throw new NotFoundException('Attempt not found');
-		attempt.toggleFlag(payload.questionId);
+		const flagState = attempt.toggleFlag(payload.questionId);
 		await this.attemptRepository.save(attempt);
+		return { state: flagState };
 	}
 }

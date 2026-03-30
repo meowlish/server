@@ -4,7 +4,7 @@ import {
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
 import { ExamStatus } from '../../../../enums/exam-status.enum';
-import { CreateExamCommand } from '../../staff/exam.create-exam.command';
+import { CreateExamCommand, CreateExamCommandResult } from '../../staff/exam.create-exam.command';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
@@ -12,7 +12,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 export class CreateExamHandler implements ICommandHandler<CreateExamCommand> {
 	constructor(@Inject(IExamRepositoryToken) private readonly examRepository: IExamRepository) {}
 
-	public async execute(command: CreateExamCommand): Promise<void> {
+	public async execute(command: CreateExamCommand): Promise<CreateExamCommandResult> {
 		const payload = command.payload;
 		const exam = new Exam({
 			...payload,
@@ -21,5 +21,6 @@ export class CreateExamHandler implements ICommandHandler<CreateExamCommand> {
 			tags: [],
 		});
 		await this.examRepository.save(exam);
+		return { id: exam.id.id };
 	}
 }

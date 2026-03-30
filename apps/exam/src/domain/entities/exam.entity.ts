@@ -116,11 +116,12 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	 * Index below 0 is automatically added to tail (default behavior)
 	 * @param idx the new index (0-based) of the new section
 	 */
-	public createSection(idx = -1): void {
+	public createSection(idx = -1): string {
 		this.assertModifiable();
 		const sectionId = Section.newId();
 		const section = this.insertSection(sectionId, idx);
 		this.apply(new SectionCreatedEvent({ examId: this.id, data: structuredClone(section) }));
+		return sectionId;
 	}
 
 	/**

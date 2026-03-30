@@ -7,4 +7,8 @@ export class ToggleFlagCommandPayload {
 	) {}
 }
 
-export class ToggleFlagCommand extends Command<ToggleFlagCommandPayload> {}
+export type ToggleFlagCommandResult = {
+	state: boolean;
+};
+
+export class ToggleFlagCommand extends Command<ToggleFlagCommandPayload, ToggleFlagCommandResult> {}

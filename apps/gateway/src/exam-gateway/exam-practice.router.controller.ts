@@ -4,6 +4,8 @@ import { AddNoteDto } from './dtos/req/practice/add-note.req.dto';
 import { AnswerDto } from './dtos/req/practice/answer.req.dto';
 import { AttemptDto } from './dtos/req/practice/attempt.req.dto';
 import { RemoveAnswerDto } from './dtos/req/practice/remove-answer.req.dto';
+import { CreatedAttemptDto } from './dtos/res/practice/created-attempt.res.dto';
+import { FlagStateDto } from './dtos/res/practice/flag-state.res.dto';
 import {
 	Body,
 	Controller,
@@ -14,6 +16,7 @@ import {
 	Patch,
 	Post,
 	Req,
+	SerializeOptions,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
@@ -31,6 +34,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Post(':id')
+	@SerializeOptions({ type: CreatedAttemptDto })
 	attempt(@Req() req: AuthenticatedRequest, @Param('id') id: string, @Body() body: AttemptDto) {
 		const res = this.examPracticeService.attempt({ ...body, examId: id, userId: req.user.sub });
 		return res;
@@ -67,6 +71,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Patch('attempt/:id/answers/:questionId/flag')
+	@SerializeOptions({ type: FlagStateDto })
 	toggleFlag(@Param('id') id: string, @Param('questionId') questionId: string) {
 		const res = this.examPracticeService.toggleFlag({
 			attemptId: id,

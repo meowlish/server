@@ -5,9 +5,9 @@ import "common.proto";
 package exam;
 
 service ExamManagementService {
-	rpc CreateExam(CreateExamDto) returns (common.Empty) {}
-	rpc CreateSection(CreateSectionDto) returns (common.Empty) {}
-	rpc CreateQuestion(CreateQuestionDto) returns (common.Empty) {}
+	rpc CreateExam(CreateExamDto) returns (CreatedExamDto) {}
+	rpc CreateSection(CreateSectionDto) returns (CreatedSectionDto) {}
+	rpc CreateQuestion(CreateQuestionDto) returns (CreatedQuestionDto) {}
 	rpc UpdateExam(UpdateExamDto) returns (common.Empty) {}
 	rpc UpdateSection(UpdateSectionDto) returns (common.Empty) {}
 	rpc UpdateQuestion(UpdateQuestionDto) returns (common.Empty) {}
@@ -20,12 +20,12 @@ service ExamManagementService {
 }
 
 service ExamPracticeService {
-	rpc Attempt(AttemptDto) returns (common.Empty) {}
+	rpc Attempt(AttemptDto) returns (CreatedAttemptDto) {}
 	rpc EndAttempt(EndAttemptDto) returns (common.Empty) {}
 	rpc Answer(AnswerDto) returns (common.Empty) {}
 	rpc RemoveAnswer(RemoveAnswerDto) returns (common.Empty) {}
 	rpc AddNote(AddNoteDto) returns (common.Empty) {}
-	rpc ToggleFlag(ToggleFlagDto) returns (common.Empty) {}
+	rpc ToggleFlag(ToggleFlagDto) returns (FlagStateDto) {}
 }
 
 service TagService {
@@ -43,15 +43,27 @@ message CreateExamDto {
 	int32  duration    = 4;
 }
 
+message CreatedExamDto {
+	string id = 1;
+}
+
 message CreateSectionDto {
 	optional string section_id = 1;
 	optional string exam_id    = 2;
 	optional int32  index      = 3;
 }
 
+message CreatedSectionDto {
+	string id = 1;
+}
+
 message CreateQuestionDto {
 	string         section_id = 1;
 	optional int32 index      = 2;
+}
+
+message CreatedQuestionDto {
+	string id = 1;
 }
 
 message UpdateExamDto {
@@ -149,6 +161,10 @@ message AttemptDto {
 	}
 }
 
+message CreatedAttemptDto {
+	string id = 1;
+}
+
 message EndAttemptDto {
 	string attempt_id = 1;
 }
@@ -174,6 +190,10 @@ message AddNoteDto {
 message ToggleFlagDto {
 	string attempt_id  = 1;
 	string question_id = 2;
+}
+
+message FlagStateDto {
+	bool state = 1;
 }
 
 message AddTagDto {

@@ -11,6 +11,9 @@ import { ReviewExamDto } from './dtos/req/management/review-exam.req.dto';
 import { UpdateExamDto } from './dtos/req/management/update-exam.req.dto';
 import { UpdateQuestionDto } from './dtos/req/management/update-question.req.dto';
 import { UpdateSectionDto } from './dtos/req/management/update-section.req.dto';
+import { CreatedExamDto } from './dtos/res/management/created-exam.res.dto';
+import { CreatedQuestionDto } from './dtos/res/management/created-question.res.dto';
+import { CreatedSectionDto } from './dtos/res/management/created-section.res.dto';
 import {
 	Body,
 	Controller,
@@ -21,6 +24,7 @@ import {
 	Patch,
 	Post,
 	Req,
+	SerializeOptions,
 } from '@nestjs/common';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
@@ -40,24 +44,28 @@ export class ExamManagementGatewayController implements OnModuleInit {
 	}
 
 	@Post()
+	@SerializeOptions({ type: CreatedExamDto })
 	createExam(@Req() req: AuthenticatedRequest, @Body() body: CreateExamDto) {
 		const res = this.examManagementService.createExam({ ...body, createdBy: req.user.sub });
 		return res;
 	}
 
 	@Post(':id/sections')
+	@SerializeOptions({ type: CreatedSectionDto })
 	createSectionInExam(@Param('id') id: string, @Body() body: CreateSectionDto) {
 		const res = this.examManagementService.createSection({ ...body, examId: id });
 		return res;
 	}
 
 	@Post('sections/:id/sections')
+	@SerializeOptions({ type: CreatedSectionDto })
 	createSectionInSection(@Param('id') id: string, @Body() body: CreateSectionDto) {
 		const res = this.examManagementService.createSection({ ...body, sectionId: id });
 		return res;
 	}
 
 	@Post('sections/:id/questions')
+	@SerializeOptions({ type: CreatedQuestionDto })
 	createQuestion(@Param('id') id: string, @Body() body: CreateQuestionDto) {
 		const res = this.examManagementService.createQuestion({ ...body, sectionId: id });
 		return res;

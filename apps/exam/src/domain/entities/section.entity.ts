@@ -124,7 +124,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	}
 
 	// These methods are SUPER WRAPPERS...
-	public createQuestion(idx = -1): void {
+	public createQuestion(idx = -1): string {
 		this.assertModifiable();
 		if (this.contentType === SectionType.Section)
 			throw new ConflictException(
@@ -133,9 +133,10 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 		const questionId = Question.newId();
 		const question = this.insertChild(questionId, idx);
 		this.apply(new QuestionCreatedEvent({ sectionId: this.id, data: structuredClone(question) }));
+		return questionId;
 	}
 
-	public createSection(idx = -1): void {
+	public createSection(idx = -1): string {
 		this.assertModifiable();
 		if (this.contentType === SectionType.Question)
 			throw new ConflictException('Cannot add sections to section reserved for non-sections only.');
@@ -148,6 +149,7 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 				data: structuredClone(section),
 			}),
 		);
+		return sectionId;
 	}
 
 	// These methods are just wrappers to make the code more readable I hope

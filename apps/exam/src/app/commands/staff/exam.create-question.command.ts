@@ -7,4 +7,11 @@ export class CreateQuestionCommandPayload {
 	) {}
 }
 
-export class CreateQuestionCommand extends Command<CreateQuestionCommandPayload> {}
+export type CreateQuestionCommandResult = {
+	id: string;
+};
+
+export class CreateQuestionCommand extends Command<
+	CreateQuestionCommandPayload,
+	CreateQuestionCommandResult
+> {}

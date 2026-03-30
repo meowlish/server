@@ -18,15 +18,27 @@ export interface CreateExamDto {
   duration: number;
 }
 
+export interface CreatedExamDto {
+  id: string;
+}
+
 export interface CreateSectionDto {
   sectionId?: string | undefined;
   examId?: string | undefined;
   index?: number | undefined;
 }
 
+export interface CreatedSectionDto {
+  id: string;
+}
+
 export interface CreateQuestionDto {
   sectionId: string;
   index?: number | undefined;
+}
+
+export interface CreatedQuestionDto {
+  id: string;
 }
 
 export interface UpdateExamDto {
@@ -121,6 +133,10 @@ export interface AttemptDto_Options {
   sectionIds: string[];
 }
 
+export interface CreatedAttemptDto {
+  id: string;
+}
+
 export interface EndAttemptDto {
   attemptId: string;
 }
@@ -148,6 +164,10 @@ export interface ToggleFlagDto {
   questionId: string;
 }
 
+export interface FlagStateDto {
+  state: boolean;
+}
+
 export interface AddTagDto {
   name: string;
   parentId?: string | undefined;
@@ -168,11 +188,11 @@ export interface MoveTagDto {
 }
 
 export interface ExamManagementServiceClient {
-  createExam(request: CreateExamDto, metadata?: Metadata): Observable<Empty>;
+  createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
-  createSection(request: CreateSectionDto, metadata?: Metadata): Observable<Empty>;
+  createSection(request: CreateSectionDto, metadata?: Metadata): Observable<CreatedSectionDto>;
 
-  createQuestion(request: CreateQuestionDto, metadata?: Metadata): Observable<Empty>;
+  createQuestion(request: CreateQuestionDto, metadata?: Metadata): Observable<CreatedQuestionDto>;
 
   updateExam(request: UpdateExamDto, metadata?: Metadata): Observable<Empty>;
 
@@ -194,11 +214,20 @@ export interface ExamManagementServiceClient {
 }
 
 export interface ExamManagementServiceController {
-  createExam(request: CreateExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  createExam(
+    request: CreateExamDto,
+    metadata?: Metadata,
+  ): Promise<CreatedExamDto> | Observable<CreatedExamDto> | CreatedExamDto;
 
-  createSection(request: CreateSectionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  createSection(
+    request: CreateSectionDto,
+    metadata?: Metadata,
+  ): Promise<CreatedSectionDto> | Observable<CreatedSectionDto> | CreatedSectionDto;
 
-  createQuestion(request: CreateQuestionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  createQuestion(
+    request: CreateQuestionDto,
+    metadata?: Metadata,
+  ): Promise<CreatedQuestionDto> | Observable<CreatedQuestionDto> | CreatedQuestionDto;
 
   updateExam(request: UpdateExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
 
@@ -250,7 +279,7 @@ export function ExamManagementServiceControllerMethods() {
 export const EXAM_MANAGEMENT_SERVICE_NAME = "ExamManagementService";
 
 export interface ExamPracticeServiceClient {
-  attempt(request: AttemptDto, metadata?: Metadata): Observable<Empty>;
+  attempt(request: AttemptDto, metadata?: Metadata): Observable<CreatedAttemptDto>;
 
   endAttempt(request: EndAttemptDto, metadata?: Metadata): Observable<Empty>;
 
@@ -260,11 +289,14 @@ export interface ExamPracticeServiceClient {
 
   addNote(request: AddNoteDto, metadata?: Metadata): Observable<Empty>;
 
-  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Observable<Empty>;
+  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Observable<FlagStateDto>;
 }
 
 export interface ExamPracticeServiceController {
-  attempt(request: AttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  attempt(
+    request: AttemptDto,
+    metadata?: Metadata,
+  ): Promise<CreatedAttemptDto> | Observable<CreatedAttemptDto> | CreatedAttemptDto;
 
   endAttempt(request: EndAttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
 
@@ -274,7 +306,10 @@ export interface ExamPracticeServiceController {
 
   addNote(request: AddNoteDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
 
-  toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  toggleFlag(
+    request: ToggleFlagDto,
+    metadata?: Metadata,
+  ): Promise<FlagStateDto> | Observable<FlagStateDto> | FlagStateDto;
 }
 
 export function ExamPracticeServiceControllerMethods() {

@@ -28,7 +28,9 @@ import { AttemptDto } from '../dtos/req/practice/attempt.req.dto';
 import { EndAttemptDto } from '../dtos/req/practice/end-attempt.req.dto';
 import { RemoveAnswerDto } from '../dtos/req/practice/remove-answer.req.dto';
 import { ToggleFlagDto } from '../dtos/req/practice/toggle-flag.req.dto';
-import { Controller } from '@nestjs/common';
+import { CreatedAttemptDto } from '../dtos/res/practice/created-attempt.res.dto';
+import { FlagStateDto } from '../dtos/res/practice/flag-state.res.dto';
+import { Controller, SerializeOptions } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
@@ -38,8 +40,9 @@ import { exam } from '@server/generated';
 export class ExamPracticeController implements exam.ExamPracticeServiceController {
 	constructor(private readonly commandBus: CommandBus) {}
 
-	async attempt(@Payload() request: AttemptDto): Promise<void> {
-		await this.commandBus.execute(
+	@SerializeOptions({ type: CreatedAttemptDto })
+	async attempt(@Payload() request: AttemptDto): Promise<CreatedAttemptDto> {
+		return await this.commandBus.execute(
 			new AttemptCommand(
 				new AttemptCommandPayload(request.userId, request.examId, request.options),
 			),
@@ -68,8 +71,9 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 		);
 	}
 
-	async toggleFlag(@Payload() request: ToggleFlagDto): Promise<void> {
-		await this.commandBus.execute(
+	@SerializeOptions({ type: FlagStateDto })
+	async toggleFlag(@Payload() request: ToggleFlagDto): Promise<FlagStateDto> {
+		return await this.commandBus.execute(
 			new ToggleFlagCommand(new ToggleFlagCommandPayload(request.attemptId, request.questionId)),
 		);
 	}

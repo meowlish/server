@@ -58,7 +58,10 @@ import { ReviewExamDto } from '../dtos/req/management/review-exam.req.dto';
 import { UpdateExamDto } from '../dtos/req/management/update-exam.req.dto';
 import { UpdateQuestionDto } from '../dtos/req/management/update-question.req.dto';
 import { UpdateSectionDto } from '../dtos/req/management/update-section.req.dto';
-import { Controller } from '@nestjs/common';
+import { CreatedExamDto } from '../dtos/res/management/created-exam.res.dto';
+import { CreatedQuestionDto } from '../dtos/res/management/created-question.res.dto';
+import { CreatedSectionDto } from '../dtos/res/management/created-section.res.dto';
+import { Controller, SerializeOptions } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
@@ -68,18 +71,23 @@ import { exam } from '@server/generated';
 export class ExamManagementController implements exam.ExamManagementServiceController {
 	constructor(private readonly commandBus: CommandBus) {}
 
-	async createExam(@Payload() request: CreateExamDto): Promise<void> {
-		await this.commandBus.execute(new CreateExamCommand(new CreateExamCommandPayload(request)));
+	@SerializeOptions({ type: CreatedExamDto })
+	async createExam(@Payload() request: CreateExamDto): Promise<CreatedExamDto> {
+		return await this.commandBus.execute(
+			new CreateExamCommand(new CreateExamCommandPayload(request)),
+		);
 	}
 
-	async createSection(@Payload() request: CreateSectionDto): Promise<void> {
-		await this.commandBus.execute(
+	@SerializeOptions({ type: CreatedSectionDto })
+	async createSection(@Payload() request: CreateSectionDto): Promise<CreatedSectionDto> {
+		return await this.commandBus.execute(
 			new CreateSectionCommand(new CreateSectionCommandPayload(request)),
 		);
 	}
 
-	async createQuestion(@Payload() request: CreateQuestionDto): Promise<void> {
-		await this.commandBus.execute(
+	@SerializeOptions({ type: CreatedQuestionDto })
+	async createQuestion(@Payload() request: CreateQuestionDto): Promise<CreatedQuestionDto> {
+		return await this.commandBus.execute(
 			new CreateQuestionCommand(new CreateQuestionCommandPayload(request.sectionId, request.index)),
 		);
 	}

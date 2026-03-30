@@ -6,7 +6,10 @@ import {
 	type ISectionRepository,
 	ISectionRepositoryToken,
 } from '../../../../domain/repositories/section.repository';
-import { CreateSectionCommand } from '../../staff/exam.create-section.command';
+import {
+	CreateSectionCommand,
+	CreateSectionCommandResult,
+} from '../../staff/exam.create-section.command';
 import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
@@ -17,24 +20,30 @@ export class CreateSectionHandler implements ICommandHandler<CreateSectionComman
 		@Inject(ISectionRepositoryToken) private readonly sectionRepository: ISectionRepository,
 	) {}
 
-	public async execute(command: CreateSectionCommand): Promise<void> {
+	public async execute(command: CreateSectionCommand): Promise<CreateSectionCommandResult> {
 		const payload = command.payload;
-		if (payload.examId) await this.createExamSection(payload.examId, payload.index);
-		else if (payload.sectionId) await this.createNestedSection(payload.sectionId, payload.index);
-		else throw new ConflictException('Provide either the id of the exam or the parent section.');
+		if (payload.examId) {
+			const sectionId = await this.createExamSection(payload.examId, payload.index);
+			return { id: sectionId };
+		} else if (payload.sectionId) {
+			const sectionId = await this.createNestedSection(payload.sectionId, payload.index);
+			return { id: sectionId };
+		} else throw new ConflictException('Provide either the id of the exam or the parent section.');
 	}
 
-	private async createExamSection(examId: string, idx: number): Promise<void> {
+	private async createExamSection(examId: string, idx: number): Promise<string> {
 		const exam = await this.examRepository.findOne(examId);
 		if (!exam) throw new NotFoundException('Exam not found.');
-		exam.createSection(idx);
+		const sectionId = exam.createSection(idx);
 		await this.examRepository.save(exam);
+		return sectionId;
 	}
 
-	private async createNestedSection(sectionId: string, idx: number): Promise<void> {
+	private async createNestedSection(sectionId: string, idx: number): Promise<string> {
 		const section = await this.sectionRepository.findOne(sectionId);
 		if (!section) throw new NotFoundException('Section not found.');
-		section.createSection(idx);
+		const createdSectionId = section.createSection(idx);
 		await this.sectionRepository.save(section);
+		return createdSectionId;
 	}
 }

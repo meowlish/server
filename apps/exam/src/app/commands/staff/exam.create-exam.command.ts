@@ -19,4 +19,8 @@ export class CreateExamCommandPayload {
 	}
 }
 
-export class CreateExamCommand extends Command<CreateExamCommandPayload> {}
+export type CreateExamCommandResult = {
+	id: string;
+};
+
+export class CreateExamCommand extends Command<CreateExamCommandPayload, CreateExamCommandResult> {}

@@ -6,7 +6,7 @@ import {
 	type IExamRepository,
 	IExamRepositoryToken,
 } from '../../../../domain/repositories/exam.repository';
-import { AttemptCommand } from '../../practice/exam.attempt.command';
+import { AttemptCommand, AttemptCommandResult } from '../../practice/exam.attempt.command';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 
@@ -18,7 +18,7 @@ export class AttemptHandler implements ICommandHandler<AttemptCommand> {
 		private readonly eventBus: EventBus,
 	) {}
 
-	public async execute(command: AttemptCommand): Promise<void> {
+	public async execute(command: AttemptCommand): Promise<AttemptCommandResult> {
 		const payload = command.payload;
 		const exam = await this.examRepository.findOne(payload.examId);
 		if (!exam) throw new NotFoundException('Exam not found');
@@ -28,5 +28,6 @@ export class AttemptHandler implements ICommandHandler<AttemptCommand> {
 		});
 		await this.attemptRepository.save(attemptConfig);
 		this.eventBus.publishAll(attemptConfig.getUncommittedEvents());
+		return { id: attemptConfig.id };
 	}
 }

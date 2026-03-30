@@ -11,4 +11,8 @@ export class AttemptCommandPayload {
 	) {}
 }
 
-export class AttemptCommand extends Command<AttemptCommandPayload> {}
+export type AttemptCommandResult = {
+	id: string;
+};
+
+export class AttemptCommand extends Command<AttemptCommandPayload, AttemptCommandResult> {}

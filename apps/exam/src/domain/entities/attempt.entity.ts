@@ -47,8 +47,9 @@ export class AttemptResponse implements IEntity<AttemptResponse> {
 		this.answers.clear();
 	}
 
-	public toggleFlag(): void {
+	public toggleFlag(): boolean {
 		this.isFlagged = !this.isFlagged;
+		return this.isFlagged;
 	}
 
 	public setNote(note: string): void {
@@ -111,8 +112,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 
 	// check if the question exists in the section in the domain service layer
 	public answer(questionId: string, answer: string): void {
-		const timeStamp = new Date();
-		this.assertModifiable(timeStamp);
+		this.assertModifiable(new Date());
 		if (!this.questions.has(questionId))
 			throw new ConflictException("Question isn't included in this attempt");
 		const existingResponse = this.responses.find(r => r.questionId === questionId);
@@ -146,8 +146,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 	}
 
 	public deleteAnswer(questionId: string, answer?: string): void {
-		const timeStamp = new Date();
-		this.assertModifiable(timeStamp);
+		this.assertModifiable(new Date());
 		const existingResponse = this.responses.find(r => r.questionId === questionId);
 		if (!existingResponse) throw new NotFoundException('Answer not found');
 		// if answer was passed in
@@ -181,22 +180,28 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		}
 	}
 
-	public toggleFlag(questionId: string): void {
+	public toggleFlag(questionId: string): boolean {
 		const existingResponse = this.responses.find(r => r.questionId === questionId);
 		if (existingResponse) {
-			existingResponse.toggleFlag();
+			const flagState = existingResponse.toggleFlag();
 			this.apply(
 				new AttemptResponseUpdatedEvent({
 					attemptId: this.id,
 					data: structuredClone(existingResponse),
 				}),
 			);
+			return flagState;
 		} else {
-			const newResponse = new AttemptResponse({ questionId: questionId, isFlagged: true });
+			const defaultFlagState = true;
+			const newResponse = new AttemptResponse({
+				questionId: questionId,
+				isFlagged: defaultFlagState,
+			});
 			this.responses.push(newResponse);
 			this.apply(
 				new AttemptResponseCreatedEvent({ attemptId: this.id, data: structuredClone(newResponse) }),
 			);
+			return defaultFlagState;
 		}
 	}
 

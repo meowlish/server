@@ -12,4 +12,11 @@ export class CreateSectionCommandPayload {
 	}
 }
 
-export class CreateSectionCommand extends Command<CreateSectionCommandPayload> {}
+export type CreateSectionCommandResult = {
+	id: string;
+};
+
+export class CreateSectionCommand extends Command<
+	CreateSectionCommandPayload,
+	CreateSectionCommandResult
+> {}
