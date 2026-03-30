@@ -24,17 +24,16 @@ import {
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
-@Injectable()
-export class QuestionPrismaMapper {
-	mapQuestionType(from: string): QuestionType {
+class QuestionPrismaMapper {
+	static mapQuestionType(from: string): QuestionType {
 		return parseEnum(QuestionType, from);
 	}
 
-	mapExamStatus(from: string): ExamStatus {
+	static mapExamStatus(from: string): ExamStatus {
 		return parseEnum(ExamStatus, from);
 	}
 
-	toQuestionAggregate(from: ExtendedQuestion): Question {
+	static toQuestionAggregate(from: ExtendedQuestion): Question {
 		return new Question({
 			id: from.id,
 			examId: new ExamId(from.section.exam.id, from.section.exam.version),
@@ -58,7 +57,7 @@ export class QuestionPrismaMapper {
 		});
 	}
 
-	toChoiceOrm(from: Choice, questionId: string): PrismaChoice {
+	static toChoiceOrm(from: Choice, questionId: string): PrismaChoice {
 		return {
 			id: from.id,
 			key: from.key,
@@ -68,7 +67,7 @@ export class QuestionPrismaMapper {
 		};
 	}
 
-	toQuestionOrm(from: Question): RepoQuestion {
+	static toQuestionOrm(from: Question): RepoQuestion {
 		return {
 			id: from.id,
 			content: from.content,
@@ -82,21 +81,18 @@ export class QuestionPrismaMapper {
 
 @Injectable()
 export class QuestionPrismaRepository implements IQuestionRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: QuestionPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOne(id: string): Promise<Question | null> {
 		const foundQuestion = await this.txHost.tx.question.findUnique({
 			where: { id: id },
 			include: questionPrismaIncludeObj,
 		});
-		return foundQuestion ? this.mapper.toQuestionAggregate(foundQuestion) : null;
+		return foundQuestion ? QuestionPrismaMapper.toQuestionAggregate(foundQuestion) : null;
 	}
 
 	async save(question: Question): Promise<void> {
-		const data = this.mapper.toQuestionOrm(question);
+		const data = QuestionPrismaMapper.toQuestionOrm(question);
 
 		await this.txHost.withTransaction(async () => {
 			// optimistic lock
@@ -132,7 +128,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 	private async onChoiceCreated(event: ChoiceCreatedEvent): Promise<void> {
 		await this.txHost.tx.choice.create({
-			data: this.mapper.toChoiceOrm(event.payload.data, event.payload.questionId),
+			data: QuestionPrismaMapper.toChoiceOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 
@@ -143,7 +139,7 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 	private async onChoiceUpdated(event: ChoiceUpdatedEvent): Promise<void> {
 		await this.txHost.tx.choice.update({
 			where: { id: event.payload.choiceId },
-			data: this.mapper.toChoiceOrm(event.payload.data, event.payload.questionId),
+			data: QuestionPrismaMapper.toChoiceOrm(event.payload.data, event.payload.questionId),
 		});
 	}
 

@@ -16,13 +16,12 @@ import {
 } from '@prisma-client/achievement';
 import { Event, parseEnum } from '@server/utils';
 
-@Injectable()
-export class BadgeManagerPrismaMapper {
-	mapBadge(from: string): Badge {
+class BadgeManagerPrismaMapper {
+	static mapBadge(from: string): Badge {
 		return parseEnum(Badge, from);
 	}
 
-	toAttemptCounterBadgeManager(
+	static toAttemptCounterBadgeManager(
 		from: AttemptCriteria,
 		badges: UserBadge[],
 	): AttemptCounterBadgeManager {
@@ -34,7 +33,10 @@ export class BadgeManagerPrismaMapper {
 		});
 	}
 
-	toAttemptScoreBadgeManager(from: AttemptCriteria, badges: UserBadge[]): AttemptScoreBadgeManager {
+	static toAttemptScoreBadgeManager(
+		from: AttemptCriteria,
+		badges: UserBadge[],
+	): AttemptScoreBadgeManager {
 		return new AttemptScoreBadgeManager({
 			id: from.uid,
 			good: from.good,
@@ -44,7 +46,7 @@ export class BadgeManagerPrismaMapper {
 		});
 	}
 
-	toLoginBadgeManager(from: LoginCriteria, badges: UserBadge[]): LoginBadgeManager {
+	static toLoginBadgeManager(from: LoginCriteria, badges: UserBadge[]): LoginBadgeManager {
 		return new LoginBadgeManager({
 			id: from.uid,
 			longestStreak: from.longestStreak,
@@ -56,11 +58,11 @@ export class BadgeManagerPrismaMapper {
 		});
 	}
 
-	toOrm(
+	static toOrm(
 		from: AttemptCounterBadgeManager | AttemptScoreBadgeManager,
 	): Prisma.AttemptCriteriaUpdateInput;
-	toOrm(from: LoginBadgeManager): Prisma.LoginCriteriaUpdateInput;
-	toOrm(
+	static toOrm(from: LoginBadgeManager): Prisma.LoginCriteriaUpdateInput;
+	static toOrm(
 		from: AttemptCounterBadgeManager | AttemptScoreBadgeManager | LoginBadgeManager,
 	): Prisma.AttemptCriteriaUpdateInput | Prisma.LoginCriteriaUpdateInput {
 		if (from instanceof LoginBadgeManager)
@@ -77,10 +79,7 @@ export class BadgeManagerPrismaMapper {
 
 @Injectable()
 export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: BadgeManagerPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async getAttemptCounterBadgeManager(uid: string): Promise<AttemptCounterBadgeManager> {
 		let foundManager = await this.txHost.tx.attemptCriteria.findUnique({ where: { uid: uid } });
@@ -89,7 +88,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.AttemptCount } },
 		});
-		const manager = this.mapper.toAttemptCounterBadgeManager(foundManager, badges);
+		const manager = BadgeManagerPrismaMapper.toAttemptCounterBadgeManager(foundManager, badges);
 		return manager;
 	}
 
@@ -100,7 +99,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.AttemptScore } },
 		});
-		const manager = this.mapper.toAttemptScoreBadgeManager(foundManager, badges);
+		const manager = BadgeManagerPrismaMapper.toAttemptScoreBadgeManager(foundManager, badges);
 		return manager;
 	}
 
@@ -113,12 +112,12 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.Login } },
 		});
-		const manager = this.mapper.toLoginBadgeManager(foundManager, badges);
+		const manager = BadgeManagerPrismaMapper.toLoginBadgeManager(foundManager, badges);
 		return manager;
 	}
 
 	async saveAttemptCounterBadgeManager(manager: AttemptCounterBadgeManager): Promise<void> {
-		const data = this.mapper.toOrm(manager);
+		const data = BadgeManagerPrismaMapper.toOrm(manager);
 		return await this.txHost.withTransaction(async () => {
 			await this.txHost.tx.attemptCriteria.update({
 				where: { uid: manager.id, version: manager.version },
@@ -132,7 +131,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 	}
 
 	async saveAttemptScoreBadgeManager(manager: AttemptScoreBadgeManager): Promise<void> {
-		const data = this.mapper.toOrm(manager);
+		const data = BadgeManagerPrismaMapper.toOrm(manager);
 		return await this.txHost.withTransaction(async () => {
 			await this.txHost.tx.attemptCriteria.update({
 				where: { uid: manager.id, version: manager.version },
@@ -146,7 +145,7 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 	}
 
 	async saveLoginBadgeManager(manager: LoginBadgeManager): Promise<void> {
-		const data = this.mapper.toOrm(manager);
+		const data = BadgeManagerPrismaMapper.toOrm(manager);
 		return await this.txHost.withTransaction(async () => {
 			await this.txHost.tx.loginCriteria.update({
 				where: { uid: manager.id, version: manager.version },

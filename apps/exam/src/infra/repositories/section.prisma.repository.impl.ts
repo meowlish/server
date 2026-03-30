@@ -27,17 +27,16 @@ import {
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
-@Injectable()
-export class SectionPrismaMapper {
-	mapExamStatus(from: string): ExamStatus {
+class SectionPrismaMapper {
+	static mapExamStatus(from: string): ExamStatus {
 		return parseEnum(ExamStatus, from);
 	}
 
-	mapSectionType(from: string): SectionType {
+	static mapSectionType(from: string): SectionType {
 		return parseEnum(SectionType, from);
 	}
 
-	toSectionAggregate(from: ExtendedSection): Section {
+	static toSectionAggregate(from: ExtendedSection): Section {
 		let children: SectionChild[];
 		const contentType: SectionType = this.mapSectionType(from.contentType);
 
@@ -62,7 +61,7 @@ export class SectionPrismaMapper {
 		});
 	}
 
-	toChildQuestionOrm(from: SectionChild, parentId: string): RepoChildQuestion {
+	static toChildQuestionOrm(from: SectionChild, parentId: string): RepoChildQuestion {
 		return {
 			id: from.id,
 			order: from.order,
@@ -70,7 +69,7 @@ export class SectionPrismaMapper {
 		};
 	}
 
-	toChildSectionOrm(from: SectionChild, parentId: string, examId: string): RepoChildSection {
+	static toChildSectionOrm(from: SectionChild, parentId: string, examId: string): RepoChildSection {
 		return {
 			id: from.id,
 			order: from.order,
@@ -79,7 +78,7 @@ export class SectionPrismaMapper {
 		};
 	}
 
-	toParentSectionOrm(from: Section): RepoSection {
+	static toParentSectionOrm(from: Section): RepoSection {
 		return {
 			id: from.id,
 			contentType: from.contentType,
@@ -93,17 +92,14 @@ export class SectionPrismaMapper {
 
 @Injectable()
 export class SectionPrismaRepository implements ISectionRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: SectionPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOne(id: string): Promise<Section | null> {
 		const foundSection = await this.txHost.tx.section.findUnique({
 			where: { id: id },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
+		return foundSection ? SectionPrismaMapper.toSectionAggregate(foundSection) : null;
 	}
 
 	async getParentSectionOfQuestion(id: string): Promise<Section> {
@@ -112,7 +108,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			include: { section: { include: sectionPrismaIncludeObject } },
 		});
 		if (!foundQuestion) throw new NotFoundException('Question not found.');
-		return this.mapper.toSectionAggregate(foundQuestion.section);
+		return SectionPrismaMapper.toSectionAggregate(foundQuestion.section);
 	}
 
 	async getParentSectionOfSection(id: string): Promise<Section | null> {
@@ -122,7 +118,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');
 		const foundParentSection = foundSection.parentSection;
-		return foundParentSection ? this.mapper.toSectionAggregate(foundParentSection) : null;
+		return foundParentSection ? SectionPrismaMapper.toSectionAggregate(foundParentSection) : null;
 	}
 
 	// check again
@@ -141,7 +137,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: id, examId: foundBaseSection.examId },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
+		return foundSection ? SectionPrismaMapper.toSectionAggregate(foundSection) : null;
 	}
 
 	// check again
@@ -159,11 +155,11 @@ export class SectionPrismaRepository implements ISectionRepository {
 			where: { id: id, examId: foundQuestion.section.examId },
 			include: sectionPrismaIncludeObject,
 		});
-		return foundSection ? this.mapper.toSectionAggregate(foundSection) : null;
+		return foundSection ? SectionPrismaMapper.toSectionAggregate(foundSection) : null;
 	}
 
 	async save(section: Section): Promise<void> {
-		const data = this.mapper.toParentSectionOrm(section);
+		const data = SectionPrismaMapper.toParentSectionOrm(section);
 		await this.txHost.withTransaction(async () => {
 			// handle events
 			for (const event of section.getUncommittedEvents()) {
@@ -198,14 +194,14 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	private async onQuestionCreated(event: QuestionCreatedEvent): Promise<void> {
 		await this.txHost.tx.question.create({
-			data: this.mapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
+			data: SectionPrismaMapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
 		});
 	}
 
 	private async onQuestionMoved(event: QuestionMovedEvent): Promise<void> {
 		await this.txHost.tx.question.update({
 			where: { id: event.payload.questionId },
-			data: this.mapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
+			data: SectionPrismaMapper.toChildQuestionOrm(event.payload.data, event.payload.sectionId),
 		});
 	}
 
@@ -217,7 +213,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	private async onChildSectionCreated(event: ChildSectionCreatedEvent): Promise<void> {
 		await this.txHost.tx.section.create({
-			data: this.mapper.toChildSectionOrm(
+			data: SectionPrismaMapper.toChildSectionOrm(
 				event.payload.data,
 				event.payload.parentId,
 				event.payload.examId.id,
@@ -228,7 +224,7 @@ export class SectionPrismaRepository implements ISectionRepository {
 	private async onChildSectionMoved(event: ChildSectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: this.mapper.toChildSectionOrm(
+			data: SectionPrismaMapper.toChildSectionOrm(
 				event.payload.data,
 				event.payload.parentId,
 				event.payload.examId.id,

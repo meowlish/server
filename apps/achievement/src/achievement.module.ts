@@ -3,10 +3,7 @@ import { config } from './configs/config';
 import { rmqPubConfig } from './configs/rmq.pub.config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
 import { IBadgeManagerRepositoryToken } from './domain/repositories/badge-manager.repository';
-import {
-	BadgeManagerPrismaMapper,
-	BadgeManagerPrismaRepositoryImpl,
-} from './infra/repositories/badge-manager.prisma.repository.impl';
+import { BadgeManagerPrismaRepositoryImpl } from './infra/repositories/badge-manager.prisma.repository.impl';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -53,7 +50,6 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		...IntegrationEventHandlers,
-		BadgeManagerPrismaMapper,
 		{
 			provide: IBadgeManagerRepositoryToken,
 			useClass: BadgeManagerPrismaRepositoryImpl,

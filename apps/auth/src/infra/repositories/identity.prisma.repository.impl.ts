@@ -22,21 +22,20 @@ import { Permission, Role } from '@server/typing';
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
-@Injectable()
-export class IdentityPrismaMapper {
-	mapPermission(from: string): Permission {
+class IdentityPrismaMapper {
+	static mapPermission(from: string): Permission {
 		return parseEnum(Permission, from);
 	}
 
-	mapRole(from: string): Role {
+	static mapRole(from: string): Role {
 		return parseEnum(Role, from);
 	}
 
-	mapLoginType(from: string): LoginType {
+	static mapLoginType(from: string): LoginType {
 		return parseEnum(LoginType, from);
 	}
 
-	toIdentityOrm(from: Identity): RepoIdentity {
+	static toIdentityOrm(from: Identity): RepoIdentity {
 		return {
 			id: from.id,
 			version: from.version,
@@ -45,7 +44,7 @@ export class IdentityPrismaMapper {
 		};
 	}
 
-	toCredentialOrm(from: Credential, identityId: string): PrismaCredential {
+	static toCredentialOrm(from: Credential, identityId: string): PrismaCredential {
 		return {
 			id: from.id,
 			identifier: from.identifier,
@@ -55,7 +54,7 @@ export class IdentityPrismaMapper {
 		};
 	}
 
-	toIdentityAggregate(from: ExtendedIdentity): Identity {
+	static toIdentityAggregate(from: ExtendedIdentity): Identity {
 		return new Identity({
 			id: from.id,
 			username: from.username,
@@ -77,17 +76,14 @@ export class IdentityPrismaMapper {
 
 @Injectable()
 export class IdentityPrismaRepository implements IIdentityRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: IdentityPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOneById(id: string, deleted = false): Promise<Identity | null> {
 		const foundIdentity = await this.txHost.tx.identity.findUnique({
 			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity ? this.mapper.toIdentityAggregate(foundIdentity) : null;
+		return foundIdentity ? IdentityPrismaMapper.toIdentityAggregate(foundIdentity) : null;
 	}
 
 	async findOneCredential(
@@ -106,7 +102,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			where: { username: username, deletedAt: deleted ? { not: null } : null },
 			include: identityPrismaIncludeObj,
 		});
-		return foundIdentity ? this.mapper.toIdentityAggregate(foundIdentity) : null;
+		return foundIdentity ? IdentityPrismaMapper.toIdentityAggregate(foundIdentity) : null;
 	}
 
 	async getClaimsOfId(
@@ -125,13 +121,13 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			throw new NotFoundException(`Could not get claims of ${id}, no matching results.`);
 		return {
 			roles: foundIdentity.identityRoles.map(rIdentityRole =>
-				this.mapper.mapRole(rIdentityRole.role.name),
+				IdentityPrismaMapper.mapRole(rIdentityRole.role.name),
 			),
 			permissions: [
 				...new Set<Permission>(
 					foundIdentity.identityRoles.flatMap(rIdentityRole =>
 						rIdentityRole.role.rolePermissions.map(rPermission =>
-							this.mapper.mapPermission(rPermission.permission.name),
+							IdentityPrismaMapper.mapPermission(rPermission.permission.name),
 						),
 					),
 				),
@@ -140,7 +136,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	}
 
 	async save(identity: Identity): Promise<void> {
-		const data = this.mapper.toIdentityOrm(identity);
+		const data = IdentityPrismaMapper.toIdentityOrm(identity);
 		await this.txHost.withTransaction(async () => {
 			// update or insert
 			try {
@@ -201,7 +197,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	private async onCredAdded(event: CredAddedEvent): Promise<void> {
 		try {
 			await this.txHost.tx.credential.create({
-				data: this.mapper.toCredentialOrm(event.payload.data, event.payload.identityId),
+				data: IdentityPrismaMapper.toCredentialOrm(event.payload.data, event.payload.identityId),
 			});
 		} catch (e) {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -224,7 +220,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		try {
 			await this.txHost.tx.credential.update({
 				where: { id: event.payload.credId },
-				data: this.mapper.toCredentialOrm(event.payload.data, event.payload.identityId),
+				data: IdentityPrismaMapper.toCredentialOrm(event.payload.data, event.payload.identityId),
 			});
 		} catch (e) {
 			if (e instanceof Prisma.PrismaClientKnownRequestError) {

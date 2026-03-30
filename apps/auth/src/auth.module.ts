@@ -8,10 +8,7 @@ import { redisConfig } from './configs/redis.config';
 import { rmqPubConfig } from './configs/rmq.pub.config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
-import {
-	IdentityPrismaMapper,
-	IdentityPrismaRepository,
-} from './infra/repositories/identity.prisma.repository.impl';
+import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.repository.impl';
 import { AuthController } from './presentation/controllers';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
@@ -84,7 +81,6 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				return new JwtService(config);
 			},
 		},
-		IdentityPrismaMapper,
 		{
 			provide: IIdentityRepositoryToken,
 			useClass: IdentityPrismaRepository,

@@ -12,23 +12,11 @@ import { IFileRepositoryToken } from './domain/repositories/file.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';
 import { ISectionRepositoryToken } from './domain/repositories/section.repository';
 import { ITagRepositoryToken } from './domain/repositories/tag.repository';
-import {
-	AttemptPrismaMapper,
-	AttemptPrismaRepository,
-} from './infra/repositories/attempt.prisma.repository.impl';
-import {
-	ExamPrismaMapper,
-	ExamPrismaRepository,
-} from './infra/repositories/exam.prisma.repository.impl';
+import { AttemptPrismaRepository } from './infra/repositories/attempt.prisma.repository.impl';
+import { ExamPrismaRepository } from './infra/repositories/exam.prisma.repository.impl';
 import { FilePrismaRepositoryImpl } from './infra/repositories/file.prisma.repository.impl';
-import {
-	QuestionPrismaMapper,
-	QuestionPrismaRepository,
-} from './infra/repositories/question.prisma.repository.impl';
-import {
-	SectionPrismaMapper,
-	SectionPrismaRepository,
-} from './infra/repositories/section.prisma.repository.impl';
+import { QuestionPrismaRepository } from './infra/repositories/question.prisma.repository.impl';
+import { SectionPrismaRepository } from './infra/repositories/section.prisma.repository.impl';
 import { TagPrismaRepository } from './infra/repositories/tag.prisma.repository.impl';
 import { ExamManagementController } from './presentation/controllers/exam-management.controller';
 import { ExamPracticeController } from './presentation/controllers/exam-practice.controller';
@@ -84,22 +72,18 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		...ExamEventHandlers,
 		...IntegrationEventPublishers,
 		TagService,
-		ExamPrismaMapper,
 		{
 			provide: IExamRepositoryToken,
 			useClass: ExamPrismaRepository,
 		},
-		SectionPrismaMapper,
 		{
 			provide: ISectionRepositoryToken,
 			useClass: SectionPrismaRepository,
 		},
-		QuestionPrismaMapper,
 		{
 			provide: IQuestionRepositoryToken,
 			useClass: QuestionPrismaRepository,
 		},
-		AttemptPrismaMapper,
 		{
 			provide: IAttemptRepositoryToken,
 			useClass: AttemptPrismaRepository,

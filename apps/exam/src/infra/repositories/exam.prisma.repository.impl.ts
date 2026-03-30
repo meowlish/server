@@ -20,13 +20,12 @@ import {
 import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
-@Injectable()
-export class ExamPrismaMapper {
-	mapExamStatus(from: string): ExamStatus {
+class ExamPrismaMapper {
+	static mapExamStatus(from: string): ExamStatus {
 		return parseEnum(ExamStatus, from);
 	}
 
-	toExamAggregate(from: ExtendedExam): Exam {
+	static toExamAggregate(from: ExtendedExam): Exam {
 		return new Exam({
 			title: from.title,
 			duration: from.duration,
@@ -39,7 +38,7 @@ export class ExamPrismaMapper {
 		});
 	}
 
-	toSectionOrm(from: ExamSection, examId: string): RepoSection {
+	static toSectionOrm(from: ExamSection, examId: string): RepoSection {
 		return {
 			id: from.id,
 			examId: examId,
@@ -48,7 +47,7 @@ export class ExamPrismaMapper {
 		};
 	}
 
-	toExamOrm(from: Exam): RepoExam {
+	static toExamOrm(from: Exam): RepoExam {
 		return {
 			createdBy: from.createdBy,
 			id: from.id.id,
@@ -63,17 +62,14 @@ export class ExamPrismaMapper {
 
 @Injectable()
 export class ExamPrismaRepository implements IExamRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: ExamPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOne(id: string): Promise<Exam | null> {
 		const foundExam = await this.txHost.tx.exam.findUnique({
 			where: { id: id },
 			include: examPrismaIncludeObj,
 		});
-		return foundExam ? this.mapper.toExamAggregate(foundExam) : null;
+		return foundExam ? ExamPrismaMapper.toExamAggregate(foundExam) : null;
 	}
 
 	async getParentExamOfSection(id: string): Promise<Exam> {
@@ -82,11 +78,11 @@ export class ExamPrismaRepository implements IExamRepository {
 			include: { exam: { include: examPrismaIncludeObj } },
 		});
 		if (!foundSection) throw new NotFoundException('Section not found.');
-		return this.mapper.toExamAggregate(foundSection.exam);
+		return ExamPrismaMapper.toExamAggregate(foundSection.exam);
 	}
 
 	async save(exam: Exam): Promise<void> {
-		const data = this.mapper.toExamOrm(exam);
+		const data = ExamPrismaMapper.toExamOrm(exam);
 		await this.txHost.withTransaction(async () => {
 			// insert if lock is new version
 			if (data.version === 0) await this.txHost.tx.exam.create({ data: { ...data, version: 1 } });
@@ -105,7 +101,7 @@ export class ExamPrismaRepository implements IExamRepository {
 	}
 
 	async delete(exam: Exam): Promise<void> {
-		const data = this.mapper.toExamOrm(exam);
+		const data = ExamPrismaMapper.toExamOrm(exam);
 		await this.txHost.tx.exam.delete({ where: { id: data.id, version: data.version } });
 	}
 
@@ -119,14 +115,14 @@ export class ExamPrismaRepository implements IExamRepository {
 
 	private async onSectionCreated(event: SectionCreatedEvent): Promise<void> {
 		await this.txHost.tx.section.create({
-			data: this.mapper.toSectionOrm(event.payload.data, event.payload.examId.id),
+			data: ExamPrismaMapper.toSectionOrm(event.payload.data, event.payload.examId.id),
 		});
 	}
 
 	private async onSectionMoved(event: SectionMovedEvent): Promise<void> {
 		await this.txHost.tx.section.update({
 			where: { id: event.payload.sectionId },
-			data: this.mapper.toSectionOrm(event.payload.data, event.payload.examId.id),
+			data: ExamPrismaMapper.toSectionOrm(event.payload.data, event.payload.examId.id),
 		});
 	}
 

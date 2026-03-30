@@ -22,13 +22,12 @@ import {
 } from '@prisma-client/exam';
 import { Event, parseEnum } from '@server/utils';
 
-@Injectable()
-export class AttemptPrismaMapper {
-	mapQuestionType(from: string): QuestionType {
+class AttemptPrismaMapper {
+	static mapQuestionType(from: string): QuestionType {
 		return parseEnum(QuestionType, from);
 	}
 
-	toAttemptOrm(from: Attempt): RepoAttempt {
+	static toAttemptOrm(from: Attempt): RepoAttempt {
 		return {
 			id: from.id,
 			attemptedBy: from.attemptedBy,
@@ -40,7 +39,7 @@ export class AttemptPrismaMapper {
 		};
 	}
 
-	toConfigAttemptOrm(from: AttemptConfig): RepoAttemptConfig {
+	static toConfigAttemptOrm(from: AttemptConfig): RepoAttemptConfig {
 		return {
 			id: from.id,
 			attemptedBy: from.attemptedBy,
@@ -51,11 +50,11 @@ export class AttemptPrismaMapper {
 		};
 	}
 
-	toScoredAttemptOrm(from: AttemptEvaluator): RepoScoredAttempt {
+	static toScoredAttemptOrm(from: AttemptEvaluator): RepoScoredAttempt {
 		return { id: from.id, score: from.score, totalPoints: from.totalPoints };
 	}
 
-	toAttemptResponseOrm(from: AttemptResponse, attemptId: string): RepoAttemptResponse {
+	static toAttemptResponseOrm(from: AttemptResponse, attemptId: string): RepoAttemptResponse {
 		return {
 			id: from.id,
 			isFlagged: from.isFlagged,
@@ -66,7 +65,7 @@ export class AttemptPrismaMapper {
 		};
 	}
 
-	toAttemptEvaluatorAggregate(
+	static toAttemptEvaluatorAggregate(
 		from: ExtendedAttemptForEval,
 		questions: RepoAttemptQuestionForEval[],
 	): AttemptEvaluator {
@@ -91,7 +90,7 @@ export class AttemptPrismaMapper {
 		});
 	}
 
-	toAttemptAggregate(from: ExtendedAttempt, questions: RepoAttemptQuestion[]): Attempt {
+	static toAttemptAggregate(from: ExtendedAttempt, questions: RepoAttemptQuestion[]): Attempt {
 		const attemptQuestions = questions?.map(q => ({
 			id: q.id,
 			type: this.mapQuestionType(q.type),
@@ -124,10 +123,7 @@ export class AttemptPrismaMapper {
 
 @Injectable()
 export class AttemptPrismaRepository implements IAttemptRepository {
-	constructor(
-		private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>,
-		private readonly mapper: AttemptPrismaMapper,
-	) {}
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOne(id: string): Promise<Attempt | null> {
 		const foundAttempt = await this.txHost.tx.attempt.findUnique({
@@ -151,7 +147,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 					where: { section: { examId: foundAttempt.examId } },
 					select: attemptQuestionsPrismaSelectObject,
 				});
-		return this.mapper.toAttemptAggregate(foundAttempt, attemptQuestions);
+		return AttemptPrismaMapper.toAttemptAggregate(foundAttempt, attemptQuestions);
 	}
 
 	async getAttemptedUser(attemptId: string): Promise<string> {
@@ -185,12 +181,12 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 					where: { section: { examId: foundAttempt.examId } },
 					select: attemptQuestionsForEvalPrismaSelectObject,
 				});
-		return this.mapper.toAttemptEvaluatorAggregate(foundAttempt, attemptQuestions);
+		return AttemptPrismaMapper.toAttemptEvaluatorAggregate(foundAttempt, attemptQuestions);
 	}
 
 	async save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void> {
 		if (attempt instanceof Attempt) {
-			const data = this.mapper.toAttemptOrm(attempt);
+			const data = AttemptPrismaMapper.toAttemptOrm(attempt);
 			await this.txHost.withTransaction(async () => {
 				await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
 
@@ -200,7 +196,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			});
 		}
 		if (attempt instanceof AttemptEvaluator) {
-			const data = this.mapper.toScoredAttemptOrm(attempt);
+			const data = AttemptPrismaMapper.toScoredAttemptOrm(attempt);
 			await this.txHost.withTransaction(async () => {
 				await this.txHost.tx.attempt.update({ where: { id: data.id }, data: data });
 
@@ -213,7 +209,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			});
 		}
 		if (attempt instanceof AttemptConfig) {
-			const data = this.mapper.toConfigAttemptOrm(attempt);
+			const data = AttemptPrismaMapper.toConfigAttemptOrm(attempt);
 			const finishedAttemptsCount = await this.txHost.tx.attempt.count({
 				where: { examId: data.examId, attemptedBy: data.attemptedBy, endedAt: { not: null } },
 			});
@@ -251,14 +247,14 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 
 	private async onAttemptResponseCreated(event: AttemptResponseCreatedEvent): Promise<void> {
 		await this.txHost.tx.attemptResponse.create({
-			data: this.mapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
+			data: AttemptPrismaMapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
 		});
 	}
 
 	private async onAttemptResponseUpdated(event: AttemptResponseUpdatedEvent): Promise<void> {
 		await this.txHost.tx.attemptResponse.update({
 			where: { id: event.payload.data.id },
-			data: this.mapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
+			data: AttemptPrismaMapper.toAttemptResponseOrm(event.payload.data, event.payload.attemptId),
 		});
 	}
 
