@@ -1,5 +1,5 @@
 import {
-	IFileRepository,
+	type IFileRepository,
 	IFileRepositoryToken,
 } from '../../../domain/repositories/file.repository';
 import { FileRemovedIntegrationEvent } from '../files-removed.event';

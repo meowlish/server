@@ -1,4 +1,7 @@
-import { IFileRepository, IFileRepositoryToken } from '../../domain/repositories/file.repository';
+import {
+	type IFileRepository,
+	IFileRepositoryToken,
+} from '../../domain/repositories/file.repository';
 import { FileMetadata } from '../../types/file-metadata.type';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Client, PostPolicy } from 'minio';

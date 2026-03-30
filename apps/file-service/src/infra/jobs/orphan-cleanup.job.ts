@@ -1,5 +1,8 @@
 import { FileService } from '../../app/services/file.service';
-import { IFileRepository, IFileRepositoryToken } from '../../domain/repositories/file.repository';
+import {
+	type IFileRepository,
+	IFileRepositoryToken,
+} from '../../domain/repositories/file.repository';
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';

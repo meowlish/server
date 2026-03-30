@@ -1,4 +1,4 @@
-import { AuthenticatedRequest } from '../types/authenticated-request';
+import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { EXAM_CLIENT } from './constants/exam';
 import { AddNoteDto } from './dtos/req/practice/add-note.req.dto';
 import { AnswerDto } from './dtos/req/practice/answer.req.dto';
