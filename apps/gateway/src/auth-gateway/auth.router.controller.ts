@@ -4,7 +4,7 @@ import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { AUTH_CLIENT } from './constants/auth';
 import { LoginMailDto } from './dtos/req/login-mail.req.dto';
 import { RegisterMailDto } from './dtos/req/register-mail.req.dto';
-import { ResponseAuthDto } from './dtos/res/auth.res.dto';
+import { ResponseTokensDto } from './dtos/res/auth.res.dto';
 import {
 	Body,
 	Controller,
@@ -31,16 +31,16 @@ export class AuthGatewayController implements OnModuleInit {
 
 	@Post('register')
 	@IsPublic()
-	@SerializeOptions({ type: ResponseAuthDto })
-	register(@Body() body: RegisterMailDto): Observable<ResponseAuthDto> {
+	@SerializeOptions({ type: ResponseTokensDto })
+	register(@Body() body: RegisterMailDto): Observable<ResponseTokensDto> {
 		const res = this.authService.registerMail(body);
 		return res;
 	}
 
 	@Post('login')
 	@IsPublic()
-	@SerializeOptions({ type: ResponseAuthDto })
-	login(@Body() body: LoginMailDto): Observable<ResponseAuthDto> {
+	@SerializeOptions({ type: ResponseTokensDto })
+	login(@Body() body: LoginMailDto): Observable<ResponseTokensDto> {
 		const res = this.authService.loginMail(body);
 		return res;
 	}
@@ -48,8 +48,8 @@ export class AuthGatewayController implements OnModuleInit {
 	@Post('refresh')
 	@UseGuards(JwtRefreshAuthGuard)
 	@IsPublic()
-	@SerializeOptions({ type: ResponseAuthDto })
-	refresh(@Req() req: AuthenticatedRequest): Observable<ResponseAuthDto> {
+	@SerializeOptions({ type: ResponseTokensDto })
+	refresh(@Req() req: AuthenticatedRequest): Observable<ResponseTokensDto> {
 		const res = this.authService.refresh({ identityId: req.user.sub });
 		return res;
 	}

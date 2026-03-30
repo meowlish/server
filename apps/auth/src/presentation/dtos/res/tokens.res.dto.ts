@@ -1,6 +1,7 @@
+import { auth } from '@server/generated';
 import { Expose } from 'class-transformer';
 
-export class ResponseTokensDto {
+export class TokensDto implements auth.Tokens {
 	@Expose()
 	accessToken!: string;
 
