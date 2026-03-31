@@ -184,7 +184,7 @@ importers:
         specifier: 0.7.10
         version: 0.7.10(@swc/core@1.15.8(@swc/helpers@0.5.18))(chokidar@4.0.3)
       '@swc/core':
-        specifier: ^1.15.8
+        specifier: 1.15.8
         version: 1.15.8(@swc/helpers@0.5.18)
       '@swc/helpers':
         specifier: 0.5.18
