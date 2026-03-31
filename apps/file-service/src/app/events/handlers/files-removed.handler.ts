@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { IsArray, IsString, ValidateIf } from 'class-validator';
 
-export class FileRemovedEvent {
+class FileRemovedEvent {
 	@IsString()
 	@ValidateIf((o: FileRemovedEvent) => !o.fileIds)
 	fileId?: string;

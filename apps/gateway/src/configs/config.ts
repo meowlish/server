@@ -11,7 +11,7 @@ const googleOAuth2Schema = z.object({
 	secret: z.string(),
 });
 
-export const servicesSchema = z.object({
+const servicesSchema = z.object({
 	auth: z.object({
 		port: z.coerce.number(),
 		host: z.string(),

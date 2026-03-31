@@ -308,8 +308,4 @@ export class Section extends AggregateRoot<Event<any>> implements IAggregate<Sec
 	}
 }
 
-export type SectionUpdatableProperties = Partial<
-	Pick<Section, 'name' | 'directive' | 'contentType'>
->;
-
-export type SectionChildUpdatableProperties = Partial<Omit<SectionChild, 'id'>>;
+type SectionUpdatableProperties = Partial<Pick<Section, 'name' | 'directive' | 'contentType'>>;

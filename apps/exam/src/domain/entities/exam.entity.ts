@@ -21,8 +21,6 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity, IValueObject } from '@server/utils';
 import { ORDER_RANGE_MEDIUM } from '@server/utils';
 
-export class ExamReadModel {}
-
 // id with version for optimistic locking
 export class ExamId implements IValueObject<ExamId> {
 	constructor(
@@ -268,7 +266,6 @@ export class Exam extends AggregateRoot<Event<any>> implements IAggregate<Exam, 
 	}
 }
 
-export type NewAttemptInfo = Partial<Pick<AttemptConfig, 'durationLimit' | 'sectionIds'>>;
+type NewAttemptInfo = Partial<Pick<AttemptConfig, 'durationLimit' | 'sectionIds'>>;
 
-export type ExamUpdatableProperties = Partial<Pick<Exam, 'title' | 'duration' | 'description'>>;
-export type ExamSectionUpdatableProperties = Partial<Omit<ExamSection, 'id'>>;
+type ExamUpdatableProperties = Partial<Pick<Exam, 'title' | 'duration' | 'description'>>;

@@ -216,5 +216,3 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		this.apply(new AttemptSubmittedEvent({ attemptId: this.id }));
 	}
 }
-
-export type AttemptResponseUpdatableProperties = Partial<Omit<AttemptResponse, 'id'>>;

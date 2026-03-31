@@ -26,7 +26,7 @@ const googleOAuth2VarsSchema = z.object({
 	secret: z.string(),
 });
 
-export const mqSchema = z.object({
+const mqSchema = z.object({
 	user: z.string(),
 	password: z.string(),
 	host: z.string(),

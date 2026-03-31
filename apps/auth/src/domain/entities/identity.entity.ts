@@ -109,4 +109,4 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}
 }
 
-export type IdentityUpdatableProperties = Partial<Pick<Identity, 'username'>>;
+type IdentityUpdatableProperties = Partial<Pick<Identity, 'username'>>;

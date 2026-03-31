@@ -172,7 +172,4 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 	}
 }
 
-export type ChoiceUpdatableProperties = Partial<Pick<Choice, 'content' | 'isCorrect' | 'key'>>;
-export type QuestionUpdatableProperties = Partial<
-	Pick<Question, 'content' | 'points' | 'explanation' | 'choices'>
->;
+type ChoiceUpdatableProperties = Partial<Pick<Choice, 'content' | 'isCorrect' | 'key'>>;
