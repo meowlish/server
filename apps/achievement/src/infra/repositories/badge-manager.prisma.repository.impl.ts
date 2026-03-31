@@ -82,9 +82,11 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async getAttemptCounterBadgeManager(uid: string): Promise<AttemptCounterBadgeManager> {
-		let foundManager = await this.txHost.tx.attemptCriteria.findUnique({ where: { uid: uid } });
-		if (!foundManager)
-			foundManager = await this.txHost.tx.attemptCriteria.create({ data: { uid: uid } });
+		const foundManager = await this.txHost.tx.attemptCriteria.upsert({
+			where: { uid: uid },
+			update: {},
+			create: { uid: uid },
+		});
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.AttemptCount } },
 		});
@@ -93,9 +95,11 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 	}
 
 	async getAttemptScoreBadgeManager(uid: string): Promise<AttemptScoreBadgeManager> {
-		let foundManager = await this.txHost.tx.attemptCriteria.findUnique({ where: { uid: uid } });
-		if (!foundManager)
-			foundManager = await this.txHost.tx.attemptCriteria.create({ data: { uid: uid } });
+		const foundManager = await this.txHost.tx.attemptCriteria.upsert({
+			where: { uid: uid },
+			update: {},
+			create: { uid: uid },
+		});
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.AttemptScore } },
 		});
@@ -104,11 +108,11 @@ export class BadgeManagerPrismaRepositoryImpl implements IBadgeManagerRepository
 	}
 
 	async getLoginBadgeManager(uid: string): Promise<LoginBadgeManager> {
-		let foundManager = await this.txHost.tx.loginCriteria.findUnique({ where: { uid: uid } });
-		if (!foundManager)
-			foundManager = await this.txHost.tx.loginCriteria.create({
-				data: { uid: uid, startedAt: new Date(), lastLogin: new Date() },
-			});
+		const foundManager = await this.txHost.tx.loginCriteria.upsert({
+			where: { uid: uid },
+			update: {},
+			create: { uid: uid, startedAt: new Date(), lastLogin: new Date() },
+		});
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: uid, badge: { type: BadgeType.Login } },
 		});

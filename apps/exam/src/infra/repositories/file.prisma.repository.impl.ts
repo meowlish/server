@@ -9,11 +9,10 @@ export class FilePrismaRepositoryImpl implements IFileRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async getAndRemoveDeletedFileIds(): Promise<string[]> {
-		let fileIds: string[] = [];
-		await this.txHost.withTransaction(async () => {
-			fileIds = (await this.txHost.tx.deletedFile.findMany()).map(f => f.fileId);
+		return await this.txHost.withTransaction(async (): Promise<string[]> => {
+			const fileIds = (await this.txHost.tx.deletedFile.findMany()).map(f => f.fileId);
 			await this.txHost.tx.deletedFile.deleteMany({ where: { fileId: { in: fileIds } } });
+			return fileIds;
 		});
-		return fileIds;
 	}
 }
