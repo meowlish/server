@@ -5,7 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 export class TagService {
 	constructor(@Inject(ITagRepositoryToken) private readonly tagRepository: ITagRepository) {}
 
-	async addTag(name: string, parentId?: string): Promise<void> {
+	async addTag(name: string, parentId?: string): Promise<string> {
 		return await this.tagRepository.addTag(name, parentId);
 	}
 

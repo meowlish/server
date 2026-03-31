@@ -29,7 +29,7 @@ service ExamPracticeService {
 }
 
 service TagService {
-	rpc AddTag(AddTagDto) returns (common.Empty) {}
+	rpc AddTag(AddTagDto) returns (AddedTagDto) {}
 	rpc DeleteTag(DeleteTagDto) returns (common.Empty) {}
 	rpc UpdateTag(UpdateTagDto) returns (common.Empty) {}
 	rpc MoveTag(MoveTagDto) returns (common.Empty) {}
@@ -199,6 +199,10 @@ message FlagStateDto {
 message AddTagDto {
 	string          name      = 1;
 	optional string parent_id = 2;
+}
+
+message AddedTagDto {
+	string id = 1;
 }
 
 message DeleteTagDto {

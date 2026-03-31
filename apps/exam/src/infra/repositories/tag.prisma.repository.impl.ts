@@ -18,8 +18,8 @@ export class TagPrismaRepository implements ITagRepository {
 		});
 	}
 
-	async addTag(name: string, parentId?: string): Promise<void> {
-		await this.txHost.withTransaction(async () => {
+	async addTag(name: string, parentId?: string): Promise<string> {
+		return await this.txHost.withTransaction(async (): Promise<string> => {
 			await this.getTableLock();
 			if (parentId) {
 				const parent = await this.txHost.tx.tag.findUnique({ where: { id: parentId } });
@@ -32,9 +32,10 @@ export class TagPrismaRepository implements ITagRepository {
 					where: { lft: { gt: parent.rgt } },
 					data: { lft: { increment: 2 } },
 				});
-				await this.txHost.tx.tag.create({
+				const newTag = await this.txHost.tx.tag.create({
 					data: { name: name, lft: parent.rgt, rgt: parent.rgt + 1 },
 				});
+				return newTag.id;
 			} else {
 				const latestTagRoot = await this.txHost.tx.tag.findFirst({
 					orderBy: {
@@ -42,9 +43,10 @@ export class TagPrismaRepository implements ITagRepository {
 					},
 				});
 				const highestRgt = latestTagRoot?.rgt ?? 0;
-				await this.txHost.tx.tag.create({
+				const newTag = await this.txHost.tx.tag.create({
 					data: { name: name, lft: highestRgt + 1, rgt: highestRgt + 2 },
 				});
+				return newTag.id;
 			}
 		});
 	}

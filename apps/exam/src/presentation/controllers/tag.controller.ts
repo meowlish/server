@@ -3,7 +3,8 @@ import { AddTagDto } from '../dtos/req/tag/add-tag.req.dto';
 import { DeleteTagDto } from '../dtos/req/tag/delete-tag.req.dto';
 import { MoveTagDto } from '../dtos/req/tag/move-tag.req.dto';
 import { UpdateTagDto } from '../dtos/req/tag/update-tag.dto';
-import { Controller } from '@nestjs/common';
+import { AddedTagDto } from '../dtos/res/tag/added-tag.res.dto';
+import { Controller, SerializeOptions } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 
@@ -12,8 +13,10 @@ import { exam } from '@server/generated';
 export class TagController implements exam.TagServiceController {
 	constructor(private readonly tagService: TagService) {}
 
-	async addTag(@Payload() request: AddTagDto): Promise<void> {
-		return this.tagService.addTag(request.name, request.parentId);
+	@SerializeOptions({ type: AddedTagDto })
+	async addTag(@Payload() request: AddTagDto): Promise<AddedTagDto> {
+		const tagId = await this.tagService.addTag(request.name, request.parentId);
+		return { id: tagId };
 	}
 
 	async deleteTag(@Payload() request: DeleteTagDto): Promise<void> {
