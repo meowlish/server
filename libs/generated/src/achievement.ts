@@ -5,11 +5,13 @@
 // source: achievement.proto
 
 /* eslint-disable */
-import type { Metadata } from "@grpc/grpc-js";
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
 import { Empty } from "./common";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 export interface Badges {
   name: string;
@@ -50,6 +52,301 @@ wrappers[".google.protobuf.Timestamp"] = {
   },
 } as any;
 
+function createBaseBadges(): Badges {
+  return { name: "", displayName: "", description: "" };
+}
+
+export const Badges: MessageFns<Badges> = {
+  encode(message: Badges, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.displayName !== "") {
+      writer.uint32(18).string(message.displayName);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Badges {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBadges();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.displayName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadges(): UserBadges {
+  return { id: "", name: "", displayName: "", description: "", date: undefined };
+}
+
+export const UserBadges: MessageFns<UserBadges> = {
+  encode(message: UserBadges, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.displayName !== "") {
+      writer.uint32(26).string(message.displayName);
+    }
+    if (message.description !== "") {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.date !== undefined) {
+      Timestamp.encode(toTimestamp(message.date), writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadges {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadges();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayName = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.date = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBadgesResponseDto(): BadgesResponseDto {
+  return { badges: [] };
+}
+
+export const BadgesResponseDto: MessageFns<BadgesResponseDto> = {
+  encode(message: BadgesResponseDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.badges) {
+      Badges.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BadgesResponseDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBadgesResponseDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.badges.push(Badges.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadgesRequestDto(): UserBadgesRequestDto {
+  return { userId: "" };
+}
+
+export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
+  encode(message: UserBadgesRequestDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.cursor !== undefined) {
+      writer.uint32(18).string(message.cursor);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesRequestDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadgesRequestDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserBadgesResponseDto(): UserBadgesResponseDto {
+  return { badges: [] };
+}
+
+export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
+  encode(message: UserBadgesResponseDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.badges) {
+      UserBadges.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.cursor !== undefined) {
+      writer.uint32(18).string(message.cursor);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(24).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesResponseDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserBadgesResponseDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.badges.push(UserBadges.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface AchievementServiceClient {
   getAll(request: Empty, metadata?: Metadata): Observable<BadgesResponseDto>;
 
@@ -84,3 +381,48 @@ export function AchievementServiceControllerMethods() {
 }
 
 export const ACHIEVEMENT_SERVICE_NAME = "AchievementService";
+
+export type AchievementServiceService = typeof AchievementServiceService;
+export const AchievementServiceService = {
+  getAll: {
+    path: "/achievement.AchievementService/GetAll" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: BadgesResponseDto): Buffer => Buffer.from(BadgesResponseDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): BadgesResponseDto => BadgesResponseDto.decode(value),
+  },
+  getUsersBadges: {
+    path: "/achievement.AchievementService/GetUsersBadges" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UserBadgesRequestDto): Buffer => Buffer.from(UserBadgesRequestDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UserBadgesRequestDto => UserBadgesRequestDto.decode(value),
+    responseSerialize: (value: UserBadgesResponseDto): Buffer =>
+      Buffer.from(UserBadgesResponseDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): UserBadgesResponseDto => UserBadgesResponseDto.decode(value),
+  },
+} as const;
+
+export interface AchievementServiceServer extends UntypedServiceImplementation {
+  getAll: handleUnaryCall<Empty, BadgesResponseDto>;
+  getUsersBadges: handleUnaryCall<UserBadgesRequestDto, UserBadgesResponseDto>;
+}
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}

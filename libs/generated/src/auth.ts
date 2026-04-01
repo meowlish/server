@@ -5,7 +5,8 @@
 // source: auth.proto
 
 /* eslint-disable */
-import type { Metadata } from "@grpc/grpc-js";
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Empty } from "./common";
@@ -64,6 +65,508 @@ export interface Claims {
   permissions: string[];
 }
 
+function createBaseRegisterMailDto(): RegisterMailDto {
+  return { username: "", mail: "", password: "" };
+}
+
+export const RegisterMailDto: MessageFns<RegisterMailDto> = {
+  encode(message: RegisterMailDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.username !== "") {
+      writer.uint32(10).string(message.username);
+    }
+    if (message.mail !== "") {
+      writer.uint32(18).string(message.mail);
+    }
+    if (message.password !== "") {
+      writer.uint32(26).string(message.password);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RegisterMailDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRegisterMailDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.username = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.mail = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLoginMailDto(): LoginMailDto {
+  return { mail: "", password: "" };
+}
+
+export const LoginMailDto: MessageFns<LoginMailDto> = {
+  encode(message: LoginMailDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.mail !== "") {
+      writer.uint32(10).string(message.mail);
+    }
+    if (message.password !== "") {
+      writer.uint32(18).string(message.password);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LoginMailDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLoginMailDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.mail = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRefreshDto(): RefreshDto {
+  return { identityId: "" };
+}
+
+export const RefreshDto: MessageFns<RefreshDto> = {
+  encode(message: RefreshDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== "") {
+      writer.uint32(10).string(message.identityId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RefreshDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRefreshDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseValidateRefreshDto(): ValidateRefreshDto {
+  return { identityId: "", iat: 0 };
+}
+
+export const ValidateRefreshDto: MessageFns<ValidateRefreshDto> = {
+  encode(message: ValidateRefreshDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== "") {
+      writer.uint32(10).string(message.identityId);
+    }
+    if (message.iat !== 0) {
+      writer.uint32(16).int32(message.iat);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ValidateRefreshDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateRefreshDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.iat = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseValidateAccessDto(): ValidateAccessDto {
+  return { identityId: "", iat: 0 };
+}
+
+export const ValidateAccessDto: MessageFns<ValidateAccessDto> = {
+  encode(message: ValidateAccessDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== "") {
+      writer.uint32(10).string(message.identityId);
+    }
+    if (message.iat !== 0) {
+      writer.uint32(16).int32(message.iat);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ValidateAccessDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateAccessDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.iat = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLogOutAllDto(): LogOutAllDto {
+  return { identityId: "" };
+}
+
+export const LogOutAllDto: MessageFns<LogOutAllDto> = {
+  encode(message: LogOutAllDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== "") {
+      writer.uint32(10).string(message.identityId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LogOutAllDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLogOutAllDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTokens(): Tokens {
+  return { accessToken: "" };
+}
+
+export const Tokens: MessageFns<Tokens> = {
+  encode(message: Tokens, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.accessToken !== "") {
+      writer.uint32(10).string(message.accessToken);
+    }
+    if (message.refreshToken !== undefined) {
+      writer.uint32(18).string(message.refreshToken);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Tokens {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTokens();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.accessToken = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.refreshToken = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseIdentity(): Identity {
+  return { id: "", username: "", roles: [] };
+}
+
+export const Identity: MessageFns<Identity> = {
+  encode(message: Identity, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.username !== "") {
+      writer.uint32(18).string(message.username);
+    }
+    for (const v of message.roles) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Identity {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIdentity();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.username = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.roles.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRole(): Role {
+  return { id: "", name: "", permissions: [] };
+}
+
+export const Role: MessageFns<Role> = {
+  encode(message: Role, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    for (const v of message.permissions) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Role {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRole();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.permissions.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseClaims(): Claims {
+  return { sub: "", roles: [], permissions: [] };
+}
+
+export const Claims: MessageFns<Claims> = {
+  encode(message: Claims, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sub !== "") {
+      writer.uint32(10).string(message.sub);
+    }
+    for (const v of message.roles) {
+      writer.uint32(18).string(v!);
+    }
+    for (const v of message.permissions) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Claims {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClaims();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sub = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.roles.push(reader.string());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.permissions.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface AuthServiceClient {
   registerMail(request: RegisterMailDto, metadata?: Metadata): Observable<Tokens>;
 
@@ -115,3 +618,75 @@ export function AuthServiceControllerMethods() {
 }
 
 export const AUTH_SERVICE_NAME = "AuthService";
+
+export type AuthServiceService = typeof AuthServiceService;
+export const AuthServiceService = {
+  registerMail: {
+    path: "/auth.AuthService/RegisterMail" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RegisterMailDto): Buffer => Buffer.from(RegisterMailDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RegisterMailDto => RegisterMailDto.decode(value),
+    responseSerialize: (value: Tokens): Buffer => Buffer.from(Tokens.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Tokens => Tokens.decode(value),
+  },
+  loginMail: {
+    path: "/auth.AuthService/LoginMail" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: LoginMailDto): Buffer => Buffer.from(LoginMailDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): LoginMailDto => LoginMailDto.decode(value),
+    responseSerialize: (value: Tokens): Buffer => Buffer.from(Tokens.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Tokens => Tokens.decode(value),
+  },
+  refresh: {
+    path: "/auth.AuthService/Refresh" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RefreshDto): Buffer => Buffer.from(RefreshDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RefreshDto => RefreshDto.decode(value),
+    responseSerialize: (value: Tokens): Buffer => Buffer.from(Tokens.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Tokens => Tokens.decode(value),
+  },
+  validateRefresh: {
+    path: "/auth.AuthService/ValidateRefresh" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: ValidateRefreshDto): Buffer => Buffer.from(ValidateRefreshDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): ValidateRefreshDto => ValidateRefreshDto.decode(value),
+    responseSerialize: (value: Claims): Buffer => Buffer.from(Claims.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Claims => Claims.decode(value),
+  },
+  validateAccess: {
+    path: "/auth.AuthService/ValidateAccess" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: ValidateAccessDto): Buffer => Buffer.from(ValidateAccessDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): ValidateAccessDto => ValidateAccessDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  logOutAll: {
+    path: "/auth.AuthService/LogOutAll" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: LogOutAllDto): Buffer => Buffer.from(LogOutAllDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): LogOutAllDto => LogOutAllDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+} as const;
+
+export interface AuthServiceServer extends UntypedServiceImplementation {
+  registerMail: handleUnaryCall<RegisterMailDto, Tokens>;
+  loginMail: handleUnaryCall<LoginMailDto, Tokens>;
+  refresh: handleUnaryCall<RefreshDto, Tokens>;
+  validateRefresh: handleUnaryCall<ValidateRefreshDto, Claims>;
+  validateAccess: handleUnaryCall<ValidateAccessDto, Empty>;
+  logOutAll: handleUnaryCall<LogOutAllDto, Empty>;
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}

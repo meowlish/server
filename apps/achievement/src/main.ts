@@ -2,8 +2,8 @@ import { AchievementModule } from './achievement.module';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { achievement } from '@server/generated';
 import { AppLoggerService } from '@server/logger';
-import { join } from 'path';
 
 const useLogger = (module: INestApplicationContext) => {
 	const logger = module.get(AppLoggerService);
@@ -18,7 +18,10 @@ async function bootstrap() {
 			options: {
 				url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
 				package: 'achievement',
-				protoPath: join(process.cwd(), 'proto', 'achievement.proto'),
+				packageDefinition: {
+					[`achievement.${achievement.ACHIEVEMENT_SERVICE_NAME}`]:
+						achievement.AchievementServiceService,
+				},
 			},
 		},
 	);

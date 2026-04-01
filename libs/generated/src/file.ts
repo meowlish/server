@@ -5,7 +5,8 @@
 // source: file.proto
 
 /* eslint-disable */
-import type { Metadata } from "@grpc/grpc-js";
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 
@@ -26,6 +27,186 @@ export interface PresignedUrlResponse_FormDataEntry {
   key: string;
   value: string;
 }
+
+function createBaseGetPresignedUrlDto(): GetPresignedUrlDto {
+  return { fileName: "", fileSize: 0, contentType: "" };
+}
+
+export const GetPresignedUrlDto: MessageFns<GetPresignedUrlDto> = {
+  encode(message: GetPresignedUrlDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fileName !== "") {
+      writer.uint32(10).string(message.fileName);
+    }
+    if (message.fileSize !== 0) {
+      writer.uint32(16).int32(message.fileSize);
+    }
+    if (message.contentType !== "") {
+      writer.uint32(26).string(message.contentType);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetPresignedUrlDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetPresignedUrlDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fileName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.fileSize = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.contentType = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePresignedUrlResponse(): PresignedUrlResponse {
+  return { id: "", uploadUrl: "", fileName: "", formData: {} };
+}
+
+export const PresignedUrlResponse: MessageFns<PresignedUrlResponse> = {
+  encode(message: PresignedUrlResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.uploadUrl !== "") {
+      writer.uint32(18).string(message.uploadUrl);
+    }
+    if (message.fileName !== "") {
+      writer.uint32(26).string(message.fileName);
+    }
+    globalThis.Object.entries(message.formData).forEach(([key, value]: [string, string]) => {
+      PresignedUrlResponse_FormDataEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PresignedUrlResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePresignedUrlResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.uploadUrl = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.fileName = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          const entry4 = PresignedUrlResponse_FormDataEntry.decode(reader, reader.uint32());
+          if (entry4.value !== undefined) {
+            message.formData[entry4.key] = entry4.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePresignedUrlResponse_FormDataEntry(): PresignedUrlResponse_FormDataEntry {
+  return { key: "", value: "" };
+}
+
+export const PresignedUrlResponse_FormDataEntry: MessageFns<PresignedUrlResponse_FormDataEntry> = {
+  encode(message: PresignedUrlResponse_FormDataEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PresignedUrlResponse_FormDataEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePresignedUrlResponse_FormDataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 export interface FileServiceClient {
   getPresignedUrl(request: GetPresignedUrlDto, metadata?: Metadata): Observable<PresignedUrlResponse>;
@@ -54,3 +235,26 @@ export function FileServiceControllerMethods() {
 }
 
 export const FILE_SERVICE_NAME = "FileService";
+
+export type FileServiceService = typeof FileServiceService;
+export const FileServiceService = {
+  getPresignedUrl: {
+    path: "/file.FileService/GetPresignedUrl" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetPresignedUrlDto): Buffer => Buffer.from(GetPresignedUrlDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetPresignedUrlDto => GetPresignedUrlDto.decode(value),
+    responseSerialize: (value: PresignedUrlResponse): Buffer =>
+      Buffer.from(PresignedUrlResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): PresignedUrlResponse => PresignedUrlResponse.decode(value),
+  },
+} as const;
+
+export interface FileServiceServer extends UntypedServiceImplementation {
+  getPresignedUrl: handleUnaryCall<GetPresignedUrlDto, PresignedUrlResponse>;
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}

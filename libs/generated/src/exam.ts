@@ -5,7 +5,8 @@
 // source: exam.proto
 
 /* eslint-disable */
-import type { Metadata } from "@grpc/grpc-js";
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Empty } from "./common";
@@ -191,6 +192,1778 @@ export interface MoveTagDto {
   parentId?: string | undefined;
 }
 
+function createBaseCreateExamDto(): CreateExamDto {
+  return { createdBy: "", title: "", description: "", duration: 0 };
+}
+
+export const CreateExamDto: MessageFns<CreateExamDto> = {
+  encode(message: CreateExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.createdBy !== "") {
+      writer.uint32(10).string(message.createdBy);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.duration !== 0) {
+      writer.uint32(32).int32(message.duration);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.createdBy = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreatedExamDto(): CreatedExamDto {
+  return { id: "" };
+}
+
+export const CreatedExamDto: MessageFns<CreatedExamDto> = {
+  encode(message: CreatedExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreatedExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreatedExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateSectionDto(): CreateSectionDto {
+  return {};
+}
+
+export const CreateSectionDto: MessageFns<CreateSectionDto> = {
+  encode(message: CreateSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sectionId !== undefined) {
+      writer.uint32(10).string(message.sectionId);
+    }
+    if (message.examId !== undefined) {
+      writer.uint32(18).string(message.examId);
+    }
+    if (message.index !== undefined) {
+      writer.uint32(24).int32(message.index);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateSectionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateSectionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sectionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.index = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreatedSectionDto(): CreatedSectionDto {
+  return { id: "" };
+}
+
+export const CreatedSectionDto: MessageFns<CreatedSectionDto> = {
+  encode(message: CreatedSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreatedSectionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreatedSectionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateQuestionDto(): CreateQuestionDto {
+  return { sectionId: "" };
+}
+
+export const CreateQuestionDto: MessageFns<CreateQuestionDto> = {
+  encode(message: CreateQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sectionId !== "") {
+      writer.uint32(10).string(message.sectionId);
+    }
+    if (message.index !== undefined) {
+      writer.uint32(16).int32(message.index);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sectionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.index = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreatedQuestionDto(): CreatedQuestionDto {
+  return { id: "" };
+}
+
+export const CreatedQuestionDto: MessageFns<CreatedQuestionDto> = {
+  encode(message: CreatedQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreatedQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreatedQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateExamDto(): UpdateExamDto {
+  return { id: "", addTags: [], removeTags: [] };
+}
+
+export const UpdateExamDto: MessageFns<UpdateExamDto> = {
+  encode(message: UpdateExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== undefined) {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.setDescriptionNull !== undefined) {
+      writer.uint32(24).bool(message.setDescriptionNull);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(34).string(message.description);
+    }
+    if (message.duration !== undefined) {
+      writer.uint32(40).int32(message.duration);
+    }
+    for (const v of message.addTags) {
+      writer.uint32(50).string(v!);
+    }
+    for (const v of message.removeTags) {
+      writer.uint32(58).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.setDescriptionNull = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.addTags.push(reader.string());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.removeTags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateSectionDto(): UpdateSectionDto {
+  return { id: "", addTags: [], removeTags: [], addFiles: [], removeFiles: [] };
+}
+
+export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
+  encode(message: UpdateSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.setNameNull !== undefined) {
+      writer.uint32(16).bool(message.setNameNull);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(26).string(message.name);
+    }
+    if (message.directive !== undefined) {
+      writer.uint32(34).string(message.directive);
+    }
+    if (message.contentType !== undefined) {
+      writer.uint32(42).string(message.contentType);
+    }
+    for (const v of message.addTags) {
+      writer.uint32(50).string(v!);
+    }
+    for (const v of message.removeTags) {
+      writer.uint32(58).string(v!);
+    }
+    for (const v of message.addFiles) {
+      writer.uint32(66).string(v!);
+    }
+    for (const v of message.removeFiles) {
+      writer.uint32(74).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateSectionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateSectionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.setNameNull = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.directive = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.contentType = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.addTags.push(reader.string());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.removeTags.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.addFiles.push(reader.string());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.removeFiles.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateQuestionDto(): UpdateQuestionDto {
+  return {
+    id: "",
+    addChoices: [],
+    deleteChoicesIds: [],
+    updateChoices: [],
+    addTags: [],
+    removeTags: [],
+    addFiles: [],
+    removeFiles: [],
+  };
+}
+
+export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
+  encode(message: UpdateQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.content !== undefined) {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.explanation !== undefined) {
+      writer.uint32(26).string(message.explanation);
+    }
+    if (message.points !== undefined) {
+      writer.uint32(32).int32(message.points);
+    }
+    if (message.type !== undefined) {
+      writer.uint32(42).string(message.type);
+    }
+    for (const v of message.addChoices) {
+      UpdateQuestionDto_AddChoice.encode(v!, writer.uint32(50).fork()).join();
+    }
+    for (const v of message.deleteChoicesIds) {
+      writer.uint32(58).string(v!);
+    }
+    for (const v of message.updateChoices) {
+      UpdateQuestionDto_UpdateChoice.encode(v!, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.addTags) {
+      writer.uint32(74).string(v!);
+    }
+    for (const v of message.removeTags) {
+      writer.uint32(82).string(v!);
+    }
+    for (const v of message.addFiles) {
+      writer.uint32(90).string(v!);
+    }
+    for (const v of message.removeFiles) {
+      writer.uint32(98).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.explanation = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.points = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.addChoices.push(UpdateQuestionDto_AddChoice.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.deleteChoicesIds.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.updateChoices.push(UpdateQuestionDto_UpdateChoice.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.addTags.push(reader.string());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.removeTags.push(reader.string());
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.addFiles.push(reader.string());
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.removeFiles.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateQuestionDto_AddChoice(): UpdateQuestionDto_AddChoice {
+  return { key: "", isCorrect: false };
+}
+
+export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice> = {
+  encode(message: UpdateQuestionDto_AddChoice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.content !== undefined) {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.isCorrect !== false) {
+      writer.uint32(24).bool(message.isCorrect);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto_AddChoice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateQuestionDto_AddChoice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isCorrect = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateQuestionDto_UpdateChoice(): UpdateQuestionDto_UpdateChoice {
+  return { id: "" };
+}
+
+export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_UpdateChoice> = {
+  encode(message: UpdateQuestionDto_UpdateChoice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.key !== undefined) {
+      writer.uint32(18).string(message.key);
+    }
+    if (message.content !== undefined) {
+      writer.uint32(26).string(message.content);
+    }
+    if (message.isCorrect !== undefined) {
+      writer.uint32(32).bool(message.isCorrect);
+    }
+    if (message.setContentNull !== undefined) {
+      writer.uint32(40).bool(message.setContentNull);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto_UpdateChoice {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateQuestionDto_UpdateChoice();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isCorrect = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.setContentNull = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteExamDto(): DeleteExamDto {
+  return { id: "" };
+}
+
+export const DeleteExamDto: MessageFns<DeleteExamDto> = {
+  encode(message: DeleteExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteSectionDto(): DeleteSectionDto {
+  return { id: "" };
+}
+
+export const DeleteSectionDto: MessageFns<DeleteSectionDto> = {
+  encode(message: DeleteSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteSectionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteSectionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteQuestionDto(): DeleteQuestionDto {
+  return { id: "" };
+}
+
+export const DeleteQuestionDto: MessageFns<DeleteQuestionDto> = {
+  encode(message: DeleteQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMoveSectionDto(): MoveSectionDto {
+  return { id: "" };
+}
+
+export const MoveSectionDto: MessageFns<MoveSectionDto> = {
+  encode(message: MoveSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.index !== undefined) {
+      writer.uint32(16).int32(message.index);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(26).string(message.parentId);
+    }
+    if (message.toRoot !== undefined) {
+      writer.uint32(32).bool(message.toRoot);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MoveSectionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMoveSectionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.index = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.parentId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.toRoot = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMoveQuestionDto(): MoveQuestionDto {
+  return { id: "" };
+}
+
+export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
+  encode(message: MoveQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.index !== undefined) {
+      writer.uint32(16).int32(message.index);
+    }
+    if (message.sectionId !== undefined) {
+      writer.uint32(26).string(message.sectionId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MoveQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMoveQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.index = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sectionId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseReviewExamDto(): ReviewExamDto {
+  return { id: "", status: "" };
+}
+
+export const ReviewExamDto: MessageFns<ReviewExamDto> = {
+  encode(message: ReviewExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ReviewExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReviewExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptDto(): AttemptDto {
+  return { userId: "", examId: "" };
+}
+
+export const AttemptDto: MessageFns<AttemptDto> = {
+  encode(message: AttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.examId !== "") {
+      writer.uint32(18).string(message.examId);
+    }
+    if (message.options !== undefined) {
+      AttemptDto_Options.encode(message.options, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.options = AttemptDto_Options.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptDto_Options(): AttemptDto_Options {
+  return { sectionIds: [] };
+}
+
+export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
+  encode(message: AttemptDto_Options, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.duration !== undefined) {
+      writer.uint32(8).int32(message.duration);
+    }
+    for (const v of message.sectionIds) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptDto_Options {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptDto_Options();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sectionIds.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreatedAttemptDto(): CreatedAttemptDto {
+  return { id: "" };
+}
+
+export const CreatedAttemptDto: MessageFns<CreatedAttemptDto> = {
+  encode(message: CreatedAttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreatedAttemptDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreatedAttemptDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEndAttemptDto(): EndAttemptDto {
+  return { attemptId: "" };
+}
+
+export const EndAttemptDto: MessageFns<EndAttemptDto> = {
+  encode(message: EndAttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EndAttemptDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEndAttemptDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAnswerDto(): AnswerDto {
+  return { attemptId: "", questionId: "", answer: "" };
+}
+
+export const AnswerDto: MessageFns<AnswerDto> = {
+  encode(message: AnswerDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    if (message.questionId !== "") {
+      writer.uint32(18).string(message.questionId);
+    }
+    if (message.answer !== "") {
+      writer.uint32(26).string(message.answer);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AnswerDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAnswerDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.answer = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveAnswerDto(): RemoveAnswerDto {
+  return { attemptId: "", questionId: "" };
+}
+
+export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
+  encode(message: RemoveAnswerDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    if (message.questionId !== "") {
+      writer.uint32(18).string(message.questionId);
+    }
+    if (message.answer !== undefined) {
+      writer.uint32(26).string(message.answer);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveAnswerDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRemoveAnswerDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.answer = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddNoteDto(): AddNoteDto {
+  return { attemptId: "", questionId: "", note: "" };
+}
+
+export const AddNoteDto: MessageFns<AddNoteDto> = {
+  encode(message: AddNoteDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    if (message.questionId !== "") {
+      writer.uint32(18).string(message.questionId);
+    }
+    if (message.note !== "") {
+      writer.uint32(26).string(message.note);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddNoteDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddNoteDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.note = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseToggleFlagDto(): ToggleFlagDto {
+  return { attemptId: "", questionId: "" };
+}
+
+export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
+  encode(message: ToggleFlagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    if (message.questionId !== "") {
+      writer.uint32(18).string(message.questionId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ToggleFlagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseToggleFlagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFlagStateDto(): FlagStateDto {
+  return { state: false };
+}
+
+export const FlagStateDto: MessageFns<FlagStateDto> = {
+  encode(message: FlagStateDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.state !== false) {
+      writer.uint32(8).bool(message.state);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FlagStateDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFlagStateDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.state = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddTagDto(): AddTagDto {
+  return { name: "" };
+}
+
+export const AddTagDto: MessageFns<AddTagDto> = {
+  encode(message: AddTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(18).string(message.parentId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddTagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddTagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.parentId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddedTagDto(): AddedTagDto {
+  return { id: "" };
+}
+
+export const AddedTagDto: MessageFns<AddedTagDto> = {
+  encode(message: AddedTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddedTagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddedTagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteTagDto(): DeleteTagDto {
+  return { id: "" };
+}
+
+export const DeleteTagDto: MessageFns<DeleteTagDto> = {
+  encode(message: DeleteTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteTagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteTagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateTagDto(): UpdateTagDto {
+  return { id: "", name: "" };
+}
+
+export const UpdateTagDto: MessageFns<UpdateTagDto> = {
+  encode(message: UpdateTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateTagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateTagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMoveTagDto(): MoveTagDto {
+  return { id: "" };
+}
+
+export const MoveTagDto: MessageFns<MoveTagDto> = {
+  encode(message: MoveTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(18).string(message.parentId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MoveTagDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMoveTagDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.parentId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
@@ -282,6 +2055,133 @@ export function ExamManagementServiceControllerMethods() {
 
 export const EXAM_MANAGEMENT_SERVICE_NAME = "ExamManagementService";
 
+export type ExamManagementServiceService = typeof ExamManagementServiceService;
+export const ExamManagementServiceService = {
+  createExam: {
+    path: "/exam.ExamManagementService/CreateExam" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: CreateExamDto): Buffer => Buffer.from(CreateExamDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): CreateExamDto => CreateExamDto.decode(value),
+    responseSerialize: (value: CreatedExamDto): Buffer => Buffer.from(CreatedExamDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreatedExamDto => CreatedExamDto.decode(value),
+  },
+  createSection: {
+    path: "/exam.ExamManagementService/CreateSection" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: CreateSectionDto): Buffer => Buffer.from(CreateSectionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): CreateSectionDto => CreateSectionDto.decode(value),
+    responseSerialize: (value: CreatedSectionDto): Buffer => Buffer.from(CreatedSectionDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreatedSectionDto => CreatedSectionDto.decode(value),
+  },
+  createQuestion: {
+    path: "/exam.ExamManagementService/CreateQuestion" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: CreateQuestionDto): Buffer => Buffer.from(CreateQuestionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): CreateQuestionDto => CreateQuestionDto.decode(value),
+    responseSerialize: (value: CreatedQuestionDto): Buffer => Buffer.from(CreatedQuestionDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreatedQuestionDto => CreatedQuestionDto.decode(value),
+  },
+  updateExam: {
+    path: "/exam.ExamManagementService/UpdateExam" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateExamDto): Buffer => Buffer.from(UpdateExamDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateExamDto => UpdateExamDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateSection: {
+    path: "/exam.ExamManagementService/UpdateSection" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateSectionDto): Buffer => Buffer.from(UpdateSectionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateSectionDto => UpdateSectionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateQuestion: {
+    path: "/exam.ExamManagementService/UpdateQuestion" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateQuestionDto): Buffer => Buffer.from(UpdateQuestionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateQuestionDto => UpdateQuestionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  deleteExam: {
+    path: "/exam.ExamManagementService/DeleteExam" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: DeleteExamDto): Buffer => Buffer.from(DeleteExamDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): DeleteExamDto => DeleteExamDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  deleteSection: {
+    path: "/exam.ExamManagementService/DeleteSection" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: DeleteSectionDto): Buffer => Buffer.from(DeleteSectionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): DeleteSectionDto => DeleteSectionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  deleteQuestion: {
+    path: "/exam.ExamManagementService/DeleteQuestion" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: DeleteQuestionDto): Buffer => Buffer.from(DeleteQuestionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): DeleteQuestionDto => DeleteQuestionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  moveSection: {
+    path: "/exam.ExamManagementService/MoveSection" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: MoveSectionDto): Buffer => Buffer.from(MoveSectionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): MoveSectionDto => MoveSectionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  moveQuestion: {
+    path: "/exam.ExamManagementService/MoveQuestion" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: MoveQuestionDto): Buffer => Buffer.from(MoveQuestionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): MoveQuestionDto => MoveQuestionDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  reviewExam: {
+    path: "/exam.ExamManagementService/ReviewExam" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: ReviewExamDto): Buffer => Buffer.from(ReviewExamDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): ReviewExamDto => ReviewExamDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+} as const;
+
+export interface ExamManagementServiceServer extends UntypedServiceImplementation {
+  createExam: handleUnaryCall<CreateExamDto, CreatedExamDto>;
+  createSection: handleUnaryCall<CreateSectionDto, CreatedSectionDto>;
+  createQuestion: handleUnaryCall<CreateQuestionDto, CreatedQuestionDto>;
+  updateExam: handleUnaryCall<UpdateExamDto, Empty>;
+  updateSection: handleUnaryCall<UpdateSectionDto, Empty>;
+  updateQuestion: handleUnaryCall<UpdateQuestionDto, Empty>;
+  deleteExam: handleUnaryCall<DeleteExamDto, Empty>;
+  deleteSection: handleUnaryCall<DeleteSectionDto, Empty>;
+  deleteQuestion: handleUnaryCall<DeleteQuestionDto, Empty>;
+  moveSection: handleUnaryCall<MoveSectionDto, Empty>;
+  moveQuestion: handleUnaryCall<MoveQuestionDto, Empty>;
+  reviewExam: handleUnaryCall<ReviewExamDto, Empty>;
+}
+
 export interface ExamPracticeServiceClient {
   attempt(request: AttemptDto, metadata?: Metadata): Observable<CreatedAttemptDto>;
 
@@ -333,6 +2233,73 @@ export function ExamPracticeServiceControllerMethods() {
 
 export const EXAM_PRACTICE_SERVICE_NAME = "ExamPracticeService";
 
+export type ExamPracticeServiceService = typeof ExamPracticeServiceService;
+export const ExamPracticeServiceService = {
+  attempt: {
+    path: "/exam.ExamPracticeService/Attempt" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AttemptDto): Buffer => Buffer.from(AttemptDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AttemptDto => AttemptDto.decode(value),
+    responseSerialize: (value: CreatedAttemptDto): Buffer => Buffer.from(CreatedAttemptDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreatedAttemptDto => CreatedAttemptDto.decode(value),
+  },
+  endAttempt: {
+    path: "/exam.ExamPracticeService/EndAttempt" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: EndAttemptDto): Buffer => Buffer.from(EndAttemptDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): EndAttemptDto => EndAttemptDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  answer: {
+    path: "/exam.ExamPracticeService/Answer" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AnswerDto): Buffer => Buffer.from(AnswerDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AnswerDto => AnswerDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  removeAnswer: {
+    path: "/exam.ExamPracticeService/RemoveAnswer" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveAnswerDto): Buffer => Buffer.from(RemoveAnswerDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveAnswerDto => RemoveAnswerDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  addNote: {
+    path: "/exam.ExamPracticeService/AddNote" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AddNoteDto): Buffer => Buffer.from(AddNoteDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AddNoteDto => AddNoteDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  toggleFlag: {
+    path: "/exam.ExamPracticeService/ToggleFlag" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: ToggleFlagDto): Buffer => Buffer.from(ToggleFlagDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): ToggleFlagDto => ToggleFlagDto.decode(value),
+    responseSerialize: (value: FlagStateDto): Buffer => Buffer.from(FlagStateDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): FlagStateDto => FlagStateDto.decode(value),
+  },
+} as const;
+
+export interface ExamPracticeServiceServer extends UntypedServiceImplementation {
+  attempt: handleUnaryCall<AttemptDto, CreatedAttemptDto>;
+  endAttempt: handleUnaryCall<EndAttemptDto, Empty>;
+  answer: handleUnaryCall<AnswerDto, Empty>;
+  removeAnswer: handleUnaryCall<RemoveAnswerDto, Empty>;
+  addNote: handleUnaryCall<AddNoteDto, Empty>;
+  toggleFlag: handleUnaryCall<ToggleFlagDto, FlagStateDto>;
+}
+
 export interface TagServiceClient {
   addTag(request: AddTagDto, metadata?: Metadata): Observable<AddedTagDto>;
 
@@ -369,3 +2336,55 @@ export function TagServiceControllerMethods() {
 }
 
 export const TAG_SERVICE_NAME = "TagService";
+
+export type TagServiceService = typeof TagServiceService;
+export const TagServiceService = {
+  addTag: {
+    path: "/exam.TagService/AddTag" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AddTagDto): Buffer => Buffer.from(AddTagDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AddTagDto => AddTagDto.decode(value),
+    responseSerialize: (value: AddedTagDto): Buffer => Buffer.from(AddedTagDto.encode(value).finish()),
+    responseDeserialize: (value: Buffer): AddedTagDto => AddedTagDto.decode(value),
+  },
+  deleteTag: {
+    path: "/exam.TagService/DeleteTag" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: DeleteTagDto): Buffer => Buffer.from(DeleteTagDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): DeleteTagDto => DeleteTagDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateTag: {
+    path: "/exam.TagService/UpdateTag" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateTagDto): Buffer => Buffer.from(UpdateTagDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateTagDto => UpdateTagDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  moveTag: {
+    path: "/exam.TagService/MoveTag" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: MoveTagDto): Buffer => Buffer.from(MoveTagDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): MoveTagDto => MoveTagDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+} as const;
+
+export interface TagServiceServer extends UntypedServiceImplementation {
+  addTag: handleUnaryCall<AddTagDto, AddedTagDto>;
+  deleteTag: handleUnaryCall<DeleteTagDto, Empty>;
+  updateTag: handleUnaryCall<UpdateTagDto, Empty>;
+  moveTag: handleUnaryCall<MoveTagDto, Empty>;
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}
