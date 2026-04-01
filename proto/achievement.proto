@@ -1,9 +1,41 @@
 syntax = "proto3";
 
 import "common.proto";
+import "google/protobuf/timestamp.proto";
 
 package achievement;
 
 service AchievementService {
-	rpc Placeholder(common.Empty) returns(common.Empty) {}
+	rpc GetAll(common.Empty) returns(BadgesResponseDto) {}
+	rpc GetUsersBadges(UserBadgesRequestDto) returns(UserBadgesResponseDto) {}
+}
+
+message Badges {
+	string name         = 1;
+	string display_name = 2;
+	string description  = 3;
+}
+
+message UserBadges {
+	string                    id           = 1;
+	string                    name         = 2;
+	string                    display_name = 3;
+	string                    description  = 4;
+	google.protobuf.Timestamp date         = 5;
+}
+
+message BadgesResponseDto {
+	repeated Badges badges = 1;
+}
+
+message UserBadgesRequestDto {
+	string          user_id = 1;
+	optional string cursor  = 2;
+	optional int32  limit   = 3;
+}
+
+message UserBadgesResponseDto {
+	repeated UserBadges badges = 1;
+	optional string     cursor = 2;
+	optional int32      limit  = 3;
 }

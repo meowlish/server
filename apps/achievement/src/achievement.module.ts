@@ -1,9 +1,13 @@
 import { IntegrationEventHandlers } from './app/events/handlers';
+import { BadgesQueryHandlers } from './app/queries/handlers';
 import { config } from './configs/config';
 import { rmqPubConfig } from './configs/rmq.pub.config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
 import { IBadgeManagerRepositoryToken } from './domain/repositories/badge-manager.repository';
+import { IBadgeReadRepositoryToken } from './domain/repositories/badge.read.repository';
 import { BadgeManagerPrismaRepositoryImpl } from './infra/repositories/badge-manager.prisma.repository.impl';
+import { BadgeReadPrismaRepositoryImpl } from './infra/repositories/badge.read.prisma.repository.impl';
+import { BadgeController } from './presentation/controllers/badge.controller';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -23,6 +27,7 @@ import {
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
 @Module({
+	controllers: [BadgeController],
 	imports: [
 		ConfigModule.forRoot({
 			expandVariables: true,
@@ -50,9 +55,14 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		...IntegrationEventHandlers,
+		...BadgesQueryHandlers,
 		{
 			provide: IBadgeManagerRepositoryToken,
 			useClass: BadgeManagerPrismaRepositoryImpl,
+		},
+		{
+			provide: IBadgeReadRepositoryToken,
+			useClass: BadgeReadPrismaRepositoryImpl,
 		},
 		{
 			provide: APP_GUARD,
