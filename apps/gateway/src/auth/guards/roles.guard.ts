@@ -1,20 +1,16 @@
 import { AuthenticatedRequest } from '../../types/authenticated-request';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@server/typing';
 import { parseEnum } from '@server/utils';
 
 @Injectable()
-export class RolesGuard extends JwtAuthGuard implements CanActivate {
-	constructor(reflector: Reflector) {
-		super(reflector);
-	}
+export class RolesGuard implements CanActivate {
+	constructor(private readonly reflector: Reflector) {}
 
 	canActivate(context: ExecutionContext): boolean {
-		if (!super.canActivate(context)) return false;
 		const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
 			context.getHandler(),
 			context.getClass(),
@@ -33,7 +29,8 @@ export class RolesGuard extends JwtAuthGuard implements CanActivate {
 			return true;
 		}
 
-		const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
+		const { user } = context.switchToHttp().getRequest<Partial<AuthenticatedRequest>>();
+		if (!user) throw new Error('Requires JwtAuthGuard on this route');
 
 		const hasRequiredRoles = rolesRequiredForRoute.some(role =>
 			user.roles?.includes(parseEnum(Role, role)),
