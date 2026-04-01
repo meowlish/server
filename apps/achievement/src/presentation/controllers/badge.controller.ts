@@ -9,7 +9,7 @@ import { Payload } from '@nestjs/microservices';
 import { achievement } from '@server/generated';
 
 @achievement.AchievementServiceControllerMethods()
-@Controller('badges')
+@Controller()
 export class BadgeController implements achievement.AchievementServiceController {
 	constructor(private readonly queryBus: QueryBus) {}
 

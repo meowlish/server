@@ -1,3 +1,4 @@
+import { AchievementGatewayModule } from './achievement-gateway/achievement.router.module';
 import { AuthGatewayModule } from './auth-gateway/auth.router.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './auth/guards/permissions.guard';
@@ -44,6 +45,7 @@ import { GlobalValidationPipe } from '@server/utils';
 		AuthGatewayModule,
 		ExamGatewayModule,
 		FileGatewayModule,
+		AchievementGatewayModule,
 	],
 	providers: [
 		{

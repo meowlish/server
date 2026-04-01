@@ -1,20 +1,10 @@
-import { Expose } from 'class-transformer';
+export type Badge = {
+	name: string;
+	displayName: string;
+	description: string;
+};
 
-export class Badge {
-	@Expose()
-	name!: string;
-
-	@Expose()
-	displayName!: string;
-
-	@Expose()
-	description!: string;
-}
-
-export class UserBadge extends Badge {
-	@Expose()
-	id!: string;
-
-	@Expose()
-	date!: Date;
-}
+export type UserBadge = Badge & {
+	id: string;
+	date: Date;
+};

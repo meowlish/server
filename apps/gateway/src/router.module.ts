@@ -1,3 +1,4 @@
+import { AchievementGatewayModule } from './achievement-gateway/achievement.router.module';
 import { AuthGatewayModule } from './auth-gateway/auth.router.module';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 import { FileGatewayModule } from './file-gateway/file.router.module';
@@ -18,6 +19,10 @@ import { RouterModule } from '@nestjs/core';
 			{
 				path: '/files',
 				module: FileGatewayModule,
+			},
+			{
+				path: '/achievements',
+				module: AchievementGatewayModule,
 			},
 		]),
 	],
