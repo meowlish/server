@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppLoggerService } from '@server/logger';
 import { join } from 'path';
+import 'reflect-metadata';
 
 const useLogger = (module: INestApplicationContext) => {
 	const logger = module.get(AppLoggerService);

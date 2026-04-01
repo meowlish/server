@@ -1,5 +1,4 @@
 import { Expose, Type } from 'class-transformer';
-import 'reflect-metadata';
 
 export class Badge {
 	@Expose()

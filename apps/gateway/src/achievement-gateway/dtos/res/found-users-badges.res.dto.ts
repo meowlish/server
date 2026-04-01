@@ -1,6 +1,5 @@
 import { Badge } from './found-badges.res.dto';
 import { Expose, Type } from 'class-transformer';
-import 'reflect-metadata';
 
 export class UserBadge extends Badge {
 	@Expose()

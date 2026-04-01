@@ -3,6 +3,7 @@ import { INestApplicationContext, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppLoggerService } from '@server/logger';
+import 'reflect-metadata';
 
 const useLogger = (module: INestApplicationContext) => {
 	const logger = module.get(AppLoggerService);
