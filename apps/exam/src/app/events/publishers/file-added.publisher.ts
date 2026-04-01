@@ -20,14 +20,12 @@ export class FileAddedPublisher implements IEventHandler<QuestionFileAdded | Sec
 
 	async handle(event: QuestionFileAdded | SectionFileAdded) {
 		try {
-			await this.amqpConnection.publish(
-				'eventbus',
-				'exam.file.added',
-				new FileAddedIntegrationEvent({
-					fileId: event.payload.fileId,
-				}),
-				{ persistent: true },
-			);
+			const message: FileAddedIntegrationEvent = {
+				fileId: event.payload.fileId,
+			};
+			await this.amqpConnection.publish('eventbus', 'exam.file.added', message, {
+				persistent: true,
+			});
 		} catch (e) {
 			this.logger.error(e as string);
 		}

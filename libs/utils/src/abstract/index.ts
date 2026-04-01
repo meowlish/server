@@ -4,4 +4,3 @@ export * from './query.class';
 export * from './value-object.interface';
 export * from './entity.interface';
 export * from './aggregate.interface';
-export * from './integration-event.class';

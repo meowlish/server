@@ -20,15 +20,13 @@ export class UserLoggedInPublisher implements IEventHandler<UserLoggedInEvent> {
 
 	async handle(event: UserLoggedInEvent) {
 		try {
-			await this.amqpConnection.publish(
-				'eventbus',
-				'auth.user.login',
-				new UserLoggedInIntegrationEvent({
-					uid: event.payload.uid,
-					date: event.payload.date,
-				}),
-				{ persistent: true },
-			);
+			const message: UserLoggedInIntegrationEvent = {
+				uid: event.payload.uid,
+				date: event.payload.date,
+			};
+			await this.amqpConnection.publish('eventbus', 'auth.user.login', message, {
+				persistent: true,
+			});
 		} catch (e) {
 			this.logger.error(e as string);
 		}

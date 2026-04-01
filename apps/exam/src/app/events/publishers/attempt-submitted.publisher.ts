@@ -26,15 +26,13 @@ export class AttemptSubmittedPublisher implements IEventHandler<AttemptSubmitted
 	async handle(event: AttemptSubmittedEvent) {
 		try {
 			const attemptedBy = await this.attemptRepository.getAttemptedUser(event.payload.attemptId);
-			await this.amqpConnection.publish(
-				'eventbus',
-				'exam.attempt.submitted',
-				new AttemptSubmittedIntegrationEvent({
-					attemptId: event.payload.attemptId,
-					attemptedBy: attemptedBy,
-				}),
-				{ persistent: true },
-			);
+			const message: AttemptSubmittedIntegrationEvent = {
+				attemptId: event.payload.attemptId,
+				attemptedBy: attemptedBy,
+			};
+			await this.amqpConnection.publish('eventbus', 'exam.attempt.submitted', message, {
+				persistent: true,
+			});
 		} catch (e) {
 			this.logger.error(e as string);
 		}

@@ -26,17 +26,15 @@ export class FilesRemovedPublisher extends WorkerHost {
 	}
 
 	async process(job: Job) {
-		if (job.name !== 'publish-deleted-files') return;
 		try {
+			if (job.name !== 'publish-deleted-files') return;
 			const fileIds = await this.fileRepository.getAndRemoveDeletedFileIds();
-			await this.amqpConnection.publish(
-				'eventbus',
-				'exam.files.removed',
-				new FileRemovedIntegrationEvent({
-					fileIds: fileIds,
-				}),
-				{ persistent: true },
-			);
+			const message: FileRemovedIntegrationEvent = {
+				fileIds: fileIds,
+			};
+			await this.amqpConnection.publish('eventbus', 'exam.files.removed', message, {
+				persistent: true,
+			});
 		} catch (e) {
 			this.logger.error(e as string);
 		}

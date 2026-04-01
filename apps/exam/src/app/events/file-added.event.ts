@@ -1,5 +1,3 @@
-import { IntegrationEvent } from '@server/utils';
-
-export class FileAddedIntegrationEvent extends IntegrationEvent<{
+export type FileAddedIntegrationEvent = {
 	fileId: string;
-}>() {}
+};

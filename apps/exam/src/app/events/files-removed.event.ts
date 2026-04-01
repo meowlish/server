@@ -1,5 +1,3 @@
-import { IntegrationEvent } from '@server/utils';
-
-export class FileRemovedIntegrationEvent extends IntegrationEvent<{
+export type FileRemovedIntegrationEvent = {
 	fileIds: string[];
-}>() {}
+};

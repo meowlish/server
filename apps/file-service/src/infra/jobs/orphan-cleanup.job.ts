@@ -19,11 +19,15 @@ export class OrphanCleanupWorker extends WorkerHost {
 	}
 
 	async process(job: Job) {
-		if (job.name !== 'cleanup-orphaned-files') return;
-		const files = await this.fileRepository.getOrphanedFiles();
-		const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-		const filesToRemove = files.filter(f => f.updatedAt < fiveMinutesAgo);
-		await this.fileService.deleteFiles(filesToRemove.map(f => f.id));
+		try {
+			if (job.name !== 'cleanup-orphaned-files') return;
+			const files = await this.fileRepository.getOrphanedFiles();
+			const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+			const filesToRemove = files.filter(f => f.updatedAt < fiveMinutesAgo);
+			await this.fileService.deleteFiles(filesToRemove.map(f => f.id));
+		} catch (e) {
+			this.logger.error(e as string);
+		}
 	}
 }
 

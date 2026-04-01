@@ -26,17 +26,15 @@ export class AttemptScoredPublisher implements IEventHandler<AttemptScoredEvent>
 	async handle(event: AttemptScoredEvent) {
 		try {
 			const attemptedBy = await this.attemptRepository.getAttemptedUser(event.payload.attemptId);
-			await this.amqpConnection.publish(
-				'eventbus',
-				'exam.attempt.scored',
-				new AttemptScoredIntegrationEvent({
-					attemptId: event.payload.attemptId,
-					attemptedBy: attemptedBy,
-					score: event.payload.score,
-					totalPoints: event.payload.totalPoints,
-				}),
-				{ persistent: true },
-			);
+			const message: AttemptScoredIntegrationEvent = {
+				attemptId: event.payload.attemptId,
+				attemptedBy: attemptedBy,
+				score: event.payload.score,
+				totalPoints: event.payload.totalPoints,
+			};
+			await this.amqpConnection.publish('eventbus', 'exam.attempt.scored', message, {
+				persistent: true,
+			});
 		} catch (e) {
 			this.logger.error(e as string);
 		}

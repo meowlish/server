@@ -1,3 +1,4 @@
-import { IntegrationEvent } from '@server/utils';
-
-export class UserLoggedInIntegrationEvent extends IntegrationEvent<{ uid: string; date: Date }>() {}
+export type UserLoggedInIntegrationEvent = {
+	uid: string;
+	date: Date;
+};

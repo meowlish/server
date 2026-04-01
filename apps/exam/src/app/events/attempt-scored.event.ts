@@ -1,8 +1,6 @@
-import { IntegrationEvent } from '@server/utils';
-
-export class AttemptScoredIntegrationEvent extends IntegrationEvent<{
+export type AttemptScoredIntegrationEvent = {
 	attemptId: string;
 	attemptedBy: string;
 	score: number;
 	totalPoints: number;
-}>() {}
+};
