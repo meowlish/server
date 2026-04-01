@@ -32,7 +32,6 @@ export class GetUsersBadgesQueryHandler implements IQueryHandler<GetUsersBadgesQ
 			lastId: decodedCursor?.lastId,
 			limit: query.payload.limit ?? decodedCursor?.limit ?? 10,
 		});
-		console.log(badges);
 		const encodedCursor = this.cursorPaginationHelper.encodeCursor<GetUsersBadgesCursor>({
 			lastId: badges.at(-1)?.id,
 			limit: query.payload.limit ?? decodedCursor?.limit,
