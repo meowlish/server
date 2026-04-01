@@ -1,4 +1,5 @@
 import { AchievementModule } from './achievement.module';
+import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -21,7 +22,7 @@ async function bootstrap() {
 				packageDefinition: {
 					[`achievement.${achievement.ACHIEVEMENT_SERVICE_NAME}`]:
 						achievement.AchievementServiceService,
-				},
+				} satisfies PackageDefinition,
 			},
 		},
 	);
