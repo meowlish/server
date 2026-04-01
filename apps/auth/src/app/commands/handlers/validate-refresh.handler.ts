@@ -12,7 +12,6 @@ import { Claims } from '@server/utils';
 export class ValidateRefreshCommandHandler implements ICommandHandler<ValidateRefreshCommand> {
 	constructor(
 		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
-
 		private readonly tokenService: TokenService,
 	) {}
 
