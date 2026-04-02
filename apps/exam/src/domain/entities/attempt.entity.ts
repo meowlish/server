@@ -1,4 +1,7 @@
-import { QuestionType, questionTypesWithOnlyOneAnswer } from '../../enums/question-type.enum';
+import {
+	QuestionType,
+	questionTypesThatAllowOnlySingleAnswer,
+} from '../../enums/question-type.enum';
 import {
 	AttemptResponseCreatedEvent,
 	AttemptResponseUpdatedEvent,
@@ -137,7 +140,7 @@ export class Attempt extends AggregateRoot<Event<any>> implements IEntity<Attemp
 		const questionType = this.questions.get(attemptResponse.questionId);
 		if (!questionType)
 			throw new ConflictException('Attempting to answer question outside selected sections');
-		if (questionTypesWithOnlyOneAnswer.includes(questionType)) {
+		if (questionTypesThatAllowOnlySingleAnswer.includes(questionType)) {
 			attemptResponse.clearAnswers();
 			attemptResponse.setAnswer(answer);
 			return;

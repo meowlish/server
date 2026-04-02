@@ -1,5 +1,8 @@
 import { ExamStatus } from '../../enums/exam-status.enum';
-import { QuestionType, questionTypesWithOnlyOneAnswer } from '../../enums/question-type.enum';
+import {
+	QuestionType,
+	questionTypesWithMultipleCorrectChoices,
+} from '../../enums/question-type.enum';
 import {
 	ChoiceCreatedEvent,
 	ChoiceDeletedEvent,
@@ -138,7 +141,7 @@ export class Question extends AggregateRoot<Event<any>> implements IAggregate<Qu
 			throw new ConflictException('Choice already exists');
 		if (
 			choice.isCorrect &&
-			questionTypesWithOnlyOneAnswer.includes(this.type) &&
+			!questionTypesWithMultipleCorrectChoices.includes(this.type) &&
 			this.choices.find(c => c.isCorrect)
 		)
 			throw new ConflictException('This type of question only allows one correct choice');

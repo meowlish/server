@@ -1,4 +1,4 @@
-import { QuestionType } from '../../enums/question-type.enum';
+import { QuestionType, questionTypesThatAllowNonStrictMatch } from '../../enums/question-type.enum';
 import { AttemptScoredEvent } from '../events/attempt.event';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity } from '@server/utils';
@@ -78,7 +78,15 @@ export class AttemptEvaluator
 	private scoreFor(question: AttemptQuestion, response: AttemptResponseResult): number {
 		// TODO: writing score logic later
 		if (question.type === QuestionType.Writing) return 0;
-		if (isEqual(response.answers, question.correctKeys)) {
+		// If question types only need user to match one of the many correct keys
+		if (questionTypesThatAllowNonStrictMatch.includes(question.type)) {
+			if (question.correctKeys.some(k => response.answers.includes(k))) {
+				response.setIsCorrect(true);
+				return question.points;
+			}
+		}
+		// Else must match all keys
+		else if (isEqual(response.answers, question.correctKeys)) {
 			response.setIsCorrect(true);
 			return question.points;
 		}
