@@ -45,6 +45,7 @@ export async function seedExams(prisma: PrismaClient) {
 						create: [
 							{
 								order: 1,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -56,6 +57,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 2,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -67,6 +69,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 3,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -78,6 +81,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 4,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -89,6 +93,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 5,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -100,6 +105,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 6,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -120,6 +126,7 @@ export async function seedExams(prisma: PrismaClient) {
 						create: [
 							{
 								order: 7,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -130,6 +137,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 8,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -140,6 +148,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 9,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -150,6 +159,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 10,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -160,6 +170,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 11,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -170,6 +181,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 12,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -180,6 +192,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 13,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -190,6 +203,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 14,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -200,6 +214,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 15,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -210,6 +225,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 16,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -220,6 +236,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 17,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -230,6 +247,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 18,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -240,6 +258,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 19,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -250,6 +269,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 20,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -260,6 +280,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 21,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -270,6 +291,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 22,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -280,6 +302,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 23,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -290,6 +313,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 24,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -300,6 +324,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 25,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -310,6 +335,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 26,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -320,6 +346,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 27,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -330,6 +357,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 28,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -340,6 +368,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 29,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -350,6 +379,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 30,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -360,6 +390,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 31,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -386,6 +417,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 32,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -397,6 +429,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 33,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -408,6 +441,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 34,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -429,6 +463,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 35,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -440,6 +475,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 36,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -451,6 +487,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 37,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -472,6 +509,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 38,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -483,6 +521,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 39,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -494,6 +533,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 40,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -515,6 +555,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 41,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -526,6 +567,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 42,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -537,6 +579,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 43,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -558,6 +601,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 44,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -569,6 +613,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 45,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -580,6 +625,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 46,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -601,6 +647,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 47,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -612,6 +659,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 48,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -623,6 +671,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 49,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -644,6 +693,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 50,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -655,6 +705,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 51,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -666,6 +717,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 52,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -687,6 +739,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 53,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -698,6 +751,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 54,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -709,6 +763,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 55,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -730,6 +785,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 56,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -741,6 +797,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 57,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -752,6 +809,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 58,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -773,6 +831,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 59,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -784,6 +843,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 60,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -795,6 +855,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 61,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -816,6 +877,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 62,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -827,6 +889,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 63,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -838,6 +901,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 64,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -859,6 +923,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 65,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -870,6 +935,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 66,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -881,6 +947,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 67,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -902,6 +969,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 68,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -913,6 +981,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 69,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -924,6 +993,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 70,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -954,6 +1024,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 71,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -965,6 +1036,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 72,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -976,6 +1048,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 73,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -997,6 +1070,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 74,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1008,6 +1082,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 75,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1019,6 +1094,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 76,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1040,6 +1116,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 77,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1051,6 +1128,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 78,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1062,6 +1140,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 79,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1083,6 +1162,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 80,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1094,6 +1174,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 81,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1105,6 +1186,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 82,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1126,6 +1208,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 83,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1137,6 +1220,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 84,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1148,6 +1232,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 85,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1169,6 +1254,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 86,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1180,6 +1266,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 87,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1191,6 +1278,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 88,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1212,6 +1300,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 89,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1223,6 +1312,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 90,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1234,6 +1324,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 91,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1255,6 +1346,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 92,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1266,6 +1358,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 93,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1277,6 +1370,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 94,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1298,6 +1392,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 95,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1309,6 +1404,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 96,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1320,6 +1416,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 97,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1341,6 +1438,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 98,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1352,6 +1450,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 99,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1363,6 +1462,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 100,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1386,6 +1486,7 @@ export async function seedExams(prisma: PrismaClient) {
 						create: [
 							{
 								order: 101,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1397,6 +1498,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 102,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1408,6 +1510,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 103,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1419,6 +1522,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 104,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1430,6 +1534,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 105,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1441,6 +1546,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 106,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1452,6 +1558,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 107,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1463,6 +1570,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 108,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1474,6 +1582,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 109,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1485,6 +1594,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 110,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1496,6 +1606,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 111,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1507,6 +1618,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 112,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1518,6 +1630,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 113,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1529,6 +1642,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 114,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1540,6 +1654,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 115,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1551,6 +1666,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 116,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1562,6 +1678,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 117,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1573,6 +1690,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 118,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1584,6 +1702,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 119,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1595,6 +1714,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 120,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1606,6 +1726,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 121,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1617,6 +1738,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 122,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1628,6 +1750,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 123,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1639,6 +1762,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 124,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1650,6 +1774,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 125,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1661,6 +1786,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 126,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1672,6 +1798,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 127,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1683,6 +1810,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 128,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1694,6 +1822,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 129,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1705,6 +1834,7 @@ export async function seedExams(prisma: PrismaClient) {
 							},
 							{
 								order: 130,
+								type: QuestionType.MultipleChoiceSingle,
 								choices: {
 									create: [
 										{ key: 'A', isCorrect: false },
@@ -1732,6 +1862,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 131,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1743,6 +1874,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 132,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1754,6 +1886,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 133,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1765,6 +1898,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 134,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1786,6 +1920,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 135,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1797,6 +1932,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 136,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1808,6 +1944,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 137,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1819,6 +1956,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 138,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1840,6 +1978,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 139,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1851,6 +1990,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 140,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1862,6 +2002,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 141,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1873,6 +2014,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 142,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1894,6 +2036,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 143,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1905,6 +2048,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 144,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1916,6 +2060,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 145,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1927,6 +2072,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 146,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1957,6 +2103,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 147,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1968,6 +2115,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 148,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -1989,6 +2137,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 149,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2000,6 +2149,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 150,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2021,6 +2171,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 151,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2032,6 +2183,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 152,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2053,6 +2205,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 153,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2064,6 +2217,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 154,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2085,6 +2239,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 155,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2096,6 +2251,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 156,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2107,6 +2263,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 157,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2128,6 +2285,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 158,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2139,6 +2297,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 159,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2150,6 +2309,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 160,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2171,6 +2331,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 161,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2182,6 +2343,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 162,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2193,6 +2355,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 163,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2204,6 +2367,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 164,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2225,6 +2389,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 165,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2236,6 +2401,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 166,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2247,6 +2413,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 167,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2268,6 +2435,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 168,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2279,6 +2447,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 169,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2290,6 +2459,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 170,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2301,6 +2471,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 171,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2322,6 +2493,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 172,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2333,6 +2505,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 173,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2344,6 +2517,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 174,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2355,6 +2529,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 175,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2376,6 +2551,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 176,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2387,6 +2563,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 177,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2398,6 +2575,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 178,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2409,6 +2587,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 179,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2420,6 +2599,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 180,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2441,6 +2621,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 181,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2452,6 +2633,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 182,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2463,6 +2645,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 183,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2474,6 +2657,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 184,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2485,6 +2669,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 185,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2506,6 +2691,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 186,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2517,6 +2703,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 187,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2528,6 +2715,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 188,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2539,6 +2727,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 189,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2550,6 +2739,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 190,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2571,6 +2761,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 191,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2582,6 +2773,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 192,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2593,6 +2785,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 193,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2604,6 +2797,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 194,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2615,6 +2809,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 195,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2636,6 +2831,7 @@ export async function seedExams(prisma: PrismaClient) {
 									create: [
 										{
 											order: 196,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2647,6 +2843,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 197,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2658,6 +2855,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 198,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2669,6 +2867,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 199,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
@@ -2680,6 +2879,7 @@ export async function seedExams(prisma: PrismaClient) {
 										},
 										{
 											order: 200,
+											type: QuestionType.MultipleChoiceSingle,
 											choices: {
 												create: [
 													{ key: 'A', isCorrect: false },
