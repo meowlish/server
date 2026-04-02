@@ -1,5 +1,6 @@
 import { ExamStatus } from '../../src/enums/exam-status.enum';
 import { IeltsLExamSeeder } from './exam-ielts-l';
+import { IeltsRExamSeeder } from './exam-ielts-r';
 import { ToeicLrExamSeeder } from './exam-toeic-lr';
 import { Prisma, PrismaClient } from '@prisma-client/exam';
 
@@ -31,19 +32,7 @@ export async function seedExams(prisma: PrismaClient) {
 	const ieltsDefaultLExam: Prisma.ExamCreateInput = new IeltsLExamSeeder(tagNamesToIdInputs).seed();
 
 	// 3
-	const ieltsDefaultRExam: Prisma.ExamCreateInput = {
-		createdBy: 'admmin-id',
-		title: 'IELTS R 1',
-		duration: 60 * 60,
-		status: ExamStatus.Approved,
-		examTags: {
-			createMany: {
-				data: tagNamesToIdInputs(['IELTS Listening P1-4', 'IELTS Reading P1-3']),
-				skipDuplicates: true,
-			},
-		},
-		sections: { createMany: { data: [], skipDuplicates: true } },
-	};
+	const ieltsDefaultRExam: Prisma.ExamCreateInput = new IeltsRExamSeeder(tagNamesToIdInputs).seed();
 
 	// 4
 	const toeicDefaultWritingExam: Prisma.ExamCreateInput = {

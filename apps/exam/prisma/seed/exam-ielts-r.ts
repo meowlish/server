@@ -17,7 +17,7 @@ export class IeltsRExamSeeder {
 			status: ExamStatus.Approved,
 			examTags: {
 				createMany: {
-					data: this.tagNamesToIdInputs(['IELTS Listening P1-4', 'IELTS Reading P1-3']),
+					data: this.tagNamesToIdInputs(['IELTS Reading P1-3']),
 					skipDuplicates: true,
 				},
 			},
