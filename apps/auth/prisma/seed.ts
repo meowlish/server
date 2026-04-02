@@ -74,6 +74,7 @@ async function seedAdminUser() {
 		where: { username: 'admin' },
 		update: {},
 		create: {
+			id: 'admin-id',
 			username: 'admin',
 		},
 	});
