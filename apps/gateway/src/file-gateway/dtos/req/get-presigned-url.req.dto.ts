@@ -1,6 +1,9 @@
-import { IsMimeType, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsMimeType, IsNumber, IsString } from 'class-validator';
 
 export class GetPresignedUrlDto {
+	@IsBoolean()
+	isPublicFile!: boolean;
+
 	@IsString()
 	fileName!: string;
 

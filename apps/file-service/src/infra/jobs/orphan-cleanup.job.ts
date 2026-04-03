@@ -24,7 +24,7 @@ export class OrphanCleanupWorker extends WorkerHost {
 			const files = await this.fileRepository.getOrphanedFiles();
 			const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 			const filesToRemove = files.filter(f => f.updatedAt < fiveMinutesAgo);
-			await this.fileService.deleteFiles(filesToRemove.map(f => f.id));
+			await this.fileService.deleteFiles(filesToRemove);
 		} catch (e) {
 			this.logger.error(e as string);
 		}

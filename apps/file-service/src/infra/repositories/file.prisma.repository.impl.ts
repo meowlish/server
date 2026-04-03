@@ -9,12 +9,13 @@ import { PrismaClient } from '@prisma-client/file';
 export class FilePrismaRepository implements IFileRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
-	async create(fileMetadata: FileMetadata): Promise<string> {
+	async create(fileMetadata: FileMetadata, isPublic: boolean): Promise<string> {
 		const newFile = await this.txHost.tx.file.create({
 			data: {
 				size: fileMetadata.fileSize,
 				name: fileMetadata.fileName,
 				mimeType: fileMetadata.contentType,
+				isPublic: isPublic,
 			},
 		});
 		return newFile.id;
@@ -38,10 +39,17 @@ export class FilePrismaRepository implements IFileRepository {
 		await this.txHost.tx.file.deleteMany({ where: { id: { in: ids } } });
 	}
 
-	async getOrphanedFiles(): Promise<{ id: string; updatedAt: Date }[]> {
+	async getOrphanedFiles(): Promise<{ id: string; isPublic: boolean; updatedAt: Date }[]> {
 		return await this.txHost.tx.file.findMany({
 			where: { refCount: { equals: 0 } },
-			select: { id: true, updatedAt: true },
+			select: { id: true, isPublic: true, updatedAt: true },
+		});
+	}
+
+	async getFilesPravicySettings(ids: string[]): Promise<{ id: string; isPublic: boolean }[]> {
+		return await this.txHost.tx.file.findMany({
+			where: { id: { in: ids } },
+			select: { id: true, isPublic: true },
 		});
 	}
 }
