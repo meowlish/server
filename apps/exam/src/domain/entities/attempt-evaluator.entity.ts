@@ -13,7 +13,7 @@ export class AttemptResponseResult implements IEntity<AttemptResponseResult> {
 		public readonly answers: string[],
 		isCorrect?: boolean | null,
 	) {
-		answers.sort();
+		answers.map(a => a.toLowerCase()).sort();
 		this.isCorrect = !!isCorrect;
 	}
 
@@ -29,7 +29,7 @@ export class AttemptQuestion implements IEntity<AttemptQuestion> {
 		public readonly correctKeys: string[],
 		public readonly points: number,
 	) {
-		correctKeys.sort();
+		correctKeys.map(a => a.toLowerCase()).sort();
 	}
 }
 

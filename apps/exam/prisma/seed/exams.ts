@@ -13,12 +13,12 @@ import { Prisma, PrismaClient } from '@prisma-client/exam';
 
 export async function seedExams(prisma: PrismaClient) {
 	const tags = await prisma.tag.findMany();
-	const tagsMap = new Map(tags.map(tag => [tag.name.toLocaleLowerCase(), tag.id]));
+	const tagsMap = new Map(tags.map(tag => [tag.name.toLowerCase(), tag.id]));
 
 	const tagNamesToIdInputs = (names: string[]): { tagId: string }[] => {
 		return names
 			.map(n => {
-				n = n.toLocaleLowerCase();
+				n = n.toLowerCase();
 				if (!tagsMap.has(n)) console.warn(`Database does not have tag ${n}`);
 				return { tagId: tagsMap.get(n) };
 			})
