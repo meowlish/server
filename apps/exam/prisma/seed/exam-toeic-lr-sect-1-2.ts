@@ -24,6 +24,7 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 						{
 							order: 2,
@@ -36,6 +37,7 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 						{
 							order: 3,
@@ -48,6 +50,7 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 						{
 							order: 4,
@@ -60,6 +63,7 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 						{
 							order: 5,
@@ -72,6 +76,7 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 						{
 							order: 6,
@@ -84,9 +89,11 @@ export class ToeicLrExamSect12Seeder {
 									{ key: 'D', isCorrect: false },
 								],
 							},
+							questionTags: { create: this.tagNamesToIdInputs(['Photo Human Object']) },
 						},
 					],
 				},
+				sectionTags: { create: this.tagNamesToIdInputs(['TOEIC Listening Part 1']) },
 			},
 			{
 				id: 's12',
@@ -371,6 +378,7 @@ export class ToeicLrExamSect12Seeder {
 						},
 					],
 				},
+				sectionTags: { create: this.tagNamesToIdInputs(['TOEIC Listening Part 2']) },
 			},
 		];
 	}

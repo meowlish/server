@@ -148,6 +148,7 @@ export async function seedExams(prisma: PrismaClient) {
 
                   #END_GRAPH_DESCRIPTION`,
 								type: QuestionType.Writing,
+								questionTags: { create: tagNamesToIdInputs(['IELTS Writing T1-T2']) },
 							},
 						],
 					},
@@ -163,6 +164,7 @@ export async function seedExams(prisma: PrismaClient) {
                 while other people think that taking part in individual sports, like tennis or swimming, is better.
                 Discuss both views and give your own opinion.`,
 								type: QuestionType.Writing,
+								questionTags: { create: tagNamesToIdInputs(['IELTS Writing T1-T2']) },
 							},
 						],
 					},

@@ -613,6 +613,7 @@ export class ToeicLrExamSect34Seeder {
 						},
 					],
 				},
+				sectionTags: { create: this.tagNamesToIdInputs(['TOEIC Listening Part 3']) },
 			},
 			{
 				id: 's14',
@@ -1082,6 +1083,7 @@ export class ToeicLrExamSect34Seeder {
 						},
 					],
 				},
+				sectionTags: { create: this.tagNamesToIdInputs(['TOEIC Listening Part 4']) },
 			},
 		];
 	}
