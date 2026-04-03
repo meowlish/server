@@ -16,6 +16,7 @@ export class IeltsLExamSect12Seeder {
 						{
 							order: 1,
 							type: QuestionType.FillAnyInTheBlank,
+							choices: { create: [{ isCorrect: true, key: 'TEST' }] },
 						},
 						{
 							order: 2,

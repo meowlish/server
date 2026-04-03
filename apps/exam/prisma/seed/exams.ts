@@ -173,8 +173,9 @@ export async function seedExams(prisma: PrismaClient) {
 		},
 	};
 
-	await prisma.exam.createMany({
-		data: [toeicDefaultLRExam, ieltsDefaultLExam, ieltsDefaultRExam, ieltsDefaultWritingExam],
-		skipDuplicates: true,
-	});
+	await Promise.all(
+		[toeicDefaultLRExam, ieltsDefaultLExam, ieltsDefaultRExam, ieltsDefaultWritingExam].map(
+			async exam => await prisma.exam.create({ data: exam }),
+		),
+	);
 }
