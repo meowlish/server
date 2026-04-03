@@ -1,5 +1,5 @@
+import { Badge, UserBadge } from '../../domain/read-models/badge.read-model';
 import { IBadgeReadRepository } from '../../domain/repositories/badge.read.repository';
-import { Badge, UserBadge } from '../../presentation/read-models/badge.read-model';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';

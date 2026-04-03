@@ -1,4 +1,4 @@
-import { UserBadge } from '../../presentation/read-models/badge.read-model';
+import { UserBadge } from '../../domain/read-models/badge.read-model';
 import { Query } from '@server/utils';
 
 export type GetUsersBadgesQueryResult = {

@@ -1,4 +1,4 @@
-import { Badge, UserBadge } from '../../presentation/read-models/badge.read-model';
+import { Badge, UserBadge } from '../read-models/badge.read-model';
 
 export interface IBadgeReadRepository {
 	getAll(): Promise<Badge[]>;
