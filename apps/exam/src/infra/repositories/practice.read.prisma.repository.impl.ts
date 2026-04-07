@@ -117,7 +117,16 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				// fallback take all
 			:	Prisma.sql`TRUE`;
 
-		const rows = await this.txHost.tx.$queryRaw<MinimalExamInfo[]>(
+		const rows = await this.txHost.tx.$queryRaw<
+			{
+				id: string;
+				name: string;
+				description: string;
+				attemptsCount: number;
+				duration: number;
+				tags: string[];
+			}[]
+		>(
 			Prisma.sql`
 
       SELECT
@@ -155,8 +164,6 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 
     `,
 		);
-
-		console.log(rows);
 		return rows;
 	}
 
