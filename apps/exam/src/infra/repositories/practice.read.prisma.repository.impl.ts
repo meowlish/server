@@ -11,7 +11,7 @@ import { IPracticeReadRepository } from '../../domain/repositories/practice.read
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma-client/file';
+import { Prisma, PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
 
 @Injectable()
