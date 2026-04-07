@@ -277,7 +277,7 @@ type RepoSection = Omit<PrismaSection, 'order'>;
 const sectionPrismaIncludeObject = {
 	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	sectionTags: { select: { tagId: true } },
-	sectionFiles: { select: { fileId: true } },
+	sectionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
 	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	exam: { select: { id: true, version: true, status: true } },
 } satisfies Prisma.SectionInclude;

@@ -182,6 +182,6 @@ type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 const questionPrismaIncludeObj = {
 	choices: true,
 	questionTags: { select: { tagId: true } },
-	questionFiles: { select: { fileId: true } },
+	questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
 	section: { select: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;

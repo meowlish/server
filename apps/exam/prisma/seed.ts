@@ -1,3 +1,4 @@
+import { seedAttempts } from './seed/attempts';
 import { seedExams } from './seed/exams';
 import { seedTags } from './seed/tags';
 import { PrismaClient } from '@prisma-client/exam';
@@ -8,6 +9,7 @@ const prisma = new PrismaClient();
 async function main() {
 	await seedTags(prisma);
 	await seedExams(prisma);
+	await seedAttempts(prisma);
 }
 
 main()

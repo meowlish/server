@@ -1,6 +1,7 @@
 model SectionFile {
-  sectionId String @map("question_id")
-  fileId    String @map("file_id")
+  sectionId String   @map("question_id")
+  fileId    String   @map("file_id")
+  updatedAt DateTime @updatedAt
 
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
@@ -9,10 +10,10 @@ model SectionFile {
 }
 
 model QuestionFile {
-  questionId String @map("question_id")
-  fileId     String @map("file_id")
-
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String   @map("question_id")
+  fileId     String   @map("file_id")
+  updatedAt  DateTime @updatedAt
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([questionId, fileId])
   @@map("question_files")
