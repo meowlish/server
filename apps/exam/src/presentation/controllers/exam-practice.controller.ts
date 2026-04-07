@@ -108,7 +108,7 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	async getExamDetails(request: exam.GetExamDetailsDto): Promise<exam.DetailedExamInfo> {
-		return {} as unknown as Promise<exam.DetailedExamInfo>;
+		return this.praciceReadRepository.getExamDetail(request.examId);
 	}
 
 	async getDetailedQuestionInfo(

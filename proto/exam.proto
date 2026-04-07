@@ -341,7 +341,7 @@ message GetExamDetailsDto {
 message DetailedExamInfo {
 	string                       id             = 1;
 	string                       name           = 2;
-	string                       description    = 3;
+	optional string              description    = 3;
 	int32                        attempts_count = 4;
 	int32                        duration       = 5;
 	repeated string              tags           = 6;
@@ -376,7 +376,7 @@ message Exams {
 	message MinimalExamInfo {
 		string          id             = 1;
 		string          name           = 2;
-		string          description    = 3;
+		optional string description    = 3;
 		int32           attempts_count = 4;
 		int32           duration       = 5;
 		repeated string tags           = 6;

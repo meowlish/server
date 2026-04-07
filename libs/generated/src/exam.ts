@@ -310,7 +310,7 @@ export interface GetExamDetailsDto {
 export interface DetailedExamInfo {
   id: string;
   name: string;
-  description: string;
+  description?: string | undefined;
   attemptsCount: number;
   duration: number;
   tags: string[];
@@ -346,7 +346,7 @@ export interface Exams {
 export interface Exams_MinimalExamInfo {
   id: string;
   name: string;
-  description: string;
+  description?: string | undefined;
   attemptsCount: number;
   duration: number;
   tags: string[];
@@ -3381,7 +3381,7 @@ export const GetExamDetailsDto: MessageFns<GetExamDetailsDto> = {
 };
 
 function createBaseDetailedExamInfo(): DetailedExamInfo {
-  return { id: "", name: "", description: "", attemptsCount: 0, duration: 0, tags: [], sections: [] };
+  return { id: "", name: "", attemptsCount: 0, duration: 0, tags: [], sections: [] };
 }
 
 export const DetailedExamInfo: MessageFns<DetailedExamInfo> = {
@@ -3392,7 +3392,7 @@ export const DetailedExamInfo: MessageFns<DetailedExamInfo> = {
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.description !== "") {
+    if (message.description !== undefined) {
       writer.uint32(26).string(message.description);
     }
     if (message.attemptsCount !== 0) {
@@ -3735,7 +3735,7 @@ export const Exams: MessageFns<Exams> = {
 };
 
 function createBaseExams_MinimalExamInfo(): Exams_MinimalExamInfo {
-  return { id: "", name: "", description: "", attemptsCount: 0, duration: 0, tags: [] };
+  return { id: "", name: "", attemptsCount: 0, duration: 0, tags: [] };
 }
 
 export const Exams_MinimalExamInfo: MessageFns<Exams_MinimalExamInfo> = {
@@ -3746,7 +3746,7 @@ export const Exams_MinimalExamInfo: MessageFns<Exams_MinimalExamInfo> = {
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.description !== "") {
+    if (message.description !== undefined) {
       writer.uint32(26).string(message.description);
     }
     if (message.attemptsCount !== 0) {

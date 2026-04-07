@@ -10,7 +10,7 @@ import { UserStats } from '../../domain/read-models/user-stats.read-model';
 import { IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma-client/file';
 import { SortDirection } from '@server/typing';
 
@@ -121,7 +121,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			{
 				id: string;
 				name: string;
-				description: string;
+				description: string | null;
 				attemptsCount: number;
 				duration: number;
 				tags: string[];
@@ -164,11 +164,117 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 
     `,
 		);
-		return rows;
+
+		return rows.map(r => ({ ...r, description: r.description ?? undefined }));
 	}
 
-	getExamDetail(examId: string): Promise<DetailedExamInfo> {
-		return {} as unknown as Promise<DetailedExamInfo>;
+	async getExamDetail(examId: string): Promise<DetailedExamInfo> {
+		const [exam] = await this.txHost.tx.$queryRaw<
+			{
+				id: string;
+				name: string;
+				description: string | null;
+				duration: number;
+				attemptsCount: number;
+				tags: string[];
+			}[]
+		>(
+			Prisma.sql`
+      SELECT
+        e.id,
+        e.title AS name,
+        e.description,
+        e.duration,
+        COUNT(DISTINCT a.id)::int AS "attemptsCount",
+        COALESCE(
+          ARRAY_AGG(DISTINCT t.name)
+            FILTER (WHERE t.name IS NOT NULL),
+          '{}'
+        ) AS tags
+
+      FROM exams e
+
+      LEFT JOIN attempts a
+        ON a.exam_id = e.id
+
+      LEFT JOIN exam_tags et
+        ON et.exam_id = e.id
+
+      LEFT JOIN tags t
+        ON t.id = et.tag_id
+
+      WHERE e.id = ${examId}
+
+      GROUP BY e.id
+    `,
+		);
+
+		if (!exam) {
+			throw new NotFoundException(`Exam ${examId} not found`);
+		}
+
+		const sections = await this.txHost.tx.$queryRaw<
+			{
+				id: string;
+				name: string | null;
+				questionsCount: number;
+				tags: string[];
+			}[]
+		>(
+			Prisma.sql`
+      SELECT
+        s.id,
+        s.name,
+
+        COUNT(DISTINCT q.id)::int AS "questionsCount",
+
+        COALESCE(
+          ARRAY_AGG(DISTINCT tag_names.name)
+            FILTER (WHERE tag_names.name IS NOT NULL),
+          '{}'
+        ) AS tags
+
+      FROM sections s
+
+      /* get descendants */
+      LEFT JOIN section_closures sc
+        ON sc.ancestor_id = s.id
+
+      /* questions inside descendants */
+      LEFT JOIN questions q
+        ON q.section_id = sc.descendant_id
+
+      /* section tags from descendants */
+      LEFT JOIN section_tags st
+        ON st.section_id = sc.descendant_id
+
+      /* question tags */
+      LEFT JOIN question_tags qt
+        ON qt.question_id = q.id
+
+      /* unify tag sources */
+      LEFT JOIN tags tag_names
+        ON tag_names.id = st.tag_id
+        OR tag_names.id = qt.tag_id
+
+      WHERE s.exam_id = ${examId}
+        AND s.parent_id IS NULL
+
+      GROUP BY s.id
+
+      ORDER BY s.order ASC
+      `,
+		);
+
+		return {
+			id: exam.id,
+			name: exam.name,
+			description: exam.description ?? undefined,
+			duration: exam.duration,
+			attemptsCount: exam.attemptsCount,
+			tags: exam.tags,
+			sections: sections.map(s => ({ ...s, name: s.name ?? undefined })),
+		};
 	}
 
 	getExamStats(examId: string): Promise<ExamStatistics> {
