@@ -1,0 +1,182 @@
+import { AttemptHistorySummary } from '../../domain/read-models/attempt-history-summary.read-model';
+import { DetailedAttemptReviewData } from '../../domain/read-models/attempt-review,.read-model';
+import { AttemptSavedData } from '../../domain/read-models/attempt-save-data.read-model';
+import { DetailedExamInfo } from '../../domain/read-models/detailed-exam.read-model';
+import { DetailedQuestionInfo } from '../../domain/read-models/detailed-question.read-model';
+import { ExamStatistics } from '../../domain/read-models/exam-statistics.read-model';
+import { MinimalAttemptInfo } from '../../domain/read-models/minimal-attempt.read-model';
+import { MinimalExamInfo } from '../../domain/read-models/minimal-exam.read-model';
+import { UserStats } from '../../domain/read-models/user-stats.read-model';
+import { IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+import { Injectable } from '@nestjs/common';
+import { Prisma, PrismaClient } from '@prisma-client/file';
+import { SortDirection } from '@server/typing';
+
+@Injectable()
+export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository {
+	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
+
+	getUserStats(uid: string): Promise<UserStats> {
+		return {} as unknown as Promise<UserStats>;
+	}
+
+	getUsersAttemptSummary(
+		uid: string,
+		range?: { from: Date; to: Date },
+	): Promise<AttemptHistorySummary> {
+		return {} as unknown as Promise<AttemptHistorySummary>;
+	}
+
+	getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]> {
+		return [] as unknown as Promise<MinimalAttemptInfo[]>;
+	}
+
+	async findExam(options?: {
+		filter?: { name?: string; tags?: string[] };
+		sortBy?: { key: 'attemptsCount' | 'updatedAt'; direction: SortDirection };
+	}): Promise<MinimalExamInfo[]> {
+		// sort by attemptsCount or by update time
+		// fallback to sort by ID
+		const sortSql =
+			options?.sortBy ?
+				options.sortBy.key === 'attemptsCount' ?
+					Prisma.sql`
+          "attemptsCount" ${Prisma.raw(options.sortBy.direction)},
+          e.id ASC
+        `
+				:	Prisma.sql`
+          e.updated_at ${Prisma.raw(options.sortBy.direction)},
+          e.id ASC
+        `
+			:	Prisma.sql`e.id ASC`;
+
+		// filter by name
+		const nameFilterSql =
+			options?.filter?.name ?
+				Prisma.sql`
+        e.title ILIKE '%' || ${options.filter.name} || '%'
+      `
+				// fallback take all
+			:	Prisma.sql`TRUE`;
+
+		// filter by tag (any tags in exam, sections or questions)
+		const tagFilterSql =
+			options?.filter?.tags?.length ?
+				Prisma.sql`
+
+        EXISTS (
+
+          SELECT 1
+          FROM tags filter_t
+
+          WHERE filter_t.name IN (
+            ${Prisma.join(options.filter.tags)}
+          )
+
+          AND EXISTS (
+
+            SELECT 1
+            FROM tags t2
+
+            LEFT JOIN exam_tags et2
+              ON et2.tag_id = t2.id
+
+            LEFT JOIN section_tags st2
+              ON st2.tag_id = t2.id
+
+            LEFT JOIN sections s
+              ON s.id = st2.section_id
+
+            LEFT JOIN question_tags qt2
+              ON qt2.tag_id = t2.id
+
+            LEFT JOIN questions q
+              ON q.id = qt2.question_id
+
+            LEFT JOIN sections qs
+              ON qs.id = q.section_id
+
+            WHERE
+
+              (
+                et2.exam_id = e.id
+                OR s.exam_id = e.id
+                OR qs.exam_id = e.id
+              )
+
+              -- the filter must be descendants of the tags inside exam (sections, questions and whatnot)
+              AND filter_t.lft BETWEEN t2.lft AND t2.rgt
+
+          )
+
+        )
+
+      `
+				// fallback take all
+			:	Prisma.sql`TRUE`;
+
+		const rows = await this.txHost.tx.$queryRaw<MinimalExamInfo[]>(
+			Prisma.sql`
+
+      SELECT
+        e.id,
+        e.title AS name,
+        e.description,
+        e.duration,
+        -- cast type to int, count distinct because join causes duplicate
+        COUNT(DISTINCT a.id)::int AS "attemptsCount",
+        -- return tags from exam directly
+        COALESCE(
+          ARRAY_AGG(DISTINCT t.name)
+            FILTER (WHERE t.name IS NOT NULL),
+          '{}'
+        ) AS tags
+
+      FROM exams e
+
+      LEFT JOIN attempts a
+        ON a.exam_id = e.id
+
+      LEFT JOIN exam_tags et
+        ON et.exam_id = e.id
+
+      LEFT JOIN tags t
+        ON t.id = et.tag_id
+
+      WHERE
+        ${nameFilterSql}
+        AND ${tagFilterSql}
+
+      GROUP BY e.id
+
+      ORDER BY ${sortSql}
+
+    `,
+		);
+
+		console.log(rows);
+		return rows;
+	}
+
+	getExamDetail(examId: string): Promise<DetailedExamInfo> {
+		return {} as unknown as Promise<DetailedExamInfo>;
+	}
+
+	getExamStats(examId: string): Promise<ExamStatistics> {
+		return {} as unknown as Promise<ExamStatistics>;
+	}
+
+	getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
+		return {} as unknown as Promise<AttemptSavedData>;
+	}
+
+	getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData> {
+		return {} as unknown as Promise<DetailedAttemptReviewData>;
+	}
+
+	getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo> {
+		return {} as unknown as Promise<DetailedQuestionInfo>;
+	}
+}

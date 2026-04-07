@@ -8,8 +8,10 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
 import { Empty } from "./common";
+import { Timestamp } from "./google/protobuf/timestamp";
 
 /** Request */
 export interface CreateExamDto {
@@ -191,6 +193,241 @@ export interface MoveTagDto {
   id: string;
   parentId?: string | undefined;
 }
+
+export interface GetUsersAttemptSummaryDto {
+  uid: string;
+  range: GetUsersAttemptSummaryDto_Range | undefined;
+}
+
+export interface GetUsersAttemptSummaryDto_Range {
+  from: Date | undefined;
+  to: Date | undefined;
+}
+
+export interface AttemptHistorySummary {
+  history: { [key: number]: number };
+}
+
+export interface AttemptHistorySummary_HistoryEntry {
+  key: number;
+  value: number;
+}
+
+export interface GetAttemptReviewDto {
+  attemptId: string;
+}
+
+export interface DetailedAttemptReviewData {
+  responses: DetailedAttemptReviewData_AttemptReviewResponse[];
+  sections: DetailedAttemptReviewData_SectionReviewData[];
+  startedAt: Date | undefined;
+  durationLimit: number;
+}
+
+export interface DetailedAttemptReviewData_AttemptReviewResponse {
+  questionId: string;
+  note?: string | undefined;
+  isFlagged?: boolean | undefined;
+  answers: string[];
+  isCorrect?: boolean | undefined;
+  score?: number | undefined;
+}
+
+export interface DetailedAttemptReviewData_SectionReviewData {
+  id: string;
+  name?: string | undefined;
+  directive: string;
+  order: number;
+  fileUrls: string[];
+  type: string;
+  sections: DetailedAttemptReviewData_SectionReviewData[];
+  questions: DetailedAttemptReviewData_SectionReviewData_QuestionReviewData[];
+}
+
+export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData {
+  id: string;
+  content: string;
+  type: string;
+  order: number;
+  fileUrls: string[];
+  choices: DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData[];
+  tags: string[];
+}
+
+export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
+  key: string;
+  content: string;
+  isCorrect: boolean;
+}
+
+export interface GetAttemptSavedDataDto {
+  attemptId: string;
+}
+
+export interface AttemptSavedData {
+  responses: AttemptSavedData_AttemptSavedResponse[];
+  sections: AttemptSavedData_AttemptSectionData[];
+  startedAt: Date | undefined;
+  durationLimit: number;
+}
+
+export interface AttemptSavedData_AttemptSavedResponse {
+  questionId: string;
+  note?: string | undefined;
+  isFlagged?: boolean | undefined;
+  answers: string[];
+}
+
+export interface AttemptSavedData_AttemptSectionData {
+  id: string;
+  name?: string | undefined;
+  directive: string;
+  order: number;
+  fileUrls: string[];
+  type: string;
+  sections: AttemptSavedData_AttemptSectionData[];
+  questions: AttemptSavedData_AttemptSectionData_AttemptQuestionData[];
+}
+
+export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData {
+  id: string;
+  content: string;
+  type: string;
+  order: number;
+  fileUrls: string[];
+  choices: AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData[];
+}
+
+export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
+  key: string;
+  content: string;
+}
+
+export interface GetExamDetailsDto {
+  examId: string;
+}
+
+export interface DetailedExamInfo {
+  id: string;
+  name: string;
+  description: string;
+  attemptsCount: number;
+  duration: number;
+  tags: string[];
+  sections: DetailedExamInfo_DetailedExamSection[];
+}
+
+export interface DetailedExamInfo_DetailedExamSection {
+  id: string;
+  name?: string | undefined;
+  questionsCount: number;
+  tags: string[];
+}
+
+export interface FindExamDto {
+  filter: FindExamDto_FilterOption | undefined;
+  sortBy: FindExamDto_SortOption | undefined;
+}
+
+export interface FindExamDto_FilterOption {
+  name: string;
+  tags: string[];
+}
+
+export interface FindExamDto_SortOption {
+  key: string;
+  direction: string;
+}
+
+export interface Exams {
+  exams: Exams_MinimalExamInfo[];
+}
+
+export interface Exams_MinimalExamInfo {
+  id: string;
+  name: string;
+  description: string;
+  attemptsCount: number;
+  duration: number;
+  tags: string[];
+}
+
+export interface GetDetailedQuestionDto {
+  questionId: string;
+}
+
+export interface DetailedQuestionInfo {
+  id: string;
+  sectionContext: DetailedQuestionInfo_SectionContext[];
+  content: string;
+  type: string;
+  explanation: string;
+  points: number;
+}
+
+export interface DetailedQuestionInfo_SectionContext {
+  content: string;
+  fileUrls: string[];
+}
+
+export interface GetExamStatsDto {
+  examId: string;
+}
+
+export interface ExamStatistics {
+  averageDuration: number;
+  averageScoreInPercentage: number;
+  questions: ExamStatistics_QuestionStatistics[];
+}
+
+export interface ExamStatistics_QuestionStatistics {
+  correctCount: number;
+  totalCount: number;
+  tags: string[];
+}
+
+export interface GetUsersAttemptHistoryDto {
+  uid: string;
+  examId?: string | undefined;
+}
+
+export interface UsersAttemptHistory {
+  attempts: UsersAttemptHistory_MinimalAttemptInfo[];
+}
+
+export interface UsersAttemptHistory_MinimalAttemptInfo {
+  id: string;
+  startedAt: Date | undefined;
+  endedAt: Date | undefined;
+  durationLimit: number;
+  score?: number | undefined;
+  totalPoints?: number | undefined;
+  isStrict: boolean;
+}
+
+export interface GetUserStatsDto {
+  uid: string;
+}
+
+export interface UserStats {
+  attemptCounts: number;
+  averageScoreInPercentage: number;
+  tagInfos: UserStats_TagInfo[];
+}
+
+export interface UserStats_TagInfo {
+  name: string;
+  correctPercentage: number;
+}
+
+wrappers[".google.protobuf.Timestamp"] = {
+  fromObject(value: Date) {
+    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
+  },
+  toObject(message: { seconds: number; nanos: number }) {
+    return new Date(message.seconds * 1000 + message.nanos / 1e6);
+  },
+} as any;
 
 function createBaseCreateExamDto(): CreateExamDto {
   return { createdBy: "", title: "", description: "", duration: 0 };
@@ -1964,6 +2201,2295 @@ export const MoveTagDto: MessageFns<MoveTagDto> = {
   },
 };
 
+function createBaseGetUsersAttemptSummaryDto(): GetUsersAttemptSummaryDto {
+  return { uid: "", range: undefined };
+}
+
+export const GetUsersAttemptSummaryDto: MessageFns<GetUsersAttemptSummaryDto> = {
+  encode(message: GetUsersAttemptSummaryDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== "") {
+      writer.uint32(10).string(message.uid);
+    }
+    if (message.range !== undefined) {
+      GetUsersAttemptSummaryDto_Range.encode(message.range, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptSummaryDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUsersAttemptSummaryDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.range = GetUsersAttemptSummaryDto_Range.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetUsersAttemptSummaryDto_Range(): GetUsersAttemptSummaryDto_Range {
+  return { from: undefined, to: undefined };
+}
+
+export const GetUsersAttemptSummaryDto_Range: MessageFns<GetUsersAttemptSummaryDto_Range> = {
+  encode(message: GetUsersAttemptSummaryDto_Range, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.from !== undefined) {
+      Timestamp.encode(toTimestamp(message.from), writer.uint32(10).fork()).join();
+    }
+    if (message.to !== undefined) {
+      Timestamp.encode(toTimestamp(message.to), writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptSummaryDto_Range {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUsersAttemptSummaryDto_Range();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.from = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.to = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptHistorySummary(): AttemptHistorySummary {
+  return { history: {} };
+}
+
+export const AttemptHistorySummary: MessageFns<AttemptHistorySummary> = {
+  encode(message: AttemptHistorySummary, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    globalThis.Object.entries(message.history).forEach(([key, value]: [string, number]) => {
+      AttemptHistorySummary_HistoryEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptHistorySummary {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptHistorySummary();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = AttemptHistorySummary_HistoryEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.history[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptHistorySummary_HistoryEntry(): AttemptHistorySummary_HistoryEntry {
+  return { key: 0, value: 0 };
+}
+
+export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummary_HistoryEntry> = {
+  encode(message: AttemptHistorySummary_HistoryEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== 0) {
+      writer.uint32(8).int64(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(16).int32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptHistorySummary_HistoryEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptHistorySummary_HistoryEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.key = longToNumber(reader.int64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetAttemptReviewDto(): GetAttemptReviewDto {
+  return { attemptId: "" };
+}
+
+export const GetAttemptReviewDto: MessageFns<GetAttemptReviewDto> = {
+  encode(message: GetAttemptReviewDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetAttemptReviewDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetAttemptReviewDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedAttemptReviewData(): DetailedAttemptReviewData {
+  return { responses: [], sections: [], startedAt: undefined, durationLimit: 0 };
+}
+
+export const DetailedAttemptReviewData: MessageFns<DetailedAttemptReviewData> = {
+  encode(message: DetailedAttemptReviewData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.responses) {
+      DetailedAttemptReviewData_AttemptReviewResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.sections) {
+      DetailedAttemptReviewData_SectionReviewData.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.startedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.startedAt), writer.uint32(26).fork()).join();
+    }
+    if (message.durationLimit !== 0) {
+      writer.uint32(32).int32(message.durationLimit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedAttemptReviewData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.responses.push(DetailedAttemptReviewData_AttemptReviewResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sections.push(DetailedAttemptReviewData_SectionReviewData.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.startedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.durationLimit = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedAttemptReviewData_AttemptReviewResponse(): DetailedAttemptReviewData_AttemptReviewResponse {
+  return { questionId: "", answers: [] };
+}
+
+export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
+  DetailedAttemptReviewData_AttemptReviewResponse
+> = {
+  encode(
+    message: DetailedAttemptReviewData_AttemptReviewResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.questionId !== "") {
+      writer.uint32(10).string(message.questionId);
+    }
+    if (message.note !== undefined) {
+      writer.uint32(18).string(message.note);
+    }
+    if (message.isFlagged !== undefined) {
+      writer.uint32(24).bool(message.isFlagged);
+    }
+    for (const v of message.answers) {
+      writer.uint32(34).string(v!);
+    }
+    if (message.isCorrect !== undefined) {
+      writer.uint32(40).bool(message.isCorrect);
+    }
+    if (message.score !== undefined) {
+      writer.uint32(48).int32(message.score);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData_AttemptReviewResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedAttemptReviewData_AttemptReviewResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.note = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isFlagged = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.answers.push(reader.string());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.isCorrect = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.score = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedAttemptReviewData_SectionReviewData(): DetailedAttemptReviewData_SectionReviewData {
+  return { id: "", directive: "", order: 0, fileUrls: [], type: "", sections: [], questions: [] };
+}
+
+export const DetailedAttemptReviewData_SectionReviewData: MessageFns<DetailedAttemptReviewData_SectionReviewData> = {
+  encode(
+    message: DetailedAttemptReviewData_SectionReviewData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.directive !== "") {
+      writer.uint32(26).string(message.directive);
+    }
+    if (message.order !== 0) {
+      writer.uint32(32).int32(message.order);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.type !== "") {
+      writer.uint32(50).string(message.type);
+    }
+    for (const v of message.sections) {
+      DetailedAttemptReviewData_SectionReviewData.encode(v!, writer.uint32(58).fork()).join();
+    }
+    for (const v of message.questions) {
+      DetailedAttemptReviewData_SectionReviewData_QuestionReviewData.encode(v!, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData_SectionReviewData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.directive = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.order = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.sections.push(DetailedAttemptReviewData_SectionReviewData.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.questions.push(
+            DetailedAttemptReviewData_SectionReviewData_QuestionReviewData.decode(reader, reader.uint32()),
+          );
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData(): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData {
+  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [], tags: [] };
+}
+
+export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: MessageFns<
+  DetailedAttemptReviewData_SectionReviewData_QuestionReviewData
+> = {
+  encode(
+    message: DetailedAttemptReviewData_SectionReviewData_QuestionReviewData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    if (message.order !== 0) {
+      writer.uint32(32).int32(message.order);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(42).string(v!);
+    }
+    for (const v of message.choices) {
+      DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData.encode(
+        v!,
+        writer.uint32(50).fork(),
+      ).join();
+    }
+    for (const v of message.tags) {
+      writer.uint32(58).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.order = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.choices.push(
+            DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData.decode(
+              reader,
+              reader.uint32(),
+            ),
+          );
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData(): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
+  return { key: "", content: "", isCorrect: false };
+}
+
+export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData: MessageFns<
+  DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData
+> = {
+  encode(
+    message: DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.isCorrect !== false) {
+      writer.uint32(24).bool(message.isCorrect);
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isCorrect = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetAttemptSavedDataDto(): GetAttemptSavedDataDto {
+  return { attemptId: "" };
+}
+
+export const GetAttemptSavedDataDto: MessageFns<GetAttemptSavedDataDto> = {
+  encode(message: GetAttemptSavedDataDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptId !== "") {
+      writer.uint32(10).string(message.attemptId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetAttemptSavedDataDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetAttemptSavedDataDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attemptId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptSavedData(): AttemptSavedData {
+  return { responses: [], sections: [], startedAt: undefined, durationLimit: 0 };
+}
+
+export const AttemptSavedData: MessageFns<AttemptSavedData> = {
+  encode(message: AttemptSavedData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.responses) {
+      AttemptSavedData_AttemptSavedResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.sections) {
+      AttemptSavedData_AttemptSectionData.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.startedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.startedAt), writer.uint32(26).fork()).join();
+    }
+    if (message.durationLimit !== 0) {
+      writer.uint32(32).int32(message.durationLimit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptSavedData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.responses.push(AttemptSavedData_AttemptSavedResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sections.push(AttemptSavedData_AttemptSectionData.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.startedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.durationLimit = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptSavedData_AttemptSavedResponse(): AttemptSavedData_AttemptSavedResponse {
+  return { questionId: "", answers: [] };
+}
+
+export const AttemptSavedData_AttemptSavedResponse: MessageFns<AttemptSavedData_AttemptSavedResponse> = {
+  encode(message: AttemptSavedData_AttemptSavedResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.questionId !== "") {
+      writer.uint32(10).string(message.questionId);
+    }
+    if (message.note !== undefined) {
+      writer.uint32(18).string(message.note);
+    }
+    if (message.isFlagged !== undefined) {
+      writer.uint32(24).bool(message.isFlagged);
+    }
+    for (const v of message.answers) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSavedResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptSavedData_AttemptSavedResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.note = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isFlagged = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.answers.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptSavedData_AttemptSectionData(): AttemptSavedData_AttemptSectionData {
+  return { id: "", directive: "", order: 0, fileUrls: [], type: "", sections: [], questions: [] };
+}
+
+export const AttemptSavedData_AttemptSectionData: MessageFns<AttemptSavedData_AttemptSectionData> = {
+  encode(message: AttemptSavedData_AttemptSectionData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.directive !== "") {
+      writer.uint32(26).string(message.directive);
+    }
+    if (message.order !== 0) {
+      writer.uint32(32).int32(message.order);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.type !== "") {
+      writer.uint32(50).string(message.type);
+    }
+    for (const v of message.sections) {
+      AttemptSavedData_AttemptSectionData.encode(v!, writer.uint32(58).fork()).join();
+    }
+    for (const v of message.questions) {
+      AttemptSavedData_AttemptSectionData_AttemptQuestionData.encode(v!, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSectionData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptSavedData_AttemptSectionData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.directive = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.order = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.sections.push(AttemptSavedData_AttemptSectionData.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.questions.push(
+            AttemptSavedData_AttemptSectionData_AttemptQuestionData.decode(reader, reader.uint32()),
+          );
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData(): AttemptSavedData_AttemptSectionData_AttemptQuestionData {
+  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [] };
+}
+
+export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns<
+  AttemptSavedData_AttemptSectionData_AttemptQuestionData
+> = {
+  encode(
+    message: AttemptSavedData_AttemptSectionData_AttemptQuestionData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    if (message.order !== 0) {
+      writer.uint32(32).int32(message.order);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(42).string(v!);
+    }
+    for (const v of message.choices) {
+      AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData.encode(v!, writer.uint32(50).fork())
+        .join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSectionData_AttemptQuestionData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.order = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.choices.push(
+            AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData.decode(reader, reader.uint32()),
+          );
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData(): AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
+  return { key: "", content: "" };
+}
+
+export const AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData: MessageFns<
+  AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData
+> = {
+  encode(
+    message: AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.content !== "") {
+      writer.uint32(18).string(message.content);
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetExamDetailsDto(): GetExamDetailsDto {
+  return { examId: "" };
+}
+
+export const GetExamDetailsDto: MessageFns<GetExamDetailsDto> = {
+  encode(message: GetExamDetailsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.examId !== "") {
+      writer.uint32(10).string(message.examId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetExamDetailsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetExamDetailsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedExamInfo(): DetailedExamInfo {
+  return { id: "", name: "", description: "", attemptsCount: 0, duration: 0, tags: [], sections: [] };
+}
+
+export const DetailedExamInfo: MessageFns<DetailedExamInfo> = {
+  encode(message: DetailedExamInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.attemptsCount !== 0) {
+      writer.uint32(32).int32(message.attemptsCount);
+    }
+    if (message.duration !== 0) {
+      writer.uint32(40).int32(message.duration);
+    }
+    for (const v of message.tags) {
+      writer.uint32(50).string(v!);
+    }
+    for (const v of message.sections) {
+      DetailedExamInfo_DetailedExamSection.encode(v!, writer.uint32(58).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedExamInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedExamInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.attemptsCount = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.sections.push(DetailedExamInfo_DetailedExamSection.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedExamInfo_DetailedExamSection(): DetailedExamInfo_DetailedExamSection {
+  return { id: "", questionsCount: 0, tags: [] };
+}
+
+export const DetailedExamInfo_DetailedExamSection: MessageFns<DetailedExamInfo_DetailedExamSection> = {
+  encode(message: DetailedExamInfo_DetailedExamSection, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.questionsCount !== 0) {
+      writer.uint32(24).int32(message.questionsCount);
+    }
+    for (const v of message.tags) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedExamInfo_DetailedExamSection {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedExamInfo_DetailedExamSection();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.questionsCount = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamDto(): FindExamDto {
+  return { filter: undefined, sortBy: undefined };
+}
+
+export const FindExamDto: MessageFns<FindExamDto> = {
+  encode(message: FindExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.filter !== undefined) {
+      FindExamDto_FilterOption.encode(message.filter, writer.uint32(10).fork()).join();
+    }
+    if (message.sortBy !== undefined) {
+      FindExamDto_SortOption.encode(message.sortBy, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.filter = FindExamDto_FilterOption.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sortBy = FindExamDto_SortOption.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamDto_FilterOption(): FindExamDto_FilterOption {
+  return { name: "", tags: [] };
+}
+
+export const FindExamDto_FilterOption: MessageFns<FindExamDto_FilterOption> = {
+  encode(message: FindExamDto_FilterOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    for (const v of message.tags) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamDto_FilterOption {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamDto_FilterOption();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamDto_SortOption(): FindExamDto_SortOption {
+  return { key: "", direction: "" };
+}
+
+export const FindExamDto_SortOption: MessageFns<FindExamDto_SortOption> = {
+  encode(message: FindExamDto_SortOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.direction !== "") {
+      writer.uint32(18).string(message.direction);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamDto_SortOption {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamDto_SortOption();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.direction = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseExams(): Exams {
+  return { exams: [] };
+}
+
+export const Exams: MessageFns<Exams> = {
+  encode(message: Exams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.exams) {
+      Exams_MinimalExamInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Exams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.exams.push(Exams_MinimalExamInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseExams_MinimalExamInfo(): Exams_MinimalExamInfo {
+  return { id: "", name: "", description: "", attemptsCount: 0, duration: 0, tags: [] };
+}
+
+export const Exams_MinimalExamInfo: MessageFns<Exams_MinimalExamInfo> = {
+  encode(message: Exams_MinimalExamInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.attemptsCount !== 0) {
+      writer.uint32(32).int32(message.attemptsCount);
+    }
+    if (message.duration !== 0) {
+      writer.uint32(40).int32(message.duration);
+    }
+    for (const v of message.tags) {
+      writer.uint32(50).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Exams_MinimalExamInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExams_MinimalExamInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.attemptsCount = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetDetailedQuestionDto(): GetDetailedQuestionDto {
+  return { questionId: "" };
+}
+
+export const GetDetailedQuestionDto: MessageFns<GetDetailedQuestionDto> = {
+  encode(message: GetDetailedQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.questionId !== "") {
+      writer.uint32(10).string(message.questionId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetDetailedQuestionDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetDetailedQuestionDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedQuestionInfo(): DetailedQuestionInfo {
+  return { id: "", sectionContext: [], content: "", type: "", explanation: "", points: 0 };
+}
+
+export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
+  encode(message: DetailedQuestionInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    for (const v of message.sectionContext) {
+      DetailedQuestionInfo_SectionContext.encode(v!, writer.uint32(18).fork()).join();
+    }
+    if (message.content !== "") {
+      writer.uint32(26).string(message.content);
+    }
+    if (message.type !== "") {
+      writer.uint32(34).string(message.type);
+    }
+    if (message.explanation !== "") {
+      writer.uint32(42).string(message.explanation);
+    }
+    if (message.points !== 0) {
+      writer.uint32(48).int32(message.points);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedQuestionInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedQuestionInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sectionContext.push(DetailedQuestionInfo_SectionContext.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.explanation = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.points = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDetailedQuestionInfo_SectionContext(): DetailedQuestionInfo_SectionContext {
+  return { content: "", fileUrls: [] };
+}
+
+export const DetailedQuestionInfo_SectionContext: MessageFns<DetailedQuestionInfo_SectionContext> = {
+  encode(message: DetailedQuestionInfo_SectionContext, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.content !== "") {
+      writer.uint32(10).string(message.content);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(18).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DetailedQuestionInfo_SectionContext {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDetailedQuestionInfo_SectionContext();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetExamStatsDto(): GetExamStatsDto {
+  return { examId: "" };
+}
+
+export const GetExamStatsDto: MessageFns<GetExamStatsDto> = {
+  encode(message: GetExamStatsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.examId !== "") {
+      writer.uint32(10).string(message.examId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetExamStatsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetExamStatsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseExamStatistics(): ExamStatistics {
+  return { averageDuration: 0, averageScoreInPercentage: 0, questions: [] };
+}
+
+export const ExamStatistics: MessageFns<ExamStatistics> = {
+  encode(message: ExamStatistics, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.averageDuration !== 0) {
+      writer.uint32(9).double(message.averageDuration);
+    }
+    if (message.averageScoreInPercentage !== 0) {
+      writer.uint32(17).double(message.averageScoreInPercentage);
+    }
+    for (const v of message.questions) {
+      ExamStatistics_QuestionStatistics.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ExamStatistics {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExamStatistics();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 9) {
+            break;
+          }
+
+          message.averageDuration = reader.double();
+          continue;
+        }
+        case 2: {
+          if (tag !== 17) {
+            break;
+          }
+
+          message.averageScoreInPercentage = reader.double();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.questions.push(ExamStatistics_QuestionStatistics.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseExamStatistics_QuestionStatistics(): ExamStatistics_QuestionStatistics {
+  return { correctCount: 0, totalCount: 0, tags: [] };
+}
+
+export const ExamStatistics_QuestionStatistics: MessageFns<ExamStatistics_QuestionStatistics> = {
+  encode(message: ExamStatistics_QuestionStatistics, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.correctCount !== 0) {
+      writer.uint32(8).int32(message.correctCount);
+    }
+    if (message.totalCount !== 0) {
+      writer.uint32(16).int32(message.totalCount);
+    }
+    for (const v of message.tags) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ExamStatistics_QuestionStatistics {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExamStatistics_QuestionStatistics();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.correctCount = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.totalCount = reader.int32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetUsersAttemptHistoryDto(): GetUsersAttemptHistoryDto {
+  return { uid: "" };
+}
+
+export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = {
+  encode(message: GetUsersAttemptHistoryDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== "") {
+      writer.uint32(10).string(message.uid);
+    }
+    if (message.examId !== undefined) {
+      writer.uint32(18).string(message.examId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptHistoryDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUsersAttemptHistoryDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUsersAttemptHistory(): UsersAttemptHistory {
+  return { attempts: [] };
+}
+
+export const UsersAttemptHistory: MessageFns<UsersAttemptHistory> = {
+  encode(message: UsersAttemptHistory, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.attempts) {
+      UsersAttemptHistory_MinimalAttemptInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UsersAttemptHistory {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUsersAttemptHistory();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.attempts.push(UsersAttemptHistory_MinimalAttemptInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUsersAttemptHistory_MinimalAttemptInfo(): UsersAttemptHistory_MinimalAttemptInfo {
+  return { id: "", startedAt: undefined, endedAt: undefined, durationLimit: 0, isStrict: false };
+}
+
+export const UsersAttemptHistory_MinimalAttemptInfo: MessageFns<UsersAttemptHistory_MinimalAttemptInfo> = {
+  encode(message: UsersAttemptHistory_MinimalAttemptInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.startedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.startedAt), writer.uint32(18).fork()).join();
+    }
+    if (message.endedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.endedAt), writer.uint32(26).fork()).join();
+    }
+    if (message.durationLimit !== 0) {
+      writer.uint32(32).int32(message.durationLimit);
+    }
+    if (message.score !== undefined) {
+      writer.uint32(41).double(message.score);
+    }
+    if (message.totalPoints !== undefined) {
+      writer.uint32(49).double(message.totalPoints);
+    }
+    if (message.isStrict !== false) {
+      writer.uint32(56).bool(message.isStrict);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UsersAttemptHistory_MinimalAttemptInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUsersAttemptHistory_MinimalAttemptInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.startedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.endedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.durationLimit = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 41) {
+            break;
+          }
+
+          message.score = reader.double();
+          continue;
+        }
+        case 6: {
+          if (tag !== 49) {
+            break;
+          }
+
+          message.totalPoints = reader.double();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.isStrict = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetUserStatsDto(): GetUserStatsDto {
+  return { uid: "" };
+}
+
+export const GetUserStatsDto: MessageFns<GetUserStatsDto> = {
+  encode(message: GetUserStatsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== "") {
+      writer.uint32(10).string(message.uid);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUserStatsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUserStatsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserStats(): UserStats {
+  return { attemptCounts: 0, averageScoreInPercentage: 0, tagInfos: [] };
+}
+
+export const UserStats: MessageFns<UserStats> = {
+  encode(message: UserStats, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.attemptCounts !== 0) {
+      writer.uint32(8).int32(message.attemptCounts);
+    }
+    if (message.averageScoreInPercentage !== 0) {
+      writer.uint32(17).double(message.averageScoreInPercentage);
+    }
+    for (const v of message.tagInfos) {
+      UserStats_TagInfo.encode(v!, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserStats {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserStats();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.attemptCounts = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 17) {
+            break;
+          }
+
+          message.averageScoreInPercentage = reader.double();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.tagInfos.push(UserStats_TagInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserStats_TagInfo(): UserStats_TagInfo {
+  return { name: "", correctPercentage: 0 };
+}
+
+export const UserStats_TagInfo: MessageFns<UserStats_TagInfo> = {
+  encode(message: UserStats_TagInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.correctPercentage !== 0) {
+      writer.uint32(17).double(message.correctPercentage);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserStats_TagInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserStats_TagInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 17) {
+            break;
+          }
+
+          message.correctPercentage = reader.double();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
@@ -2194,6 +4720,26 @@ export interface ExamPracticeServiceClient {
   addNote(request: AddNoteDto, metadata?: Metadata): Observable<Empty>;
 
   toggleFlag(request: ToggleFlagDto, metadata?: Metadata): Observable<FlagStateDto>;
+
+  /** query methods */
+
+  getUsesStats(request: GetUserStatsDto, metadata?: Metadata): Observable<UserStats>;
+
+  getUsersAttemptSummary(request: GetUsersAttemptSummaryDto, metadata?: Metadata): Observable<AttemptHistorySummary>;
+
+  getUsersAttemptHistory(request: GetUsersAttemptHistoryDto, metadata?: Metadata): Observable<UsersAttemptHistory>;
+
+  findExam(request: FindExamDto, metadata?: Metadata): Observable<Exams>;
+
+  getExamDetails(request: GetExamDetailsDto, metadata?: Metadata): Observable<DetailedExamInfo>;
+
+  getExamStats(request: GetExamStatsDto, metadata?: Metadata): Observable<ExamStatistics>;
+
+  getAttemptSavedData(request: GetAttemptSavedDataDto, metadata?: Metadata): Observable<AttemptSavedData>;
+
+  getAttemptReview(request: GetAttemptReviewDto, metadata?: Metadata): Observable<DetailedAttemptReviewData>;
+
+  getDetailedQuestionInfo(request: GetDetailedQuestionDto, metadata?: Metadata): Observable<DetailedQuestionInfo>;
 }
 
 export interface ExamPracticeServiceController {
@@ -2214,11 +4760,68 @@ export interface ExamPracticeServiceController {
     request: ToggleFlagDto,
     metadata?: Metadata,
   ): Promise<FlagStateDto> | Observable<FlagStateDto> | FlagStateDto;
+
+  /** query methods */
+
+  getUsesStats(request: GetUserStatsDto, metadata?: Metadata): Promise<UserStats> | Observable<UserStats> | UserStats;
+
+  getUsersAttemptSummary(
+    request: GetUsersAttemptSummaryDto,
+    metadata?: Metadata,
+  ): Promise<AttemptHistorySummary> | Observable<AttemptHistorySummary> | AttemptHistorySummary;
+
+  getUsersAttemptHistory(
+    request: GetUsersAttemptHistoryDto,
+    metadata?: Metadata,
+  ): Promise<UsersAttemptHistory> | Observable<UsersAttemptHistory> | UsersAttemptHistory;
+
+  findExam(request: FindExamDto, metadata?: Metadata): Promise<Exams> | Observable<Exams> | Exams;
+
+  getExamDetails(
+    request: GetExamDetailsDto,
+    metadata?: Metadata,
+  ): Promise<DetailedExamInfo> | Observable<DetailedExamInfo> | DetailedExamInfo;
+
+  getExamStats(
+    request: GetExamStatsDto,
+    metadata?: Metadata,
+  ): Promise<ExamStatistics> | Observable<ExamStatistics> | ExamStatistics;
+
+  getAttemptSavedData(
+    request: GetAttemptSavedDataDto,
+    metadata?: Metadata,
+  ): Promise<AttemptSavedData> | Observable<AttemptSavedData> | AttemptSavedData;
+
+  getAttemptReview(
+    request: GetAttemptReviewDto,
+    metadata?: Metadata,
+  ): Promise<DetailedAttemptReviewData> | Observable<DetailedAttemptReviewData> | DetailedAttemptReviewData;
+
+  getDetailedQuestionInfo(
+    request: GetDetailedQuestionDto,
+    metadata?: Metadata,
+  ): Promise<DetailedQuestionInfo> | Observable<DetailedQuestionInfo> | DetailedQuestionInfo;
 }
 
 export function ExamPracticeServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["attempt", "endAttempt", "answer", "removeAnswer", "addNote", "toggleFlag"];
+    const grpcMethods: string[] = [
+      "attempt",
+      "endAttempt",
+      "answer",
+      "removeAnswer",
+      "addNote",
+      "toggleFlag",
+      "getUsesStats",
+      "getUsersAttemptSummary",
+      "getUsersAttemptHistory",
+      "findExam",
+      "getExamDetails",
+      "getExamStats",
+      "getAttemptSavedData",
+      "getAttemptReview",
+      "getDetailedQuestionInfo",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ExamPracticeService", method)(constructor.prototype[method], method, descriptor);
@@ -2289,6 +4892,95 @@ export const ExamPracticeServiceService = {
     responseSerialize: (value: FlagStateDto): Buffer => Buffer.from(FlagStateDto.encode(value).finish()),
     responseDeserialize: (value: Buffer): FlagStateDto => FlagStateDto.decode(value),
   },
+  /** query methods */
+  getUsesStats: {
+    path: "/exam.ExamPracticeService/GetUsesStats" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetUserStatsDto): Buffer => Buffer.from(GetUserStatsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetUserStatsDto => GetUserStatsDto.decode(value),
+    responseSerialize: (value: UserStats): Buffer => Buffer.from(UserStats.encode(value).finish()),
+    responseDeserialize: (value: Buffer): UserStats => UserStats.decode(value),
+  },
+  getUsersAttemptSummary: {
+    path: "/exam.ExamPracticeService/GetUsersAttemptSummary" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetUsersAttemptSummaryDto): Buffer =>
+      Buffer.from(GetUsersAttemptSummaryDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetUsersAttemptSummaryDto => GetUsersAttemptSummaryDto.decode(value),
+    responseSerialize: (value: AttemptHistorySummary): Buffer =>
+      Buffer.from(AttemptHistorySummary.encode(value).finish()),
+    responseDeserialize: (value: Buffer): AttemptHistorySummary => AttemptHistorySummary.decode(value),
+  },
+  getUsersAttemptHistory: {
+    path: "/exam.ExamPracticeService/GetUsersAttemptHistory" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetUsersAttemptHistoryDto): Buffer =>
+      Buffer.from(GetUsersAttemptHistoryDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetUsersAttemptHistoryDto => GetUsersAttemptHistoryDto.decode(value),
+    responseSerialize: (value: UsersAttemptHistory): Buffer => Buffer.from(UsersAttemptHistory.encode(value).finish()),
+    responseDeserialize: (value: Buffer): UsersAttemptHistory => UsersAttemptHistory.decode(value),
+  },
+  findExam: {
+    path: "/exam.ExamPracticeService/FindExam" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: FindExamDto): Buffer => Buffer.from(FindExamDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): FindExamDto => FindExamDto.decode(value),
+    responseSerialize: (value: Exams): Buffer => Buffer.from(Exams.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Exams => Exams.decode(value),
+  },
+  getExamDetails: {
+    path: "/exam.ExamPracticeService/GetExamDetails" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetExamDetailsDto): Buffer => Buffer.from(GetExamDetailsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetExamDetailsDto => GetExamDetailsDto.decode(value),
+    responseSerialize: (value: DetailedExamInfo): Buffer => Buffer.from(DetailedExamInfo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): DetailedExamInfo => DetailedExamInfo.decode(value),
+  },
+  getExamStats: {
+    path: "/exam.ExamPracticeService/GetExamStats" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetExamStatsDto): Buffer => Buffer.from(GetExamStatsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetExamStatsDto => GetExamStatsDto.decode(value),
+    responseSerialize: (value: ExamStatistics): Buffer => Buffer.from(ExamStatistics.encode(value).finish()),
+    responseDeserialize: (value: Buffer): ExamStatistics => ExamStatistics.decode(value),
+  },
+  getAttemptSavedData: {
+    path: "/exam.ExamPracticeService/GetAttemptSavedData" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetAttemptSavedDataDto): Buffer =>
+      Buffer.from(GetAttemptSavedDataDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetAttemptSavedDataDto => GetAttemptSavedDataDto.decode(value),
+    responseSerialize: (value: AttemptSavedData): Buffer => Buffer.from(AttemptSavedData.encode(value).finish()),
+    responseDeserialize: (value: Buffer): AttemptSavedData => AttemptSavedData.decode(value),
+  },
+  getAttemptReview: {
+    path: "/exam.ExamPracticeService/GetAttemptReview" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetAttemptReviewDto): Buffer => Buffer.from(GetAttemptReviewDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetAttemptReviewDto => GetAttemptReviewDto.decode(value),
+    responseSerialize: (value: DetailedAttemptReviewData): Buffer =>
+      Buffer.from(DetailedAttemptReviewData.encode(value).finish()),
+    responseDeserialize: (value: Buffer): DetailedAttemptReviewData => DetailedAttemptReviewData.decode(value),
+  },
+  getDetailedQuestionInfo: {
+    path: "/exam.ExamPracticeService/GetDetailedQuestionInfo" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetDetailedQuestionDto): Buffer =>
+      Buffer.from(GetDetailedQuestionDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetDetailedQuestionDto => GetDetailedQuestionDto.decode(value),
+    responseSerialize: (value: DetailedQuestionInfo): Buffer =>
+      Buffer.from(DetailedQuestionInfo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): DetailedQuestionInfo => DetailedQuestionInfo.decode(value),
+  },
 } as const;
 
 export interface ExamPracticeServiceServer extends UntypedServiceImplementation {
@@ -2298,6 +4990,16 @@ export interface ExamPracticeServiceServer extends UntypedServiceImplementation 
   removeAnswer: handleUnaryCall<RemoveAnswerDto, Empty>;
   addNote: handleUnaryCall<AddNoteDto, Empty>;
   toggleFlag: handleUnaryCall<ToggleFlagDto, FlagStateDto>;
+  /** query methods */
+  getUsesStats: handleUnaryCall<GetUserStatsDto, UserStats>;
+  getUsersAttemptSummary: handleUnaryCall<GetUsersAttemptSummaryDto, AttemptHistorySummary>;
+  getUsersAttemptHistory: handleUnaryCall<GetUsersAttemptHistoryDto, UsersAttemptHistory>;
+  findExam: handleUnaryCall<FindExamDto, Exams>;
+  getExamDetails: handleUnaryCall<GetExamDetailsDto, DetailedExamInfo>;
+  getExamStats: handleUnaryCall<GetExamStatsDto, ExamStatistics>;
+  getAttemptSavedData: handleUnaryCall<GetAttemptSavedDataDto, AttemptSavedData>;
+  getAttemptReview: handleUnaryCall<GetAttemptReviewDto, DetailedAttemptReviewData>;
+  getDetailedQuestionInfo: handleUnaryCall<GetDetailedQuestionDto, DetailedQuestionInfo>;
 }
 
 export interface TagServiceClient {
@@ -2382,6 +5084,29 @@ export interface TagServiceServer extends UntypedServiceImplementation {
   deleteTag: handleUnaryCall<DeleteTagDto, Empty>;
   updateTag: handleUnaryCall<UpdateTagDto, Empty>;
   moveTag: handleUnaryCall<MoveTagDto, Empty>;
+}
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+function longToNumber(int64: { toString(): string }): number {
+  const num = globalThis.Number(int64.toString());
+  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return num;
 }
 
 interface MessageFns<T> {

@@ -9,12 +9,14 @@ import { ExamEventHandlers } from './domain/events/handlers';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
 import { IFileRepositoryToken } from './domain/repositories/file.repository';
+import { IPracticeReadRepositoryToken } from './domain/repositories/practice.read.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';
 import { ISectionRepositoryToken } from './domain/repositories/section.repository';
 import { ITagRepositoryToken } from './domain/repositories/tag.repository';
 import { AttemptPrismaRepository } from './infra/repositories/attempt.prisma.repository.impl';
 import { ExamPrismaRepository } from './infra/repositories/exam.prisma.repository.impl';
 import { FilePrismaRepositoryImpl } from './infra/repositories/file.prisma.repository.impl';
+import { PracticeReadPrismaRepositoryImpl } from './infra/repositories/practice.read.prisma.repository.impl';
 import { QuestionPrismaRepository } from './infra/repositories/question.prisma.repository.impl';
 import { SectionPrismaRepository } from './infra/repositories/section.prisma.repository.impl';
 import { TagPrismaRepository } from './infra/repositories/tag.prisma.repository.impl';
@@ -95,6 +97,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: IFileRepositoryToken,
 			useClass: FilePrismaRepositoryImpl,
+		},
+		{
+			provide: IPracticeReadRepositoryToken,
+			useClass: PracticeReadPrismaRepositoryImpl,
 		},
 		{
 			provide: APP_GUARD,
