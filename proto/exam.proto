@@ -394,9 +394,10 @@ message DetailedQuestionInfo {
 	string                  type            = 4;
 	string                  explanation     = 5;
 	int32                   points          = 6;
+	repeated string         file_urls       = 7;
 
 	message SectionContext {
-		string          content   = 1;
+		optional string content   = 1;
 		repeated string file_urls = 2;
 	}
 }

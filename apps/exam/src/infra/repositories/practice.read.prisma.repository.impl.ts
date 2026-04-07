@@ -289,7 +289,44 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		return {} as unknown as Promise<DetailedAttemptReviewData>;
 	}
 
-	getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo> {
-		return {} as unknown as Promise<DetailedQuestionInfo>;
+	async getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo> {
+		const foundQuestion = await this.txHost.tx.question.findUnique({
+			where: { id: questionId },
+			select: {
+				id: true,
+				content: true,
+				type: true,
+				explanation: true,
+				points: true,
+				questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc', fileId: 'asc' } },
+				section: {
+					select: {
+						ancestors: {
+							select: {
+								ancestor: {
+									select: { directive: true, sectionFiles: { select: { fileId: true } } },
+								},
+							},
+							orderBy: { depth: 'desc' },
+						},
+					},
+				},
+			},
+		});
+
+		if (!foundQuestion) throw new NotFoundException(`Question ${questionId} not found`);
+
+		return {
+			id: foundQuestion.id,
+			content: foundQuestion.content,
+			explanation: foundQuestion.explanation,
+			points: foundQuestion.points,
+			type: foundQuestion.type,
+			fileUrls: foundQuestion.questionFiles.map(f => f.fileId),
+			sectionContext: foundQuestion.section.ancestors.map(a => ({
+				content: a.ancestor.directive ?? undefined,
+				fileUrls: a.ancestor.sectionFiles.map(f => f.fileId),
+			})),
+		};
 	}
 }

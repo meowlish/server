@@ -363,10 +363,11 @@ export interface DetailedQuestionInfo {
   type: string;
   explanation: string;
   points: number;
+  fileUrls: string[];
 }
 
 export interface DetailedQuestionInfo_SectionContext {
-  content: string;
+  content?: string | undefined;
   fileUrls: string[];
 }
 
@@ -3864,7 +3865,7 @@ export const GetDetailedQuestionDto: MessageFns<GetDetailedQuestionDto> = {
 };
 
 function createBaseDetailedQuestionInfo(): DetailedQuestionInfo {
-  return { id: "", sectionContext: [], content: "", type: "", explanation: "", points: 0 };
+  return { id: "", sectionContext: [], content: "", type: "", explanation: "", points: 0, fileUrls: [] };
 }
 
 export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
@@ -3886,6 +3887,9 @@ export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
     }
     if (message.points !== 0) {
       writer.uint32(48).int32(message.points);
+    }
+    for (const v of message.fileUrls) {
+      writer.uint32(58).string(v!);
     }
     return writer;
   },
@@ -3945,6 +3949,14 @@ export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
           message.points = reader.int32();
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.fileUrls.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3956,12 +3968,12 @@ export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
 };
 
 function createBaseDetailedQuestionInfo_SectionContext(): DetailedQuestionInfo_SectionContext {
-  return { content: "", fileUrls: [] };
+  return { fileUrls: [] };
 }
 
 export const DetailedQuestionInfo_SectionContext: MessageFns<DetailedQuestionInfo_SectionContext> = {
   encode(message: DetailedQuestionInfo_SectionContext, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.content !== "") {
+    if (message.content !== undefined) {
       writer.uint32(10).string(message.content);
     }
     for (const v of message.fileUrls) {
