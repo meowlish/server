@@ -1,6 +1,3 @@
-import { QuestionType } from '../../enums/question-type.enum';
-import { SectionType } from '../../enums/section-type.enum';
-
 // when retrieving save data
 export type AttemptSavedData = {
 	responses: { questionId: string; note?: string; isFlagged?: boolean; answers: string[] }[];
@@ -9,22 +6,22 @@ export type AttemptSavedData = {
 	durationLimit: number;
 };
 
-type AttemptSectionData = {
+export type AttemptSectionData = {
 	id: string;
-	name: string;
+	name?: string;
 	directive: string;
 	order: number;
 	fileUrls: string[];
-} & (
-	| { type: SectionType.Section; sections: AttemptSectionData[] }
-	| { type: SectionType.Question; questions: AttemptQuestionData[] }
-);
+	type: string;
+	sections: AttemptSectionData[];
+	questions: AttemptQuestionData[];
+};
 
 type AttemptQuestionData = {
 	id: string;
 	content: string;
-	type: QuestionType;
+	type: string;
 	order: number;
 	fileUrls: string[];
-	choices: { key: string; content: string }[];
+	choices: { key: string; content?: string }[];
 };

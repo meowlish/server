@@ -256,7 +256,7 @@ export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData 
 
 export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
   key: string;
-  content: string;
+  content?: string | undefined;
   isCorrect: boolean;
 }
 
@@ -291,7 +291,7 @@ export interface AttemptSavedData_AttemptSectionData {
 
 export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData {
   id: string;
-  content: string;
+  content?: string | undefined;
   type: string;
   order: number;
   fileUrls: string[];
@@ -2829,7 +2829,7 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: Mes
 };
 
 function createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData(): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
-  return { key: "", content: "", isCorrect: false };
+  return { key: "", isCorrect: false };
 }
 
 export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData: MessageFns<
@@ -2842,7 +2842,7 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_Choi
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
-    if (message.content !== "") {
+    if (message.content !== undefined) {
       writer.uint32(18).string(message.content);
     }
     if (message.isCorrect !== false) {
@@ -3189,7 +3189,7 @@ export const AttemptSavedData_AttemptSectionData: MessageFns<AttemptSavedData_At
 };
 
 function createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData(): AttemptSavedData_AttemptSectionData_AttemptQuestionData {
-  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [] };
+  return { id: "", type: "", order: 0, fileUrls: [], choices: [] };
 }
 
 export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns<
@@ -3202,7 +3202,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.content !== "") {
+    if (message.content !== undefined) {
       writer.uint32(18).string(message.content);
     }
     if (message.type !== "") {

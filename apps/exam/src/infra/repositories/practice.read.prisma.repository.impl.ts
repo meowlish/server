@@ -1,6 +1,9 @@
 import { AttemptHistorySummary } from '../../domain/read-models/attempt-history-summary.read-model';
-import { DetailedAttemptReviewData } from '../../domain/read-models/attempt-review,.read-model';
-import { AttemptSavedData } from '../../domain/read-models/attempt-save-data.read-model';
+import { DetailedAttemptReviewData } from '../../domain/read-models/attempt-review.read-model';
+import {
+	AttemptSavedData,
+	AttemptSectionData,
+} from '../../domain/read-models/attempt-save-data.read-model';
 import { DetailedExamInfo } from '../../domain/read-models/detailed-exam.read-model';
 import { DetailedQuestionInfo } from '../../domain/read-models/detailed-question.read-model';
 import { ExamStatistics } from '../../domain/read-models/exam-statistics.read-model';
@@ -8,11 +11,13 @@ import { MinimalAttemptInfo } from '../../domain/read-models/minimal-attempt.rea
 import { MinimalExamInfo } from '../../domain/read-models/minimal-exam.read-model';
 import { UserStats } from '../../domain/read-models/user-stats.read-model';
 import { IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
+import { QuestionType, questionTypesThatShowChoices } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
+import { parseEnum } from '@server/utils';
 
 @Injectable()
 export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository {
@@ -356,8 +361,129 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
-		return {} as unknown as Promise<AttemptSavedData>;
+	async getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
+		const attemptData = await this.txHost.tx.attempt.findUnique({
+			where: { id: attemptId },
+			select: {
+				examId: true,
+				startedAt: true,
+				durationLimit: true,
+				attemptResponses: {
+					select: { questionId: true, answers: true, note: true, isFlagged: true },
+				},
+			},
+		});
+
+		if (!attemptData) throw new NotFoundException(`Attempt ${attemptId} not found`);
+
+		const sections = await this.txHost.tx.attemptSection.findMany({
+			where: { attemptId: attemptId },
+			select: {
+				section: {
+					select: {
+						descendants: {
+							select: {
+								descendant: {
+									select: {
+										id: true,
+										parentId: true,
+										name: true,
+										directive: true,
+										order: true,
+										contentType: true,
+										sectionFiles: { select: { fileId: true } },
+										questions: {
+											select: {
+												id: true,
+												content: true,
+												type: true,
+												order: true,
+												questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+												choices: { select: { key: true, content: true } },
+											},
+											orderBy: { order: 'asc' },
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const flattenedSections =
+			sections.length === 0 ?
+				await this.txHost.tx.section.findMany({
+					where: { examId: attemptData.examId },
+					select: {
+						id: true,
+						parentId: true,
+						name: true,
+						directive: true,
+						order: true,
+						contentType: true,
+						sectionFiles: { select: { fileId: true } },
+						questions: {
+							select: {
+								id: true,
+								content: true,
+								type: true,
+								order: true,
+								questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+								choices: { select: { key: true, content: true } },
+							},
+							orderBy: { order: 'asc' },
+						},
+					},
+				})
+			:	sections.map(s => s.section.descendants.map(d => d.descendant)).flat();
+
+		const castedFlattenedSections: (AttemptSectionData & { parentId: string | null })[] =
+			flattenedSections.map(s => ({
+				id: s.id,
+				parentId: s.parentId,
+				name: s.name ?? undefined,
+				directive: s.directive,
+				order: s.order,
+				fileUrls: s.sectionFiles.map(f => f.fileId),
+				type: s.contentType,
+				sections: [],
+				questions: s.questions.map(q => ({
+					id: q.id,
+					order: q.order,
+					content: q.content,
+					type: q.type,
+					fileUrls: q.questionFiles.map(f => f.fileId),
+					choices:
+						questionTypesThatShowChoices.includes(parseEnum(QuestionType, q.type)) ?
+							q.choices.map(c => ({ key: c.key, content: c.content ?? undefined }))
+						:	[],
+				})),
+			}));
+		const sectionsMap = new Map(castedFlattenedSections.map(s => [s.id, s]));
+		const treeSections = castedFlattenedSections
+			.filter(s => {
+				if (s.parentId === null) return true;
+				const section = sectionsMap.get(s.parentId);
+				if (!section) throw new Error('Problem when building section trees');
+				section.sections.push(s);
+				section.sections.sort((s1, s2) => s1.order - s2.order);
+				return false;
+			})
+			.sort((s1, s2) => s1.order - s2.order);
+
+		return {
+			startedAt: attemptData.startedAt,
+			durationLimit: attemptData.durationLimit,
+			responses: attemptData.attemptResponses.map(r => ({
+				questionId: r.questionId,
+				note: r.note ?? undefined,
+				isFlagged: r.isFlagged,
+				answers: r.answers,
+			})),
+			sections: treeSections,
+		};
 	}
 
 	getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData> {

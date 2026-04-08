@@ -1,6 +1,3 @@
-import { QuestionType } from '../../enums/question-type.enum';
-import { SectionType } from '../../enums/section-type.enum';
-
 // detailed attempt review
 // (each question's answers + correct answer, points, tag summary)
 export type DetailedAttemptReviewData = {
@@ -19,21 +16,21 @@ export type DetailedAttemptReviewData = {
 
 type SectionReviewData = {
 	id: string;
-	name: string;
+	name?: string;
 	directive: string;
 	order: number;
 	fileUrls: string[];
-} & (
-	| { type: SectionType.Section; sections: SectionReviewData[] }
-	| { type: SectionType.Question; questions: QuestionReviewData[] }
-);
+	type: string;
+	sections: SectionReviewData[];
+	questions: QuestionReviewData[];
+};
 
 type QuestionReviewData = {
 	id: string;
 	content: string;
-	type: QuestionType;
+	type: string;
 	order: number;
 	fileUrls: string[];
-	choices: { key: string; content: string; isCorrect: boolean }[];
+	choices: { key: string; content?: string; isCorrect: boolean }[];
 	tags: string[];
 };

@@ -1,5 +1,5 @@
 import { AttemptHistorySummary } from '../read-models/attempt-history-summary.read-model';
-import { DetailedAttemptReviewData } from '../read-models/attempt-review,.read-model';
+import { DetailedAttemptReviewData } from '../read-models/attempt-review.read-model';
 import { AttemptSavedData } from '../read-models/attempt-save-data.read-model';
 import { DetailedExamInfo } from '../read-models/detailed-exam.read-model';
 import { DetailedQuestionInfo } from '../read-models/detailed-question.read-model';

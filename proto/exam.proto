@@ -283,9 +283,9 @@ message DetailedAttemptReviewData {
 			repeated string           tags      = 7;
 
 			message ChoiceReviewData {
-				string key        = 1;
-				string content    = 2;
-				bool   is_correct = 3;
+				string          key        = 1;
+				optional string content    = 2;
+				bool            is_correct = 3;
 			}
 		}
 	}
@@ -320,7 +320,7 @@ message AttemptSavedData {
 
 		message AttemptQuestionData {
 			string                     id        = 1;
-			string                     content   = 2;
+			optional string            content   = 2;
 			string                     type      = 3;
 			int32                      order     = 4;
 			repeated string            file_urls = 5;

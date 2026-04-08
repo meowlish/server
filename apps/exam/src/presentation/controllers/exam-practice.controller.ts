@@ -122,7 +122,7 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	async getAttemptSavedData(request: exam.GetAttemptSavedDataDto): Promise<exam.AttemptSavedData> {
-		return {} as unknown as Promise<exam.AttemptSavedData>;
+		return this.praciceReadRepository.getAttemptSavedData(request.attemptId);
 	}
 
 	async getAttemptReview(
