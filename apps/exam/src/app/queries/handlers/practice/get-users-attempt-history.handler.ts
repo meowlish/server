@@ -1,5 +1,5 @@
 import {
-	IPracticeReadRepository,
+	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import {

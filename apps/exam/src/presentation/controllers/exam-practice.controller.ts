@@ -146,7 +146,6 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	async getUsersAttemptHistory(
 		@Payload() request: GetUsersAttemptHistoryDto,
 	): Promise<AttemptsHistory> {
-		console.log(request);
 		return await this.queryBus.execute(new GetUsersAttemptHistoryQuery(request));
 	}
 
