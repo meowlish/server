@@ -16,6 +16,7 @@ model Exam {
 
   @@index([status])
   @@index([version])
+  @@index([updatedAt, id])
   @@map("exams")
 }
 
