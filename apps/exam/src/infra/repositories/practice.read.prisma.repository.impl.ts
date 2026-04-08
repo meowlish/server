@@ -30,11 +30,36 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		return {} as unknown as Promise<UserStats>;
 	}
 
-	getUsersAttemptSummary(
+	async getUsersAttemptSummary(
 		uid: string,
 		range?: { from: Date; to: Date },
 	): Promise<AttemptHistorySummary> {
-		return {} as unknown as Promise<AttemptHistorySummary>;
+		const now = new Date();
+		const defaultFrom = new Date(now.getFullYear(), 0, 1); // Jan 1st
+		const defaultTo = now;
+
+		const from = range?.from ?? defaultFrom;
+		const to = range?.to ?? defaultTo;
+
+		const rows = await this.txHost.tx.$queryRaw<{ day: bigint; count: number }[]>`
+      SELECT
+        EXTRACT(EPOCH FROM DATE_TRUNC('day', ended_at))::bigint AS day,
+        COUNT(*)::int AS count
+      FROM attempts
+      WHERE attempted_by = ${uid}
+        AND ended_at IS NOT NULL
+        AND ended_at >= ${from}
+        AND ended_at <= ${to}
+      GROUP BY day
+      ORDER BY day
+    `;
+
+		const summary: AttemptHistorySummary = {};
+		for (const row of rows) {
+			summary[Number(row.day)] = row.count;
+		}
+
+		return summary;
 	}
 
 	getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]> {

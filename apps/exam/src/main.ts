@@ -1,9 +1,10 @@
 import { ExamModule } from './exam.module';
+import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { exam } from '@server/generated';
 import { AppLoggerService } from '@server/logger';
-import { join } from 'path';
 import 'reflect-metadata';
 
 const useLogger = (module: INestApplicationContext) => {
@@ -17,7 +18,11 @@ async function bootstrap() {
 		options: {
 			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
 			package: 'exam',
-			protoPath: join(process.cwd(), 'proto', 'exam.proto'),
+			packageDefinition: {
+				[`exam.${exam.EXAM_MANAGEMENT_SERVICE_NAME}`]: exam.ExamManagementServiceService,
+				[`exam.${exam.EXAM_PRACTICE_SERVICE_NAME}`]: exam.ExamPracticeServiceService,
+				[`exam.${exam.TAG_SERVICE_NAME}`]: exam.TagServiceService,
+			} satisfies PackageDefinition,
 		},
 	});
 	useLogger(examModule);

@@ -134,7 +134,12 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	async getUsersAttemptSummary(
 		request: exam.GetUsersAttemptSummaryDto,
 	): Promise<exam.AttemptHistorySummary> {
-		return {} as unknown as Promise<exam.AttemptHistorySummary>;
+		return {
+			history: await this.praciceReadRepository.getUsersAttemptSummary(
+				request.uid,
+				(request.range as { from: Date; to: Date }) ?? {},
+			),
+		};
 	}
 
 	async getUsersAttemptHistory(
