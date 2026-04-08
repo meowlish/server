@@ -26,8 +26,57 @@ import { parseEnum } from '@server/utils';
 export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
-	getUserStats(uid: string): Promise<UserStats> {
-		return {} as unknown as Promise<UserStats>;
+	async getUserStats(uid: string): Promise<UserStats> {
+		const [baseStats] = await this.txHost.tx.$queryRaw<
+			{
+				attemptCounts: number;
+				averageScoreInPercentage: number;
+			}[]
+		>(
+			Prisma.sql`
+      SELECT
+        COUNT(*)::int AS "attemptCounts",
+        AVG(
+          CASE
+            WHEN total_points > 0
+            THEN (score::float / total_points) * 100
+          END
+        ) AS "averageScoreInPercentage"
+      FROM attempts
+      WHERE attempted_by = ${uid}
+      AND ended_at IS NOT NULL
+    `,
+		);
+
+		const tagInfos = await this.txHost.tx.$queryRaw<{ name: string; correctPercentage: number }[]>(
+			Prisma.sql`
+      SELECT
+        t.name,
+        AVG(
+          CASE
+            WHEN ar.is_correct = TRUE THEN 1
+            ELSE 0
+          END
+        ) * 100 AS "correctPercentage"
+      FROM attempt_responses ar
+      JOIN questions q
+        ON q.id = ar.question_id
+      JOIN question_tags qt
+        ON qt.question_id = q.id
+      JOIN tags t
+        ON t.id = qt.tag_id
+      JOIN attempts a
+        ON a.id = ar.attempt_id
+      WHERE a.attempted_by = ${uid}
+      GROUP BY t.name
+    `,
+		);
+
+		return {
+			attemptCounts: baseStats?.attemptCounts ?? 0,
+			averageScoreInPercentage: baseStats?.averageScoreInPercentage ?? 0,
+			tagInfos: tagInfos,
+		};
 	}
 
 	async getUsersAttemptSummary(

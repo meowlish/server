@@ -154,6 +154,6 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	async getUsesStats(request: exam.GetUserStatsDto): Promise<exam.UserStats> {
-		return {} as unknown as Promise<exam.UserStats>;
+		return this.praciceReadRepository.getUserStats(request.uid);
 	}
 }
