@@ -277,8 +277,83 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	getExamStats(examId: string): Promise<ExamStatistics> {
-		return {} as unknown as Promise<ExamStatistics>;
+	async getExamStats(examId: string): Promise<ExamStatistics> {
+		const [stats] = await this.txHost.tx.$queryRaw<
+			{
+				averageDuration: number;
+				averageScoreInPercentage: number;
+			}[]
+		>(
+			Prisma.sql`
+      SELECT
+        AVG(
+          EXTRACT(EPOCH FROM (ended_at - started_at))
+        ) AS "averageDuration", -- in seconds
+
+        AVG(
+          CASE
+            WHEN total_points > 0
+            THEN score::float / total_points * 100
+          END
+        ) AS "averageScoreInPercentage"
+
+      FROM attempts
+      WHERE exam_id = ${examId}
+      AND ended_at IS NOT NULL
+    `,
+		);
+
+		const questions = await this.txHost.tx.$queryRaw<
+			{
+				id: string;
+				correctCount: number;
+				totalCount: number;
+				tags: string[];
+			}[]
+		>(
+			Prisma.sql`
+        SELECT
+          q.id,
+
+          COUNT(DISTINCT ar.id)
+            FILTER (WHERE ar.is_correct = TRUE)::int
+            AS "correctCount",
+
+          COUNT(DISTINCT ar.id)
+            FILTER (WHERE ar.answers IS NOT NULL AND cardinality(ar.answers) > 0)::int
+            AS "totalCount",
+
+          COALESCE(
+            ARRAY_AGG(DISTINCT tag_names.name)
+              FILTER (WHERE tag_names.name IS NOT NULL),
+            '{}'
+          ) AS tags
+
+        FROM questions q
+
+        LEFT JOIN attempt_responses ar
+          ON ar.question_id = q.id
+
+        JOIN sections s
+          ON s.id = q.section_id
+
+        LEFT JOIN question_tags qt
+          ON qt.question_id = q.id
+
+        LEFT JOIN tags tag_names
+          ON tag_names.id = qt.tag_id
+
+        WHERE s.exam_id = ${examId}
+
+        GROUP BY q.id
+      `,
+		);
+
+		return {
+			averageDuration: stats?.averageDuration ?? 0,
+			averageScoreInPercentage: stats?.averageScoreInPercentage ?? 0,
+			questions: questions,
+		};
 	}
 
 	getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
