@@ -10,7 +10,7 @@ import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@g
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
-import { Empty } from "./common";
+import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 export interface Badges {

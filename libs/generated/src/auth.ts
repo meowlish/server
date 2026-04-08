@@ -9,7 +9,7 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Empty } from "./common";
+import { Empty } from "./google/protobuf/empty";
 
 /** Request */
 export interface RegisterMailDto {
@@ -590,9 +590,9 @@ export interface AuthServiceController {
 
   validateRefresh(request: ValidateRefreshDto, metadata?: Metadata): Promise<Claims> | Observable<Claims> | Claims;
 
-  validateAccess(request: ValidateAccessDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  validateAccess(request: ValidateAccessDto, metadata?: Metadata): void | Promise<void>;
 
-  logOutAll(request: LogOutAllDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  logOutAll(request: LogOutAllDto, metadata?: Metadata): void | Promise<void>;
 }
 
 export function AuthServiceControllerMethods() {

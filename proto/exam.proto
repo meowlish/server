@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "common.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
@@ -10,23 +10,23 @@ service ExamManagementService {
 	rpc CreateExam(CreateExamDto) returns (CreatedExamDto) {}
 	rpc CreateSection(CreateSectionDto) returns (CreatedSectionDto) {}
 	rpc CreateQuestion(CreateQuestionDto) returns (CreatedQuestionDto) {}
-	rpc UpdateExam(UpdateExamDto) returns (common.Empty) {}
-	rpc UpdateSection(UpdateSectionDto) returns (common.Empty) {}
-	rpc UpdateQuestion(UpdateQuestionDto) returns (common.Empty) {}
-	rpc DeleteExam(DeleteExamDto) returns (common.Empty) {}
-	rpc DeleteSection(DeleteSectionDto) returns (common.Empty) {}
-	rpc DeleteQuestion(DeleteQuestionDto) returns (common.Empty) {}
-	rpc MoveSection(MoveSectionDto) returns (common.Empty) {}
-	rpc MoveQuestion(MoveQuestionDto) returns (common.Empty) {}
-	rpc ReviewExam(ReviewExamDto) returns (common.Empty) {}
+	rpc UpdateExam(UpdateExamDto) returns (google.protobuf.Empty) {}
+	rpc UpdateSection(UpdateSectionDto) returns (google.protobuf.Empty) {}
+	rpc UpdateQuestion(UpdateQuestionDto) returns (google.protobuf.Empty) {}
+	rpc DeleteExam(DeleteExamDto) returns (google.protobuf.Empty) {}
+	rpc DeleteSection(DeleteSectionDto) returns (google.protobuf.Empty) {}
+	rpc DeleteQuestion(DeleteQuestionDto) returns (google.protobuf.Empty) {}
+	rpc MoveSection(MoveSectionDto) returns (google.protobuf.Empty) {}
+	rpc MoveQuestion(MoveQuestionDto) returns (google.protobuf.Empty) {}
+	rpc ReviewExam(ReviewExamDto) returns (google.protobuf.Empty) {}
 }
 
 service ExamPracticeService {
 	rpc Attempt(AttemptDto) returns (CreatedAttemptDto) {}
-	rpc EndAttempt(EndAttemptDto) returns (common.Empty) {}
-	rpc Answer(AnswerDto) returns (common.Empty) {}
-	rpc RemoveAnswer(RemoveAnswerDto) returns (common.Empty) {}
-	rpc AddNote(AddNoteDto) returns (common.Empty) {}
+	rpc EndAttempt(EndAttemptDto) returns (google.protobuf.Empty) {}
+	rpc Answer(AnswerDto) returns (google.protobuf.Empty) {}
+	rpc RemoveAnswer(RemoveAnswerDto) returns (google.protobuf.Empty) {}
+	rpc AddNote(AddNoteDto) returns (google.protobuf.Empty) {}
 	rpc ToggleFlag(ToggleFlagDto) returns (FlagStateDto) {}
     // query methods
 	rpc GetUsesStats(GetUserStatsDto) returns(UserStats) {}
@@ -42,9 +42,9 @@ service ExamPracticeService {
 
 service TagService {
 	rpc AddTag(AddTagDto) returns (AddedTagDto) {}
-	rpc DeleteTag(DeleteTagDto) returns (common.Empty) {}
-	rpc UpdateTag(UpdateTagDto) returns (common.Empty) {}
-	rpc MoveTag(MoveTagDto) returns (common.Empty) {}
+	rpc DeleteTag(DeleteTagDto) returns (google.protobuf.Empty) {}
+	rpc UpdateTag(UpdateTagDto) returns (google.protobuf.Empty) {}
+	rpc MoveTag(MoveTagDto) returns (google.protobuf.Empty) {}
 }
 
 // Request

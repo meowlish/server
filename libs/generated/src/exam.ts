@@ -10,7 +10,7 @@ import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@g
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
-import { Empty } from "./common";
+import { Empty } from "./google/protobuf/empty";
 import { Struct } from "./google/protobuf/struct";
 import { Timestamp } from "./google/protobuf/timestamp";
 
@@ -4581,23 +4581,23 @@ export interface ExamManagementServiceController {
     metadata?: Metadata,
   ): Promise<CreatedQuestionDto> | Observable<CreatedQuestionDto> | CreatedQuestionDto;
 
-  updateExam(request: UpdateExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  updateExam(request: UpdateExamDto, metadata?: Metadata): void | Promise<void>;
 
-  updateSection(request: UpdateSectionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  updateSection(request: UpdateSectionDto, metadata?: Metadata): void | Promise<void>;
 
-  updateQuestion(request: UpdateQuestionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  updateQuestion(request: UpdateQuestionDto, metadata?: Metadata): void | Promise<void>;
 
-  deleteExam(request: DeleteExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  deleteExam(request: DeleteExamDto, metadata?: Metadata): void | Promise<void>;
 
-  deleteSection(request: DeleteSectionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  deleteSection(request: DeleteSectionDto, metadata?: Metadata): void | Promise<void>;
 
-  deleteQuestion(request: DeleteQuestionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  deleteQuestion(request: DeleteQuestionDto, metadata?: Metadata): void | Promise<void>;
 
-  moveSection(request: MoveSectionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  moveSection(request: MoveSectionDto, metadata?: Metadata): void | Promise<void>;
 
-  moveQuestion(request: MoveQuestionDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  moveQuestion(request: MoveQuestionDto, metadata?: Metadata): void | Promise<void>;
 
-  reviewExam(request: ReviewExamDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  reviewExam(request: ReviewExamDto, metadata?: Metadata): void | Promise<void>;
 }
 
 export function ExamManagementServiceControllerMethods() {
@@ -4797,13 +4797,13 @@ export interface ExamPracticeServiceController {
     metadata?: Metadata,
   ): Promise<CreatedAttemptDto> | Observable<CreatedAttemptDto> | CreatedAttemptDto;
 
-  endAttempt(request: EndAttemptDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  endAttempt(request: EndAttemptDto, metadata?: Metadata): void | Promise<void>;
 
-  answer(request: AnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  answer(request: AnswerDto, metadata?: Metadata): void | Promise<void>;
 
-  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  removeAnswer(request: RemoveAnswerDto, metadata?: Metadata): void | Promise<void>;
 
-  addNote(request: AddNoteDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  addNote(request: AddNoteDto, metadata?: Metadata): void | Promise<void>;
 
   toggleFlag(
     request: ToggleFlagDto,
@@ -5064,11 +5064,11 @@ export interface TagServiceClient {
 export interface TagServiceController {
   addTag(request: AddTagDto, metadata?: Metadata): Promise<AddedTagDto> | Observable<AddedTagDto> | AddedTagDto;
 
-  deleteTag(request: DeleteTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  deleteTag(request: DeleteTagDto, metadata?: Metadata): void | Promise<void>;
 
-  updateTag(request: UpdateTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  updateTag(request: UpdateTagDto, metadata?: Metadata): void | Promise<void>;
 
-  moveTag(request: MoveTagDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  moveTag(request: MoveTagDto, metadata?: Metadata): void | Promise<void>;
 }
 
 export function TagServiceControllerMethods() {
