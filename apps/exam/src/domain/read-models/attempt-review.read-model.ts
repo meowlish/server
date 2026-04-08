@@ -7,14 +7,16 @@ export type DetailedAttemptReviewData = {
 		isFlagged?: boolean;
 		answers: string[];
 		isCorrect?: boolean;
-		score?: number;
+		additionalData?: object;
 	}[];
 	sections: SectionReviewData[];
 	startedAt: Date;
+	endedAt: Date;
 	durationLimit: number;
+	totalPoints?: number;
 };
 
-type SectionReviewData = {
+export type SectionReviewData = {
 	id: string;
 	name?: string;
 	directive: string;
@@ -28,6 +30,7 @@ type SectionReviewData = {
 type QuestionReviewData = {
 	id: string;
 	content: string;
+	points: number;
 	type: string;
 	order: number;
 	fileUrls: string[];

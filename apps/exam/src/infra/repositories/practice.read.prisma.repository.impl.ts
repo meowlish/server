@@ -1,5 +1,8 @@
 import { AttemptHistorySummary } from '../../domain/read-models/attempt-history-summary.read-model';
-import { DetailedAttemptReviewData } from '../../domain/read-models/attempt-review.read-model';
+import {
+	DetailedAttemptReviewData,
+	SectionReviewData,
+} from '../../domain/read-models/attempt-review.read-model';
 import {
 	AttemptSavedData,
 	AttemptSectionData,
@@ -363,7 +366,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 
 	async getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
 		const attemptData = await this.txHost.tx.attempt.findUnique({
-			where: { id: attemptId },
+			where: { id: attemptId, endedAt: null },
 			select: {
 				examId: true,
 				startedAt: true,
@@ -486,8 +489,152 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData> {
-		return {} as unknown as Promise<DetailedAttemptReviewData>;
+	async getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData> {
+		const attemptData = await this.txHost.tx.attempt.findUnique({
+			where: { id: attemptId, endedAt: { not: null } },
+			select: {
+				examId: true,
+				startedAt: true,
+				endedAt: true,
+				durationLimit: true,
+				attemptResponses: {
+					select: {
+						questionId: true,
+						answers: true,
+						note: true,
+						isFlagged: true,
+						scorerDatas: { select: { comment: true } },
+						isCorrect: true,
+					},
+				},
+				totalPoints: true,
+			},
+		});
+
+		if (!attemptData) throw new NotFoundException(`Attempt ${attemptId} not found`);
+
+		const sections = await this.txHost.tx.attemptSection.findMany({
+			where: { attemptId: attemptId },
+			select: {
+				section: {
+					select: {
+						descendants: {
+							select: {
+								descendant: {
+									select: {
+										id: true,
+										parentId: true,
+										name: true,
+										directive: true,
+										order: true,
+										contentType: true,
+										sectionFiles: { select: { fileId: true } },
+										questions: {
+											select: {
+												id: true,
+												content: true,
+												type: true,
+												order: true,
+												questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+												choices: { select: { key: true, content: true, isCorrect: true } },
+												questionTags: { select: { tag: { select: { name: true } } } },
+												points: true,
+											},
+											orderBy: { order: 'asc' },
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const flattenedSections =
+			sections.length === 0 ?
+				await this.txHost.tx.section.findMany({
+					where: { examId: attemptData.examId },
+					select: {
+						id: true,
+						parentId: true,
+						name: true,
+						directive: true,
+						order: true,
+						contentType: true,
+						sectionFiles: { select: { fileId: true } },
+						questions: {
+							select: {
+								id: true,
+								content: true,
+								type: true,
+								order: true,
+								questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+								choices: { select: { key: true, content: true, isCorrect: true } },
+								questionTags: { select: { tag: { select: { name: true } } } },
+								points: true,
+							},
+							orderBy: { order: 'asc' },
+						},
+					},
+				})
+			:	sections.map(s => s.section.descendants.map(d => d.descendant)).flat();
+
+		const castedFlattenedSections: (SectionReviewData & { parentId: string | null })[] =
+			flattenedSections.map(s => ({
+				id: s.id,
+				parentId: s.parentId,
+				name: s.name ?? undefined,
+				directive: s.directive,
+				order: s.order,
+				fileUrls: s.sectionFiles.map(f => f.fileId),
+				type: s.contentType,
+				sections: [],
+				questions: s.questions.map(q => ({
+					id: q.id,
+					order: q.order,
+					content: q.content,
+					type: q.type,
+					fileUrls: q.questionFiles.map(f => f.fileId),
+					points: q.points,
+					choices:
+						questionTypesThatShowChoices.includes(parseEnum(QuestionType, q.type)) ?
+							q.choices.map(c => ({
+								key: c.key,
+								content: c.content ?? undefined,
+								isCorrect: c.isCorrect,
+							}))
+						:	[],
+					tags: q.questionTags.map(t => t.tag.name),
+				})),
+			}));
+		const sectionsMap = new Map(castedFlattenedSections.map(s => [s.id, s]));
+		const treeSections = castedFlattenedSections
+			.filter(s => {
+				if (s.parentId === null) return true;
+				const section = sectionsMap.get(s.parentId);
+				if (!section) throw new Error('Problem when building section trees');
+				section.sections.push(s);
+				section.sections.sort((s1, s2) => s1.order - s2.order);
+				return false;
+			})
+			.sort((s1, s2) => s1.order - s2.order);
+
+		return {
+			startedAt: attemptData.startedAt,
+			endedAt: attemptData.endedAt as Date,
+			durationLimit: attemptData.durationLimit,
+			totalPoints: attemptData.totalPoints ?? undefined,
+			responses: attemptData.attemptResponses.map(r => ({
+				questionId: r.questionId,
+				note: r.note ?? undefined,
+				isFlagged: r.isFlagged,
+				answers: r.answers,
+				isCorrect: r.isCorrect ?? undefined,
+				additionalData: r.scorerDatas.length ? (r.scorerDatas[0].comment as object) : undefined,
+			})),
+			sections: treeSections,
+		};
 	}
 
 	async getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo> {

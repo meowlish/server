@@ -11,6 +11,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
 import { Empty } from "./common";
+import { Struct } from "./google/protobuf/struct";
 import { Timestamp } from "./google/protobuf/timestamp";
 
 /** Request */
@@ -221,7 +222,9 @@ export interface DetailedAttemptReviewData {
   responses: DetailedAttemptReviewData_AttemptReviewResponse[];
   sections: DetailedAttemptReviewData_SectionReviewData[];
   startedAt: Date | undefined;
+  endedAt: Date | undefined;
   durationLimit: number;
+  totalPoints?: number | undefined;
 }
 
 export interface DetailedAttemptReviewData_AttemptReviewResponse {
@@ -230,7 +233,7 @@ export interface DetailedAttemptReviewData_AttemptReviewResponse {
   isFlagged?: boolean | undefined;
   answers: string[];
   isCorrect?: boolean | undefined;
-  score?: number | undefined;
+  additionalData?: { [key: string]: any } | undefined;
 }
 
 export interface DetailedAttemptReviewData_SectionReviewData {
@@ -252,6 +255,7 @@ export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData 
   fileUrls: string[];
   choices: DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData[];
   tags: string[];
+  points: number;
 }
 
 export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
@@ -2424,7 +2428,7 @@ export const GetAttemptReviewDto: MessageFns<GetAttemptReviewDto> = {
 };
 
 function createBaseDetailedAttemptReviewData(): DetailedAttemptReviewData {
-  return { responses: [], sections: [], startedAt: undefined, durationLimit: 0 };
+  return { responses: [], sections: [], startedAt: undefined, endedAt: undefined, durationLimit: 0 };
 }
 
 export const DetailedAttemptReviewData: MessageFns<DetailedAttemptReviewData> = {
@@ -2438,8 +2442,14 @@ export const DetailedAttemptReviewData: MessageFns<DetailedAttemptReviewData> = 
     if (message.startedAt !== undefined) {
       Timestamp.encode(toTimestamp(message.startedAt), writer.uint32(26).fork()).join();
     }
+    if (message.endedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.endedAt), writer.uint32(34).fork()).join();
+    }
     if (message.durationLimit !== 0) {
-      writer.uint32(32).int32(message.durationLimit);
+      writer.uint32(40).int32(message.durationLimit);
+    }
+    if (message.totalPoints !== undefined) {
+      writer.uint32(48).int32(message.totalPoints);
     }
     return writer;
   },
@@ -2476,11 +2486,27 @@ export const DetailedAttemptReviewData: MessageFns<DetailedAttemptReviewData> = 
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.endedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
             break;
           }
 
           message.durationLimit = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.totalPoints = reader.int32();
           continue;
         }
       }
@@ -2519,8 +2545,8 @@ export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
     if (message.isCorrect !== undefined) {
       writer.uint32(40).bool(message.isCorrect);
     }
-    if (message.score !== undefined) {
-      writer.uint32(48).int32(message.score);
+    if (message.additionalData !== undefined) {
+      Struct.encode(Struct.wrap(message.additionalData), writer.uint32(50).fork()).join();
     }
     return writer;
   },
@@ -2573,11 +2599,11 @@ export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
           continue;
         }
         case 6: {
-          if (tag !== 48) {
+          if (tag !== 50) {
             break;
           }
 
-          message.score = reader.int32();
+          message.additionalData = Struct.unwrap(Struct.decode(reader, reader.uint32()));
           continue;
         }
       }
@@ -2710,7 +2736,7 @@ export const DetailedAttemptReviewData_SectionReviewData: MessageFns<DetailedAtt
 };
 
 function createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData(): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData {
-  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [], tags: [] };
+  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [], tags: [], points: 0 };
 }
 
 export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: MessageFns<
@@ -2743,6 +2769,9 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: Mes
     }
     for (const v of message.tags) {
       writer.uint32(58).string(v!);
+    }
+    if (message.points !== 0) {
+      writer.uint32(64).int32(message.points);
     }
     return writer;
   },
@@ -2816,6 +2845,14 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: Mes
           }
 
           message.tags.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.points = reader.int32();
           continue;
         }
       }

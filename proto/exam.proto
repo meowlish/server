@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 
 package exam;
 
@@ -252,15 +253,17 @@ message DetailedAttemptReviewData {
 	repeated AttemptReviewResponse responses      = 1;
 	repeated SectionReviewData     sections       = 2;
 	google.protobuf.Timestamp      started_at     = 3;
-	int32                          duration_limit = 4;
+	google.protobuf.Timestamp      ended_at       = 4;
+	int32                          duration_limit = 5;
+	optional int32                 total_points   = 6;
 
 	message AttemptReviewResponse {
-		string          question_id = 1;
-		optional string note        = 2;
-		optional bool   is_flagged  = 3;
-		repeated string answers     = 4;
-		optional bool   is_correct  = 5;
-		optional int32  score       = 6;
+		string                          question_id     = 1;
+		optional string                 note            = 2;
+		optional bool                   is_flagged      = 3;
+		repeated string                 answers         = 4;
+		optional bool                   is_correct      = 5;
+		optional google.protobuf.Struct additional_data = 6;
 	}
 
 	message SectionReviewData {
@@ -281,6 +284,7 @@ message DetailedAttemptReviewData {
 			repeated string           file_urls = 5;
 			repeated ChoiceReviewData choices   = 6;
 			repeated string           tags      = 7;
+			int32                     points    = 8;
 
 			message ChoiceReviewData {
 				string          key        = 1;
