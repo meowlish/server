@@ -32,7 +32,7 @@ service ExamPracticeService {
 	rpc GetUsesStats(GetUserStatsDto) returns(UserStats) {}
 	rpc GetUsersAttemptSummary(GetUsersAttemptSummaryDto) returns(AttemptHistorySummary) {}
 	rpc GetUsersAttemptHistory(GetUsersAttemptHistoryDto) returns(UsersAttemptHistory) {}
-	rpc FindExam(FindExamDto) returns (Exams) {}
+	rpc FindExams(FindExamsDto) returns (Exams) {}
 	rpc GetExamDetails(GetExamDetailsDto) returns (DetailedExamInfo) {}
 	rpc GetExamStats(GetExamStatsDto) returns (ExamStatistics) {}
 	rpc GetAttemptSavedData(GetAttemptSavedDataDto) returns (AttemptSavedData) {}
@@ -350,6 +350,7 @@ message DetailedExamInfo {
 	int32                        duration       = 5;
 	repeated string              tags           = 6;
 	repeated DetailedExamSection sections       = 7;
+	google.protobuf.Timestamp    updated_at     = 8;
 
 	message DetailedExamSection {
 		string          id              = 1;
@@ -359,9 +360,11 @@ message DetailedExamInfo {
 	}
 }
 
-message FindExamDto {
-	FilterOption filter  = 1;
-	SortOption   sort_by = 2;
+message FindExamsDto {
+	FilterOption    filter  = 1;
+	SortOption      sort_by = 2;
+	optional string cursor  = 3;
+	optional int32  limit   = 4;
 
 	message FilterOption {
 		string          name = 1;
@@ -375,15 +378,17 @@ message FindExamDto {
 }
 
 message Exams {
-	repeated MinimalExamInfo exams = 1;
+	repeated MinimalExamInfo exams  = 1;
+	string                   cursor = 2;
 
 	message MinimalExamInfo {
-		string          id             = 1;
-		string          name           = 2;
-		optional string description    = 3;
-		int32           attempts_count = 4;
-		int32           duration       = 5;
-		repeated string tags           = 6;
+		string                    id             = 1;
+		string                    name           = 2;
+		optional string           description    = 3;
+		int32                     attempts_count = 4;
+		int32                     duration       = 5;
+		repeated string           tags           = 6;
+		google.protobuf.Timestamp updated_at     = 7;
 	}
 }
 
@@ -425,10 +430,19 @@ message ExamStatistics {
 message GetUsersAttemptHistoryDto {
 	string          uid     = 1;
 	optional string exam_id = 2;
+	optional string cursor  = 3;
+	optional int32  limit   = 4;
+	SortOption      sort_by = 5;
+
+	message SortOption {
+		string key       = 1;
+		string direction = 2;
+	}
 }
 
 message UsersAttemptHistory {
 	repeated MinimalAttemptInfo attempts = 1;
+	string                      cursor   = 2;
 
 	message MinimalAttemptInfo {
 		string                             id             = 1;

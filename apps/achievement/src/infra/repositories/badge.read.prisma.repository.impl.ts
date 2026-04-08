@@ -2,7 +2,7 @@ import { Badge, UserBadge } from '../../domain/read-models/badge.read-model';
 import { IBadgeReadRepository } from '../../domain/repositories/badge.read.repository';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma-client/achievement';
 
 @Injectable()
@@ -25,6 +25,8 @@ export class BadgeReadPrismaRepositoryImpl implements IBadgeReadRepository {
 		userId: string,
 		opts?: { lastId?: string; limit?: number },
 	): Promise<UserBadge[]> {
+		if (opts?.limit && opts.limit < 0) throw new BadRequestException('Limit must be positive');
+
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: userId },
 			orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],

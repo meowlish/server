@@ -22,6 +22,8 @@ import {
 	ToggleFlagCommand,
 	ToggleFlagCommandPayload,
 } from '../../app/commands/practice/exam.toggle-flag.command';
+import { FindExamsQuery } from '../../app/queries/practice/find-exams.query';
+import { GetUsersAttemptHistoryQuery } from '../../app/queries/practice/get-users-attempt-history.query';
 import {
 	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,
@@ -30,21 +32,25 @@ import { AddNoteDto } from '../dtos/req/practice/add-note.req.dto';
 import { AnswerDto } from '../dtos/req/practice/answer.req.dto';
 import { AttemptDto } from '../dtos/req/practice/attempt.req.dto';
 import { EndAttemptDto } from '../dtos/req/practice/end-attempt.req.dto';
+import { FindExamsDto } from '../dtos/req/practice/find-exams.req.dto';
+import { GetUsersAttemptHistoryDto } from '../dtos/req/practice/get-users-attempt-history.req.dto';
 import { RemoveAnswerDto } from '../dtos/req/practice/remove-answer.req.dto';
 import { ToggleFlagDto } from '../dtos/req/practice/toggle-flag.req.dto';
+import { AttemptsHistory } from '../dtos/res/practice/attempts-history.res.dto';
 import { CreatedAttemptDto } from '../dtos/res/practice/created-attempt.res.dto';
+import { ExamsInfo } from '../dtos/res/practice/exams.res.dto';
 import { FlagStateDto } from '../dtos/res/practice/flag-state.res.dto';
 import { Controller, Inject, SerializeOptions } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
-import { SortDirection } from '@server/typing';
 
 @exam.ExamPracticeServiceControllerMethods()
 @Controller()
 export class ExamPracticeController implements exam.ExamPracticeServiceController {
 	constructor(
 		private readonly commandBus: CommandBus,
+		private readonly queryBus: QueryBus,
 		@Inject(IPracticeReadRepositoryToken)
 		private readonly praciceReadRepository: IPracticeReadRepository,
 	) {}
@@ -96,15 +102,9 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	// temp
-	async findExam(request: exam.FindExamDto): Promise<exam.Exams> {
-		return {
-			exams: await this.praciceReadRepository.findExam(
-				request as unknown as {
-					filter?: { name?: string; tags?: string[] };
-					sortBy?: { key: 'attemptsCount' | 'updatedAt'; direction: SortDirection };
-				},
-			),
-		};
+	@SerializeOptions({ type: ExamsInfo, strategy: 'exposeAll' })
+	async findExams(@Payload() request: FindExamsDto): Promise<ExamsInfo> {
+		return await this.queryBus.execute(new FindExamsQuery(request));
 	}
 
 	async getExamDetails(request: exam.GetExamDetailsDto): Promise<exam.DetailedExamInfo> {
@@ -142,15 +142,12 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 		};
 	}
 
+	@SerializeOptions({ type: AttemptsHistory, strategy: 'exposeAll' })
 	async getUsersAttemptHistory(
-		request: exam.GetUsersAttemptHistoryDto,
-	): Promise<exam.UsersAttemptHistory> {
-		return {
-			attempts: await this.praciceReadRepository.getUsersAttemptHistory(
-				request.uid,
-				request.examId,
-			),
-		};
+		@Payload() request: GetUsersAttemptHistoryDto,
+	): Promise<AttemptsHistory> {
+		console.log(request);
+		return await this.queryBus.execute(new GetUsersAttemptHistoryQuery(request));
 	}
 
 	async getUsesStats(request: exam.GetUserStatsDto): Promise<exam.UserStats> {

@@ -9,12 +9,9 @@ export class FoundUsersBadgesDto implements achievement.UserBadgesResponseDto {
 
 	@Expose()
 	cursor?: string;
-
-	@Expose()
-	limit?: number;
 }
 
-export class UserBadge extends Badge {
+export class UserBadge extends Badge implements achievement.UserBadges {
 	@Expose()
 	id!: string;
 

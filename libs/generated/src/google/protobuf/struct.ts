@@ -100,7 +100,7 @@ export const Struct: MessageFns<Struct> & StructWrapperFns = {
   decode(input: BinaryReader | Uint8Array, length?: number): Struct {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStruct();
+    const message = Object.create(createBaseStruct()) as Struct;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -164,7 +164,7 @@ export const Struct_FieldsEntry: MessageFns<Struct_FieldsEntry> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Struct_FieldsEntry {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStruct_FieldsEntry();
+    const message = Object.create(createBaseStruct_FieldsEntry()) as Struct_FieldsEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -224,7 +224,7 @@ export const Value: MessageFns<Value> & AnyValueWrapperFns = {
   decode(input: BinaryReader | Uint8Array, length?: number): Value {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseValue();
+    const message = Object.create(createBaseValue()) as Value;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -338,7 +338,7 @@ export const ListValue: MessageFns<ListValue> & ListValueWrapperFns = {
   decode(input: BinaryReader | Uint8Array, length?: number): ListValue {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseListValue();
+    const message = Object.create(createBaseListValue()) as ListValue;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

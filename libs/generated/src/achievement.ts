@@ -40,7 +40,6 @@ export interface UserBadgesRequestDto {
 export interface UserBadgesResponseDto {
   badges: UserBadges[];
   cursor?: string | undefined;
-  limit?: number | undefined;
 }
 
 wrappers[".google.protobuf.Timestamp"] = {
@@ -73,7 +72,7 @@ export const Badges: MessageFns<Badges> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Badges {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBadges();
+    const message = Object.create(createBaseBadges()) as Badges;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -138,7 +137,7 @@ export const UserBadges: MessageFns<UserBadges> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadges {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserBadges();
+    const message = Object.create(createBaseUserBadges()) as UserBadges;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -207,7 +206,7 @@ export const BadgesResponseDto: MessageFns<BadgesResponseDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): BadgesResponseDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBadgesResponseDto();
+    const message = Object.create(createBaseBadgesResponseDto()) as BadgesResponseDto;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -250,7 +249,7 @@ export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesRequestDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserBadgesRequestDto();
+    const message = Object.create(createBaseUserBadgesRequestDto()) as UserBadgesRequestDto;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -300,16 +299,13 @@ export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
     if (message.cursor !== undefined) {
       writer.uint32(18).string(message.cursor);
     }
-    if (message.limit !== undefined) {
-      writer.uint32(24).int32(message.limit);
-    }
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesResponseDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserBadgesResponseDto();
+    const message = Object.create(createBaseUserBadgesResponseDto()) as UserBadgesResponseDto;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -327,14 +323,6 @@ export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
           }
 
           message.cursor = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.limit = reader.int32();
           continue;
         }
       }

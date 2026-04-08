@@ -19,7 +19,7 @@ export class GetUsersBadgesQueryHandler implements IQueryHandler<GetUsersBadgesQ
 		@Inject(IBadgeReadRepositoryToken) private readonly badgeReadRepository: IBadgeReadRepository,
 	) {
 		this.cursorPaginationHelper = new CursorPaginationHelper(
-			`${process.env.HOST}${process.env.PORT}`,
+			`${process.env.HOST}${process.env.PORT}GetBadges`,
 		);
 	}
 

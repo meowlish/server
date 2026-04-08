@@ -133,7 +133,7 @@ export const Timestamp: MessageFns<Timestamp> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Timestamp {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTimestamp();
+    const message = Object.create(createBaseTimestamp()) as Timestamp;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

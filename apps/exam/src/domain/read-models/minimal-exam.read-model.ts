@@ -6,4 +6,5 @@ export type MinimalExamInfo = {
 	attemptsCount: number;
 	duration: number;
 	tags: string[]; //root tags only
+	updatedAt: Date;
 };

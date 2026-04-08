@@ -1,5 +1,9 @@
-import { ExamManagementHandlers, ExamPracticeHandlers } from './app/commands/handlers';
+import {
+	ExamManagementCommandHandlers,
+	ExamPracticeCommandHandlers,
+} from './app/commands/handlers';
 import { IntegrationEventPublishers } from './app/events/publishers';
+import { ExamPracticeQueryHandler } from './app/queries/handlers/practice';
 import { TagService } from './app/services/tag.service';
 import { bullConfig } from './configs/bullmq.config';
 import { config } from './configs/config';
@@ -69,8 +73,9 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		LoggerModule.forRoot({ appName: 'ExamModule' }),
 	],
 	providers: [
-		...ExamManagementHandlers,
-		...ExamPracticeHandlers,
+		...ExamManagementCommandHandlers,
+		...ExamPracticeCommandHandlers,
+		...ExamPracticeQueryHandler,
 		...ExamEventHandlers,
 		...IntegrationEventPublishers,
 		TagService,

@@ -15,10 +15,24 @@ export interface IPracticeReadRepository {
 		uid: string,
 		range?: { from: Date; to: Date },
 	): Promise<AttemptHistorySummary>;
-	getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]>;
-	findExam(options?: {
+	getUsersAttemptHistory(
+		uid: string,
+		options?: {
+			examId?: string;
+			sortBy?: { key: 'endedAt' | 'startedAt' | 'examId' | 'score'; direction: SortDirection };
+			lastId?: string;
+			limit?: number;
+		},
+	): Promise<MinimalAttemptInfo[]>;
+	findExams(options?: {
 		filter?: { name?: string; tags?: string[] };
 		sortBy?: { key: 'attemptsCount' | 'updatedAt'; direction: SortDirection };
+		lastCursor?: {
+			id: string;
+			attemptsCount?: number;
+			updatedAt?: Date;
+		};
+		limit?: number;
 	}): Promise<MinimalExamInfo[]>;
 	getExamDetail(examId: string): Promise<DetailedExamInfo>;
 	getExamStats(examId: string): Promise<ExamStatistics>;

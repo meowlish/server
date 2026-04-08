@@ -1,5 +1,5 @@
 import { Badge } from './found-badges.res.dto';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class UserBadge extends Badge {
 	@Expose()
@@ -11,12 +11,8 @@ export class UserBadge extends Badge {
 
 export class FoundUsersBadgesDto {
 	@Expose()
-	@Type(() => UserBadge)
 	badges!: UserBadge[];
 
 	@Expose()
 	cursor?: string;
-
-	@Expose()
-	limit?: number;
 }

@@ -13,11 +13,11 @@ import { ExamStatistics } from '../../domain/read-models/exam-statistics.read-mo
 import { MinimalAttemptInfo } from '../../domain/read-models/minimal-attempt.read-model';
 import { MinimalExamInfo } from '../../domain/read-models/minimal-exam.read-model';
 import { UserStats } from '../../domain/read-models/user-stats.read-model';
-import { IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
+import { type IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
 import { QuestionType, questionTypesThatShowChoices } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
 import { parseEnum } from '@server/utils';
@@ -111,9 +111,23 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		return summary;
 	}
 
-	async getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]> {
+	async getUsersAttemptHistory(
+		uid: string,
+		options?: {
+			examId?: string;
+			sortBy?: {
+				key: 'endedAt' | 'startedAt' | 'examId' | 'score';
+				direction: SortDirection;
+			};
+			lastId?: string;
+			limit?: number;
+		},
+	): Promise<MinimalAttemptInfo[]> {
+		if (options?.limit && options.limit < 0)
+			throw new BadRequestException('Limit must be positive');
+
 		const foundHistory = await this.txHost.tx.attempt.findMany({
-			where: { attemptedBy: uid, ...(examId ? { examId: examId } : {}) },
+			where: { attemptedBy: uid, ...(options?.examId ? { examId: options.examId } : {}) },
 			select: {
 				id: true,
 				startedAt: true,
@@ -123,7 +137,18 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				totalPoints: true,
 				isStrict: true,
 			},
-			orderBy: { endedAt: 'desc' },
+			orderBy: [
+				// those who TS
+				...(options?.sortBy ?
+					[{ [options.sortBy.key]: options.sortBy.direction.toLowerCase() }]
+				:	[]),
+				{ id: 'asc' },
+			],
+			take: options?.limit ?? 10,
+			...(options?.lastId && {
+				cursor: { id: options.lastId },
+				skip: 1,
+			}),
 		});
 
 		return foundHistory.map(a => ({
@@ -134,10 +159,19 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		}));
 	}
 
-	async findExam(options?: {
+	async findExams(options?: {
 		filter?: { name?: string; tags?: string[] };
 		sortBy?: { key: 'attemptsCount' | 'updatedAt'; direction: SortDirection };
+		lastCursor?: {
+			id: string;
+			attemptsCount?: number;
+			updatedAt?: Date;
+		};
+		limit?: number;
 	}): Promise<MinimalExamInfo[]> {
+		if (options?.limit && options.limit < 0)
+			throw new BadRequestException('Limit must be positive');
+
 		// sort by attemptsCount or by update time
 		// fallback to sort by ID
 		const sortSql =
@@ -218,6 +252,39 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				// fallback take all
 			:	Prisma.sql`TRUE`;
 
+		const cursorWhereSql =
+			// updatedAt cursor
+			options?.sortBy?.key === 'updatedAt' && options?.lastCursor?.updatedAt ?
+				Prisma.sql`
+      (
+        e.updated_at,
+        e.id
+      ) > (
+        ${options.lastCursor.updatedAt},
+        ${options.lastCursor.id}
+      )
+    `
+				// id cursor
+			: options?.lastCursor?.id ?
+				Prisma.sql`
+      e.id > ${options.lastCursor.id}
+    `
+			:	Prisma.sql`TRUE`;
+
+		const cursorHavingSql =
+			// attemptsCount cursor
+			options?.sortBy?.key === 'attemptsCount' && options?.lastCursor?.attemptsCount !== undefined ?
+				Prisma.sql`
+      (
+        COUNT(DISTINCT a.id),
+        e.id
+      ) > (
+        ${options.lastCursor.attemptsCount},
+        ${options.lastCursor.id}
+      )
+    `
+			:	Prisma.sql`TRUE`;
+
 		const rows = await this.txHost.tx.$queryRaw<
 			{
 				id: string;
@@ -225,6 +292,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				description: string | null;
 				attemptsCount: number;
 				duration: number;
+				updatedAt: Date;
 				tags: string[];
 			}[]
 		>(
@@ -235,6 +303,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
         e.title AS name,
         e.description,
         e.duration,
+        e.updated_at AS "updatedAt",
         -- cast type to int, count distinct because join causes duplicate
         COUNT(DISTINCT a.id)::int AS "attemptsCount",
         -- return tags from exam directly
@@ -258,11 +327,16 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
       WHERE
         ${nameFilterSql}
         AND ${tagFilterSql}
+        AND ${cursorWhereSql}
 
       GROUP BY e.id
 
+      HAVING
+        ${cursorHavingSql}
+
       ORDER BY ${sortSql}
 
+      LIMIT ${options?.limit ?? 10}
     `,
 		);
 
@@ -276,6 +350,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				name: string;
 				description: string | null;
 				duration: number;
+				updatedAt: Date;
 				attemptsCount: number;
 				tags: string[];
 			}[]
@@ -286,6 +361,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
         e.title AS name,
         e.description,
         e.duration,
+        e.updated_at AS "updatedAt",
         COUNT(DISTINCT a.id)::int AS "attemptsCount",
         COALESCE(
           ARRAY_AGG(DISTINCT t.name)
@@ -372,6 +448,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			name: exam.name,
 			description: exam.description ?? undefined,
 			duration: exam.duration,
+			updatedAt: exam.updatedAt,
 			attemptsCount: exam.attemptsCount,
 			tags: exam.tags,
 			sections: sections.map(s => ({ ...s, name: s.name ?? undefined })),
