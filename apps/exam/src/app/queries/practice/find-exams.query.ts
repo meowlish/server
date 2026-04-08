@@ -18,7 +18,7 @@ export type FindExamsCursor = {
 	lastCursor?: {
 		id: string;
 		attemptsCount?: number;
-		updatedAt?: Date;
+		updatedAt?: number;
 	};
 	// low prec
 	limit?: number;

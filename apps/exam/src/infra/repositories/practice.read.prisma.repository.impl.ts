@@ -253,8 +253,12 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			:	Prisma.sql`TRUE`;
 
 		const cursorWhereSql =
-			// updatedAt cursor
-			options?.sortBy?.key === 'updatedAt' && options?.lastCursor?.updatedAt ?
+			// updatedAt cursor when ASC updatedAt
+			(
+				options?.sortBy?.key === 'updatedAt' &&
+				options.sortBy.direction === SortDirection.ASC &&
+				options?.lastCursor?.updatedAt
+			) ?
 				Prisma.sql`
       (
         e.updated_at,
@@ -264,16 +268,33 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
         ${options.lastCursor.id}
       )
     `
+				// updatedAt cursor when DESC updatedAt
+			: (
+				options?.sortBy?.key === 'updatedAt' &&
+				options.sortBy.direction === SortDirection.DESC &&
+				options.lastCursor?.updatedAt
+			) ?
+				Prisma.sql`
+        e.updated_at < ${options.lastCursor.updatedAt}
+        OR (
+        e.updated_at = ${options.lastCursor.updatedAt}
+        AND e.id > ${options.lastCursor.id}
+      )
+    `
 				// id cursor
-			: options?.lastCursor?.id ?
+			: !options?.sortBy && options?.lastCursor?.id ?
 				Prisma.sql`
       e.id > ${options.lastCursor.id}
     `
 			:	Prisma.sql`TRUE`;
 
 		const cursorHavingSql =
-			// attemptsCount cursor
-			options?.sortBy?.key === 'attemptsCount' && options?.lastCursor?.attemptsCount !== undefined ?
+			// attemptsCount cursor when ASC attemptsCount
+			(
+				options?.sortBy?.key === 'attemptsCount' &&
+				options.sortBy.direction === SortDirection.ASC &&
+				options?.lastCursor?.attemptsCount !== undefined
+			) ?
 				Prisma.sql`
       (
         COUNT(DISTINCT a.id),
@@ -281,6 +302,19 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
       ) > (
         ${options.lastCursor.attemptsCount},
         ${options.lastCursor.id}
+      )
+    `
+				// attemptsCount cursor when DESC attemptsCount
+			: (
+				options?.sortBy?.key === 'attemptsCount' &&
+				options.sortBy.direction === SortDirection.DESC &&
+				options?.lastCursor?.attemptsCount !== undefined
+			) ?
+				Prisma.sql`
+        COUNT(DISTINCT a.id) < ${options.lastCursor.attemptsCount}
+        OR (
+        COUNT(DISTINCT a.id) = ${options.lastCursor.attemptsCount}
+        AND e.id > ${options.lastCursor.id}
       )
     `
 			:	Prisma.sql`TRUE`;

@@ -41,7 +41,16 @@ export class FindExamsHandler implements IQueryHandler<FindExamsQuery> {
 		const exams = await this.practiceReadRepository.findExams({
 			filter: inUseFilter,
 			sortBy: inUseSortBy,
-			lastCursor: decodedCursor?.lastCursor,
+			lastCursor:
+				decodedCursor?.lastCursor ?
+					{
+						...decodedCursor.lastCursor,
+						updatedAt:
+							decodedCursor.lastCursor.updatedAt ?
+								new Date(decodedCursor.lastCursor.updatedAt)
+							:	undefined,
+					}
+				:	undefined,
 			limit: inUseLimit,
 		});
 
@@ -55,7 +64,7 @@ export class FindExamsHandler implements IQueryHandler<FindExamsQuery> {
 					{
 						id: lastExamItem.id,
 						attemptsCount: lastExamItem.attemptsCount,
-						updatedAt: lastExamItem.updatedAt,
+						updatedAt: lastExamItem.updatedAt.getTime(),
 					}
 				:	undefined,
 			limit: inUseLimit,
