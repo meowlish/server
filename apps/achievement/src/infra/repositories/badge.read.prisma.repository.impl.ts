@@ -23,7 +23,7 @@ export class BadgeReadPrismaRepositoryImpl implements IBadgeReadRepository {
 	 */
 	async getUsersBadges(
 		userId: string,
-		opts: { lastId?: string; limit: number },
+		opts?: { lastId?: string; limit?: number },
 	): Promise<UserBadge[]> {
 		const badges = await this.txHost.tx.userBadge.findMany({
 			where: { uid: userId },
@@ -33,8 +33,8 @@ export class BadgeReadPrismaRepositoryImpl implements IBadgeReadRepository {
 				badge: { select: { name: true, displayName: true, description: true } },
 				updatedAt: true,
 			},
-			take: opts.limit,
-			...(opts.lastId && {
+			take: opts?.limit ?? 10,
+			...(opts?.lastId && {
 				cursor: { id: opts.lastId },
 				skip: 1,
 			}),
