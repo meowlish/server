@@ -62,8 +62,27 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		return summary;
 	}
 
-	getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]> {
-		return [] as unknown as Promise<MinimalAttemptInfo[]>;
+	async getUsersAttemptHistory(uid: string, examId?: string): Promise<MinimalAttemptInfo[]> {
+		const foundHistory = await this.txHost.tx.attempt.findMany({
+			where: { attemptedBy: uid, ...(examId ? { examId: examId } : {}) },
+			select: {
+				id: true,
+				startedAt: true,
+				endedAt: true,
+				durationLimit: true,
+				score: true,
+				totalPoints: true,
+				isStrict: true,
+			},
+			orderBy: { endedAt: 'desc' },
+		});
+
+		return foundHistory.map(a => ({
+			...a,
+			endedAt: a.endedAt ?? undefined,
+			score: a.score ?? undefined,
+			totalPoints: a.totalPoints ?? undefined,
+		}));
 	}
 
 	async findExam(options?: {

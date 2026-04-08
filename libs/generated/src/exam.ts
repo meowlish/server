@@ -403,7 +403,7 @@ export interface UsersAttemptHistory {
 export interface UsersAttemptHistory_MinimalAttemptInfo {
   id: string;
   startedAt: Date | undefined;
-  endedAt: Date | undefined;
+  endedAt?: Date | undefined;
   durationLimit: number;
   score?: number | undefined;
   totalPoints?: number | undefined;
@@ -4293,7 +4293,7 @@ export const UsersAttemptHistory: MessageFns<UsersAttemptHistory> = {
 };
 
 function createBaseUsersAttemptHistory_MinimalAttemptInfo(): UsersAttemptHistory_MinimalAttemptInfo {
-  return { id: "", startedAt: undefined, endedAt: undefined, durationLimit: 0, isStrict: false };
+  return { id: "", startedAt: undefined, durationLimit: 0, isStrict: false };
 }
 
 export const UsersAttemptHistory_MinimalAttemptInfo: MessageFns<UsersAttemptHistory_MinimalAttemptInfo> = {

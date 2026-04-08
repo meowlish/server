@@ -2,7 +2,7 @@
 export type MinimalAttemptInfo = {
 	id: string;
 	startedAt: Date;
-	endedAt: Date;
+	endedAt?: Date;
 	durationLimit: number;
 	score?: number;
 	totalPoints?: number;
