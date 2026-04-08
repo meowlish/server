@@ -7,15 +7,16 @@ export type GetUsersBadgesQueryResult = {
 };
 
 export type GetUsersBadgesCursor = {
+	// high prec
+	userId: string;
 	lastId?: string;
+	// low prec
 	limit?: number;
 };
 
 type GetUsersBadgesQueryPayload = {
-	userId: string;
 	cursor?: string;
-	limit?: number;
-};
+} & GetUsersBadgesCursor;
 
 export class GetUsersBadgesQuery extends Query<
 	GetUsersBadgesQueryResult,

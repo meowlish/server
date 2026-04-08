@@ -24,17 +24,25 @@ export class GetUsersBadgesQueryHandler implements IQueryHandler<GetUsersBadgesQ
 	}
 
 	async execute(query: GetUsersBadgesQuery): Promise<GetUsersBadgesQueryResult> {
+		const payload = query.payload;
 		const decodedCursor =
-			query.payload.cursor ?
-				this.cursorPaginationHelper.decodeCursor<GetUsersBadgesCursor>(query.payload.cursor)
+			payload.cursor ?
+				this.cursorPaginationHelper.decodeCursor<GetUsersBadgesCursor>(payload.cursor)
 			:	undefined;
-		const badges = await this.badgeReadRepository.getUsersBadges(query.payload.userId, {
+
+		// cursor.userId has precedence over payload
+		const inUseUserId = decodedCursor ? decodedCursor.userId : payload.userId;
+		// payload.limit has precedence over cursor
+		const inUseLimit = payload.limit ?? decodedCursor?.limit ?? 10;
+
+		const badges = await this.badgeReadRepository.getUsersBadges(inUseUserId, {
 			lastId: decodedCursor?.lastId,
-			limit: query.payload.limit ?? decodedCursor?.limit ?? 10,
+			limit: inUseLimit,
 		});
 		const encodedCursor = this.cursorPaginationHelper.encodeCursor<GetUsersBadgesCursor>({
+			userId: inUseUserId,
 			lastId: badges.at(-1)?.id,
-			limit: query.payload.limit ?? decodedCursor?.limit,
+			limit: inUseLimit,
 		});
 		return { badges: badges, cursor: encodedCursor };
 	}
