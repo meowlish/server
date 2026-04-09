@@ -50,7 +50,7 @@ class QuestionData implements exam.AttemptSavedData_AttemptSectionData_AttemptQu
 	choices!: ChoiceData[];
 
 	@Expose()
-	content?: string;
+	content!: string;
 
 	@Expose()
 	fileUrls!: string[];
@@ -69,7 +69,7 @@ class ChoiceData
 	implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData
 {
 	@Expose()
-	content!: string;
+	content?: string;
 
 	@Expose()
 	key!: string;

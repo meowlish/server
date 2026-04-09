@@ -295,7 +295,7 @@ export interface AttemptSavedData_AttemptSectionData {
 
 export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData {
   id: string;
-  content?: string | undefined;
+  content: string;
   type: string;
   order: number;
   fileUrls: string[];
@@ -304,7 +304,7 @@ export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData {
 
 export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
   key: string;
-  content: string;
+  content?: string | undefined;
 }
 
 export interface GetExamDetailsDto {
@@ -3240,7 +3240,7 @@ export const AttemptSavedData_AttemptSectionData: MessageFns<AttemptSavedData_At
 };
 
 function createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData(): AttemptSavedData_AttemptSectionData_AttemptQuestionData {
-  return { id: "", type: "", order: 0, fileUrls: [], choices: [] };
+  return { id: "", content: "", type: "", order: 0, fileUrls: [], choices: [] };
 }
 
 export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns<
@@ -3253,7 +3253,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.content !== undefined) {
+    if (message.content !== "") {
       writer.uint32(18).string(message.content);
     }
     if (message.type !== "") {
@@ -3340,7 +3340,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns
 };
 
 function createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData(): AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
-  return { key: "", content: "" };
+  return { key: "" };
 }
 
 export const AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData: MessageFns<
@@ -3353,7 +3353,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoi
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
-    if (message.content !== "") {
+    if (message.content !== undefined) {
       writer.uint32(18).string(message.content);
     }
     return writer;
