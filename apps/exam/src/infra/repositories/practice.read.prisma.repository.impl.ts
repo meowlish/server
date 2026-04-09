@@ -850,7 +850,10 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				type: true,
 				explanation: true,
 				points: true,
-				questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc', fileId: 'asc' } },
+				questionFiles: {
+					select: { fileId: true },
+					orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+				},
 				section: {
 					select: {
 						ancestors: {
@@ -859,7 +862,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 									select: { directive: true, sectionFiles: { select: { fileId: true } } },
 								},
 							},
-							orderBy: { depth: 'desc' },
+							orderBy: [{ depth: 'desc' }],
 						},
 					},
 				},
