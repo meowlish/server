@@ -1,5 +1,5 @@
 import { FILE_CLIENT } from './constants/file';
-import { FileGatewayController } from './file.couter.controller';
+import { FileGatewayController } from './file.router.controller';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { Module } from '@nestjs/common';
 import { file } from '@server/generated';

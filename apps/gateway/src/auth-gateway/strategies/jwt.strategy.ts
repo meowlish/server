@@ -1,6 +1,6 @@
 import { IEnvVars } from '../../configs/config';
 import { AUTH_CLIENT } from '../constants/auth';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
@@ -11,7 +11,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'access-jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'access-jwt') implements OnModuleInit {
 	private authService!: auth.AuthServiceClient;
 
 	constructor(

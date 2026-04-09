@@ -1,5 +1,5 @@
 model SectionFile {
-  sectionId String   @map("question_id")
+  sectionId String   @map("section_id")
   fileId    String   @map("file_id")
   updatedAt DateTime @updatedAt
 

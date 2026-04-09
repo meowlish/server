@@ -1,4 +1,4 @@
-import { AchievementGatewayController } from './achievement.couter.controller';
+import { AchievementGatewayController } from './achievement.router.controller';
 import { ACHIEVEMENT_CLIENT } from './constants/achievement';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { Module } from '@nestjs/common';
