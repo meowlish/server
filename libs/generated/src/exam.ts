@@ -331,8 +331,8 @@ export interface DetailedExamInfo_DetailedExamSection {
 }
 
 export interface FindExamsDto {
-  filter: FindExamsDto_FilterOption | undefined;
-  sortBy: FindExamsDto_SortOption | undefined;
+  filter?: FindExamsDto_FilterOption | undefined;
+  sortBy?: FindExamsDto_SortOption | undefined;
   cursor?: string | undefined;
   limit?: number | undefined;
 }
@@ -402,7 +402,7 @@ export interface GetUsersAttemptHistoryDto {
   examId?: string | undefined;
   cursor?: string | undefined;
   limit?: number | undefined;
-  sortBy: GetUsersAttemptHistoryDto_SortOption | undefined;
+  sortBy?: GetUsersAttemptHistoryDto_SortOption | undefined;
 }
 
 export interface GetUsersAttemptHistoryDto_SortOption {
@@ -3618,7 +3618,7 @@ export const DetailedExamInfo_DetailedExamSection: MessageFns<DetailedExamInfo_D
 };
 
 function createBaseFindExamsDto(): FindExamsDto {
-  return { filter: undefined, sortBy: undefined };
+  return {};
 }
 
 export const FindExamsDto: MessageFns<FindExamsDto> = {
@@ -4278,7 +4278,7 @@ export const ExamStatistics_QuestionStatistics: MessageFns<ExamStatistics_Questi
 };
 
 function createBaseGetUsersAttemptHistoryDto(): GetUsersAttemptHistoryDto {
-  return { uid: undefined, sortBy: undefined };
+  return { uid: undefined };
 }
 
 export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = {

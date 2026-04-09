@@ -7,7 +7,7 @@ export type FindExamsQueryResult = {
 	cursor: string;
 };
 
-export type FindExamsPayload = {
+export type FindExamsQueryPayload = {
 	cursor?: string;
 } & Omit<FindExamsCursor, 'lastCursor'>;
 
@@ -24,4 +24,4 @@ export type FindExamsCursor = {
 	limit?: number;
 };
 
-export class FindExamsQuery extends Query<FindExamsQueryResult, FindExamsPayload> {}
+export class FindExamsQuery extends Query<FindExamsQueryResult, FindExamsQueryPayload> {}

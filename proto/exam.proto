@@ -362,8 +362,8 @@ message DetailedExamInfo {
 }
 
 message FindExamsDto {
-	FilterOption                         filter  = 1;
-	SortOption                           sort_by = 2;
+	optional FilterOption                filter  = 1;
+	optional SortOption                  sort_by = 2;
 	optional google.protobuf.StringValue cursor  = 3;
 	optional google.protobuf.Int32Value  limit   = 4;
 
@@ -433,7 +433,7 @@ message GetUsersAttemptHistoryDto {
 	optional google.protobuf.StringValue exam_id = 2;
 	optional google.protobuf.StringValue cursor  = 3;
 	optional google.protobuf.Int32Value  limit   = 4;
-	SortOption                           sort_by = 5;
+	optional SortOption                  sort_by = 5;
 
 	message SortOption {
 		google.protobuf.StringValue key       = 1;

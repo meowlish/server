@@ -39,5 +39,5 @@ export class GetUsersAttemptHistoryDto implements exam.GetUsersAttemptHistoryDto
 	@Type(() => SortOptions)
 	@IsOptional()
 	@ValidateNested()
-	sortBy: SortOptions | undefined;
+	sortBy?: SortOptions;
 }

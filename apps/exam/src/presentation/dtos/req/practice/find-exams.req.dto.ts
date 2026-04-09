@@ -35,12 +35,12 @@ export class FindExamsDto implements exam.FindExamsDto {
 	@Type(() => FilterOptions)
 	@IsOptional()
 	@ValidateNested()
-	filter: FilterOptions | undefined;
+	filter?: FilterOptions;
 
 	@Type(() => SortOptions)
 	@IsOptional()
 	@ValidateNested()
-	sortBy: SortOptions | undefined;
+	sortBy?: SortOptions;
 
 	@IsOptional()
 	@IsString()

@@ -7,7 +7,7 @@ export type GetUsersAttemptHistoryQueryResult = {
 	cursor: string;
 };
 
-export type GetUsersAttemptHistoryPayload = {
+export type GetUsersAttemptHistoryQueryPayload = {
 	cursor?: string;
 } & Omit<GetUsersAttemptHistoryCursor, 'lastId'>;
 
@@ -23,5 +23,5 @@ export type GetUsersAttemptHistoryCursor = {
 
 export class GetUsersAttemptHistoryQuery extends Query<
 	GetUsersAttemptHistoryQueryResult,
-	GetUsersAttemptHistoryPayload
+	GetUsersAttemptHistoryQueryPayload
 > {}
