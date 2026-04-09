@@ -95,7 +95,7 @@ class Choice
 
 class ResponseReview implements exam.DetailedAttemptReviewData_AttemptReviewResponse {
 	@Expose()
-	additionalData?: object;
+	additionalData?: string;
 
 	@Expose()
 	answers!: string[];

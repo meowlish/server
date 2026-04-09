@@ -835,7 +835,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				isFlagged: r.isFlagged,
 				answers: r.answers,
 				isCorrect: r.isCorrect ?? undefined,
-				additionalData: r.scorerDatas.length ? (r.scorerDatas[0].comment as object) : undefined,
+				additionalData: r.scorerDatas.length ? JSON.stringify(r.scorerDatas[0].comment) : undefined,
 			})),
 			sections: treeSections,
 		};

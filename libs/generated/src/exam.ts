@@ -11,7 +11,6 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
 import { Empty } from "./google/protobuf/empty";
-import { Struct } from "./google/protobuf/struct";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { BoolValue, Int32Value, StringValue } from "./google/protobuf/wrappers";
 
@@ -234,7 +233,7 @@ export interface DetailedAttemptReviewData_AttemptReviewResponse {
   isFlagged?: boolean | undefined;
   answers: string[];
   isCorrect?: boolean | undefined;
-  additionalData?: { [key: string]: any } | undefined;
+  additionalData?: string | undefined;
 }
 
 export interface DetailedAttemptReviewData_SectionReviewData {
@@ -2561,7 +2560,7 @@ export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
       writer.uint32(40).bool(message.isCorrect);
     }
     if (message.additionalData !== undefined) {
-      Struct.encode(Struct.wrap(message.additionalData), writer.uint32(50).fork()).join();
+      writer.uint32(50).string(message.additionalData);
     }
     return writer;
   },
@@ -2618,7 +2617,7 @@ export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
             break;
           }
 
-          message.additionalData = Struct.unwrap(Struct.decode(reader, reader.uint32()));
+          message.additionalData = reader.string();
           continue;
         }
       }

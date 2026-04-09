@@ -7,7 +7,7 @@ export type DetailedAttemptReviewData = {
 		isFlagged?: boolean;
 		answers: string[];
 		isCorrect?: boolean;
-		additionalData?: object;
+		additionalData?: string;
 	}[];
 	sections: SectionReviewData[];
 	startedAt: Date;
