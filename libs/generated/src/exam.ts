@@ -13,17 +13,18 @@ import { Observable } from "rxjs";
 import { Empty } from "./google/protobuf/empty";
 import { Struct } from "./google/protobuf/struct";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { BoolValue, Int32Value, StringValue } from "./google/protobuf/wrappers";
 
 /** Request */
 export interface CreateExamDto {
-  createdBy: string;
-  title: string;
-  description: string;
-  duration: number;
+  createdBy: string | undefined;
+  title: string | undefined;
+  description: string | undefined;
+  duration: number | undefined;
 }
 
 export interface CreatedExamDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface CreateSectionDto {
@@ -33,20 +34,20 @@ export interface CreateSectionDto {
 }
 
 export interface CreatedSectionDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface CreateQuestionDto {
-  sectionId: string;
+  sectionId: string | undefined;
   index?: number | undefined;
 }
 
 export interface CreatedQuestionDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface UpdateExamDto {
-  id: string;
+  id: string | undefined;
   title?: string | undefined;
   setDescriptionNull?: boolean | undefined;
   description?: string | undefined;
@@ -56,7 +57,7 @@ export interface UpdateExamDto {
 }
 
 export interface UpdateSectionDto {
-  id: string;
+  id: string | undefined;
   setNameNull?: boolean | undefined;
   name?: string | undefined;
   directive?: string | undefined;
@@ -68,7 +69,7 @@ export interface UpdateSectionDto {
 }
 
 export interface UpdateQuestionDto {
-  id: string;
+  id: string | undefined;
   content?: string | undefined;
   explanation?: string | undefined;
   points?: number | undefined;
@@ -83,13 +84,13 @@ export interface UpdateQuestionDto {
 }
 
 export interface UpdateQuestionDto_AddChoice {
-  key: string;
+  key: string | undefined;
   content?: string | undefined;
-  isCorrect: boolean;
+  isCorrect: boolean | undefined;
 }
 
 export interface UpdateQuestionDto_UpdateChoice {
-  id: string;
+  id: string | undefined;
   key?: string | undefined;
   content?: string | undefined;
   isCorrect?: boolean | undefined;
@@ -97,38 +98,38 @@ export interface UpdateQuestionDto_UpdateChoice {
 }
 
 export interface DeleteExamDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface DeleteSectionDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface DeleteQuestionDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface MoveSectionDto {
-  id: string;
+  id: string | undefined;
   index?: number | undefined;
   parentId?: string | undefined;
   toRoot?: boolean | undefined;
 }
 
 export interface MoveQuestionDto {
-  id: string;
+  id: string | undefined;
   index?: number | undefined;
   sectionId?: string | undefined;
 }
 
 export interface ReviewExamDto {
-  id: string;
-  status: string;
+  id: string | undefined;
+  status: string | undefined;
 }
 
 export interface AttemptDto {
-  userId: string;
-  examId: string;
+  userId: string | undefined;
+  examId: string | undefined;
   options?: AttemptDto_Options | undefined;
 }
 
@@ -138,65 +139,65 @@ export interface AttemptDto_Options {
 }
 
 export interface CreatedAttemptDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface EndAttemptDto {
-  attemptId: string;
+  attemptId: string | undefined;
 }
 
 export interface AnswerDto {
-  attemptId: string;
-  questionId: string;
-  answer: string;
+  attemptId: string | undefined;
+  questionId: string | undefined;
+  answer: string | undefined;
 }
 
 export interface RemoveAnswerDto {
-  attemptId: string;
-  questionId: string;
+  attemptId: string | undefined;
+  questionId: string | undefined;
   answer?: string | undefined;
 }
 
 export interface AddNoteDto {
-  attemptId: string;
-  questionId: string;
-  note: string;
+  attemptId: string | undefined;
+  questionId: string | undefined;
+  note: string | undefined;
 }
 
 export interface ToggleFlagDto {
-  attemptId: string;
-  questionId: string;
+  attemptId: string | undefined;
+  questionId: string | undefined;
 }
 
 export interface FlagStateDto {
-  state: boolean;
+  state: boolean | undefined;
 }
 
 export interface AddTagDto {
-  name: string;
+  name: string | undefined;
   parentId?: string | undefined;
 }
 
 export interface AddedTagDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface DeleteTagDto {
-  id: string;
+  id: string | undefined;
 }
 
 export interface UpdateTagDto {
-  id: string;
-  name: string;
+  id: string | undefined;
+  name: string | undefined;
 }
 
 export interface MoveTagDto {
-  id: string;
+  id: string | undefined;
   parentId?: string | undefined;
 }
 
 export interface GetUsersAttemptSummaryDto {
-  uid: string;
+  uid: string | undefined;
   range: GetUsersAttemptSummaryDto_Range | undefined;
 }
 
@@ -215,7 +216,7 @@ export interface AttemptHistorySummary_HistoryEntry {
 }
 
 export interface GetAttemptReviewDto {
-  attemptId: string;
+  attemptId: string | undefined;
 }
 
 export interface DetailedAttemptReviewData {
@@ -265,7 +266,7 @@ export interface DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_
 }
 
 export interface GetAttemptSavedDataDto {
-  attemptId: string;
+  attemptId: string | undefined;
 }
 
 export interface AttemptSavedData {
@@ -308,7 +309,7 @@ export interface AttemptSavedData_AttemptSectionData_AttemptQuestionData_Attempt
 }
 
 export interface GetExamDetailsDto {
-  examId: string;
+  examId: string | undefined;
 }
 
 export interface DetailedExamInfo {
@@ -342,8 +343,8 @@ export interface FindExamsDto_FilterOption {
 }
 
 export interface FindExamsDto_SortOption {
-  key: string;
-  direction: string;
+  key: string | undefined;
+  direction: string | undefined;
 }
 
 export interface Exams {
@@ -362,7 +363,7 @@ export interface Exams_MinimalExamInfo {
 }
 
 export interface GetDetailedQuestionDto {
-  questionId: string;
+  questionId: string | undefined;
 }
 
 export interface DetailedQuestionInfo {
@@ -381,7 +382,7 @@ export interface DetailedQuestionInfo_SectionContext {
 }
 
 export interface GetExamStatsDto {
-  examId: string;
+  examId: string | undefined;
 }
 
 export interface ExamStatistics {
@@ -397,7 +398,7 @@ export interface ExamStatistics_QuestionStatistics {
 }
 
 export interface GetUsersAttemptHistoryDto {
-  uid: string;
+  uid: string | undefined;
   examId?: string | undefined;
   cursor?: string | undefined;
   limit?: number | undefined;
@@ -405,8 +406,8 @@ export interface GetUsersAttemptHistoryDto {
 }
 
 export interface GetUsersAttemptHistoryDto_SortOption {
-  key: string;
-  direction: string;
+  key: string | undefined;
+  direction: string | undefined;
 }
 
 export interface UsersAttemptHistory {
@@ -425,7 +426,7 @@ export interface UsersAttemptHistory_MinimalAttemptInfo {
 }
 
 export interface GetUserStatsDto {
-  uid: string;
+  uid: string | undefined;
 }
 
 export interface UserStats {
@@ -449,22 +450,22 @@ wrappers[".google.protobuf.Timestamp"] = {
 } as any;
 
 function createBaseCreateExamDto(): CreateExamDto {
-  return { createdBy: "", title: "", description: "", duration: 0 };
+  return { createdBy: undefined, title: undefined, description: undefined, duration: undefined };
 }
 
 export const CreateExamDto: MessageFns<CreateExamDto> = {
   encode(message: CreateExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.createdBy !== "") {
-      writer.uint32(10).string(message.createdBy);
+    if (message.createdBy !== undefined) {
+      StringValue.encode({ value: message.createdBy! }, writer.uint32(10).fork()).join();
     }
-    if (message.title !== "") {
-      writer.uint32(18).string(message.title);
+    if (message.title !== undefined) {
+      StringValue.encode({ value: message.title! }, writer.uint32(18).fork()).join();
     }
-    if (message.description !== "") {
-      writer.uint32(26).string(message.description);
+    if (message.description !== undefined) {
+      StringValue.encode({ value: message.description! }, writer.uint32(26).fork()).join();
     }
-    if (message.duration !== 0) {
-      writer.uint32(32).int32(message.duration);
+    if (message.duration !== undefined) {
+      Int32Value.encode({ value: message.duration! }, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -481,7 +482,7 @@ export const CreateExamDto: MessageFns<CreateExamDto> = {
             break;
           }
 
-          message.createdBy = reader.string();
+          message.createdBy = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -489,7 +490,7 @@ export const CreateExamDto: MessageFns<CreateExamDto> = {
             break;
           }
 
-          message.title = reader.string();
+          message.title = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -497,15 +498,15 @@ export const CreateExamDto: MessageFns<CreateExamDto> = {
             break;
           }
 
-          message.description = reader.string();
+          message.description = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.duration = reader.int32();
+          message.duration = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -519,13 +520,13 @@ export const CreateExamDto: MessageFns<CreateExamDto> = {
 };
 
 function createBaseCreatedExamDto(): CreatedExamDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const CreatedExamDto: MessageFns<CreatedExamDto> = {
   encode(message: CreatedExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -542,7 +543,7 @@ export const CreatedExamDto: MessageFns<CreatedExamDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -562,13 +563,13 @@ function createBaseCreateSectionDto(): CreateSectionDto {
 export const CreateSectionDto: MessageFns<CreateSectionDto> = {
   encode(message: CreateSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.sectionId !== undefined) {
-      writer.uint32(10).string(message.sectionId);
+      StringValue.encode({ value: message.sectionId! }, writer.uint32(10).fork()).join();
     }
     if (message.examId !== undefined) {
-      writer.uint32(18).string(message.examId);
+      StringValue.encode({ value: message.examId! }, writer.uint32(18).fork()).join();
     }
     if (message.index !== undefined) {
-      writer.uint32(24).int32(message.index);
+      Int32Value.encode({ value: message.index! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -585,7 +586,7 @@ export const CreateSectionDto: MessageFns<CreateSectionDto> = {
             break;
           }
 
-          message.sectionId = reader.string();
+          message.sectionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -593,15 +594,15 @@ export const CreateSectionDto: MessageFns<CreateSectionDto> = {
             break;
           }
 
-          message.examId = reader.string();
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.index = reader.int32();
+          message.index = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -615,13 +616,13 @@ export const CreateSectionDto: MessageFns<CreateSectionDto> = {
 };
 
 function createBaseCreatedSectionDto(): CreatedSectionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const CreatedSectionDto: MessageFns<CreatedSectionDto> = {
   encode(message: CreatedSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -638,7 +639,7 @@ export const CreatedSectionDto: MessageFns<CreatedSectionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -652,16 +653,16 @@ export const CreatedSectionDto: MessageFns<CreatedSectionDto> = {
 };
 
 function createBaseCreateQuestionDto(): CreateQuestionDto {
-  return { sectionId: "" };
+  return { sectionId: undefined };
 }
 
 export const CreateQuestionDto: MessageFns<CreateQuestionDto> = {
   encode(message: CreateQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.sectionId !== "") {
-      writer.uint32(10).string(message.sectionId);
+    if (message.sectionId !== undefined) {
+      StringValue.encode({ value: message.sectionId! }, writer.uint32(10).fork()).join();
     }
     if (message.index !== undefined) {
-      writer.uint32(16).int32(message.index);
+      Int32Value.encode({ value: message.index! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -678,15 +679,15 @@ export const CreateQuestionDto: MessageFns<CreateQuestionDto> = {
             break;
           }
 
-          message.sectionId = reader.string();
+          message.sectionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.index = reader.int32();
+          message.index = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -700,13 +701,13 @@ export const CreateQuestionDto: MessageFns<CreateQuestionDto> = {
 };
 
 function createBaseCreatedQuestionDto(): CreatedQuestionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const CreatedQuestionDto: MessageFns<CreatedQuestionDto> = {
   encode(message: CreatedQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -723,7 +724,7 @@ export const CreatedQuestionDto: MessageFns<CreatedQuestionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -737,31 +738,31 @@ export const CreatedQuestionDto: MessageFns<CreatedQuestionDto> = {
 };
 
 function createBaseUpdateExamDto(): UpdateExamDto {
-  return { id: "", addTags: [], removeTags: [] };
+  return { id: undefined, addTags: [], removeTags: [] };
 }
 
 export const UpdateExamDto: MessageFns<UpdateExamDto> = {
   encode(message: UpdateExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.title !== undefined) {
-      writer.uint32(18).string(message.title);
+      StringValue.encode({ value: message.title! }, writer.uint32(18).fork()).join();
     }
     if (message.setDescriptionNull !== undefined) {
-      writer.uint32(24).bool(message.setDescriptionNull);
+      BoolValue.encode({ value: message.setDescriptionNull! }, writer.uint32(26).fork()).join();
     }
     if (message.description !== undefined) {
-      writer.uint32(34).string(message.description);
+      StringValue.encode({ value: message.description! }, writer.uint32(34).fork()).join();
     }
     if (message.duration !== undefined) {
-      writer.uint32(40).int32(message.duration);
+      Int32Value.encode({ value: message.duration! }, writer.uint32(42).fork()).join();
     }
     for (const v of message.addTags) {
-      writer.uint32(50).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(50).fork()).join();
     }
     for (const v of message.removeTags) {
-      writer.uint32(58).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -778,7 +779,7 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -786,15 +787,15 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
             break;
           }
 
-          message.title = reader.string();
+          message.title = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.setDescriptionNull = reader.bool();
+          message.setDescriptionNull = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
@@ -802,15 +803,15 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
             break;
           }
 
-          message.description = reader.string();
+          message.description = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
             break;
           }
 
-          message.duration = reader.int32();
+          message.duration = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 6: {
@@ -818,7 +819,7 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
             break;
           }
 
-          message.addTags.push(reader.string());
+          message.addTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 7: {
@@ -826,7 +827,7 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
             break;
           }
 
-          message.removeTags.push(reader.string());
+          message.removeTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -840,37 +841,37 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
 };
 
 function createBaseUpdateSectionDto(): UpdateSectionDto {
-  return { id: "", addTags: [], removeTags: [], addFiles: [], removeFiles: [] };
+  return { id: undefined, addTags: [], removeTags: [], addFiles: [], removeFiles: [] };
 }
 
 export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
   encode(message: UpdateSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.setNameNull !== undefined) {
-      writer.uint32(16).bool(message.setNameNull);
+      BoolValue.encode({ value: message.setNameNull! }, writer.uint32(18).fork()).join();
     }
     if (message.name !== undefined) {
-      writer.uint32(26).string(message.name);
+      StringValue.encode({ value: message.name! }, writer.uint32(26).fork()).join();
     }
     if (message.directive !== undefined) {
-      writer.uint32(34).string(message.directive);
+      StringValue.encode({ value: message.directive! }, writer.uint32(34).fork()).join();
     }
     if (message.contentType !== undefined) {
-      writer.uint32(42).string(message.contentType);
+      StringValue.encode({ value: message.contentType! }, writer.uint32(42).fork()).join();
     }
     for (const v of message.addTags) {
-      writer.uint32(50).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(50).fork()).join();
     }
     for (const v of message.removeTags) {
-      writer.uint32(58).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(58).fork()).join();
     }
     for (const v of message.addFiles) {
-      writer.uint32(66).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(66).fork()).join();
     }
     for (const v of message.removeFiles) {
-      writer.uint32(74).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(74).fork()).join();
     }
     return writer;
   },
@@ -887,15 +888,15 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.setNameNull = reader.bool();
+          message.setNameNull = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -903,7 +904,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.name = reader.string();
+          message.name = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
@@ -911,7 +912,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.directive = reader.string();
+          message.directive = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 5: {
@@ -919,7 +920,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.contentType = reader.string();
+          message.contentType = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 6: {
@@ -927,7 +928,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.addTags.push(reader.string());
+          message.addTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 7: {
@@ -935,7 +936,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.removeTags.push(reader.string());
+          message.removeTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 8: {
@@ -943,7 +944,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.addFiles.push(reader.string());
+          message.addFiles.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 9: {
@@ -951,7 +952,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
             break;
           }
 
-          message.removeFiles.push(reader.string());
+          message.removeFiles.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -966,7 +967,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
 
 function createBaseUpdateQuestionDto(): UpdateQuestionDto {
   return {
-    id: "",
+    id: undefined,
     addChoices: [],
     deleteChoicesIds: [],
     updateChoices: [],
@@ -979,41 +980,41 @@ function createBaseUpdateQuestionDto(): UpdateQuestionDto {
 
 export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
   encode(message: UpdateQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.content !== undefined) {
-      writer.uint32(18).string(message.content);
+      StringValue.encode({ value: message.content! }, writer.uint32(18).fork()).join();
     }
     if (message.explanation !== undefined) {
-      writer.uint32(26).string(message.explanation);
+      StringValue.encode({ value: message.explanation! }, writer.uint32(26).fork()).join();
     }
     if (message.points !== undefined) {
-      writer.uint32(32).int32(message.points);
+      Int32Value.encode({ value: message.points! }, writer.uint32(34).fork()).join();
     }
     if (message.type !== undefined) {
-      writer.uint32(42).string(message.type);
+      StringValue.encode({ value: message.type! }, writer.uint32(42).fork()).join();
     }
     for (const v of message.addChoices) {
       UpdateQuestionDto_AddChoice.encode(v!, writer.uint32(50).fork()).join();
     }
     for (const v of message.deleteChoicesIds) {
-      writer.uint32(58).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(58).fork()).join();
     }
     for (const v of message.updateChoices) {
       UpdateQuestionDto_UpdateChoice.encode(v!, writer.uint32(66).fork()).join();
     }
     for (const v of message.addTags) {
-      writer.uint32(74).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(74).fork()).join();
     }
     for (const v of message.removeTags) {
-      writer.uint32(82).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(82).fork()).join();
     }
     for (const v of message.addFiles) {
-      writer.uint32(90).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(90).fork()).join();
     }
     for (const v of message.removeFiles) {
-      writer.uint32(98).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -1030,7 +1031,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1038,7 +1039,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.content = reader.string();
+          message.content = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1046,15 +1047,15 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.explanation = reader.string();
+          message.explanation = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.points = reader.int32();
+          message.points = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 5: {
@@ -1062,7 +1063,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.type = reader.string();
+          message.type = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 6: {
@@ -1078,7 +1079,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.deleteChoicesIds.push(reader.string());
+          message.deleteChoicesIds.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 8: {
@@ -1094,7 +1095,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.addTags.push(reader.string());
+          message.addTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 10: {
@@ -1102,7 +1103,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.removeTags.push(reader.string());
+          message.removeTags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 11: {
@@ -1110,7 +1111,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.addFiles.push(reader.string());
+          message.addFiles.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
         case 12: {
@@ -1118,7 +1119,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
             break;
           }
 
-          message.removeFiles.push(reader.string());
+          message.removeFiles.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -1132,19 +1133,19 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
 };
 
 function createBaseUpdateQuestionDto_AddChoice(): UpdateQuestionDto_AddChoice {
-  return { key: "", isCorrect: false };
+  return { key: undefined, isCorrect: undefined };
 }
 
 export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice> = {
   encode(message: UpdateQuestionDto_AddChoice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+    if (message.key !== undefined) {
+      StringValue.encode({ value: message.key! }, writer.uint32(10).fork()).join();
     }
     if (message.content !== undefined) {
-      writer.uint32(18).string(message.content);
+      StringValue.encode({ value: message.content! }, writer.uint32(18).fork()).join();
     }
-    if (message.isCorrect !== false) {
-      writer.uint32(24).bool(message.isCorrect);
+    if (message.isCorrect !== undefined) {
+      BoolValue.encode({ value: message.isCorrect! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -1161,7 +1162,7 @@ export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice
             break;
           }
 
-          message.key = reader.string();
+          message.key = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1169,15 +1170,15 @@ export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice
             break;
           }
 
-          message.content = reader.string();
+          message.content = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.isCorrect = reader.bool();
+          message.isCorrect = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1191,25 +1192,25 @@ export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice
 };
 
 function createBaseUpdateQuestionDto_UpdateChoice(): UpdateQuestionDto_UpdateChoice {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_UpdateChoice> = {
   encode(message: UpdateQuestionDto_UpdateChoice, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.key !== undefined) {
-      writer.uint32(18).string(message.key);
+      StringValue.encode({ value: message.key! }, writer.uint32(18).fork()).join();
     }
     if (message.content !== undefined) {
-      writer.uint32(26).string(message.content);
+      StringValue.encode({ value: message.content! }, writer.uint32(26).fork()).join();
     }
     if (message.isCorrect !== undefined) {
-      writer.uint32(32).bool(message.isCorrect);
+      BoolValue.encode({ value: message.isCorrect! }, writer.uint32(34).fork()).join();
     }
     if (message.setContentNull !== undefined) {
-      writer.uint32(40).bool(message.setContentNull);
+      BoolValue.encode({ value: message.setContentNull! }, writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -1226,7 +1227,7 @@ export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_Update
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1234,7 +1235,7 @@ export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_Update
             break;
           }
 
-          message.key = reader.string();
+          message.key = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1242,23 +1243,23 @@ export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_Update
             break;
           }
 
-          message.content = reader.string();
+          message.content = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.isCorrect = reader.bool();
+          message.isCorrect = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 5: {
-          if (tag !== 40) {
+          if (tag !== 42) {
             break;
           }
 
-          message.setContentNull = reader.bool();
+          message.setContentNull = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1272,13 +1273,13 @@ export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_Update
 };
 
 function createBaseDeleteExamDto(): DeleteExamDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const DeleteExamDto: MessageFns<DeleteExamDto> = {
   encode(message: DeleteExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1295,7 +1296,7 @@ export const DeleteExamDto: MessageFns<DeleteExamDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1309,13 +1310,13 @@ export const DeleteExamDto: MessageFns<DeleteExamDto> = {
 };
 
 function createBaseDeleteSectionDto(): DeleteSectionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const DeleteSectionDto: MessageFns<DeleteSectionDto> = {
   encode(message: DeleteSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1332,7 +1333,7 @@ export const DeleteSectionDto: MessageFns<DeleteSectionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1346,13 +1347,13 @@ export const DeleteSectionDto: MessageFns<DeleteSectionDto> = {
 };
 
 function createBaseDeleteQuestionDto(): DeleteQuestionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const DeleteQuestionDto: MessageFns<DeleteQuestionDto> = {
   encode(message: DeleteQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1369,7 +1370,7 @@ export const DeleteQuestionDto: MessageFns<DeleteQuestionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1383,22 +1384,22 @@ export const DeleteQuestionDto: MessageFns<DeleteQuestionDto> = {
 };
 
 function createBaseMoveSectionDto(): MoveSectionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const MoveSectionDto: MessageFns<MoveSectionDto> = {
   encode(message: MoveSectionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.index !== undefined) {
-      writer.uint32(16).int32(message.index);
+      Int32Value.encode({ value: message.index! }, writer.uint32(18).fork()).join();
     }
     if (message.parentId !== undefined) {
-      writer.uint32(26).string(message.parentId);
+      StringValue.encode({ value: message.parentId! }, writer.uint32(26).fork()).join();
     }
     if (message.toRoot !== undefined) {
-      writer.uint32(32).bool(message.toRoot);
+      BoolValue.encode({ value: message.toRoot! }, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -1415,15 +1416,15 @@ export const MoveSectionDto: MessageFns<MoveSectionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.index = reader.int32();
+          message.index = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1431,15 +1432,15 @@ export const MoveSectionDto: MessageFns<MoveSectionDto> = {
             break;
           }
 
-          message.parentId = reader.string();
+          message.parentId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.toRoot = reader.bool();
+          message.toRoot = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1453,19 +1454,19 @@ export const MoveSectionDto: MessageFns<MoveSectionDto> = {
 };
 
 function createBaseMoveQuestionDto(): MoveQuestionDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
   encode(message: MoveQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.index !== undefined) {
-      writer.uint32(16).int32(message.index);
+      Int32Value.encode({ value: message.index! }, writer.uint32(18).fork()).join();
     }
     if (message.sectionId !== undefined) {
-      writer.uint32(26).string(message.sectionId);
+      StringValue.encode({ value: message.sectionId! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -1482,15 +1483,15 @@ export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.index = reader.int32();
+          message.index = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1498,7 +1499,7 @@ export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
             break;
           }
 
-          message.sectionId = reader.string();
+          message.sectionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1512,16 +1513,16 @@ export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
 };
 
 function createBaseReviewExamDto(): ReviewExamDto {
-  return { id: "", status: "" };
+  return { id: undefined, status: undefined };
 }
 
 export const ReviewExamDto: MessageFns<ReviewExamDto> = {
   encode(message: ReviewExamDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
-    if (message.status !== "") {
-      writer.uint32(18).string(message.status);
+    if (message.status !== undefined) {
+      StringValue.encode({ value: message.status! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -1538,7 +1539,7 @@ export const ReviewExamDto: MessageFns<ReviewExamDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1546,7 +1547,7 @@ export const ReviewExamDto: MessageFns<ReviewExamDto> = {
             break;
           }
 
-          message.status = reader.string();
+          message.status = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1560,16 +1561,16 @@ export const ReviewExamDto: MessageFns<ReviewExamDto> = {
 };
 
 function createBaseAttemptDto(): AttemptDto {
-  return { userId: "", examId: "" };
+  return { userId: undefined, examId: undefined };
 }
 
 export const AttemptDto: MessageFns<AttemptDto> = {
   encode(message: AttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
-      writer.uint32(10).string(message.userId);
+    if (message.userId !== undefined) {
+      StringValue.encode({ value: message.userId! }, writer.uint32(10).fork()).join();
     }
-    if (message.examId !== "") {
-      writer.uint32(18).string(message.examId);
+    if (message.examId !== undefined) {
+      StringValue.encode({ value: message.examId! }, writer.uint32(18).fork()).join();
     }
     if (message.options !== undefined) {
       AttemptDto_Options.encode(message.options, writer.uint32(26).fork()).join();
@@ -1589,7 +1590,7 @@ export const AttemptDto: MessageFns<AttemptDto> = {
             break;
           }
 
-          message.userId = reader.string();
+          message.userId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1597,7 +1598,7 @@ export const AttemptDto: MessageFns<AttemptDto> = {
             break;
           }
 
-          message.examId = reader.string();
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1625,10 +1626,10 @@ function createBaseAttemptDto_Options(): AttemptDto_Options {
 export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
   encode(message: AttemptDto_Options, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.duration !== undefined) {
-      writer.uint32(8).int32(message.duration);
+      Int32Value.encode({ value: message.duration! }, writer.uint32(10).fork()).join();
     }
     for (const v of message.sectionIds) {
-      writer.uint32(18).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -1641,11 +1642,11 @@ export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.duration = reader.int32();
+          message.duration = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1653,7 +1654,7 @@ export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
             break;
           }
 
-          message.sectionIds.push(reader.string());
+          message.sectionIds.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -1667,13 +1668,13 @@ export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
 };
 
 function createBaseCreatedAttemptDto(): CreatedAttemptDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const CreatedAttemptDto: MessageFns<CreatedAttemptDto> = {
   encode(message: CreatedAttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1690,7 +1691,7 @@ export const CreatedAttemptDto: MessageFns<CreatedAttemptDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1704,13 +1705,13 @@ export const CreatedAttemptDto: MessageFns<CreatedAttemptDto> = {
 };
 
 function createBaseEndAttemptDto(): EndAttemptDto {
-  return { attemptId: "" };
+  return { attemptId: undefined };
 }
 
 export const EndAttemptDto: MessageFns<EndAttemptDto> = {
   encode(message: EndAttemptDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1727,7 +1728,7 @@ export const EndAttemptDto: MessageFns<EndAttemptDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1741,19 +1742,19 @@ export const EndAttemptDto: MessageFns<EndAttemptDto> = {
 };
 
 function createBaseAnswerDto(): AnswerDto {
-  return { attemptId: "", questionId: "", answer: "" };
+  return { attemptId: undefined, questionId: undefined, answer: undefined };
 }
 
 export const AnswerDto: MessageFns<AnswerDto> = {
   encode(message: AnswerDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
-    if (message.questionId !== "") {
-      writer.uint32(18).string(message.questionId);
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(18).fork()).join();
     }
-    if (message.answer !== "") {
-      writer.uint32(26).string(message.answer);
+    if (message.answer !== undefined) {
+      StringValue.encode({ value: message.answer! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -1770,7 +1771,7 @@ export const AnswerDto: MessageFns<AnswerDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1778,7 +1779,7 @@ export const AnswerDto: MessageFns<AnswerDto> = {
             break;
           }
 
-          message.questionId = reader.string();
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1786,7 +1787,7 @@ export const AnswerDto: MessageFns<AnswerDto> = {
             break;
           }
 
-          message.answer = reader.string();
+          message.answer = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1800,19 +1801,19 @@ export const AnswerDto: MessageFns<AnswerDto> = {
 };
 
 function createBaseRemoveAnswerDto(): RemoveAnswerDto {
-  return { attemptId: "", questionId: "" };
+  return { attemptId: undefined, questionId: undefined };
 }
 
 export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
   encode(message: RemoveAnswerDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
-    if (message.questionId !== "") {
-      writer.uint32(18).string(message.questionId);
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(18).fork()).join();
     }
     if (message.answer !== undefined) {
-      writer.uint32(26).string(message.answer);
+      StringValue.encode({ value: message.answer! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -1829,7 +1830,7 @@ export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1837,7 +1838,7 @@ export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
             break;
           }
 
-          message.questionId = reader.string();
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1845,7 +1846,7 @@ export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
             break;
           }
 
-          message.answer = reader.string();
+          message.answer = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1859,19 +1860,19 @@ export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
 };
 
 function createBaseAddNoteDto(): AddNoteDto {
-  return { attemptId: "", questionId: "", note: "" };
+  return { attemptId: undefined, questionId: undefined, note: undefined };
 }
 
 export const AddNoteDto: MessageFns<AddNoteDto> = {
   encode(message: AddNoteDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
-    if (message.questionId !== "") {
-      writer.uint32(18).string(message.questionId);
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(18).fork()).join();
     }
-    if (message.note !== "") {
-      writer.uint32(26).string(message.note);
+    if (message.note !== undefined) {
+      StringValue.encode({ value: message.note! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -1888,7 +1889,7 @@ export const AddNoteDto: MessageFns<AddNoteDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1896,7 +1897,7 @@ export const AddNoteDto: MessageFns<AddNoteDto> = {
             break;
           }
 
-          message.questionId = reader.string();
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1904,7 +1905,7 @@ export const AddNoteDto: MessageFns<AddNoteDto> = {
             break;
           }
 
-          message.note = reader.string();
+          message.note = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1918,16 +1919,16 @@ export const AddNoteDto: MessageFns<AddNoteDto> = {
 };
 
 function createBaseToggleFlagDto(): ToggleFlagDto {
-  return { attemptId: "", questionId: "" };
+  return { attemptId: undefined, questionId: undefined };
 }
 
 export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
   encode(message: ToggleFlagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
-    if (message.questionId !== "") {
-      writer.uint32(18).string(message.questionId);
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -1944,7 +1945,7 @@ export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -1952,7 +1953,7 @@ export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
             break;
           }
 
-          message.questionId = reader.string();
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1966,13 +1967,13 @@ export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
 };
 
 function createBaseFlagStateDto(): FlagStateDto {
-  return { state: false };
+  return { state: undefined };
 }
 
 export const FlagStateDto: MessageFns<FlagStateDto> = {
   encode(message: FlagStateDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.state !== false) {
-      writer.uint32(8).bool(message.state);
+    if (message.state !== undefined) {
+      BoolValue.encode({ value: message.state! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -1985,11 +1986,11 @@ export const FlagStateDto: MessageFns<FlagStateDto> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.state = reader.bool();
+          message.state = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2003,16 +2004,16 @@ export const FlagStateDto: MessageFns<FlagStateDto> = {
 };
 
 function createBaseAddTagDto(): AddTagDto {
-  return { name: "" };
+  return { name: undefined };
 }
 
 export const AddTagDto: MessageFns<AddTagDto> = {
   encode(message: AddTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.name !== undefined) {
+      StringValue.encode({ value: message.name! }, writer.uint32(10).fork()).join();
     }
     if (message.parentId !== undefined) {
-      writer.uint32(18).string(message.parentId);
+      StringValue.encode({ value: message.parentId! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -2029,7 +2030,7 @@ export const AddTagDto: MessageFns<AddTagDto> = {
             break;
           }
 
-          message.name = reader.string();
+          message.name = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -2037,7 +2038,7 @@ export const AddTagDto: MessageFns<AddTagDto> = {
             break;
           }
 
-          message.parentId = reader.string();
+          message.parentId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2051,13 +2052,13 @@ export const AddTagDto: MessageFns<AddTagDto> = {
 };
 
 function createBaseAddedTagDto(): AddedTagDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const AddedTagDto: MessageFns<AddedTagDto> = {
   encode(message: AddedTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -2074,7 +2075,7 @@ export const AddedTagDto: MessageFns<AddedTagDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2088,13 +2089,13 @@ export const AddedTagDto: MessageFns<AddedTagDto> = {
 };
 
 function createBaseDeleteTagDto(): DeleteTagDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const DeleteTagDto: MessageFns<DeleteTagDto> = {
   encode(message: DeleteTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -2111,7 +2112,7 @@ export const DeleteTagDto: MessageFns<DeleteTagDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2125,16 +2126,16 @@ export const DeleteTagDto: MessageFns<DeleteTagDto> = {
 };
 
 function createBaseUpdateTagDto(): UpdateTagDto {
-  return { id: "", name: "" };
+  return { id: undefined, name: undefined };
 }
 
 export const UpdateTagDto: MessageFns<UpdateTagDto> = {
   encode(message: UpdateTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.name !== undefined) {
+      StringValue.encode({ value: message.name! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -2151,7 +2152,7 @@ export const UpdateTagDto: MessageFns<UpdateTagDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -2159,7 +2160,7 @@ export const UpdateTagDto: MessageFns<UpdateTagDto> = {
             break;
           }
 
-          message.name = reader.string();
+          message.name = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2173,16 +2174,16 @@ export const UpdateTagDto: MessageFns<UpdateTagDto> = {
 };
 
 function createBaseMoveTagDto(): MoveTagDto {
-  return { id: "" };
+  return { id: undefined };
 }
 
 export const MoveTagDto: MessageFns<MoveTagDto> = {
   encode(message: MoveTagDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(10).fork()).join();
     }
     if (message.parentId !== undefined) {
-      writer.uint32(18).string(message.parentId);
+      StringValue.encode({ value: message.parentId! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -2199,7 +2200,7 @@ export const MoveTagDto: MessageFns<MoveTagDto> = {
             break;
           }
 
-          message.id = reader.string();
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -2207,7 +2208,7 @@ export const MoveTagDto: MessageFns<MoveTagDto> = {
             break;
           }
 
-          message.parentId = reader.string();
+          message.parentId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2221,13 +2222,13 @@ export const MoveTagDto: MessageFns<MoveTagDto> = {
 };
 
 function createBaseGetUsersAttemptSummaryDto(): GetUsersAttemptSummaryDto {
-  return { uid: "", range: undefined };
+  return { uid: undefined, range: undefined };
 }
 
 export const GetUsersAttemptSummaryDto: MessageFns<GetUsersAttemptSummaryDto> = {
   encode(message: GetUsersAttemptSummaryDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.uid !== "") {
-      writer.uint32(10).string(message.uid);
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
     }
     if (message.range !== undefined) {
       GetUsersAttemptSummaryDto_Range.encode(message.range, writer.uint32(18).fork()).join();
@@ -2247,7 +2248,7 @@ export const GetUsersAttemptSummaryDto: MessageFns<GetUsersAttemptSummaryDto> = 
             break;
           }
 
-          message.uid = reader.string();
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -2405,13 +2406,13 @@ export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummar
 };
 
 function createBaseGetAttemptReviewDto(): GetAttemptReviewDto {
-  return { attemptId: "" };
+  return { attemptId: undefined };
 }
 
 export const GetAttemptReviewDto: MessageFns<GetAttemptReviewDto> = {
   encode(message: GetAttemptReviewDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -2428,7 +2429,7 @@ export const GetAttemptReviewDto: MessageFns<GetAttemptReviewDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -2947,13 +2948,13 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_Choi
 };
 
 function createBaseGetAttemptSavedDataDto(): GetAttemptSavedDataDto {
-  return { attemptId: "" };
+  return { attemptId: undefined };
 }
 
 export const GetAttemptSavedDataDto: MessageFns<GetAttemptSavedDataDto> = {
   encode(message: GetAttemptSavedDataDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.attemptId !== "") {
-      writer.uint32(10).string(message.attemptId);
+    if (message.attemptId !== undefined) {
+      StringValue.encode({ value: message.attemptId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -2970,7 +2971,7 @@ export const GetAttemptSavedDataDto: MessageFns<GetAttemptSavedDataDto> = {
             break;
           }
 
-          message.attemptId = reader.string();
+          message.attemptId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -3396,13 +3397,13 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoi
 };
 
 function createBaseGetExamDetailsDto(): GetExamDetailsDto {
-  return { examId: "" };
+  return { examId: undefined };
 }
 
 export const GetExamDetailsDto: MessageFns<GetExamDetailsDto> = {
   encode(message: GetExamDetailsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.examId !== "") {
-      writer.uint32(10).string(message.examId);
+    if (message.examId !== undefined) {
+      StringValue.encode({ value: message.examId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -3419,7 +3420,7 @@ export const GetExamDetailsDto: MessageFns<GetExamDetailsDto> = {
             break;
           }
 
-          message.examId = reader.string();
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -3629,10 +3630,10 @@ export const FindExamsDto: MessageFns<FindExamsDto> = {
       FindExamsDto_SortOption.encode(message.sortBy, writer.uint32(18).fork()).join();
     }
     if (message.cursor !== undefined) {
-      writer.uint32(26).string(message.cursor);
+      StringValue.encode({ value: message.cursor! }, writer.uint32(26).fork()).join();
     }
     if (message.limit !== undefined) {
-      writer.uint32(32).int32(message.limit);
+      Int32Value.encode({ value: message.limit! }, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -3665,15 +3666,15 @@ export const FindExamsDto: MessageFns<FindExamsDto> = {
             break;
           }
 
-          message.cursor = reader.string();
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.limit = reader.int32();
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -3693,10 +3694,10 @@ function createBaseFindExamsDto_FilterOption(): FindExamsDto_FilterOption {
 export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = {
   encode(message: FindExamsDto_FilterOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.name !== undefined) {
-      writer.uint32(10).string(message.name);
+      StringValue.encode({ value: message.name! }, writer.uint32(10).fork()).join();
     }
     for (const v of message.tags) {
-      writer.uint32(18).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -3713,7 +3714,7 @@ export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = 
             break;
           }
 
-          message.name = reader.string();
+          message.name = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -3721,7 +3722,7 @@ export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = 
             break;
           }
 
-          message.tags.push(reader.string());
+          message.tags.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -3735,16 +3736,16 @@ export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = 
 };
 
 function createBaseFindExamsDto_SortOption(): FindExamsDto_SortOption {
-  return { key: "", direction: "" };
+  return { key: undefined, direction: undefined };
 }
 
 export const FindExamsDto_SortOption: MessageFns<FindExamsDto_SortOption> = {
   encode(message: FindExamsDto_SortOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+    if (message.key !== undefined) {
+      StringValue.encode({ value: message.key! }, writer.uint32(10).fork()).join();
     }
-    if (message.direction !== "") {
-      writer.uint32(18).string(message.direction);
+    if (message.direction !== undefined) {
+      StringValue.encode({ value: message.direction! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -3761,7 +3762,7 @@ export const FindExamsDto_SortOption: MessageFns<FindExamsDto_SortOption> = {
             break;
           }
 
-          message.key = reader.string();
+          message.key = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -3769,7 +3770,7 @@ export const FindExamsDto_SortOption: MessageFns<FindExamsDto_SortOption> = {
             break;
           }
 
-          message.direction = reader.string();
+          message.direction = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -3934,13 +3935,13 @@ export const Exams_MinimalExamInfo: MessageFns<Exams_MinimalExamInfo> = {
 };
 
 function createBaseGetDetailedQuestionDto(): GetDetailedQuestionDto {
-  return { questionId: "" };
+  return { questionId: undefined };
 }
 
 export const GetDetailedQuestionDto: MessageFns<GetDetailedQuestionDto> = {
   encode(message: GetDetailedQuestionDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.questionId !== "") {
-      writer.uint32(10).string(message.questionId);
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -3957,7 +3958,7 @@ export const GetDetailedQuestionDto: MessageFns<GetDetailedQuestionDto> = {
             break;
           }
 
-          message.questionId = reader.string();
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -4122,13 +4123,13 @@ export const DetailedQuestionInfo_SectionContext: MessageFns<DetailedQuestionInf
 };
 
 function createBaseGetExamStatsDto(): GetExamStatsDto {
-  return { examId: "" };
+  return { examId: undefined };
 }
 
 export const GetExamStatsDto: MessageFns<GetExamStatsDto> = {
   encode(message: GetExamStatsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.examId !== "") {
-      writer.uint32(10).string(message.examId);
+    if (message.examId !== undefined) {
+      StringValue.encode({ value: message.examId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -4145,7 +4146,7 @@ export const GetExamStatsDto: MessageFns<GetExamStatsDto> = {
             break;
           }
 
-          message.examId = reader.string();
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -4277,22 +4278,22 @@ export const ExamStatistics_QuestionStatistics: MessageFns<ExamStatistics_Questi
 };
 
 function createBaseGetUsersAttemptHistoryDto(): GetUsersAttemptHistoryDto {
-  return { uid: "", sortBy: undefined };
+  return { uid: undefined, sortBy: undefined };
 }
 
 export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = {
   encode(message: GetUsersAttemptHistoryDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.uid !== "") {
-      writer.uint32(10).string(message.uid);
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
     }
     if (message.examId !== undefined) {
-      writer.uint32(18).string(message.examId);
+      StringValue.encode({ value: message.examId! }, writer.uint32(18).fork()).join();
     }
     if (message.cursor !== undefined) {
-      writer.uint32(26).string(message.cursor);
+      StringValue.encode({ value: message.cursor! }, writer.uint32(26).fork()).join();
     }
     if (message.limit !== undefined) {
-      writer.uint32(32).int32(message.limit);
+      Int32Value.encode({ value: message.limit! }, writer.uint32(34).fork()).join();
     }
     if (message.sortBy !== undefined) {
       GetUsersAttemptHistoryDto_SortOption.encode(message.sortBy, writer.uint32(42).fork()).join();
@@ -4312,7 +4313,7 @@ export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = 
             break;
           }
 
-          message.uid = reader.string();
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -4320,7 +4321,7 @@ export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = 
             break;
           }
 
-          message.examId = reader.string();
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -4328,15 +4329,15 @@ export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = 
             break;
           }
 
-          message.cursor = reader.string();
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.limit = reader.int32();
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 5: {
@@ -4358,16 +4359,16 @@ export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = 
 };
 
 function createBaseGetUsersAttemptHistoryDto_SortOption(): GetUsersAttemptHistoryDto_SortOption {
-  return { key: "", direction: "" };
+  return { key: undefined, direction: undefined };
 }
 
 export const GetUsersAttemptHistoryDto_SortOption: MessageFns<GetUsersAttemptHistoryDto_SortOption> = {
   encode(message: GetUsersAttemptHistoryDto_SortOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+    if (message.key !== undefined) {
+      StringValue.encode({ value: message.key! }, writer.uint32(10).fork()).join();
     }
-    if (message.direction !== "") {
-      writer.uint32(18).string(message.direction);
+    if (message.direction !== undefined) {
+      StringValue.encode({ value: message.direction! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -4384,7 +4385,7 @@ export const GetUsersAttemptHistoryDto_SortOption: MessageFns<GetUsersAttemptHis
             break;
           }
 
-          message.key = reader.string();
+          message.key = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -4392,7 +4393,7 @@ export const GetUsersAttemptHistoryDto_SortOption: MessageFns<GetUsersAttemptHis
             break;
           }
 
-          message.direction = reader.string();
+          message.direction = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -4557,13 +4558,13 @@ export const UsersAttemptHistory_MinimalAttemptInfo: MessageFns<UsersAttemptHist
 };
 
 function createBaseGetUserStatsDto(): GetUserStatsDto {
-  return { uid: "" };
+  return { uid: undefined };
 }
 
 export const GetUserStatsDto: MessageFns<GetUserStatsDto> = {
   encode(message: GetUserStatsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.uid !== "") {
-      writer.uint32(10).string(message.uid);
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -4580,7 +4581,7 @@ export const GetUserStatsDto: MessageFns<GetUserStatsDto> = {
             break;
           }
 
-          message.uid = reader.string();
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }

@@ -2,7 +2,6 @@ import { exam } from '@server/generated';
 import { SortDirection } from '@server/typing';
 import { Type } from 'class-transformer';
 import {
-	ArrayNotEmpty,
 	IsArray,
 	IsEnum,
 	IsIn,

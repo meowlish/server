@@ -9,12 +9,13 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { BoolValue, Int32Value, StringValue } from "./google/protobuf/wrappers";
 
 export interface GetPresignedUrlDto {
-  fileName: string;
-  fileSize: number;
-  contentType: string;
-  isPublicFile: boolean;
+  fileName: string | undefined;
+  fileSize: number | undefined;
+  contentType: string | undefined;
+  isPublicFile: boolean | undefined;
 }
 
 export interface PresignedUrlResponse {
@@ -43,22 +44,22 @@ export interface UrlsDto_UrlsEntry {
 }
 
 function createBaseGetPresignedUrlDto(): GetPresignedUrlDto {
-  return { fileName: "", fileSize: 0, contentType: "", isPublicFile: false };
+  return { fileName: undefined, fileSize: undefined, contentType: undefined, isPublicFile: undefined };
 }
 
 export const GetPresignedUrlDto: MessageFns<GetPresignedUrlDto> = {
   encode(message: GetPresignedUrlDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.fileName !== "") {
-      writer.uint32(10).string(message.fileName);
+    if (message.fileName !== undefined) {
+      StringValue.encode({ value: message.fileName! }, writer.uint32(10).fork()).join();
     }
-    if (message.fileSize !== 0) {
-      writer.uint32(16).int32(message.fileSize);
+    if (message.fileSize !== undefined) {
+      Int32Value.encode({ value: message.fileSize! }, writer.uint32(18).fork()).join();
     }
-    if (message.contentType !== "") {
-      writer.uint32(26).string(message.contentType);
+    if (message.contentType !== undefined) {
+      StringValue.encode({ value: message.contentType! }, writer.uint32(26).fork()).join();
     }
-    if (message.isPublicFile !== false) {
-      writer.uint32(32).bool(message.isPublicFile);
+    if (message.isPublicFile !== undefined) {
+      BoolValue.encode({ value: message.isPublicFile! }, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -75,15 +76,15 @@ export const GetPresignedUrlDto: MessageFns<GetPresignedUrlDto> = {
             break;
           }
 
-          message.fileName = reader.string();
+          message.fileName = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.fileSize = reader.int32();
+          message.fileSize = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -91,15 +92,15 @@ export const GetPresignedUrlDto: MessageFns<GetPresignedUrlDto> = {
             break;
           }
 
-          message.contentType = reader.string();
+          message.contentType = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 4: {
-          if (tag !== 32) {
+          if (tag !== 34) {
             break;
           }
 
-          message.isPublicFile = reader.bool();
+          message.isPublicFile = BoolValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -240,7 +241,7 @@ function createBaseGetUrlsDto(): GetUrlsDto {
 export const GetUrlsDto: MessageFns<GetUrlsDto> = {
   encode(message: GetUrlsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.ids) {
-      writer.uint32(10).string(v!);
+      StringValue.encode({ value: v!! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -257,7 +258,7 @@ export const GetUrlsDto: MessageFns<GetUrlsDto> = {
             break;
           }
 
-          message.ids.push(reader.string());
+          message.ids.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }

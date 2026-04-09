@@ -3,6 +3,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
 
 package exam;
 
@@ -49,191 +50,191 @@ service TagService {
 
 // Request
 message CreateExamDto {
-	string created_by  = 1;
-	string title       = 2;
-	string description = 3;
-	int32  duration    = 4;
+	google.protobuf.StringValue created_by  = 1;
+	google.protobuf.StringValue title       = 2;
+	google.protobuf.StringValue description = 3;
+	google.protobuf.Int32Value  duration    = 4;
 }
 
 message CreatedExamDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message CreateSectionDto {
-	optional string section_id = 1;
-	optional string exam_id    = 2;
-	optional int32  index      = 3;
+	optional google.protobuf.StringValue section_id = 1;
+	optional google.protobuf.StringValue exam_id    = 2;
+	optional google.protobuf.Int32Value  index      = 3;
 }
 
 message CreatedSectionDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message CreateQuestionDto {
-	string         section_id = 1;
-	optional int32 index      = 2;
+	google.protobuf.StringValue         section_id = 1;
+	optional google.protobuf.Int32Value index      = 2;
 }
 
 message CreatedQuestionDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message UpdateExamDto {
-	string          id                   = 1;
-	optional string title                = 2;
-	optional bool   set_description_null = 3;
-	optional string description          = 4;
-	optional int32  duration             = 5;
-	repeated string add_tags             = 6;
-	repeated string remove_tags          = 7;
+	google.protobuf.StringValue          id                   = 1;
+	optional google.protobuf.StringValue title                = 2;
+	optional google.protobuf.BoolValue   set_description_null = 3;
+	optional google.protobuf.StringValue description          = 4;
+	optional google.protobuf.Int32Value  duration             = 5;
+	repeated google.protobuf.StringValue add_tags             = 6;
+	repeated google.protobuf.StringValue remove_tags          = 7;
 }
 
 message UpdateSectionDto {
-	string          id            = 1;
-	optional bool   set_name_null = 2;
-	optional string name          = 3;
-	optional string directive     = 4;
-	optional string content_type  = 5;
-	repeated string add_tags      = 6;
-	repeated string remove_tags   = 7;
-	repeated string add_files     = 8;
-	repeated string remove_files  = 9;
+	google.protobuf.StringValue          id            = 1;
+	optional google.protobuf.BoolValue   set_name_null = 2;
+	optional google.protobuf.StringValue name          = 3;
+	optional google.protobuf.StringValue directive     = 4;
+	optional google.protobuf.StringValue content_type  = 5;
+	repeated google.protobuf.StringValue add_tags      = 6;
+	repeated google.protobuf.StringValue remove_tags   = 7;
+	repeated google.protobuf.StringValue add_files     = 8;
+	repeated google.protobuf.StringValue remove_files  = 9;
 }
 
 message UpdateQuestionDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 
-	optional string content     = 2;
-	optional string explanation = 3;
-	optional int32  points      = 4;
-	optional string type        = 5;
+	optional google.protobuf.StringValue content     = 2;
+	optional google.protobuf.StringValue explanation = 3;
+	optional google.protobuf.Int32Value  points      = 4;
+	optional google.protobuf.StringValue type        = 5;
 
-	repeated AddChoice    add_choices        = 6;
-	repeated string       delete_choices_ids = 7;
-	repeated UpdateChoice update_choices     = 8;
+	repeated AddChoice                   add_choices        = 6;
+	repeated google.protobuf.StringValue delete_choices_ids = 7;
+	repeated UpdateChoice                update_choices     = 8;
 
-	repeated string add_tags     = 9;
-	repeated string remove_tags  = 10;
-	repeated string add_files    = 11;
-	repeated string remove_files = 12;
+	repeated google.protobuf.StringValue add_tags     = 9;
+	repeated google.protobuf.StringValue remove_tags  = 10;
+	repeated google.protobuf.StringValue add_files    = 11;
+	repeated google.protobuf.StringValue remove_files = 12;
 
 	message AddChoice {
-		string          key        = 1;
-		optional string content    = 2;
-		bool            is_correct = 3;
+		google.protobuf.StringValue          key        = 1;
+		optional google.protobuf.StringValue content    = 2;
+		google.protobuf.BoolValue            is_correct = 3;
 	}
 
 	message UpdateChoice {
-		string          id               = 1;
-		optional string key              = 2;
-		optional string content          = 3;
-		optional bool   is_correct       = 4;
-		optional bool   set_content_null = 5;
+		google.protobuf.StringValue          id               = 1;
+		optional google.protobuf.StringValue key              = 2;
+		optional google.protobuf.StringValue content          = 3;
+		optional google.protobuf.BoolValue   is_correct       = 4;
+		optional google.protobuf.BoolValue   set_content_null = 5;
 	}
 }
 
 message DeleteExamDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message DeleteSectionDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message DeleteQuestionDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message MoveSectionDto {
-	string          id        = 1;
-	optional int32  index     = 2;
-	optional string parent_id = 3;
-	optional bool   to_root   = 4;
+	google.protobuf.StringValue          id        = 1;
+	optional google.protobuf.Int32Value  index     = 2;
+	optional google.protobuf.StringValue parent_id = 3;
+	optional google.protobuf.BoolValue   to_root   = 4;
 }
 
 message MoveQuestionDto {
-	string          id         = 1;
-	optional int32  index      = 2;
-	optional string section_id = 3;
+	google.protobuf.StringValue          id         = 1;
+	optional google.protobuf.Int32Value  index      = 2;
+	optional google.protobuf.StringValue section_id = 3;
 }
 
 message ReviewExamDto {
-	string id     = 1;
-	string status = 2;
+	google.protobuf.StringValue id     = 1;
+	google.protobuf.StringValue status = 2;
 }
 
 message AttemptDto {
-	string           user_id = 1;
-	string           exam_id = 2;
-	optional Options options = 3;
+	google.protobuf.StringValue user_id = 1;
+	google.protobuf.StringValue exam_id = 2;
+	optional Options            options = 3;
 
 	message Options {
-		optional int32  duration    = 1;
-		repeated string section_ids = 2;
+		optional google.protobuf.Int32Value  duration    = 1;
+		repeated google.protobuf.StringValue section_ids = 2;
 	}
 }
 
 message CreatedAttemptDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message EndAttemptDto {
-	string attempt_id = 1;
+	google.protobuf.StringValue attempt_id = 1;
 }
 
 message AnswerDto {
-	string attempt_id  = 1;
-	string question_id = 2;
-	string answer      = 3;
+	google.protobuf.StringValue attempt_id  = 1;
+	google.protobuf.StringValue question_id = 2;
+	google.protobuf.StringValue answer      = 3;
 }
 
 message RemoveAnswerDto {
-	string          attempt_id  = 1;
-	string          question_id = 2;
-	optional string answer      = 3;
+	google.protobuf.StringValue          attempt_id  = 1;
+	google.protobuf.StringValue          question_id = 2;
+	optional google.protobuf.StringValue answer      = 3;
 }
 
 message AddNoteDto {
-	string attempt_id  = 1;
-	string question_id = 2;
-	string note        = 3;
+	google.protobuf.StringValue attempt_id  = 1;
+	google.protobuf.StringValue question_id = 2;
+	google.protobuf.StringValue note        = 3;
 }
 
 message ToggleFlagDto {
-	string attempt_id  = 1;
-	string question_id = 2;
+	google.protobuf.StringValue attempt_id  = 1;
+	google.protobuf.StringValue question_id = 2;
 }
 
 message FlagStateDto {
-	bool state = 1;
+	google.protobuf.BoolValue state = 1;
 }
 
 message AddTagDto {
-	string          name      = 1;
-	optional string parent_id = 2;
+	google.protobuf.StringValue          name      = 1;
+	optional google.protobuf.StringValue parent_id = 2;
 }
 
 message AddedTagDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message DeleteTagDto {
-	string id = 1;
+	google.protobuf.StringValue id = 1;
 }
 
 message UpdateTagDto {
-	string id   = 1;
-	string name = 2;
+	google.protobuf.StringValue id   = 1;
+	google.protobuf.StringValue name = 2;
 }
 
 message MoveTagDto {
-	string          id        = 1;
-	optional string parent_id = 2;
+	google.protobuf.StringValue          id        = 1;
+	optional google.protobuf.StringValue parent_id = 2;
 }
 
 message GetUsersAttemptSummaryDto {
-	string uid   = 1;
-	Range  range = 2;
+	google.protobuf.StringValue uid   = 1;
+	Range                       range = 2;
 
 	message Range {
 		google.protobuf.Timestamp from = 1;
@@ -246,7 +247,7 @@ message AttemptHistorySummary {
 }
 
 message GetAttemptReviewDto {
-	string attempt_id = 1;
+	google.protobuf.StringValue attempt_id = 1;
 }
 
 message DetailedAttemptReviewData {
@@ -296,7 +297,7 @@ message DetailedAttemptReviewData {
 }
 
 message GetAttemptSavedDataDto {
-	string attempt_id = 1;
+	google.protobuf.StringValue attempt_id = 1;
 }
 
 message AttemptSavedData {
@@ -339,7 +340,7 @@ message AttemptSavedData {
 }
 
 message GetExamDetailsDto {
-	string exam_id = 1;
+	google.protobuf.StringValue exam_id = 1;
 }
 
 message DetailedExamInfo {
@@ -361,19 +362,19 @@ message DetailedExamInfo {
 }
 
 message FindExamsDto {
-	FilterOption    filter  = 1;
-	SortOption      sort_by = 2;
-	optional string cursor  = 3;
-	optional int32  limit   = 4;
+	FilterOption                         filter  = 1;
+	SortOption                           sort_by = 2;
+	optional google.protobuf.StringValue cursor  = 3;
+	optional google.protobuf.Int32Value  limit   = 4;
 
 	message FilterOption {
-		optional string name = 1;
-		repeated string tags = 2;
+		optional google.protobuf.StringValue name = 1;
+		repeated google.protobuf.StringValue tags = 2;
 	}
 
 	message SortOption {
-		string key       = 1;
-		string direction = 2;
+		google.protobuf.StringValue key       = 1;
+		google.protobuf.StringValue direction = 2;
 	}
 }
 
@@ -393,7 +394,7 @@ message Exams {
 }
 
 message GetDetailedQuestionDto {
-	string question_id = 1;
+	google.protobuf.StringValue question_id = 1;
 }
 
 message DetailedQuestionInfo {
@@ -412,7 +413,7 @@ message DetailedQuestionInfo {
 }
 
 message GetExamStatsDto {
-	string exam_id = 1;
+	google.protobuf.StringValue exam_id = 1;
 }
 
 message ExamStatistics {
@@ -428,15 +429,15 @@ message ExamStatistics {
 }
 
 message GetUsersAttemptHistoryDto {
-	string          uid     = 1;
-	optional string exam_id = 2;
-	optional string cursor  = 3;
-	optional int32  limit   = 4;
-	SortOption      sort_by = 5;
+	google.protobuf.StringValue          uid     = 1;
+	optional google.protobuf.StringValue exam_id = 2;
+	optional google.protobuf.StringValue cursor  = 3;
+	optional google.protobuf.Int32Value  limit   = 4;
+	SortOption                           sort_by = 5;
 
 	message SortOption {
-		string key       = 1;
-		string direction = 2;
+		google.protobuf.StringValue key       = 1;
+		google.protobuf.StringValue direction = 2;
 	}
 }
 
@@ -456,7 +457,7 @@ message UsersAttemptHistory {
 }
 
 message GetUserStatsDto {
-	string uid = 1;
+	google.protobuf.StringValue uid = 1;
 }
 
 message UserStats {

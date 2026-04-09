@@ -108,27 +108,27 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	async getExamDetails(request: exam.GetExamDetailsDto): Promise<exam.DetailedExamInfo> {
-		return this.praciceReadRepository.getExamDetail(request.examId);
+		return this.praciceReadRepository.getExamDetail('request.examId');
 	}
 
 	async getDetailedQuestionInfo(
 		request: exam.GetDetailedQuestionDto,
 	): Promise<exam.DetailedQuestionInfo> {
-		return this.praciceReadRepository.getDetailedQuestionInfo(request.questionId);
+		return this.praciceReadRepository.getDetailedQuestionInfo('request.questionId');
 	}
 
 	async getExamStats(request: exam.GetExamStatsDto): Promise<exam.ExamStatistics> {
-		return this.praciceReadRepository.getExamStats(request.examId);
+		return this.praciceReadRepository.getExamStats('request.examId');
 	}
 
 	async getAttemptSavedData(request: exam.GetAttemptSavedDataDto): Promise<exam.AttemptSavedData> {
-		return this.praciceReadRepository.getAttemptSavedData(request.attemptId);
+		return this.praciceReadRepository.getAttemptSavedData('request.attemptId');
 	}
 
 	async getAttemptReview(
 		request: exam.GetAttemptReviewDto,
 	): Promise<exam.DetailedAttemptReviewData> {
-		return this.praciceReadRepository.getAttemptReview(request.attemptId);
+		return this.praciceReadRepository.getAttemptReview('request.attemptId');
 	}
 
 	async getUsersAttemptSummary(
@@ -136,7 +136,7 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	): Promise<exam.AttemptHistorySummary> {
 		return {
 			history: await this.praciceReadRepository.getUsersAttemptSummary(
-				request.uid,
+				'request.uid',
 				(request.range as { from: Date; to: Date }) ?? {},
 			),
 		};
@@ -150,6 +150,6 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 	}
 
 	async getUsesStats(request: exam.GetUserStatsDto): Promise<exam.UserStats> {
-		return this.praciceReadRepository.getUserStats(request.uid);
+		return this.praciceReadRepository.getUserStats('request.uid');
 	}
 }
