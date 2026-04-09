@@ -3,5 +3,5 @@ import { Expose } from 'class-transformer';
 
 export class UserCalendar implements exam.AttemptHistorySummary {
 	@Expose()
-	history!: Record<string, number>;
+	history!: Record<number, number>;
 }

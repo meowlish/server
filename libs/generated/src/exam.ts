@@ -206,11 +206,11 @@ export interface GetUsersAttemptSummaryDto_Range {
 }
 
 export interface AttemptHistorySummary {
-  history: { [key: string]: number };
+  history: { [key: number]: number };
 }
 
 export interface AttemptHistorySummary_HistoryEntry {
-  key: string;
+  key: number;
   value: number;
 }
 
@@ -2357,13 +2357,13 @@ export const AttemptHistorySummary: MessageFns<AttemptHistorySummary> = {
 };
 
 function createBaseAttemptHistorySummary_HistoryEntry(): AttemptHistorySummary_HistoryEntry {
-  return { key: "", value: 0 };
+  return { key: 0, value: 0 };
 }
 
 export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummary_HistoryEntry> = {
   encode(message: AttemptHistorySummary_HistoryEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
+    if (message.key !== 0) {
+      writer.uint32(8).int32(message.key);
     }
     if (message.value !== 0) {
       writer.uint32(16).int32(message.value);
@@ -2379,11 +2379,11 @@ export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummar
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.key = reader.string();
+          message.key = reader.int32();
           continue;
         }
         case 2: {

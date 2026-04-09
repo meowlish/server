@@ -5,4 +5,4 @@
  *  "1775235931": "5"
  * }
  */
-export type AttemptHistorySummary = Record<string, number>;
+export type AttemptHistorySummary = Record<number, number>;
