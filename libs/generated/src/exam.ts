@@ -207,11 +207,11 @@ export interface GetUsersAttemptSummaryDto_Range {
 }
 
 export interface AttemptHistorySummary {
-  history: { [key: number]: number };
+  history: { [key: string]: number };
 }
 
 export interface AttemptHistorySummary_HistoryEntry {
-  key: number;
+  key: string;
   value: number;
 }
 
@@ -2358,13 +2358,13 @@ export const AttemptHistorySummary: MessageFns<AttemptHistorySummary> = {
 };
 
 function createBaseAttemptHistorySummary_HistoryEntry(): AttemptHistorySummary_HistoryEntry {
-  return { key: 0, value: 0 };
+  return { key: "", value: 0 };
 }
 
 export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummary_HistoryEntry> = {
   encode(message: AttemptHistorySummary_HistoryEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== 0) {
-      writer.uint32(8).int64(message.key);
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
     }
     if (message.value !== 0) {
       writer.uint32(16).int32(message.value);
@@ -2380,11 +2380,11 @@ export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummar
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.key = longToNumber(reader.int64());
+          message.key = reader.string();
           continue;
         }
         case 2: {
@@ -5307,17 +5307,6 @@ function fromTimestamp(t: Timestamp): Date {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis);
-}
-
-function longToNumber(int64: { toString(): string }): number {
-  const num = globalThis.Number(int64.toString());
-  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
-    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
-  }
-  return num;
 }
 
 interface MessageFns<T> {

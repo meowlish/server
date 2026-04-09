@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class UserCalendar implements exam.AttemptHistorySummary {
 	@Expose()
-	history!: Record<number, number>;
+	history!: Record<string, number>;
 }

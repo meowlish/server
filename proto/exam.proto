@@ -243,7 +243,7 @@ message GetUsersAttemptSummaryDto {
 }
 
 message AttemptHistorySummary {
-	map<int64, int32> history = 1;
+	map<string, int32> history = 1;
 }
 
 message GetAttemptReviewDto {
