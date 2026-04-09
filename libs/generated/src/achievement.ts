@@ -72,7 +72,7 @@ export const Badges: MessageFns<Badges> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Badges {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseBadges()) as Badges;
+    const message = createBaseBadges();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -137,7 +137,7 @@ export const UserBadges: MessageFns<UserBadges> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadges {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUserBadges()) as UserBadges;
+    const message = createBaseUserBadges();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -206,7 +206,7 @@ export const BadgesResponseDto: MessageFns<BadgesResponseDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): BadgesResponseDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseBadgesResponseDto()) as BadgesResponseDto;
+    const message = createBaseBadgesResponseDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -249,7 +249,7 @@ export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesRequestDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUserBadgesRequestDto()) as UserBadgesRequestDto;
+    const message = createBaseUserBadgesRequestDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -305,7 +305,7 @@ export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserBadgesResponseDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUserBadgesResponseDto()) as UserBadgesResponseDto;
+    const message = createBaseUserBadgesResponseDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

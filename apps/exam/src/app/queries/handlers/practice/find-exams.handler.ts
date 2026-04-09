@@ -63,8 +63,10 @@ export class FindExamsHandler implements IQueryHandler<FindExamsQuery> {
 				lastExamItem ?
 					{
 						id: lastExamItem.id,
-						attemptsCount: lastExamItem.attemptsCount,
-						updatedAt: lastExamItem.updatedAt.getTime(),
+						attemptsCount:
+							inUseSortBy?.key === 'attemptsCount' ? lastExamItem.attemptsCount : undefined,
+						updatedAt:
+							inUseSortBy?.key === 'updatedAt' ? lastExamItem.updatedAt.getTime() : undefined,
 					}
 				:	undefined,
 			limit: inUseLimit,

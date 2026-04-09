@@ -337,7 +337,7 @@ export interface FindExamsDto {
 }
 
 export interface FindExamsDto_FilterOption {
-  name: string;
+  name?: string | undefined;
   tags: string[];
 }
 
@@ -472,7 +472,7 @@ export const CreateExamDto: MessageFns<CreateExamDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreateExamDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreateExamDto()) as CreateExamDto;
+    const message = createBaseCreateExamDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -533,7 +533,7 @@ export const CreatedExamDto: MessageFns<CreatedExamDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreatedExamDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreatedExamDto()) as CreatedExamDto;
+    const message = createBaseCreatedExamDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -576,7 +576,7 @@ export const CreateSectionDto: MessageFns<CreateSectionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreateSectionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreateSectionDto()) as CreateSectionDto;
+    const message = createBaseCreateSectionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -629,7 +629,7 @@ export const CreatedSectionDto: MessageFns<CreatedSectionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreatedSectionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreatedSectionDto()) as CreatedSectionDto;
+    const message = createBaseCreatedSectionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -669,7 +669,7 @@ export const CreateQuestionDto: MessageFns<CreateQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreateQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreateQuestionDto()) as CreateQuestionDto;
+    const message = createBaseCreateQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -714,7 +714,7 @@ export const CreatedQuestionDto: MessageFns<CreatedQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreatedQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreatedQuestionDto()) as CreatedQuestionDto;
+    const message = createBaseCreatedQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -769,7 +769,7 @@ export const UpdateExamDto: MessageFns<UpdateExamDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateExamDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateExamDto()) as UpdateExamDto;
+    const message = createBaseUpdateExamDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -878,7 +878,7 @@ export const UpdateSectionDto: MessageFns<UpdateSectionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateSectionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateSectionDto()) as UpdateSectionDto;
+    const message = createBaseUpdateSectionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1021,7 +1021,7 @@ export const UpdateQuestionDto: MessageFns<UpdateQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateQuestionDto()) as UpdateQuestionDto;
+    const message = createBaseUpdateQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1152,7 +1152,7 @@ export const UpdateQuestionDto_AddChoice: MessageFns<UpdateQuestionDto_AddChoice
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto_AddChoice {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateQuestionDto_AddChoice()) as UpdateQuestionDto_AddChoice;
+    const message = createBaseUpdateQuestionDto_AddChoice();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1217,7 +1217,7 @@ export const UpdateQuestionDto_UpdateChoice: MessageFns<UpdateQuestionDto_Update
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateQuestionDto_UpdateChoice {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateQuestionDto_UpdateChoice()) as UpdateQuestionDto_UpdateChoice;
+    const message = createBaseUpdateQuestionDto_UpdateChoice();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1286,7 +1286,7 @@ export const DeleteExamDto: MessageFns<DeleteExamDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DeleteExamDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDeleteExamDto()) as DeleteExamDto;
+    const message = createBaseDeleteExamDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1323,7 +1323,7 @@ export const DeleteSectionDto: MessageFns<DeleteSectionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DeleteSectionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDeleteSectionDto()) as DeleteSectionDto;
+    const message = createBaseDeleteSectionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1360,7 +1360,7 @@ export const DeleteQuestionDto: MessageFns<DeleteQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DeleteQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDeleteQuestionDto()) as DeleteQuestionDto;
+    const message = createBaseDeleteQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1406,7 +1406,7 @@ export const MoveSectionDto: MessageFns<MoveSectionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): MoveSectionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseMoveSectionDto()) as MoveSectionDto;
+    const message = createBaseMoveSectionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1473,7 +1473,7 @@ export const MoveQuestionDto: MessageFns<MoveQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): MoveQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseMoveQuestionDto()) as MoveQuestionDto;
+    const message = createBaseMoveQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1529,7 +1529,7 @@ export const ReviewExamDto: MessageFns<ReviewExamDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): ReviewExamDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseReviewExamDto()) as ReviewExamDto;
+    const message = createBaseReviewExamDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1580,7 +1580,7 @@ export const AttemptDto: MessageFns<AttemptDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAttemptDto()) as AttemptDto;
+    const message = createBaseAttemptDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1636,7 +1636,7 @@ export const AttemptDto_Options: MessageFns<AttemptDto_Options> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptDto_Options {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAttemptDto_Options()) as AttemptDto_Options;
+    const message = createBaseAttemptDto_Options();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1681,7 +1681,7 @@ export const CreatedAttemptDto: MessageFns<CreatedAttemptDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): CreatedAttemptDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseCreatedAttemptDto()) as CreatedAttemptDto;
+    const message = createBaseCreatedAttemptDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1718,7 +1718,7 @@ export const EndAttemptDto: MessageFns<EndAttemptDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): EndAttemptDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseEndAttemptDto()) as EndAttemptDto;
+    const message = createBaseEndAttemptDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1761,7 +1761,7 @@ export const AnswerDto: MessageFns<AnswerDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AnswerDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAnswerDto()) as AnswerDto;
+    const message = createBaseAnswerDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1820,7 +1820,7 @@ export const RemoveAnswerDto: MessageFns<RemoveAnswerDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): RemoveAnswerDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseRemoveAnswerDto()) as RemoveAnswerDto;
+    const message = createBaseRemoveAnswerDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1879,7 +1879,7 @@ export const AddNoteDto: MessageFns<AddNoteDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AddNoteDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAddNoteDto()) as AddNoteDto;
+    const message = createBaseAddNoteDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1935,7 +1935,7 @@ export const ToggleFlagDto: MessageFns<ToggleFlagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): ToggleFlagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseToggleFlagDto()) as ToggleFlagDto;
+    const message = createBaseToggleFlagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1980,7 +1980,7 @@ export const FlagStateDto: MessageFns<FlagStateDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): FlagStateDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseFlagStateDto()) as FlagStateDto;
+    const message = createBaseFlagStateDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2020,7 +2020,7 @@ export const AddTagDto: MessageFns<AddTagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AddTagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAddTagDto()) as AddTagDto;
+    const message = createBaseAddTagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2065,7 +2065,7 @@ export const AddedTagDto: MessageFns<AddedTagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AddedTagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAddedTagDto()) as AddedTagDto;
+    const message = createBaseAddedTagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2102,7 +2102,7 @@ export const DeleteTagDto: MessageFns<DeleteTagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DeleteTagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDeleteTagDto()) as DeleteTagDto;
+    const message = createBaseDeleteTagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2142,7 +2142,7 @@ export const UpdateTagDto: MessageFns<UpdateTagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateTagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUpdateTagDto()) as UpdateTagDto;
+    const message = createBaseUpdateTagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2190,7 +2190,7 @@ export const MoveTagDto: MessageFns<MoveTagDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): MoveTagDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseMoveTagDto()) as MoveTagDto;
+    const message = createBaseMoveTagDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2238,7 +2238,7 @@ export const GetUsersAttemptSummaryDto: MessageFns<GetUsersAttemptSummaryDto> = 
   decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptSummaryDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetUsersAttemptSummaryDto()) as GetUsersAttemptSummaryDto;
+    const message = createBaseGetUsersAttemptSummaryDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2286,7 +2286,7 @@ export const GetUsersAttemptSummaryDto_Range: MessageFns<GetUsersAttemptSummaryD
   decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptSummaryDto_Range {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetUsersAttemptSummaryDto_Range()) as GetUsersAttemptSummaryDto_Range;
+    const message = createBaseGetUsersAttemptSummaryDto_Range();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2331,7 +2331,7 @@ export const AttemptHistorySummary: MessageFns<AttemptHistorySummary> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptHistorySummary {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAttemptHistorySummary()) as AttemptHistorySummary;
+    const message = createBaseAttemptHistorySummary();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2374,7 +2374,7 @@ export const AttemptHistorySummary_HistoryEntry: MessageFns<AttemptHistorySummar
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptHistorySummary_HistoryEntry {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAttemptHistorySummary_HistoryEntry()) as AttemptHistorySummary_HistoryEntry;
+    const message = createBaseAttemptHistorySummary_HistoryEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2419,7 +2419,7 @@ export const GetAttemptReviewDto: MessageFns<GetAttemptReviewDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetAttemptReviewDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetAttemptReviewDto()) as GetAttemptReviewDto;
+    const message = createBaseGetAttemptReviewDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2471,7 +2471,7 @@ export const DetailedAttemptReviewData: MessageFns<DetailedAttemptReviewData> = 
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDetailedAttemptReviewData()) as DetailedAttemptReviewData;
+    const message = createBaseDetailedAttemptReviewData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2568,9 +2568,7 @@ export const DetailedAttemptReviewData_AttemptReviewResponse: MessageFns<
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData_AttemptReviewResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedAttemptReviewData_AttemptReviewResponse(),
-    ) as DetailedAttemptReviewData_AttemptReviewResponse;
+    const message = createBaseDetailedAttemptReviewData_AttemptReviewResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2671,9 +2669,7 @@ export const DetailedAttemptReviewData_SectionReviewData: MessageFns<DetailedAtt
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedAttemptReviewData_SectionReviewData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedAttemptReviewData_SectionReviewData(),
-    ) as DetailedAttemptReviewData_SectionReviewData;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2800,9 +2796,7 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData: Mes
   ): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData(),
-    ) as DetailedAttemptReviewData_SectionReviewData_QuestionReviewData;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2914,9 +2908,7 @@ export const DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_Choi
   ): DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData(),
-    ) as DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData;
+    const message = createBaseDetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2969,7 +2961,7 @@ export const GetAttemptSavedDataDto: MessageFns<GetAttemptSavedDataDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetAttemptSavedDataDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetAttemptSavedDataDto()) as GetAttemptSavedDataDto;
+    const message = createBaseGetAttemptSavedDataDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3015,7 +3007,7 @@ export const AttemptSavedData: MessageFns<AttemptSavedData> = {
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseAttemptSavedData()) as AttemptSavedData;
+    const message = createBaseAttemptSavedData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3085,9 +3077,7 @@ export const AttemptSavedData_AttemptSavedResponse: MessageFns<AttemptSavedData_
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSavedResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseAttemptSavedData_AttemptSavedResponse(),
-    ) as AttemptSavedData_AttemptSavedResponse;
+    const message = createBaseAttemptSavedData_AttemptSavedResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3169,9 +3159,7 @@ export const AttemptSavedData_AttemptSectionData: MessageFns<AttemptSavedData_At
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSectionData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseAttemptSavedData_AttemptSectionData(),
-    ) as AttemptSavedData_AttemptSectionData;
+    const message = createBaseAttemptSavedData_AttemptSectionData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3287,9 +3275,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData: MessageFns
   decode(input: BinaryReader | Uint8Array, length?: number): AttemptSavedData_AttemptSectionData_AttemptQuestionData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData(),
-    ) as AttemptSavedData_AttemptSectionData_AttemptQuestionData;
+    const message = createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3379,9 +3365,7 @@ export const AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoi
   ): AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData(),
-    ) as AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData;
+    const message = createBaseAttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3426,7 +3410,7 @@ export const GetExamDetailsDto: MessageFns<GetExamDetailsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetExamDetailsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetExamDetailsDto()) as GetExamDetailsDto;
+    const message = createBaseGetExamDetailsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3484,7 +3468,7 @@ export const DetailedExamInfo: MessageFns<DetailedExamInfo> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedExamInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDetailedExamInfo()) as DetailedExamInfo;
+    const message = createBaseDetailedExamInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3586,9 +3570,7 @@ export const DetailedExamInfo_DetailedExamSection: MessageFns<DetailedExamInfo_D
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedExamInfo_DetailedExamSection {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedExamInfo_DetailedExamSection(),
-    ) as DetailedExamInfo_DetailedExamSection;
+    const message = createBaseDetailedExamInfo_DetailedExamSection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3658,7 +3640,7 @@ export const FindExamsDto: MessageFns<FindExamsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): FindExamsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseFindExamsDto()) as FindExamsDto;
+    const message = createBaseFindExamsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3705,12 +3687,12 @@ export const FindExamsDto: MessageFns<FindExamsDto> = {
 };
 
 function createBaseFindExamsDto_FilterOption(): FindExamsDto_FilterOption {
-  return { name: "", tags: [] };
+  return { tags: [] };
 }
 
 export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = {
   encode(message: FindExamsDto_FilterOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.name !== "") {
+    if (message.name !== undefined) {
       writer.uint32(10).string(message.name);
     }
     for (const v of message.tags) {
@@ -3722,7 +3704,7 @@ export const FindExamsDto_FilterOption: MessageFns<FindExamsDto_FilterOption> = 
   decode(input: BinaryReader | Uint8Array, length?: number): FindExamsDto_FilterOption {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseFindExamsDto_FilterOption()) as FindExamsDto_FilterOption;
+    const message = createBaseFindExamsDto_FilterOption();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3770,7 +3752,7 @@ export const FindExamsDto_SortOption: MessageFns<FindExamsDto_SortOption> = {
   decode(input: BinaryReader | Uint8Array, length?: number): FindExamsDto_SortOption {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseFindExamsDto_SortOption()) as FindExamsDto_SortOption;
+    const message = createBaseFindExamsDto_SortOption();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3818,7 +3800,7 @@ export const Exams: MessageFns<Exams> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Exams {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseExams()) as Exams;
+    const message = createBaseExams();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3881,7 +3863,7 @@ export const Exams_MinimalExamInfo: MessageFns<Exams_MinimalExamInfo> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Exams_MinimalExamInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseExams_MinimalExamInfo()) as Exams_MinimalExamInfo;
+    const message = createBaseExams_MinimalExamInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3966,7 +3948,7 @@ export const GetDetailedQuestionDto: MessageFns<GetDetailedQuestionDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetDetailedQuestionDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetDetailedQuestionDto()) as GetDetailedQuestionDto;
+    const message = createBaseGetDetailedQuestionDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4021,7 +4003,7 @@ export const DetailedQuestionInfo: MessageFns<DetailedQuestionInfo> = {
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedQuestionInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseDetailedQuestionInfo()) as DetailedQuestionInfo;
+    const message = createBaseDetailedQuestionInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4109,9 +4091,7 @@ export const DetailedQuestionInfo_SectionContext: MessageFns<DetailedQuestionInf
   decode(input: BinaryReader | Uint8Array, length?: number): DetailedQuestionInfo_SectionContext {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseDetailedQuestionInfo_SectionContext(),
-    ) as DetailedQuestionInfo_SectionContext;
+    const message = createBaseDetailedQuestionInfo_SectionContext();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4156,7 +4136,7 @@ export const GetExamStatsDto: MessageFns<GetExamStatsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetExamStatsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetExamStatsDto()) as GetExamStatsDto;
+    const message = createBaseGetExamStatsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4199,7 +4179,7 @@ export const ExamStatistics: MessageFns<ExamStatistics> = {
   decode(input: BinaryReader | Uint8Array, length?: number): ExamStatistics {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseExamStatistics()) as ExamStatistics;
+    const message = createBaseExamStatistics();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4258,7 +4238,7 @@ export const ExamStatistics_QuestionStatistics: MessageFns<ExamStatistics_Questi
   decode(input: BinaryReader | Uint8Array, length?: number): ExamStatistics_QuestionStatistics {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseExamStatistics_QuestionStatistics()) as ExamStatistics_QuestionStatistics;
+    const message = createBaseExamStatistics_QuestionStatistics();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4323,7 +4303,7 @@ export const GetUsersAttemptHistoryDto: MessageFns<GetUsersAttemptHistoryDto> = 
   decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptHistoryDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetUsersAttemptHistoryDto()) as GetUsersAttemptHistoryDto;
+    const message = createBaseGetUsersAttemptHistoryDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4395,9 +4375,7 @@ export const GetUsersAttemptHistoryDto_SortOption: MessageFns<GetUsersAttemptHis
   decode(input: BinaryReader | Uint8Array, length?: number): GetUsersAttemptHistoryDto_SortOption {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseGetUsersAttemptHistoryDto_SortOption(),
-    ) as GetUsersAttemptHistoryDto_SortOption;
+    const message = createBaseGetUsersAttemptHistoryDto_SortOption();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4445,7 +4423,7 @@ export const UsersAttemptHistory: MessageFns<UsersAttemptHistory> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UsersAttemptHistory {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUsersAttemptHistory()) as UsersAttemptHistory;
+    const message = createBaseUsersAttemptHistory();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4508,9 +4486,7 @@ export const UsersAttemptHistory_MinimalAttemptInfo: MessageFns<UsersAttemptHist
   decode(input: BinaryReader | Uint8Array, length?: number): UsersAttemptHistory_MinimalAttemptInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(
-      createBaseUsersAttemptHistory_MinimalAttemptInfo(),
-    ) as UsersAttemptHistory_MinimalAttemptInfo;
+    const message = createBaseUsersAttemptHistory_MinimalAttemptInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4595,7 +4571,7 @@ export const GetUserStatsDto: MessageFns<GetUserStatsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetUserStatsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetUserStatsDto()) as GetUserStatsDto;
+    const message = createBaseGetUserStatsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4638,7 +4614,7 @@ export const UserStats: MessageFns<UserStats> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserStats {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUserStats()) as UserStats;
+    const message = createBaseUserStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -4694,7 +4670,7 @@ export const UserStats_TagInfo: MessageFns<UserStats_TagInfo> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UserStats_TagInfo {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUserStats_TagInfo()) as UserStats_TagInfo;
+    const message = createBaseUserStats_TagInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

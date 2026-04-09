@@ -66,7 +66,7 @@ export const GetPresignedUrlDto: MessageFns<GetPresignedUrlDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetPresignedUrlDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetPresignedUrlDto()) as GetPresignedUrlDto;
+    const message = createBaseGetPresignedUrlDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -136,7 +136,7 @@ export const PresignedUrlResponse: MessageFns<PresignedUrlResponse> = {
   decode(input: BinaryReader | Uint8Array, length?: number): PresignedUrlResponse {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBasePresignedUrlResponse()) as PresignedUrlResponse;
+    const message = createBasePresignedUrlResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -203,7 +203,7 @@ export const PresignedUrlResponse_FormDataEntry: MessageFns<PresignedUrlResponse
   decode(input: BinaryReader | Uint8Array, length?: number): PresignedUrlResponse_FormDataEntry {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBasePresignedUrlResponse_FormDataEntry()) as PresignedUrlResponse_FormDataEntry;
+    const message = createBasePresignedUrlResponse_FormDataEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -248,7 +248,7 @@ export const GetUrlsDto: MessageFns<GetUrlsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): GetUrlsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseGetUrlsDto()) as GetUrlsDto;
+    const message = createBaseGetUrlsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -285,7 +285,7 @@ export const UrlsDto: MessageFns<UrlsDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UrlsDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUrlsDto()) as UrlsDto;
+    const message = createBaseUrlsDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -328,7 +328,7 @@ export const UrlsDto_UrlsEntry: MessageFns<UrlsDto_UrlsEntry> = {
   decode(input: BinaryReader | Uint8Array, length?: number): UrlsDto_UrlsEntry {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseUrlsDto_UrlsEntry()) as UrlsDto_UrlsEntry;
+    const message = createBaseUrlsDto_UrlsEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

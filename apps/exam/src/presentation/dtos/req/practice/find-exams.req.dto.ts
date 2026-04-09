@@ -2,6 +2,7 @@ import { exam } from '@server/generated';
 import { SortDirection } from '@server/typing';
 import { Type } from 'class-transformer';
 import {
+	ArrayNotEmpty,
 	IsArray,
 	IsEnum,
 	IsIn,
@@ -13,10 +14,12 @@ import {
 } from 'class-validator';
 
 class FilterOptions implements exam.FindExamsDto_FilterOption {
+	@IsOptional()
 	@IsString()
-	name!: string;
+	name?: string;
 
 	@IsArray()
+	@IsOptional()
 	@IsString({ each: true })
 	tags!: string[];
 }

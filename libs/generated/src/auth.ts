@@ -86,7 +86,7 @@ export const RegisterMailDto: MessageFns<RegisterMailDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): RegisterMailDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseRegisterMailDto()) as RegisterMailDto;
+    const message = createBaseRegisterMailDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -142,7 +142,7 @@ export const LoginMailDto: MessageFns<LoginMailDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): LoginMailDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseLoginMailDto()) as LoginMailDto;
+    const message = createBaseLoginMailDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -187,7 +187,7 @@ export const RefreshDto: MessageFns<RefreshDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): RefreshDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseRefreshDto()) as RefreshDto;
+    const message = createBaseRefreshDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -227,7 +227,7 @@ export const ValidateRefreshDto: MessageFns<ValidateRefreshDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): ValidateRefreshDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseValidateRefreshDto()) as ValidateRefreshDto;
+    const message = createBaseValidateRefreshDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -275,7 +275,7 @@ export const ValidateAccessDto: MessageFns<ValidateAccessDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): ValidateAccessDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseValidateAccessDto()) as ValidateAccessDto;
+    const message = createBaseValidateAccessDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -320,7 +320,7 @@ export const LogOutAllDto: MessageFns<LogOutAllDto> = {
   decode(input: BinaryReader | Uint8Array, length?: number): LogOutAllDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseLogOutAllDto()) as LogOutAllDto;
+    const message = createBaseLogOutAllDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -360,7 +360,7 @@ export const Tokens: MessageFns<Tokens> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Tokens {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseTokens()) as Tokens;
+    const message = createBaseTokens();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -411,7 +411,7 @@ export const Identity: MessageFns<Identity> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Identity {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseIdentity()) as Identity;
+    const message = createBaseIdentity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -470,7 +470,7 @@ export const Role: MessageFns<Role> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Role {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseRole()) as Role;
+    const message = createBaseRole();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -529,7 +529,7 @@ export const Claims: MessageFns<Claims> = {
   decode(input: BinaryReader | Uint8Array, length?: number): Claims {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = Object.create(createBaseClaims()) as Claims;
+    const message = createBaseClaims();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {

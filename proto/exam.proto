@@ -367,7 +367,7 @@ message FindExamsDto {
 	optional int32  limit   = 4;
 
 	message FilterOption {
-		string          name = 1;
+		optional string name = 1;
 		repeated string tags = 2;
 	}
 
