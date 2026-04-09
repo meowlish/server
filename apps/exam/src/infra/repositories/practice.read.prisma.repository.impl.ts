@@ -73,9 +73,9 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		);
 
 		return {
-			attemptCounts: baseStats?.attemptCounts ?? 0,
-			averageScoreInPercentage: baseStats?.averageScoreInPercentage ?? 0,
-			tagInfos: tagInfos,
+			attemptCounts: Number(baseStats?.attemptCounts ?? 0),
+			averageScoreInPercentage: Number(baseStats?.averageScoreInPercentage ?? 0),
+			tagInfos: tagInfos.map(t => ({ ...t, correctPercentage: Number(t.correctPercentage) })),
 		};
 	}
 
