@@ -1,9 +1,10 @@
 import { FileModule } from './file.module';
+import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { INestApplicationContext } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { file } from '@server/generated';
 import { AppLoggerService } from '@server/logger';
-import { join } from 'path';
 import 'reflect-metadata';
 
 const useLogger = (module: INestApplicationContext) => {
@@ -17,7 +18,9 @@ async function bootstrap() {
 		options: {
 			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
 			package: 'file',
-			protoPath: join(process.cwd(), 'proto', 'file.proto'),
+			packageDefinition: {
+				[`file.${file.FILE_SERVICE_NAME}`]: file.FileServiceService,
+			} satisfies PackageDefinition,
 		},
 	});
 	useLogger(fileModule);
