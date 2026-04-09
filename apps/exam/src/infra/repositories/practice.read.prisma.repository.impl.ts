@@ -801,14 +801,11 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 					type: q.type,
 					fileUrls: q.questionFiles.map(f => f.fileId),
 					points: q.points,
-					choices:
-						questionTypesThatShowChoices.includes(parseEnum(QuestionType, q.type)) ?
-							q.choices.map(c => ({
-								key: c.key,
-								content: c.content ?? undefined,
-								isCorrect: c.isCorrect,
-							}))
-						:	[],
+					choices: q.choices.map(c => ({
+						key: c.key,
+						content: c.content ?? undefined,
+						isCorrect: c.isCorrect,
+					})),
 					tags: q.questionTags.map(t => t.tag.name),
 				})),
 			}));
