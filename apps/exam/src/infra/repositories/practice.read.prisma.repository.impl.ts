@@ -562,8 +562,8 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		);
 
 		return {
-			averageDuration: stats?.averageDuration ?? 0,
-			averageScoreInPercentage: stats?.averageScoreInPercentage ?? 0,
+			averageDuration: Number(stats?.averageDuration ?? 0),
+			averageScoreInPercentage: Number(stats?.averageScoreInPercentage ?? 0),
 			questions: questions,
 		};
 	}
