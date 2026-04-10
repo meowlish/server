@@ -5,6 +5,7 @@ import {
 import { IntegrationEventPublishers } from './app/events/publishers';
 import { ExamManagementQueryHandlers } from './app/queries/handlers/management';
 import { ExamPracticeQueryHandler } from './app/queries/handlers/practice';
+import { GoalService } from './app/services/goal.service';
 import { TagService } from './app/services/tag.service';
 import { bullConfig } from './configs/bullmq.config';
 import { config } from './configs/config';
@@ -15,6 +16,7 @@ import { ExamEventHandlers } from './domain/events/handlers';
 import { IAttemptRepositoryToken } from './domain/repositories/attempt.repository';
 import { IExamRepositoryToken } from './domain/repositories/exam.repository';
 import { IFileRepositoryToken } from './domain/repositories/file.repository';
+import { IGoalRepositoryToken } from './domain/repositories/goal.repository';
 import { IManagementReadRepositoryToken } from './domain/repositories/management.read.repository';
 import { IPracticeReadRepositoryToken } from './domain/repositories/practice.read.repository';
 import { IQuestionRepositoryToken } from './domain/repositories/question.repository';
@@ -23,6 +25,7 @@ import { ITagRepositoryToken } from './domain/repositories/tag.repository';
 import { AttemptPrismaRepository } from './infra/repositories/attempt.prisma.repository.impl';
 import { ExamPrismaRepository } from './infra/repositories/exam.prisma.repository.impl';
 import { FilePrismaRepositoryImpl } from './infra/repositories/file.prisma.repository.impl';
+import { GoalPrismaRepositoryImpl } from './infra/repositories/goal.prisma.repository.impl';
 import { ManagementPrismaRepositoryImpl } from './infra/repositories/management.read.prisma.repository.impl';
 import { PracticeReadPrismaRepositoryImpl } from './infra/repositories/practice.read.prisma.repository.impl';
 import { QuestionPrismaRepository } from './infra/repositories/question.prisma.repository.impl';
@@ -30,6 +33,7 @@ import { SectionPrismaRepository } from './infra/repositories/section.prisma.rep
 import { TagPrismaRepository } from './infra/repositories/tag.prisma.repository.impl';
 import { ExamManagementController } from './presentation/controllers/exam-management.controller';
 import { ExamPracticeController } from './presentation/controllers/exam-practice.controller';
+import { GoalController } from './presentation/controllers/goal.controller';
 import { TagController } from './presentation/controllers/tag.controller';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
@@ -54,7 +58,7 @@ import { GlobalValidationPipe } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
 @Module({
-	controllers: [ExamManagementController, ExamPracticeController, TagController],
+	controllers: [ExamManagementController, ExamPracticeController, TagController, GoalController],
 	imports: [
 		ConfigModule.forRoot({
 			expandVariables: true,
@@ -90,6 +94,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		...ExamEventHandlers,
 		...IntegrationEventPublishers,
 		TagService,
+		GoalService,
 		{
 			provide: FILE_CLIENT,
 			useFactory: () =>
@@ -126,6 +131,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: IFileRepositoryToken,
 			useClass: FilePrismaRepositoryImpl,
+		},
+		{
+			provide: IGoalRepositoryToken,
+			useClass: GoalPrismaRepositoryImpl,
 		},
 		{
 			provide: IPracticeReadRepositoryToken,

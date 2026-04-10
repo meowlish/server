@@ -55,6 +55,13 @@ service TagService {
 	rpc GetTagList(google.protobuf.Empty) returns (TagList) {}
 }
 
+service GoalService {
+	rpc SetGoal(SetGoalDto) returns (GoalResponse);
+	rpc UpdateGoal(UpdateGoalDto) returns (GoalResponse);
+	rpc DeleteGoal(DeleteGoalDto) returns (google.protobuf.Empty);
+	rpc GetGoal(GetGoalDto) returns (GoalResponse);
+}
+
 // Request
 message CreateExamDto {
 	google.protobuf.StringValue created_by  = 1;
@@ -598,4 +605,33 @@ message TagTrees {
 		string           name     = 1;
 		repeated TagTree children = 2;
 	}
+}
+
+message SetGoalDto {
+	google.protobuf.StringValue uid    = 1;
+	google.protobuf.Timestamp   date   = 2;
+	google.protobuf.Int32Value  target = 3;
+	google.protobuf.StringValue type   = 4;
+}
+
+message UpdateGoalDto {
+	google.protobuf.StringValue uid    = 1;
+	google.protobuf.Timestamp   date   = 2;
+	google.protobuf.Int32Value  target = 3;
+	google.protobuf.StringValue type   = 4;
+}
+
+message DeleteGoalDto {
+	google.protobuf.StringValue uid = 1;
+}
+
+message GetGoalDto {
+	google.protobuf.StringValue uid = 1;
+}
+
+message GoalResponse {
+	string                    uid    = 1;
+	google.protobuf.Timestamp date   = 2;
+	int32                     target = 3;
+	string                    type   = 4;
 }

@@ -26,6 +26,7 @@ import { ErrorHandlingGrpcProxy } from '@server/utils';
 						[`exam.${exam.EXAM_MANAGEMENT_SERVICE_NAME}`]: exam.ExamManagementServiceService,
 						[`exam.${exam.EXAM_PRACTICE_SERVICE_NAME}`]: exam.ExamPracticeServiceService,
 						[`exam.${exam.TAG_SERVICE_NAME}`]: exam.TagServiceService,
+						[`exam.${exam.GOAL_SERVICE_NAME}`]: exam.GoalServiceService,
 					} satisfies PackageDefinition,
 				}),
 		},

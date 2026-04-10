@@ -558,6 +558,35 @@ export interface TagTrees_TagTree {
   children: TagTrees_TagTree[];
 }
 
+export interface SetGoalDto {
+  uid: string | undefined;
+  date: Date | undefined;
+  target: number | undefined;
+  type: string | undefined;
+}
+
+export interface UpdateGoalDto {
+  uid: string | undefined;
+  date: Date | undefined;
+  target: number | undefined;
+  type: string | undefined;
+}
+
+export interface DeleteGoalDto {
+  uid: string | undefined;
+}
+
+export interface GetGoalDto {
+  uid: string | undefined;
+}
+
+export interface GoalResponse {
+  uid: string;
+  date: Date | undefined;
+  target: number;
+  type: string;
+}
+
 wrappers[".google.protobuf.Timestamp"] = {
   fromObject(value: Date) {
     return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
@@ -6020,6 +6049,290 @@ export const TagTrees_TagTree: MessageFns<TagTrees_TagTree> = {
   },
 };
 
+function createBaseSetGoalDto(): SetGoalDto {
+  return { uid: undefined, date: undefined, target: undefined, type: undefined };
+}
+
+export const SetGoalDto: MessageFns<SetGoalDto> = {
+  encode(message: SetGoalDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    if (message.date !== undefined) {
+      Timestamp.encode(toTimestamp(message.date), writer.uint32(18).fork()).join();
+    }
+    if (message.target !== undefined) {
+      Int32Value.encode({ value: message.target! }, writer.uint32(26).fork()).join();
+    }
+    if (message.type !== undefined) {
+      StringValue.encode({ value: message.type! }, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SetGoalDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSetGoalDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.date = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.target = Int32Value.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateGoalDto(): UpdateGoalDto {
+  return { uid: undefined, date: undefined, target: undefined, type: undefined };
+}
+
+export const UpdateGoalDto: MessageFns<UpdateGoalDto> = {
+  encode(message: UpdateGoalDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    if (message.date !== undefined) {
+      Timestamp.encode(toTimestamp(message.date), writer.uint32(18).fork()).join();
+    }
+    if (message.target !== undefined) {
+      Int32Value.encode({ value: message.target! }, writer.uint32(26).fork()).join();
+    }
+    if (message.type !== undefined) {
+      StringValue.encode({ value: message.type! }, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateGoalDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateGoalDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.date = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.target = Int32Value.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteGoalDto(): DeleteGoalDto {
+  return { uid: undefined };
+}
+
+export const DeleteGoalDto: MessageFns<DeleteGoalDto> = {
+  encode(message: DeleteGoalDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteGoalDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteGoalDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetGoalDto(): GetGoalDto {
+  return { uid: undefined };
+}
+
+export const GetGoalDto: MessageFns<GetGoalDto> = {
+  encode(message: GetGoalDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetGoalDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetGoalDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGoalResponse(): GoalResponse {
+  return { uid: "", date: undefined, target: 0, type: "" };
+}
+
+export const GoalResponse: MessageFns<GoalResponse> = {
+  encode(message: GoalResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== "") {
+      writer.uint32(10).string(message.uid);
+    }
+    if (message.date !== undefined) {
+      Timestamp.encode(toTimestamp(message.date), writer.uint32(18).fork()).join();
+    }
+    if (message.target !== 0) {
+      writer.uint32(24).int32(message.target);
+    }
+    if (message.type !== "") {
+      writer.uint32(34).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GoalResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGoalResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.date = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.target = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
@@ -6735,6 +7048,93 @@ export interface TagServiceServer extends UntypedServiceImplementation {
   /** query */
   getTagTree: handleUnaryCall<Empty, TagTrees>;
   getTagList: handleUnaryCall<Empty, TagList>;
+}
+
+export interface GoalServiceClient {
+  setGoal(request: SetGoalDto, metadata?: Metadata): Observable<GoalResponse>;
+
+  updateGoal(request: UpdateGoalDto, metadata?: Metadata): Observable<GoalResponse>;
+
+  deleteGoal(request: DeleteGoalDto, metadata?: Metadata): Observable<Empty>;
+
+  getGoal(request: GetGoalDto, metadata?: Metadata): Observable<GoalResponse>;
+}
+
+export interface GoalServiceController {
+  setGoal(request: SetGoalDto, metadata?: Metadata): Promise<GoalResponse> | Observable<GoalResponse> | GoalResponse;
+
+  updateGoal(
+    request: UpdateGoalDto,
+    metadata?: Metadata,
+  ): Promise<GoalResponse> | Observable<GoalResponse> | GoalResponse;
+
+  deleteGoal(request: DeleteGoalDto, metadata?: Metadata): void | Promise<void>;
+
+  getGoal(request: GetGoalDto, metadata?: Metadata): Promise<GoalResponse> | Observable<GoalResponse> | GoalResponse;
+}
+
+export function GoalServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["setGoal", "updateGoal", "deleteGoal", "getGoal"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("GoalService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("GoalService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const GOAL_SERVICE_NAME = "GoalService";
+
+export type GoalServiceService = typeof GoalServiceService;
+export const GoalServiceService = {
+  setGoal: {
+    path: "/exam.GoalService/SetGoal" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: SetGoalDto): Buffer => Buffer.from(SetGoalDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): SetGoalDto => SetGoalDto.decode(value),
+    responseSerialize: (value: GoalResponse): Buffer => Buffer.from(GoalResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GoalResponse => GoalResponse.decode(value),
+  },
+  updateGoal: {
+    path: "/exam.GoalService/UpdateGoal" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateGoalDto): Buffer => Buffer.from(UpdateGoalDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateGoalDto => UpdateGoalDto.decode(value),
+    responseSerialize: (value: GoalResponse): Buffer => Buffer.from(GoalResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GoalResponse => GoalResponse.decode(value),
+  },
+  deleteGoal: {
+    path: "/exam.GoalService/DeleteGoal" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: DeleteGoalDto): Buffer => Buffer.from(DeleteGoalDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): DeleteGoalDto => DeleteGoalDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  getGoal: {
+    path: "/exam.GoalService/GetGoal" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetGoalDto): Buffer => Buffer.from(GetGoalDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetGoalDto => GetGoalDto.decode(value),
+    responseSerialize: (value: GoalResponse): Buffer => Buffer.from(GoalResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GoalResponse => GoalResponse.decode(value),
+  },
+} as const;
+
+export interface GoalServiceServer extends UntypedServiceImplementation {
+  setGoal: handleUnaryCall<SetGoalDto, GoalResponse>;
+  updateGoal: handleUnaryCall<UpdateGoalDto, GoalResponse>;
+  deleteGoal: handleUnaryCall<DeleteGoalDto, Empty>;
+  getGoal: handleUnaryCall<GetGoalDto, GoalResponse>;
 }
 
 function toTimestamp(date: Date): Timestamp {
