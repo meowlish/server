@@ -57,7 +57,7 @@ class SectionPrismaMapper {
 			children: children,
 			contentType: contentType,
 			fileIds: from.sectionFiles.map(f => f.fileId),
-			tags: from.sectionTags.map(t => t.tagId),
+			tags: from.sectionTags.map(t => t.tag.name),
 		});
 	}
 
@@ -240,14 +240,18 @@ export class SectionPrismaRepository implements ISectionRepository {
 
 	private async onSectionTagAdded(event: SectionTagAdded): Promise<void> {
 		await this.txHost.tx.sectionTag.create({
-			data: { sectionId: event.payload.sectionId, tagId: event.payload.tag },
+			data: {
+				section: { connect: { id: event.payload.sectionId } },
+				tag: { connect: { name: event.payload.tag } },
+			},
 		});
 	}
 
 	private async onSectionTagRemoved(event: SectionTagRemoved): Promise<void> {
-		await this.txHost.tx.sectionTag.delete({
+		await this.txHost.tx.sectionTag.deleteMany({
 			where: {
-				sectionId_tagId: { sectionId: event.payload.sectionId, tagId: event.payload.tag },
+				sectionId: event.payload.sectionId,
+				tag: { name: event.payload.tag },
 			},
 		});
 	}
@@ -276,7 +280,7 @@ type RepoSection = Omit<PrismaSection, 'order'>;
 
 const sectionPrismaIncludeObject = {
 	childSections: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
-	sectionTags: { select: { tagId: true } },
+	sectionTags: { select: { tag: { select: { name: true } } } },
 	sectionFiles: { select: { fileId: true }, orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }] },
 	questions: { select: { id: true, order: true }, orderBy: { order: 'asc' } },
 	exam: { select: { id: true, version: true, status: true } },

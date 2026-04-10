@@ -53,7 +53,7 @@ class QuestionPrismaMapper {
 			points: from.points,
 			type: this.mapQuestionType(from.type),
 			fileIds: from.questionFiles.map(f => f.fileId),
-			tags: from.questionTags.map(t => t.tagId),
+			tags: from.questionTags.map(t => t.tag.name),
 		});
 	}
 
@@ -145,14 +145,18 @@ export class QuestionPrismaRepository implements IQuestionRepository {
 
 	private async onQuestionTagAdded(event: QuestionTagAdded): Promise<void> {
 		await this.txHost.tx.questionTag.create({
-			data: { questionId: event.payload.questionId, tagId: event.payload.tag },
+			data: {
+				question: { connect: { id: event.payload.questionId } },
+				tag: { connect: { name: event.payload.tag } },
+			},
 		});
 	}
 
 	private async onQuestionTagRemoved(event: QuestionTagRemoved): Promise<void> {
-		await this.txHost.tx.questionTag.delete({
+		await this.txHost.tx.questionTag.deleteMany({
 			where: {
-				questionId_tagId: { questionId: event.payload.questionId, tagId: event.payload.tag },
+				questionId: event.payload.questionId,
+				tag: { name: event.payload.tag },
 			},
 		});
 	}
@@ -181,7 +185,7 @@ type RepoQuestion = Omit<PrismaQuestion, 'order'>;
 
 const questionPrismaIncludeObj = {
 	choices: true,
-	questionTags: { select: { tagId: true } },
+	questionTags: { select: { tag: { select: { name: true } } } },
 	questionFiles: { select: { fileId: true }, orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }] },
 	section: { select: { exam: { select: { id: true, version: true, status: true } } } },
 } satisfies Prisma.QuestionInclude;
