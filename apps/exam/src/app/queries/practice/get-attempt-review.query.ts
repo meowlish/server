@@ -1,4 +1,4 @@
-import { DetailedAttemptReviewData } from '../../../domain/read-models/attempt-review.read-model';
+import { DetailedAttemptReviewData } from '../../../domain/read-models/practice/attempt-review.read-model';
 import { Query } from '@server/utils';
 
 export type GetAttemptReviewQueryPayload = {

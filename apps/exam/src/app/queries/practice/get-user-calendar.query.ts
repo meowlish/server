@@ -1,4 +1,4 @@
-import { AttemptHistorySummary } from '../../../domain/read-models/attempt-history-summary.read-model';
+import { AttemptHistorySummary } from '../../../domain/read-models/practice/attempt-history-summary.read-model';
 import { Query } from '@server/utils';
 
 export type UsersCalendar = {

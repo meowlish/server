@@ -1,5 +1,5 @@
 import { FILE_CLIENT } from '../../../../constants/file';
-import { DetailedQuestionInfo } from '../../../../domain/read-models/detailed-question.read-model';
+import { DetailedQuestionInfo } from '../../../../domain/read-models/practice/detailed-question.read-model';
 import {
 	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,

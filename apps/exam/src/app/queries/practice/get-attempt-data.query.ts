@@ -1,4 +1,4 @@
-import { AttemptSavedData } from '../../../domain/read-models/attempt-save-data.read-model';
+import { AttemptSavedData } from '../../../domain/read-models/practice/attempt-save-data.read-model';
 import { Query } from '@server/utils';
 
 export type GetAttemptDataQueryPayload = {

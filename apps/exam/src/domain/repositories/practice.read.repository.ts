@@ -1,12 +1,12 @@
-import { AttemptHistorySummary } from '../read-models/attempt-history-summary.read-model';
-import { DetailedAttemptReviewData } from '../read-models/attempt-review.read-model';
-import { AttemptSavedData } from '../read-models/attempt-save-data.read-model';
-import { DetailedExamInfo } from '../read-models/detailed-exam.read-model';
-import { DetailedQuestionInfo } from '../read-models/detailed-question.read-model';
-import { ExamStatistics } from '../read-models/exam-statistics.read-model';
-import { MinimalAttemptInfo } from '../read-models/minimal-attempt.read-model';
-import { MinimalExamInfo } from '../read-models/minimal-exam.read-model';
-import { UserStats } from '../read-models/user-stats.read-model';
+import { AttemptHistorySummary } from '../read-models/practice/attempt-history-summary.read-model';
+import { DetailedAttemptReviewData } from '../read-models/practice/attempt-review.read-model';
+import { AttemptSavedData } from '../read-models/practice/attempt-save-data.read-model';
+import { DetailedExamInfo } from '../read-models/practice/detailed-exam.read-model';
+import { DetailedQuestionInfo } from '../read-models/practice/detailed-question.read-model';
+import { ExamStatistics } from '../read-models/practice/exam-statistics.read-model';
+import { MinimalAttemptInfo } from '../read-models/practice/minimal-attempt.read-model';
+import { MinimalExamInfo } from '../read-models/practice/minimal-exam.read-model';
+import { UserStats } from '../read-models/practice/user-stats.read-model';
 import { SortDirection } from '@server/typing';
 
 export interface IPracticeReadRepository {

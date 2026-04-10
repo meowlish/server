@@ -1,4 +1,4 @@
-import { DetailedExamInfo } from '../../../domain/read-models/detailed-exam.read-model';
+import { DetailedExamInfo } from '../../../domain/read-models/practice/detailed-exam.read-model';
 import { Query } from '@server/utils';
 
 export type GetExamDetailsQueryPayload = {

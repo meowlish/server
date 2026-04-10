@@ -1,18 +1,18 @@
-import { AttemptHistorySummary } from '../../domain/read-models/attempt-history-summary.read-model';
+import { AttemptHistorySummary } from '../../domain/read-models/practice/attempt-history-summary.read-model';
 import {
 	DetailedAttemptReviewData,
 	SectionReviewData,
-} from '../../domain/read-models/attempt-review.read-model';
+} from '../../domain/read-models/practice/attempt-review.read-model';
 import {
 	AttemptSavedData,
 	AttemptSectionData,
-} from '../../domain/read-models/attempt-save-data.read-model';
-import { DetailedExamInfo } from '../../domain/read-models/detailed-exam.read-model';
-import { DetailedQuestionInfo } from '../../domain/read-models/detailed-question.read-model';
-import { ExamStatistics } from '../../domain/read-models/exam-statistics.read-model';
-import { MinimalAttemptInfo } from '../../domain/read-models/minimal-attempt.read-model';
-import { MinimalExamInfo } from '../../domain/read-models/minimal-exam.read-model';
-import { UserStats } from '../../domain/read-models/user-stats.read-model';
+} from '../../domain/read-models/practice/attempt-save-data.read-model';
+import { DetailedExamInfo } from '../../domain/read-models/practice/detailed-exam.read-model';
+import { DetailedQuestionInfo } from '../../domain/read-models/practice/detailed-question.read-model';
+import { ExamStatistics } from '../../domain/read-models/practice/exam-statistics.read-model';
+import { MinimalAttemptInfo } from '../../domain/read-models/practice/minimal-attempt.read-model';
+import { MinimalExamInfo } from '../../domain/read-models/practice/minimal-exam.read-model';
+import { UserStats } from '../../domain/read-models/practice/user-stats.read-model';
 import { type IPracticeReadRepository } from '../../domain/repositories/practice.read.repository';
 import { QuestionType, questionTypesThatShowChoices } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';

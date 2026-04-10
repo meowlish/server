@@ -1,4 +1,4 @@
-import { MinimalExamInfo } from '../../../domain/read-models/minimal-exam.read-model';
+import { MinimalExamInfo } from '../../../domain/read-models/practice/minimal-exam.read-model';
 import { SortDirection } from '@server/typing';
 import { Query } from '@server/utils';
 

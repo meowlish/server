@@ -1,4 +1,4 @@
-import { MinimalAttemptInfo } from '../../../domain/read-models/minimal-attempt.read-model';
+import { MinimalAttemptInfo } from '../../../domain/read-models/practice/minimal-attempt.read-model';
 import { SortDirection } from '@server/typing';
 import { Query } from '@server/utils';
 

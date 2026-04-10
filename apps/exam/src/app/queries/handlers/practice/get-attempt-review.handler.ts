@@ -1,5 +1,5 @@
 import { FILE_CLIENT } from '../../../../constants/file';
-import { DetailedAttemptReviewData } from '../../../../domain/read-models/attempt-review.read-model';
+import { DetailedAttemptReviewData } from '../../../../domain/read-models/practice/attempt-review.read-model';
 import {
 	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,

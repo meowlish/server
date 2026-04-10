@@ -1,4 +1,4 @@
-import { DetailedQuestionInfo } from '../../../domain/read-models/detailed-question.read-model';
+import { DetailedQuestionInfo } from '../../../domain/read-models/practice/detailed-question.read-model';
 import { Query } from '@server/utils';
 
 export type GetQuestionDetailsQueryPayload = {

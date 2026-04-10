@@ -1,4 +1,4 @@
-import { UserStats } from '../../../../domain/read-models/user-stats.read-model';
+import { UserStats } from '../../../../domain/read-models/practice/user-stats.read-model';
 import {
 	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,

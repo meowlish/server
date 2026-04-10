@@ -1,5 +1,5 @@
 import { FILE_CLIENT } from '../../../../constants/file';
-import { AttemptSavedData } from '../../../../domain/read-models/attempt-save-data.read-model';
+import { AttemptSavedData } from '../../../../domain/read-models/practice/attempt-save-data.read-model';
 import {
 	type IPracticeReadRepository,
 	IPracticeReadRepositoryToken,
