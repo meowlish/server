@@ -439,6 +439,107 @@ export interface UserStats_TagInfo {
   correctPercentage: number;
 }
 
+export interface FindExamsManagementDto {
+  filter?: FindExamsManagementDto_FilterOption | undefined;
+  sortBy?: FindExamsManagementDto_SortOption | undefined;
+  cursor?: string | undefined;
+  limit?: number | undefined;
+}
+
+export interface FindExamsManagementDto_FilterOption {
+  title?: string | undefined;
+  createdBy?: string | undefined;
+  status?: string | undefined;
+  createdTimeRange?: FindExamsManagementDto_TimeRange | undefined;
+  updatedTimeRange?: FindExamsManagementDto_TimeRange | undefined;
+}
+
+export interface FindExamsManagementDto_TimeRange {
+  from: Date | undefined;
+  to: Date | undefined;
+}
+
+export interface FindExamsManagementDto_SortOption {
+  key: string | undefined;
+  direction: string | undefined;
+}
+
+export interface GetExamManagementDetailsDto {
+  examId: string | undefined;
+}
+
+export interface GetSectionManagementDetailsDto {
+  sectionId: string | undefined;
+}
+
+export interface GetQuestionManagementDetailsDto {
+  questionId: string | undefined;
+}
+
+export interface FilePreviewInfo {
+  id: string;
+  url?: string | undefined;
+}
+
+export interface QuestionManagementInfo {
+  id: string;
+  sectionId: string;
+  content: string;
+  type: string;
+  points: number;
+  explanation: string;
+  choices: QuestionManagementInfo_ChoiceManagementInfo[];
+  files: FilePreviewInfo[];
+  tags: string[];
+}
+
+export interface QuestionManagementInfo_ChoiceManagementInfo {
+  id: string;
+  key: string;
+  content?: string | undefined;
+  isCorrect: boolean;
+  questionId: string;
+}
+
+export interface SectionManagementInfo {
+  id: string;
+  examId: string;
+  parentId?: string | undefined;
+  name?: string | undefined;
+  directive: string;
+  contentType: string;
+  questionIds: string[];
+  files: FilePreviewInfo[];
+  tags: string[];
+}
+
+export interface FoundExamsForManagement {
+  exams: FoundExamsForManagement_ExamManagementMinimalInfo[];
+  cursor: string;
+}
+
+export interface FoundExamsForManagement_ExamManagementMinimalInfo {
+  id: string;
+  createdBy: string;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  title: string;
+  status: string;
+}
+
+export interface ExamManagementDetailedInfo {
+  id: string;
+  createdBy: string;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  title: string;
+  status: string;
+  description?: string | undefined;
+  duration: number;
+  sectionIds: string[];
+  tags: string[];
+}
+
 wrappers[".google.protobuf.Timestamp"] = {
   fromObject(value: Date) {
     return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
@@ -4700,6 +4801,1037 @@ export const UserStats_TagInfo: MessageFns<UserStats_TagInfo> = {
   },
 };
 
+function createBaseFindExamsManagementDto(): FindExamsManagementDto {
+  return {};
+}
+
+export const FindExamsManagementDto: MessageFns<FindExamsManagementDto> = {
+  encode(message: FindExamsManagementDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.filter !== undefined) {
+      FindExamsManagementDto_FilterOption.encode(message.filter, writer.uint32(10).fork()).join();
+    }
+    if (message.sortBy !== undefined) {
+      FindExamsManagementDto_SortOption.encode(message.sortBy, writer.uint32(18).fork()).join();
+    }
+    if (message.cursor !== undefined) {
+      StringValue.encode({ value: message.cursor! }, writer.uint32(26).fork()).join();
+    }
+    if (message.limit !== undefined) {
+      Int32Value.encode({ value: message.limit! }, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamsManagementDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamsManagementDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.filter = FindExamsManagementDto_FilterOption.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sortBy = FindExamsManagementDto_SortOption.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamsManagementDto_FilterOption(): FindExamsManagementDto_FilterOption {
+  return {};
+}
+
+export const FindExamsManagementDto_FilterOption: MessageFns<FindExamsManagementDto_FilterOption> = {
+  encode(message: FindExamsManagementDto_FilterOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.title !== undefined) {
+      StringValue.encode({ value: message.title! }, writer.uint32(10).fork()).join();
+    }
+    if (message.createdBy !== undefined) {
+      StringValue.encode({ value: message.createdBy! }, writer.uint32(18).fork()).join();
+    }
+    if (message.status !== undefined) {
+      StringValue.encode({ value: message.status! }, writer.uint32(26).fork()).join();
+    }
+    if (message.createdTimeRange !== undefined) {
+      FindExamsManagementDto_TimeRange.encode(message.createdTimeRange, writer.uint32(34).fork()).join();
+    }
+    if (message.updatedTimeRange !== undefined) {
+      FindExamsManagementDto_TimeRange.encode(message.updatedTimeRange, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamsManagementDto_FilterOption {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamsManagementDto_FilterOption();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdBy = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.status = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.createdTimeRange = FindExamsManagementDto_TimeRange.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.updatedTimeRange = FindExamsManagementDto_TimeRange.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamsManagementDto_TimeRange(): FindExamsManagementDto_TimeRange {
+  return { from: undefined, to: undefined };
+}
+
+export const FindExamsManagementDto_TimeRange: MessageFns<FindExamsManagementDto_TimeRange> = {
+  encode(message: FindExamsManagementDto_TimeRange, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.from !== undefined) {
+      Timestamp.encode(toTimestamp(message.from), writer.uint32(10).fork()).join();
+    }
+    if (message.to !== undefined) {
+      Timestamp.encode(toTimestamp(message.to), writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamsManagementDto_TimeRange {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamsManagementDto_TimeRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.from = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.to = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindExamsManagementDto_SortOption(): FindExamsManagementDto_SortOption {
+  return { key: undefined, direction: undefined };
+}
+
+export const FindExamsManagementDto_SortOption: MessageFns<FindExamsManagementDto_SortOption> = {
+  encode(message: FindExamsManagementDto_SortOption, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== undefined) {
+      StringValue.encode({ value: message.key! }, writer.uint32(10).fork()).join();
+    }
+    if (message.direction !== undefined) {
+      StringValue.encode({ value: message.direction! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindExamsManagementDto_SortOption {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindExamsManagementDto_SortOption();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.direction = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetExamManagementDetailsDto(): GetExamManagementDetailsDto {
+  return { examId: undefined };
+}
+
+export const GetExamManagementDetailsDto: MessageFns<GetExamManagementDetailsDto> = {
+  encode(message: GetExamManagementDetailsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.examId !== undefined) {
+      StringValue.encode({ value: message.examId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetExamManagementDetailsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetExamManagementDetailsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.examId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetSectionManagementDetailsDto(): GetSectionManagementDetailsDto {
+  return { sectionId: undefined };
+}
+
+export const GetSectionManagementDetailsDto: MessageFns<GetSectionManagementDetailsDto> = {
+  encode(message: GetSectionManagementDetailsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sectionId !== undefined) {
+      StringValue.encode({ value: message.sectionId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetSectionManagementDetailsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetSectionManagementDetailsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sectionId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetQuestionManagementDetailsDto(): GetQuestionManagementDetailsDto {
+  return { questionId: undefined };
+}
+
+export const GetQuestionManagementDetailsDto: MessageFns<GetQuestionManagementDetailsDto> = {
+  encode(message: GetQuestionManagementDetailsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.questionId !== undefined) {
+      StringValue.encode({ value: message.questionId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetQuestionManagementDetailsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetQuestionManagementDetailsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.questionId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFilePreviewInfo(): FilePreviewInfo {
+  return { id: "" };
+}
+
+export const FilePreviewInfo: MessageFns<FilePreviewInfo> = {
+  encode(message: FilePreviewInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.url !== undefined) {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FilePreviewInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFilePreviewInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.url = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseQuestionManagementInfo(): QuestionManagementInfo {
+  return { id: "", sectionId: "", content: "", type: "", points: 0, explanation: "", choices: [], files: [], tags: [] };
+}
+
+export const QuestionManagementInfo: MessageFns<QuestionManagementInfo> = {
+  encode(message: QuestionManagementInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.sectionId !== "") {
+      writer.uint32(18).string(message.sectionId);
+    }
+    if (message.content !== "") {
+      writer.uint32(26).string(message.content);
+    }
+    if (message.type !== "") {
+      writer.uint32(34).string(message.type);
+    }
+    if (message.points !== 0) {
+      writer.uint32(40).int32(message.points);
+    }
+    if (message.explanation !== "") {
+      writer.uint32(50).string(message.explanation);
+    }
+    for (const v of message.choices) {
+      QuestionManagementInfo_ChoiceManagementInfo.encode(v!, writer.uint32(58).fork()).join();
+    }
+    for (const v of message.files) {
+      FilePreviewInfo.encode(v!, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.tags) {
+      writer.uint32(74).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuestionManagementInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuestionManagementInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sectionId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.points = reader.int32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.explanation = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.choices.push(QuestionManagementInfo_ChoiceManagementInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.files.push(FilePreviewInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseQuestionManagementInfo_ChoiceManagementInfo(): QuestionManagementInfo_ChoiceManagementInfo {
+  return { id: "", key: "", isCorrect: false, questionId: "" };
+}
+
+export const QuestionManagementInfo_ChoiceManagementInfo: MessageFns<QuestionManagementInfo_ChoiceManagementInfo> = {
+  encode(
+    message: QuestionManagementInfo_ChoiceManagementInfo,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.key !== "") {
+      writer.uint32(18).string(message.key);
+    }
+    if (message.content !== undefined) {
+      writer.uint32(26).string(message.content);
+    }
+    if (message.isCorrect !== false) {
+      writer.uint32(32).bool(message.isCorrect);
+    }
+    if (message.questionId !== "") {
+      writer.uint32(42).string(message.questionId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuestionManagementInfo_ChoiceManagementInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuestionManagementInfo_ChoiceManagementInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.content = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isCorrect = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.questionId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseSectionManagementInfo(): SectionManagementInfo {
+  return { id: "", examId: "", directive: "", contentType: "", questionIds: [], files: [], tags: [] };
+}
+
+export const SectionManagementInfo: MessageFns<SectionManagementInfo> = {
+  encode(message: SectionManagementInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.examId !== "") {
+      writer.uint32(18).string(message.examId);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(26).string(message.parentId);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(34).string(message.name);
+    }
+    if (message.directive !== "") {
+      writer.uint32(42).string(message.directive);
+    }
+    if (message.contentType !== "") {
+      writer.uint32(50).string(message.contentType);
+    }
+    for (const v of message.questionIds) {
+      writer.uint32(58).string(v!);
+    }
+    for (const v of message.files) {
+      FilePreviewInfo.encode(v!, writer.uint32(66).fork()).join();
+    }
+    for (const v of message.tags) {
+      writer.uint32(74).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SectionManagementInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSectionManagementInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.examId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.parentId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.directive = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.contentType = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.questionIds.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.files.push(FilePreviewInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFoundExamsForManagement(): FoundExamsForManagement {
+  return { exams: [], cursor: "" };
+}
+
+export const FoundExamsForManagement: MessageFns<FoundExamsForManagement> = {
+  encode(message: FoundExamsForManagement, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.exams) {
+      FoundExamsForManagement_ExamManagementMinimalInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.cursor !== "") {
+      writer.uint32(18).string(message.cursor);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FoundExamsForManagement {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFoundExamsForManagement();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.exams.push(FoundExamsForManagement_ExamManagementMinimalInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFoundExamsForManagement_ExamManagementMinimalInfo(): FoundExamsForManagement_ExamManagementMinimalInfo {
+  return { id: "", createdBy: "", createdAt: undefined, updatedAt: undefined, title: "", status: "" };
+}
+
+export const FoundExamsForManagement_ExamManagementMinimalInfo: MessageFns<
+  FoundExamsForManagement_ExamManagementMinimalInfo
+> = {
+  encode(
+    message: FoundExamsForManagement_ExamManagementMinimalInfo,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.createdBy !== "") {
+      writer.uint32(18).string(message.createdBy);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).join();
+    }
+    if (message.updatedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.updatedAt), writer.uint32(34).fork()).join();
+    }
+    if (message.title !== "") {
+      writer.uint32(42).string(message.title);
+    }
+    if (message.status !== "") {
+      writer.uint32(50).string(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FoundExamsForManagement_ExamManagementMinimalInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFoundExamsForManagement_ExamManagementMinimalInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdBy = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.updatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseExamManagementDetailedInfo(): ExamManagementDetailedInfo {
+  return {
+    id: "",
+    createdBy: "",
+    createdAt: undefined,
+    updatedAt: undefined,
+    title: "",
+    status: "",
+    duration: 0,
+    sectionIds: [],
+    tags: [],
+  };
+}
+
+export const ExamManagementDetailedInfo: MessageFns<ExamManagementDetailedInfo> = {
+  encode(message: ExamManagementDetailedInfo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.createdBy !== "") {
+      writer.uint32(18).string(message.createdBy);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).join();
+    }
+    if (message.updatedAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.updatedAt), writer.uint32(34).fork()).join();
+    }
+    if (message.title !== "") {
+      writer.uint32(42).string(message.title);
+    }
+    if (message.status !== "") {
+      writer.uint32(50).string(message.status);
+    }
+    if (message.description !== undefined) {
+      writer.uint32(58).string(message.description);
+    }
+    if (message.duration !== 0) {
+      writer.uint32(64).int32(message.duration);
+    }
+    for (const v of message.sectionIds) {
+      writer.uint32(74).string(v!);
+    }
+    for (const v of message.tags) {
+      writer.uint32(82).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ExamManagementDetailedInfo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseExamManagementDetailedInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.createdBy = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.updatedAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.description = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.duration = reader.int32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.sectionIds.push(reader.string());
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.tags.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
@@ -4724,6 +5856,16 @@ export interface ExamManagementServiceClient {
   moveQuestion(request: MoveQuestionDto, metadata?: Metadata): Observable<Empty>;
 
   reviewExam(request: ReviewExamDto, metadata?: Metadata): Observable<Empty>;
+
+  /** query methods */
+
+  findExams(request: FindExamsManagementDto, metadata?: Metadata): Observable<FoundExamsForManagement>;
+
+  getExamDetails(request: GetExamManagementDetailsDto, metadata?: Metadata): Observable<ExamManagementDetailedInfo>;
+
+  getSectionDetails(request: GetSectionManagementDetailsDto, metadata?: Metadata): Observable<SectionManagementInfo>;
+
+  getQuestionDetails(request: GetQuestionManagementDetailsDto, metadata?: Metadata): Observable<QuestionManagementInfo>;
 }
 
 export interface ExamManagementServiceController {
@@ -4759,6 +5901,28 @@ export interface ExamManagementServiceController {
   moveQuestion(request: MoveQuestionDto, metadata?: Metadata): void | Promise<void>;
 
   reviewExam(request: ReviewExamDto, metadata?: Metadata): void | Promise<void>;
+
+  /** query methods */
+
+  findExams(
+    request: FindExamsManagementDto,
+    metadata?: Metadata,
+  ): Promise<FoundExamsForManagement> | Observable<FoundExamsForManagement> | FoundExamsForManagement;
+
+  getExamDetails(
+    request: GetExamManagementDetailsDto,
+    metadata?: Metadata,
+  ): Promise<ExamManagementDetailedInfo> | Observable<ExamManagementDetailedInfo> | ExamManagementDetailedInfo;
+
+  getSectionDetails(
+    request: GetSectionManagementDetailsDto,
+    metadata?: Metadata,
+  ): Promise<SectionManagementInfo> | Observable<SectionManagementInfo> | SectionManagementInfo;
+
+  getQuestionDetails(
+    request: GetQuestionManagementDetailsDto,
+    metadata?: Metadata,
+  ): Promise<QuestionManagementInfo> | Observable<QuestionManagementInfo> | QuestionManagementInfo;
 }
 
 export function ExamManagementServiceControllerMethods() {
@@ -4776,6 +5940,10 @@ export function ExamManagementServiceControllerMethods() {
       "moveSection",
       "moveQuestion",
       "reviewExam",
+      "findExams",
+      "getExamDetails",
+      "getSectionDetails",
+      "getQuestionDetails",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
@@ -4901,6 +6069,52 @@ export const ExamManagementServiceService = {
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
+  /** query methods */
+  findExams: {
+    path: "/exam.ExamManagementService/FindExams" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: FindExamsManagementDto): Buffer =>
+      Buffer.from(FindExamsManagementDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): FindExamsManagementDto => FindExamsManagementDto.decode(value),
+    responseSerialize: (value: FoundExamsForManagement): Buffer =>
+      Buffer.from(FoundExamsForManagement.encode(value).finish()),
+    responseDeserialize: (value: Buffer): FoundExamsForManagement => FoundExamsForManagement.decode(value),
+  },
+  getExamDetails: {
+    path: "/exam.ExamManagementService/GetExamDetails" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetExamManagementDetailsDto): Buffer =>
+      Buffer.from(GetExamManagementDetailsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetExamManagementDetailsDto => GetExamManagementDetailsDto.decode(value),
+    responseSerialize: (value: ExamManagementDetailedInfo): Buffer =>
+      Buffer.from(ExamManagementDetailedInfo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): ExamManagementDetailedInfo => ExamManagementDetailedInfo.decode(value),
+  },
+  getSectionDetails: {
+    path: "/exam.ExamManagementService/GetSectionDetails" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetSectionManagementDetailsDto): Buffer =>
+      Buffer.from(GetSectionManagementDetailsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetSectionManagementDetailsDto => GetSectionManagementDetailsDto.decode(value),
+    responseSerialize: (value: SectionManagementInfo): Buffer =>
+      Buffer.from(SectionManagementInfo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): SectionManagementInfo => SectionManagementInfo.decode(value),
+  },
+  getQuestionDetails: {
+    path: "/exam.ExamManagementService/GetQuestionDetails" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetQuestionManagementDetailsDto): Buffer =>
+      Buffer.from(GetQuestionManagementDetailsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetQuestionManagementDetailsDto =>
+      GetQuestionManagementDetailsDto.decode(value),
+    responseSerialize: (value: QuestionManagementInfo): Buffer =>
+      Buffer.from(QuestionManagementInfo.encode(value).finish()),
+    responseDeserialize: (value: Buffer): QuestionManagementInfo => QuestionManagementInfo.decode(value),
+  },
 } as const;
 
 export interface ExamManagementServiceServer extends UntypedServiceImplementation {
@@ -4916,6 +6130,11 @@ export interface ExamManagementServiceServer extends UntypedServiceImplementatio
   moveSection: handleUnaryCall<MoveSectionDto, Empty>;
   moveQuestion: handleUnaryCall<MoveQuestionDto, Empty>;
   reviewExam: handleUnaryCall<ReviewExamDto, Empty>;
+  /** query methods */
+  findExams: handleUnaryCall<FindExamsManagementDto, FoundExamsForManagement>;
+  getExamDetails: handleUnaryCall<GetExamManagementDetailsDto, ExamManagementDetailedInfo>;
+  getSectionDetails: handleUnaryCall<GetSectionManagementDetailsDto, SectionManagementInfo>;
+  getQuestionDetails: handleUnaryCall<GetQuestionManagementDetailsDto, QuestionManagementInfo>;
 }
 
 export interface ExamPracticeServiceClient {

@@ -33,7 +33,7 @@ export class GetSectionManagementDetailsQueryHandler
 			const urlMap = await firstValueFrom(
 				this.fileService.getUrls({ ids: section.files.map(f => f.id) }),
 			);
-			section.files.forEach(f => urlMap.urls[f.id]);
+			section.files.forEach(f => (f.url = urlMap.urls[f.id]));
 		} catch {
 			throw new ServiceUnavailableException('Cannot access File sub-service');
 		}

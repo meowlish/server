@@ -46,12 +46,20 @@ import {
 	UpdateSectionCommand,
 	UpdateSectionCommandPayload,
 } from '../../app/commands/staff/exam.update-section.command';
+import { FindExamsForManagementQuery } from '../../app/queries/management/find-exams.query';
+import { GetExamManagementDetailsQuery } from '../../app/queries/management/get-exam-details.query';
+import { GetQuestionManagementDetailsQuery } from '../../app/queries/management/get-question-details.query';
+import { GetSectionManagementDetailsQuery } from '../../app/queries/management/get-section-details.query';
 import { CreateExamDto } from '../dtos/req/management/create-exam.req.dto';
 import { CreateQuestionDto } from '../dtos/req/management/create-question.req.dto';
 import { CreateSectionDto } from '../dtos/req/management/create-section.req.dto';
 import { DeleteExamDto } from '../dtos/req/management/delete-exam.req.dto';
 import { DeleteQuestionDto } from '../dtos/req/management/delete-question.req.dto';
 import { DeleteSectionDto } from '../dtos/req/management/delete-section.req.dto';
+import { FindExamsForManagentDto } from '../dtos/req/management/find-exams.req.dto';
+import { GetExamManagementDetailsDto } from '../dtos/req/management/get-exam-details.req.dto';
+import { GetQuestionManagementDetailsDto } from '../dtos/req/management/get-question-details.req.dto';
+import { GetSectionManagementDetailsDto } from '../dtos/req/management/get-section-details.req.dto';
 import { MoveQuestionDto } from '../dtos/req/management/move-question.req.dto';
 import { MoveSectionDto } from '../dtos/req/management/move-section.req.dto';
 import { ReviewExamDto } from '../dtos/req/management/review-exam.req.dto';
@@ -61,15 +69,22 @@ import { UpdateSectionDto } from '../dtos/req/management/update-section.req.dto'
 import { CreatedExamDto } from '../dtos/res/management/created-exam.res.dto';
 import { CreatedQuestionDto } from '../dtos/res/management/created-question.res.dto';
 import { CreatedSectionDto } from '../dtos/res/management/created-section.res.dto';
+import { ExamDetailedManagementInfo } from '../dtos/res/management/exam.res.dto';
+import { ExamsManagementInfo } from '../dtos/res/management/exams.res.dto';
+import { QuestionManagementInfo } from '../dtos/res/management/question.res.dto';
+import { SectionManagementInfo } from '../dtos/res/management/sections.res.dto';
 import { Controller, SerializeOptions } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
 
 @exam.ExamManagementServiceControllerMethods()
 @Controller()
 export class ExamManagementController implements exam.ExamManagementServiceController {
-	constructor(private readonly commandBus: CommandBus) {}
+	constructor(
+		private readonly commandBus: CommandBus,
+		private readonly queryBus: QueryBus,
+	) {}
 
 	@SerializeOptions({ type: CreatedExamDto })
 	async createExam(@Payload() request: CreateExamDto): Promise<CreatedExamDto> {
@@ -136,5 +151,31 @@ export class ExamManagementController implements exam.ExamManagementServiceContr
 		await this.commandBus.execute(
 			new ReviewExamCommand(new ReviewExamCommandPayload(request.id, request.status)),
 		);
+	}
+
+	@SerializeOptions({ type: ExamsManagementInfo, strategy: 'exposeAll' })
+	async findExams(@Payload() request: FindExamsForManagentDto): Promise<ExamsManagementInfo> {
+		return await this.queryBus.execute(new FindExamsForManagementQuery(request));
+	}
+
+	@SerializeOptions({ type: ExamDetailedManagementInfo, strategy: 'exposeAll' })
+	async getExamDetails(
+		@Payload() request: GetExamManagementDetailsDto,
+	): Promise<ExamDetailedManagementInfo> {
+		return await this.queryBus.execute(new GetExamManagementDetailsQuery(request));
+	}
+
+	@SerializeOptions({ type: SectionManagementInfo, strategy: 'exposeAll' })
+	async getSectionDetails(
+		@Payload() request: GetSectionManagementDetailsDto,
+	): Promise<SectionManagementInfo> {
+		return await this.queryBus.execute(new GetSectionManagementDetailsQuery(request));
+	}
+
+	@SerializeOptions({ type: QuestionManagementInfo, strategy: 'exposeAll' })
+	async getQuestionDetails(
+		@Payload() request: GetQuestionManagementDetailsDto,
+	): Promise<QuestionManagementInfo> {
+		return await this.queryBus.execute(new GetQuestionManagementDetailsQuery(request));
 	}
 }

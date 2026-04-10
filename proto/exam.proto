@@ -19,6 +19,11 @@ service ExamManagementService {
 	rpc MoveSection(MoveSectionDto) returns (google.protobuf.Empty) {}
 	rpc MoveQuestion(MoveQuestionDto) returns (google.protobuf.Empty) {}
 	rpc ReviewExam(ReviewExamDto) returns (google.protobuf.Empty) {}
+    // query methods
+	rpc FindExams(FindExamsManagementDto) returns (FoundExamsForManagement) {}
+	rpc GetExamDetails(GetExamManagementDetailsDto) returns (ExamManagementDetailedInfo) {}
+	rpc GetSectionDetails(GetSectionManagementDetailsDto) returns (SectionManagementInfo) {}
+	rpc GetQuestionDetails(GetQuestionManagementDetailsDto) returns (QuestionManagementInfo) {}
 }
 
 service ExamPracticeService {
@@ -468,4 +473,107 @@ message UserStats {
 		string name               = 1;
 		double correct_percentage = 2;
 	}
+}
+
+message FindExamsManagementDto {
+	optional FilterOption                filter  = 1;
+	optional SortOption                  sort_by = 2;
+	optional google.protobuf.StringValue cursor  = 3;
+	optional google.protobuf.Int32Value  limit   = 4;
+
+	message FilterOption {
+		optional google.protobuf.StringValue title      = 1;
+		optional google.protobuf.StringValue created_by = 2;
+		optional google.protobuf.StringValue status     = 3;
+
+		optional TimeRange created_time_range = 4;
+		optional TimeRange updated_time_range = 5;
+	}
+
+	message TimeRange {
+		google.protobuf.Timestamp from = 1;
+		google.protobuf.Timestamp to   = 2;
+	}
+
+	message SortOption {
+		google.protobuf.StringValue key       = 1;
+		google.protobuf.StringValue direction = 2;
+	}
+}
+
+message GetExamManagementDetailsDto {
+	google.protobuf.StringValue exam_id = 1;
+}
+
+message GetSectionManagementDetailsDto {
+	google.protobuf.StringValue section_id = 1;
+}
+
+message GetQuestionManagementDetailsDto {
+	google.protobuf.StringValue question_id = 1;
+}
+
+message FilePreviewInfo {
+	string          id  = 1;
+	optional string url = 2;
+}
+
+message QuestionManagementInfo {
+	string                        id          = 1;
+	string                        section_id  = 2;
+	string                        content     = 3;
+	string                        type        = 4;
+	int32                         points      = 5;
+	string                        explanation = 6;
+	repeated ChoiceManagementInfo choices     = 7;
+	repeated FilePreviewInfo      files       = 8;
+	repeated string               tags        = 9;
+
+	message ChoiceManagementInfo {
+		string id  = 1;
+		string key = 2;
+
+		optional string content     = 3;
+		bool            is_correct  = 4;
+		string          question_id = 5;
+	}
+}
+
+message SectionManagementInfo {
+	string                   id           = 1;
+	string                   exam_id      = 2;
+	optional string          parent_id    = 3;
+	optional string          name         = 4;
+	string                   directive    = 5;
+	string                   content_type = 6;
+	repeated string          question_ids = 7;
+	repeated FilePreviewInfo files        = 8;
+	repeated string          tags         = 9;
+}
+
+message FoundExamsForManagement {
+	repeated ExamManagementMinimalInfo exams  = 1;
+	string                             cursor = 2;
+
+	message ExamManagementMinimalInfo {
+		string                    id         = 1;
+		string                    created_by = 2;
+		google.protobuf.Timestamp created_at = 3;
+		google.protobuf.Timestamp updated_at = 4;
+		string                    title      = 5;
+		string                    status     = 6;
+	}
+}
+
+message ExamManagementDetailedInfo {
+	string                    id          = 1;
+	string                    created_by  = 2;
+	google.protobuf.Timestamp created_at  = 3;
+	google.protobuf.Timestamp updated_at  = 4;
+	string                    title       = 5;
+	string                    status      = 6;
+	optional string           description = 7;
+	int32                     duration    = 8;
+	repeated string           section_ids = 9;
+	repeated string           tags        = 10;
 }

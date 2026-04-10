@@ -15,7 +15,7 @@ export type QuestionManagementInfo = {
 export type ChoiceManagementInfo = {
 	id: string;
 	key: string;
-	content: string | null;
+	content?: string;
 	isCorrect: boolean;
 	questionId: string;
 };

@@ -79,7 +79,11 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 				status: true,
 				description: true,
 				duration: true,
-				sections: { select: { id: true }, orderBy: [{ order: 'asc' }] },
+				sections: {
+					where: { parentId: null },
+					select: { id: true },
+					orderBy: [{ order: 'asc' }],
+				},
 				examTags: { select: { tag: { select: { name: true } } } },
 			},
 		});
@@ -138,6 +142,7 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 		if (!foundQuestion) throw new NotFoundException('Question not found');
 		return {
 			...foundQuestion,
+			choices: foundQuestion.choices.map(c => ({ ...c, content: c.content ?? undefined })),
 			files: foundQuestion.questionFiles.map(f => ({ id: f.fileId })),
 			tags: foundQuestion.questionTags.map(t => t.tag.name),
 		};
