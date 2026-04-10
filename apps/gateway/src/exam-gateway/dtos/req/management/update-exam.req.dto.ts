@@ -18,14 +18,12 @@ export class UpdateExamDto {
 	title?: string;
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	addTags!: string[];
+	addTags: string[] = [];
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	removeTags!: string[];
+	removeTags: string[] = [];
 }

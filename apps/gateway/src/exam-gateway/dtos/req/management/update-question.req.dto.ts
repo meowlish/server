@@ -46,20 +46,17 @@ class UpdateChoice {
 export class UpdateQuestionDto {
 	@Type(() => AddChoice)
 	@IsArray()
-	@IsOptional()
 	@ValidateNested({ each: true })
-	addChoices!: AddChoice[];
+	addChoices: AddChoice[] = [];
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
-	deleteChoicesIds!: string[];
+	deleteChoicesIds: string[] = [];
 
 	@Type(() => UpdateChoice)
 	@IsArray()
-	@IsOptional()
 	@ValidateNested({ each: true })
-	updateChoices!: UpdateChoice[];
+	updateChoices: UpdateChoice[] = [];
 
 	@IsOptional()
 	@IsString()
@@ -79,26 +76,22 @@ export class UpdateQuestionDto {
 	type?: string;
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	addTags!: string[];
+	addTags: string[] = [];
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	removeTags!: string[];
+	removeTags: string[] = [];
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	addFiles!: string[];
+	addFiles: string[] = [];
 
 	@IsArray()
-	@IsOptional()
 	@IsString({ each: true })
 	@ArrayUnique()
-	removeFiles!: string[];
+	removeFiles: string[] = [];
 }
