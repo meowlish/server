@@ -16,6 +16,10 @@ model Attempt {
 
   @@unique([examId, attemptedBy, order])
   @@index([examId, attemptedBy, endedAt])
+  @@index([endedAt, id])
+  @@index([startedAt, id])
+  @@index([examId, id])
+  @@index([score, id])
   @@index([attemptedBy])
   @@index([examId])
   @@map("attempts")
@@ -41,11 +45,21 @@ model AttemptResponse {
   isFlagged  Boolean  @default(false) @map("is_flagged")
   note       String?
 
-  attempt  Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  attempt     Attempt      @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question    Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  scorerDatas ScorerData[]
 
   @@unique([attemptId, questionId])
   @@index([attemptId])
   @@index([questionId])
   @@map("attempt_responses")
+}
+
+model ScorerData {
+  responseId String @id @map("response_id")
+  comment    Json
+
+  response AttemptResponse @relation(fields: [responseId], references: [id])
+
+  @@map("scorer_data")
 }

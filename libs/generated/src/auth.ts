@@ -9,36 +9,37 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Empty } from "./common";
+import { Empty } from "./google/protobuf/empty";
+import { Int32Value, StringValue } from "./google/protobuf/wrappers";
 
 /** Request */
 export interface RegisterMailDto {
-  username: string;
-  mail: string;
-  password: string;
+  username: string | undefined;
+  mail: string | undefined;
+  password: string | undefined;
 }
 
 export interface LoginMailDto {
-  mail: string;
-  password: string;
+  mail: string | undefined;
+  password: string | undefined;
 }
 
 export interface RefreshDto {
-  identityId: string;
+  identityId: string | undefined;
 }
 
 export interface ValidateRefreshDto {
-  identityId: string;
-  iat: number;
+  identityId: string | undefined;
+  iat: number | undefined;
 }
 
 export interface ValidateAccessDto {
-  identityId: string;
-  iat: number;
+  identityId: string | undefined;
+  iat: number | undefined;
 }
 
 export interface LogOutAllDto {
-  identityId: string;
+  identityId: string | undefined;
 }
 
 /** Response */
@@ -66,19 +67,19 @@ export interface Claims {
 }
 
 function createBaseRegisterMailDto(): RegisterMailDto {
-  return { username: "", mail: "", password: "" };
+  return { username: undefined, mail: undefined, password: undefined };
 }
 
 export const RegisterMailDto: MessageFns<RegisterMailDto> = {
   encode(message: RegisterMailDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.username !== "") {
-      writer.uint32(10).string(message.username);
+    if (message.username !== undefined) {
+      StringValue.encode({ value: message.username! }, writer.uint32(10).fork()).join();
     }
-    if (message.mail !== "") {
-      writer.uint32(18).string(message.mail);
+    if (message.mail !== undefined) {
+      StringValue.encode({ value: message.mail! }, writer.uint32(18).fork()).join();
     }
-    if (message.password !== "") {
-      writer.uint32(26).string(message.password);
+    if (message.password !== undefined) {
+      StringValue.encode({ value: message.password! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -95,7 +96,7 @@ export const RegisterMailDto: MessageFns<RegisterMailDto> = {
             break;
           }
 
-          message.username = reader.string();
+          message.username = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -103,7 +104,7 @@ export const RegisterMailDto: MessageFns<RegisterMailDto> = {
             break;
           }
 
-          message.mail = reader.string();
+          message.mail = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -111,7 +112,7 @@ export const RegisterMailDto: MessageFns<RegisterMailDto> = {
             break;
           }
 
-          message.password = reader.string();
+          message.password = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -125,16 +126,16 @@ export const RegisterMailDto: MessageFns<RegisterMailDto> = {
 };
 
 function createBaseLoginMailDto(): LoginMailDto {
-  return { mail: "", password: "" };
+  return { mail: undefined, password: undefined };
 }
 
 export const LoginMailDto: MessageFns<LoginMailDto> = {
   encode(message: LoginMailDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.mail !== "") {
-      writer.uint32(10).string(message.mail);
+    if (message.mail !== undefined) {
+      StringValue.encode({ value: message.mail! }, writer.uint32(10).fork()).join();
     }
-    if (message.password !== "") {
-      writer.uint32(18).string(message.password);
+    if (message.password !== undefined) {
+      StringValue.encode({ value: message.password! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -151,7 +152,7 @@ export const LoginMailDto: MessageFns<LoginMailDto> = {
             break;
           }
 
-          message.mail = reader.string();
+          message.mail = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -159,7 +160,7 @@ export const LoginMailDto: MessageFns<LoginMailDto> = {
             break;
           }
 
-          message.password = reader.string();
+          message.password = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -173,13 +174,13 @@ export const LoginMailDto: MessageFns<LoginMailDto> = {
 };
 
 function createBaseRefreshDto(): RefreshDto {
-  return { identityId: "" };
+  return { identityId: undefined };
 }
 
 export const RefreshDto: MessageFns<RefreshDto> = {
   encode(message: RefreshDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.identityId !== "") {
-      writer.uint32(10).string(message.identityId);
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -196,7 +197,7 @@ export const RefreshDto: MessageFns<RefreshDto> = {
             break;
           }
 
-          message.identityId = reader.string();
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -210,16 +211,16 @@ export const RefreshDto: MessageFns<RefreshDto> = {
 };
 
 function createBaseValidateRefreshDto(): ValidateRefreshDto {
-  return { identityId: "", iat: 0 };
+  return { identityId: undefined, iat: undefined };
 }
 
 export const ValidateRefreshDto: MessageFns<ValidateRefreshDto> = {
   encode(message: ValidateRefreshDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.identityId !== "") {
-      writer.uint32(10).string(message.identityId);
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
     }
-    if (message.iat !== 0) {
-      writer.uint32(16).int32(message.iat);
+    if (message.iat !== undefined) {
+      Int32Value.encode({ value: message.iat! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -236,15 +237,15 @@ export const ValidateRefreshDto: MessageFns<ValidateRefreshDto> = {
             break;
           }
 
-          message.identityId = reader.string();
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.iat = reader.int32();
+          message.iat = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -258,16 +259,16 @@ export const ValidateRefreshDto: MessageFns<ValidateRefreshDto> = {
 };
 
 function createBaseValidateAccessDto(): ValidateAccessDto {
-  return { identityId: "", iat: 0 };
+  return { identityId: undefined, iat: undefined };
 }
 
 export const ValidateAccessDto: MessageFns<ValidateAccessDto> = {
   encode(message: ValidateAccessDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.identityId !== "") {
-      writer.uint32(10).string(message.identityId);
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
     }
-    if (message.iat !== 0) {
-      writer.uint32(16).int32(message.iat);
+    if (message.iat !== undefined) {
+      Int32Value.encode({ value: message.iat! }, writer.uint32(18).fork()).join();
     }
     return writer;
   },
@@ -284,15 +285,15 @@ export const ValidateAccessDto: MessageFns<ValidateAccessDto> = {
             break;
           }
 
-          message.identityId = reader.string();
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.iat = reader.int32();
+          message.iat = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -306,13 +307,13 @@ export const ValidateAccessDto: MessageFns<ValidateAccessDto> = {
 };
 
 function createBaseLogOutAllDto(): LogOutAllDto {
-  return { identityId: "" };
+  return { identityId: undefined };
 }
 
 export const LogOutAllDto: MessageFns<LogOutAllDto> = {
   encode(message: LogOutAllDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.identityId !== "") {
-      writer.uint32(10).string(message.identityId);
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
     }
     return writer;
   },
@@ -329,7 +330,7 @@ export const LogOutAllDto: MessageFns<LogOutAllDto> = {
             break;
           }
 
-          message.identityId = reader.string();
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -590,9 +591,9 @@ export interface AuthServiceController {
 
   validateRefresh(request: ValidateRefreshDto, metadata?: Metadata): Promise<Claims> | Observable<Claims> | Claims;
 
-  validateAccess(request: ValidateAccessDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  validateAccess(request: ValidateAccessDto, metadata?: Metadata): void | Promise<void>;
 
-  logOutAll(request: LogOutAllDto, metadata?: Metadata): Promise<Empty> | Observable<Empty> | Empty;
+  logOutAll(request: LogOutAllDto, metadata?: Metadata): void | Promise<void>;
 }
 
 export function AuthServiceControllerMethods() {

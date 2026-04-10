@@ -10,8 +10,9 @@ import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@g
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
-import { Empty } from "./common";
+import { Empty } from "./google/protobuf/empty";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { Int32Value, StringValue } from "./google/protobuf/wrappers";
 
 export interface Badges {
   name: string;
@@ -32,7 +33,7 @@ export interface BadgesResponseDto {
 }
 
 export interface UserBadgesRequestDto {
-  userId: string;
+  userId: string | undefined;
   cursor?: string | undefined;
   limit?: number | undefined;
 }
@@ -40,7 +41,6 @@ export interface UserBadgesRequestDto {
 export interface UserBadgesResponseDto {
   badges: UserBadges[];
   cursor?: string | undefined;
-  limit?: number | undefined;
 }
 
 wrappers[".google.protobuf.Timestamp"] = {
@@ -230,19 +230,19 @@ export const BadgesResponseDto: MessageFns<BadgesResponseDto> = {
 };
 
 function createBaseUserBadgesRequestDto(): UserBadgesRequestDto {
-  return { userId: "" };
+  return { userId: undefined };
 }
 
 export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
   encode(message: UserBadgesRequestDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
-      writer.uint32(10).string(message.userId);
+    if (message.userId !== undefined) {
+      StringValue.encode({ value: message.userId! }, writer.uint32(10).fork()).join();
     }
     if (message.cursor !== undefined) {
-      writer.uint32(18).string(message.cursor);
+      StringValue.encode({ value: message.cursor! }, writer.uint32(18).fork()).join();
     }
     if (message.limit !== undefined) {
-      writer.uint32(24).int32(message.limit);
+      Int32Value.encode({ value: message.limit! }, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -259,7 +259,7 @@ export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
             break;
           }
 
-          message.userId = reader.string();
+          message.userId = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 2: {
@@ -267,15 +267,15 @@ export const UserBadgesRequestDto: MessageFns<UserBadgesRequestDto> = {
             break;
           }
 
-          message.cursor = reader.string();
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.limit = reader.int32();
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -299,9 +299,6 @@ export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
     }
     if (message.cursor !== undefined) {
       writer.uint32(18).string(message.cursor);
-    }
-    if (message.limit !== undefined) {
-      writer.uint32(24).int32(message.limit);
     }
     return writer;
   },
@@ -327,14 +324,6 @@ export const UserBadgesResponseDto: MessageFns<UserBadgesResponseDto> = {
           }
 
           message.cursor = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 24) {
-            break;
-          }
-
-          message.limit = reader.int32();
           continue;
         }
       }

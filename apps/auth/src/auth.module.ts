@@ -1,4 +1,4 @@
-import { AuthHandlers } from './app/commands/handlers';
+import { AuthCommandHandlers } from './app/commands/handlers';
 import { IntegrationEventPublishers } from './app/events/publisher';
 import { TokenService } from './app/services/token.service';
 import { IEnvVars, config } from './configs/config';
@@ -63,7 +63,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		TokenService,
-		...AuthHandlers,
+		...AuthCommandHandlers,
 		...IntegrationEventPublishers,
 		{
 			inject: [ConfigService],

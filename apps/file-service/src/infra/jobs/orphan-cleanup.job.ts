@@ -4,7 +4,7 @@ import {
 	IFileRepositoryToken,
 } from '../../domain/repositories/file.repository';
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { Job, Queue } from 'bullmq';
 
@@ -32,7 +32,7 @@ export class OrphanCleanupWorker extends WorkerHost {
 }
 
 @Injectable()
-export class OrphanCleanupScheduler {
+export class OrphanCleanupScheduler implements OnModuleInit {
 	constructor(
 		@InjectQueue('file')
 		private readonly queue: Queue,

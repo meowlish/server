@@ -1,12 +1,13 @@
 syntax = "proto3";
 
-import "common.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package achievement;
 
 service AchievementService {
-	rpc GetAll(common.Empty) returns(BadgesResponseDto) {}
+	rpc GetAll(google.protobuf.Empty) returns(BadgesResponseDto) {}
 	rpc GetUsersBadges(UserBadgesRequestDto) returns(UserBadgesResponseDto) {}
 }
 
@@ -29,13 +30,12 @@ message BadgesResponseDto {
 }
 
 message UserBadgesRequestDto {
-	string          user_id = 1;
-	optional string cursor  = 2;
-	optional int32  limit   = 3;
+	google.protobuf.StringValue          user_id = 1;
+	optional google.protobuf.StringValue cursor  = 2;
+	optional google.protobuf.Int32Value  limit   = 3;
 }
 
 message UserBadgesResponseDto {
 	repeated UserBadges badges = 1;
 	optional string     cursor = 2;
-	optional int32      limit  = 3;
 }

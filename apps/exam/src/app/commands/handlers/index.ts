@@ -17,7 +17,7 @@ import { EndAttemptHandler } from './practice/end-attempt.handler';
 import { RemoveAnswerHandler } from './practice/remove-answer.handler';
 import { ToggleFlagHandler } from './practice/toggle-flag.handler';
 
-export const ExamManagementHandlers = [
+export const ExamManagementCommandHandlers = [
 	CreateExamHandler,
 	CreateQuestionHandler,
 	CreateSectionHandler,
@@ -32,7 +32,7 @@ export const ExamManagementHandlers = [
 	ReviewExamHandler,
 ];
 
-export const ExamPracticeHandlers = [
+export const ExamPracticeCommandHandlers = [
 	AnswerHandler,
 	RemoveAnswerHandler,
 	AddNoteHandler,

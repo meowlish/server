@@ -7,6 +7,7 @@ model UserBadge {
 
   updatedAt DateTime @updatedAt
 
+  @@index([updatedAt, id])
   @@map("user_badges")
 }
 

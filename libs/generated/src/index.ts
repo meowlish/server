@@ -5,7 +5,6 @@
 
 /* eslint-disable */
 
-export * as common from "./index.common";
 export * as google from "./index.google";
 export * as achievement from "./index.achievement";
 export * as auth from "./index.auth";

@@ -4,13 +4,22 @@ import { ACHIEVEMENT_CLIENT } from './constants/achievement';
 import { GetUsersBadgesDto } from './dtos/req/get-users-badges.req.dto';
 import { FoundBadgesDto } from './dtos/res/found-badges.res.dto';
 import { FoundUsersBadgesDto } from './dtos/res/found-users-badges.res.dto';
-import { Body, Controller, Get, Inject, Param, Req, SerializeOptions } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Inject,
+	OnModuleInit,
+	Param,
+	Req,
+	SerializeOptions,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { achievement } from '@server/generated';
 import { Observable } from 'rxjs';
 
 @Controller('badges')
-export class AchievementGatewayController {
+export class AchievementGatewayController implements OnModuleInit {
 	private achievementService!: achievement.AchievementServiceClient;
 
 	constructor(@Inject(ACHIEVEMENT_CLIENT) private readonly achievementClient: ClientGrpc) {}

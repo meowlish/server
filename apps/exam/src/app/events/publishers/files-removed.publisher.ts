@@ -5,7 +5,7 @@ import {
 import { FileRemovedIntegrationEvent } from '../files-removed.event';
 import { AmqpConnectionManager } from '@golevelup/nestjs-rabbitmq';
 import { InjectQueue, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { Job, Queue } from 'bullmq';
 
@@ -42,7 +42,7 @@ export class FilesRemovedPublisher extends WorkerHost {
 }
 
 @Injectable()
-export class FilesRemovedScheduler {
+export class FilesRemovedScheduler implements OnModuleInit {
 	constructor(
 		@InjectQueue('exam')
 		private readonly queue: Queue,

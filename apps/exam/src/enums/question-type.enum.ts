@@ -26,3 +26,9 @@ export const questionTypesWithMultipleCorrectChoices = [
 	QuestionType.FillAnyInTheBlank,
 	QuestionType.MultipleChoiceMultiple,
 ];
+
+// for displaying
+export const questionTypesThatShowChoices = [
+	QuestionType.MultipleChoiceMultiple,
+	QuestionType.MultipleChoiceSingle,
+];

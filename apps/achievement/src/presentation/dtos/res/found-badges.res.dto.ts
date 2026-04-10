@@ -7,7 +7,7 @@ export class FoundBadgesDto implements achievement.BadgesResponseDto {
 	badges!: Badge[];
 }
 
-export class Badge {
+export class Badge implements achievement.Badges {
 	@Expose()
 	name!: string;
 

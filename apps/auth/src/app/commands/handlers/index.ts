@@ -5,7 +5,7 @@ import { RefreshCommandHandler } from './refresh.handler';
 import { ValidateAccessCommandHandler } from './validate-access.handler';
 import { ValidateRefreshCommandHandler } from './validate-refresh.handler';
 
-export const AuthHandlers = [
+export const AuthCommandHandlers = [
 	MailRegisterCommandHandler,
 	MailLoginCommandHandler,
 	RefreshCommandHandler,

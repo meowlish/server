@@ -1,7 +1,7 @@
 import { IEnvVars } from '../../configs/config';
 import { AuthenticatedRequest } from '../../types/authenticated-request';
 import { AUTH_CLIENT } from '../constants/auth';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { type ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
@@ -10,7 +10,10 @@ import { Claims } from '@server/utils';
 import { Profile, Strategy } from 'passport-google-oauth20';
 
 @Injectable()
-export class GoogleOAuth2Strategy extends PassportStrategy(Strategy, 'google') {
+export class GoogleOAuth2Strategy
+	extends PassportStrategy(Strategy, 'google')
+	implements OnModuleInit
+{
 	private authService!: auth.AuthServiceClient;
 
 	constructor(

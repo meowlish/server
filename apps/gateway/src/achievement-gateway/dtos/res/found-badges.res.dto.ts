@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class Badge {
 	@Expose()
@@ -13,6 +13,5 @@ export class Badge {
 
 export class FoundBadgesDto {
 	@Expose()
-	@Type(() => Badge)
 	badges!: Badge[];
 }
