@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from 'class-validator';
 
-class Options {
+class OptionsDto {
 	@IsNumber()
 	@IsOptional()
 	@IsPositive()
@@ -13,8 +13,8 @@ class Options {
 }
 
 export class AttemptDto {
-	@Type(() => Options)
+	@Type(() => OptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	options?: Options;
+	options?: OptionsDto;
 }

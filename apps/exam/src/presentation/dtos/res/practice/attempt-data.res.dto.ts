@@ -1,23 +1,23 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class AttemptData implements exam.AttemptSavedData {
+export class AttemptDataDto implements exam.AttemptSavedData {
 	@Expose()
 	durationLimit!: number;
 
 	@Expose()
-	@Type(() => ResponseData)
-	responses!: ResponseData[];
+	@Type(() => ResponseDataDto)
+	responses!: ResponseDataDto[];
 
 	@Expose()
-	@Type(() => SectionData)
-	sections!: SectionData[];
+	@Type(() => SectionDataDto)
+	sections!: SectionDataDto[];
 
 	@Expose()
 	startedAt!: Date;
 }
 
-class SectionData implements exam.AttemptSavedData_AttemptSectionData {
+class SectionDataDto implements exam.AttemptSavedData_AttemptSectionData {
 	@Expose()
 	directive!: string;
 
@@ -34,8 +34,8 @@ class SectionData implements exam.AttemptSavedData_AttemptSectionData {
 	order!: number;
 
 	@Expose()
-	@Type(() => QuestionData)
-	questions!: QuestionData[];
+	@Type(() => QuestionDataDto)
+	questions!: QuestionDataDto[];
 
 	@Expose()
 	sections!: exam.AttemptSavedData_AttemptSectionData[];
@@ -44,10 +44,10 @@ class SectionData implements exam.AttemptSavedData_AttemptSectionData {
 	type!: string;
 }
 
-class QuestionData implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData {
+class QuestionDataDto implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData {
 	@Expose()
-	@Type(() => ChoiceData)
-	choices!: ChoiceData[];
+	@Type(() => ChoiceDataDto)
+	choices!: ChoiceDataDto[];
 
 	@Expose()
 	content!: string;
@@ -65,7 +65,7 @@ class QuestionData implements exam.AttemptSavedData_AttemptSectionData_AttemptQu
 	type!: string;
 }
 
-class ChoiceData
+class ChoiceDataDto
 	implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData
 {
 	@Expose()
@@ -75,7 +75,7 @@ class ChoiceData
 	key!: string;
 }
 
-class ResponseData implements exam.AttemptSavedData_AttemptSavedResponse {
+class ResponseDataDto implements exam.AttemptSavedData_AttemptSavedResponse {
 	@Expose()
 	answers!: string[];
 

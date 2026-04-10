@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class ExamDetail implements exam.DetailedExamInfo {
+export class ExamDetailDto implements exam.DetailedExamInfo {
 	@Expose()
 	attemptsCount!: number;
 
@@ -18,8 +18,8 @@ export class ExamDetail implements exam.DetailedExamInfo {
 	name!: string;
 
 	@Expose()
-	@Type(() => Section)
-	sections!: Section[];
+	@Type(() => SectionDto)
+	sections!: SectionDto[];
 
 	@Expose()
 	tags!: string[];
@@ -28,7 +28,7 @@ export class ExamDetail implements exam.DetailedExamInfo {
 	updatedAt!: Date;
 }
 
-class Section implements exam.DetailedExamInfo_DetailedExamSection {
+class SectionDto implements exam.DetailedExamInfo_DetailedExamSection {
 	@Expose()
 	id!: string;
 

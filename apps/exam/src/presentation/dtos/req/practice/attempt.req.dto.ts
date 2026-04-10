@@ -2,7 +2,7 @@ import { exam } from '@server/generated';
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsPositive, IsString, ValidateNested } from 'class-validator';
 
-class Options implements exam.AttemptDto_Options {
+class OptionsDto implements exam.AttemptDto_Options {
 	@IsNumber()
 	@IsOptional()
 	@IsPositive()
@@ -20,8 +20,8 @@ export class AttemptDto implements exam.AttemptDto {
 	@IsString()
 	userId!: string;
 
-	@Type(() => Options)
+	@Type(() => OptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	options?: Options;
+	options?: OptionsDto;
 }

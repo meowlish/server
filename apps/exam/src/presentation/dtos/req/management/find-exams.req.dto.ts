@@ -12,7 +12,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class TimeRange implements exam.FindExamsManagementDto_TimeRange {
+class TimeRangeDto implements exam.FindExamsManagementDto_TimeRange {
 	@Type(() => Date)
 	@IsDate()
 	from!: Date;
@@ -22,15 +22,15 @@ class TimeRange implements exam.FindExamsManagementDto_TimeRange {
 	to!: Date;
 }
 
-class FilterOptions implements exam.FindExamsManagementDto_FilterOption {
+class FilterOptionsDto implements exam.FindExamsManagementDto_FilterOption {
 	@IsOptional()
 	@IsString()
 	createdBy?: string;
 
-	@Type(() => TimeRange)
+	@Type(() => TimeRangeDto)
 	@IsOptional()
 	@ValidateNested()
-	createdTimeRange?: TimeRange;
+	createdTimeRange?: TimeRangeDto;
 
 	@IsEnum(ExamStatus)
 	@IsOptional()
@@ -40,13 +40,13 @@ class FilterOptions implements exam.FindExamsManagementDto_FilterOption {
 	@IsString()
 	title?: string;
 
-	@Type(() => TimeRange)
+	@Type(() => TimeRangeDto)
 	@IsOptional()
 	@ValidateNested()
-	updatedTimeRange?: TimeRange;
+	updatedTimeRange?: TimeRangeDto;
 }
 
-class SortOptions implements exam.FindExamsManagementDto_SortOption {
+class SortOptionsDto implements exam.FindExamsManagementDto_SortOption {
 	@IsEnum(SortDirection)
 	direction!: SortDirection;
 
@@ -60,17 +60,17 @@ export class FindExamsForManagentDto implements exam.FindExamsManagementDto {
 	@IsString()
 	cursor?: string;
 
-	@Type(() => FilterOptions)
+	@Type(() => FilterOptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	filter?: FilterOptions;
+	filter?: FilterOptionsDto;
 
 	@IsNumber()
 	@IsOptional()
 	limit?: number;
 
-	@Type(() => SortOptions)
+	@Type(() => SortOptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	sortBy?: SortOptions;
+	sortBy?: SortOptionsDto;
 }

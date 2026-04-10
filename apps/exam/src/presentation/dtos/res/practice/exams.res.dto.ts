@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-class MinimalExamInfo implements exam.Exams_MinimalExamInfo {
+class MinimalExamInfoDto implements exam.Exams_MinimalExamInfo {
 	@Expose()
 	attemptsCount!: number;
 
@@ -24,10 +24,10 @@ class MinimalExamInfo implements exam.Exams_MinimalExamInfo {
 	updatedAt!: Date;
 }
 
-export class ExamsInfo implements exam.Exams {
+export class ExamsInfoDto implements exam.Exams {
 	@Expose()
-	@Type(() => MinimalExamInfo)
-	exams!: MinimalExamInfo[];
+	@Type(() => MinimalExamInfoDto)
+	exams!: MinimalExamInfoDto[];
 
 	@Expose()
 	cursor!: string;

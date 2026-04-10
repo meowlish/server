@@ -69,10 +69,10 @@ import { UpdateSectionDto } from '../dtos/req/management/update-section.req.dto'
 import { CreatedExamDto } from '../dtos/res/management/created-exam.res.dto';
 import { CreatedQuestionDto } from '../dtos/res/management/created-question.res.dto';
 import { CreatedSectionDto } from '../dtos/res/management/created-section.res.dto';
-import { ExamDetailedManagementInfo } from '../dtos/res/management/exam.res.dto';
-import { ExamsManagementInfo } from '../dtos/res/management/exams.res.dto';
-import { QuestionManagementInfo } from '../dtos/res/management/question.res.dto';
-import { SectionManagementInfo } from '../dtos/res/management/sections.res.dto';
+import { ExamDetailedManagementInfoDto } from '../dtos/res/management/exam.res.dto';
+import { ExamsManagementInfoDto } from '../dtos/res/management/exams.res.dto';
+import { QuestionManagementInfoDto } from '../dtos/res/management/question.res.dto';
+import { SectionManagementInfoDto } from '../dtos/res/management/sections.res.dto';
 import { Controller, SerializeOptions } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
@@ -153,29 +153,29 @@ export class ExamManagementController implements exam.ExamManagementServiceContr
 		);
 	}
 
-	@SerializeOptions({ type: ExamsManagementInfo, strategy: 'exposeAll' })
-	async findExams(@Payload() request: FindExamsForManagentDto): Promise<ExamsManagementInfo> {
+	@SerializeOptions({ type: ExamsManagementInfoDto, strategy: 'exposeAll' })
+	async findExams(@Payload() request: FindExamsForManagentDto): Promise<ExamsManagementInfoDto> {
 		return await this.queryBus.execute(new FindExamsForManagementQuery(request));
 	}
 
-	@SerializeOptions({ type: ExamDetailedManagementInfo, strategy: 'exposeAll' })
+	@SerializeOptions({ type: ExamDetailedManagementInfoDto, strategy: 'exposeAll' })
 	async getExamDetails(
 		@Payload() request: GetExamManagementDetailsDto,
-	): Promise<ExamDetailedManagementInfo> {
+	): Promise<ExamDetailedManagementInfoDto> {
 		return await this.queryBus.execute(new GetExamManagementDetailsQuery(request));
 	}
 
-	@SerializeOptions({ type: SectionManagementInfo, strategy: 'exposeAll' })
+	@SerializeOptions({ type: SectionManagementInfoDto, strategy: 'exposeAll' })
 	async getSectionDetails(
 		@Payload() request: GetSectionManagementDetailsDto,
-	): Promise<SectionManagementInfo> {
+	): Promise<SectionManagementInfoDto> {
 		return await this.queryBus.execute(new GetSectionManagementDetailsQuery(request));
 	}
 
-	@SerializeOptions({ type: QuestionManagementInfo, strategy: 'exposeAll' })
+	@SerializeOptions({ type: QuestionManagementInfoDto, strategy: 'exposeAll' })
 	async getQuestionDetails(
 		@Payload() request: GetQuestionManagementDetailsDto,
-	): Promise<QuestionManagementInfo> {
+	): Promise<QuestionManagementInfoDto> {
 		return await this.queryBus.execute(new GetQuestionManagementDetailsQuery(request));
 	}
 }

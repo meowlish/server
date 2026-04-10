@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class AttemptReview implements exam.DetailedAttemptReviewData {
+export class AttemptReviewDto implements exam.DetailedAttemptReviewData {
 	@Expose()
 	durationLimit!: number;
 
@@ -9,12 +9,12 @@ export class AttemptReview implements exam.DetailedAttemptReviewData {
 	endedAt!: Date;
 
 	@Expose()
-	@Type(() => ResponseReview)
-	responses!: ResponseReview[];
+	@Type(() => ResponseReviewDto)
+	responses!: ResponseReviewDto[];
 
 	@Expose()
-	@Type(() => SectionReview)
-	sections!: SectionReview[];
+	@Type(() => SectionReviewDto)
+	sections!: SectionReviewDto[];
 
 	@Expose()
 	startedAt!: Date;
@@ -23,7 +23,7 @@ export class AttemptReview implements exam.DetailedAttemptReviewData {
 	totalPoints?: number;
 }
 
-class SectionReview implements exam.DetailedAttemptReviewData_SectionReviewData {
+class SectionReviewDto implements exam.DetailedAttemptReviewData_SectionReviewData {
 	@Expose()
 	directive!: string;
 
@@ -40,23 +40,23 @@ class SectionReview implements exam.DetailedAttemptReviewData_SectionReviewData 
 	order!: number;
 
 	@Expose()
-	@Type(() => QuestionReview)
-	questions!: QuestionReview[];
+	@Type(() => QuestionReviewDto)
+	questions!: QuestionReviewDto[];
 
 	@Expose()
-	@Type(() => SectionReview)
-	sections!: SectionReview[];
+	@Type(() => SectionReviewDto)
+	sections!: SectionReviewDto[];
 
 	@Expose()
 	type!: string;
 }
 
-class QuestionReview
+class QuestionReviewDto
 	implements exam.DetailedAttemptReviewData_SectionReviewData_QuestionReviewData
 {
 	@Expose()
-	@Type(() => Choice)
-	choices!: Choice[];
+	@Type(() => ChoiceDto)
+	choices!: ChoiceDto[];
 
 	@Expose()
 	content!: string;
@@ -80,7 +80,7 @@ class QuestionReview
 	type!: string;
 }
 
-class Choice
+class ChoiceDto
 	implements exam.DetailedAttemptReviewData_SectionReviewData_QuestionReviewData_ChoiceReviewData
 {
 	@Expose()
@@ -93,7 +93,7 @@ class Choice
 	key!: string;
 }
 
-class ResponseReview implements exam.DetailedAttemptReviewData_AttemptReviewResponse {
+class ResponseReviewDto implements exam.DetailedAttemptReviewData_AttemptReviewResponse {
 	@Expose()
 	additionalData?: string;
 

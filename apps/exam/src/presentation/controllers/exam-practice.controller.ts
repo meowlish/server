@@ -50,17 +50,17 @@ import { GetUsersAttemptHistoryDto } from '../dtos/req/practice/get-users-attemp
 import { GetUsersStatsDto } from '../dtos/req/practice/get-users-stats.req.dto';
 import { RemoveAnswerDto } from '../dtos/req/practice/remove-answer.req.dto';
 import { ToggleFlagDto } from '../dtos/req/practice/toggle-flag.req.dto';
-import { AttemptData } from '../dtos/res/practice/attempt-data.res.dto';
-import { AttemptReview } from '../dtos/res/practice/attempt-review.res.dto';
-import { AttemptsHistory } from '../dtos/res/practice/attempts-history.res.dto';
+import { AttemptDataDto } from '../dtos/res/practice/attempt-data.res.dto';
+import { AttemptReviewDto } from '../dtos/res/practice/attempt-review.res.dto';
+import { AttemptsHistoryDto } from '../dtos/res/practice/attempts-history.res.dto';
 import { CreatedAttemptDto } from '../dtos/res/practice/created-attempt.res.dto';
-import { ExamDetail } from '../dtos/res/practice/exam-detail.res.dto';
-import { ExamStats } from '../dtos/res/practice/exam-stats.res.dto';
-import { ExamsInfo } from '../dtos/res/practice/exams.res.dto';
+import { ExamDetailDto } from '../dtos/res/practice/exam-detail.res.dto';
+import { ExamStatsDto } from '../dtos/res/practice/exam-stats.res.dto';
+import { ExamsInfoDto } from '../dtos/res/practice/exams.res.dto';
 import { FlagStateDto } from '../dtos/res/practice/flag-state.res.dto';
-import { QuestionDetail } from '../dtos/res/practice/question-detail.res.dto';
-import { UserCalendar } from '../dtos/res/practice/user-calendar.res.dto';
-import { UserStats } from '../dtos/res/practice/user-stats.res.dto';
+import { QuestionDetailDto } from '../dtos/res/practice/question-detail.res.dto';
+import { UserCalendarDto } from '../dtos/res/practice/user-calendar.res.dto';
+import { UserStatsDto } from '../dtos/res/practice/user-stats.res.dto';
 import { Controller, Inject, SerializeOptions } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
@@ -122,54 +122,54 @@ export class ExamPracticeController implements exam.ExamPracticeServiceControlle
 		);
 	}
 
-	@SerializeOptions({ type: ExamsInfo, strategy: 'exposeAll' })
-	async findExams(@Payload() request: FindExamsDto): Promise<ExamsInfo> {
+	@SerializeOptions({ type: ExamsInfoDto, strategy: 'exposeAll' })
+	async findExams(@Payload() request: FindExamsDto): Promise<ExamsInfoDto> {
 		return await this.queryBus.execute(new FindExamsQuery(request));
 	}
 
-	@SerializeOptions({ type: ExamDetail, strategy: 'exposeAll' })
-	async getExamDetails(@Payload() request: GetExamDetailsDto): Promise<ExamDetail> {
+	@SerializeOptions({ type: ExamDetailDto, strategy: 'exposeAll' })
+	async getExamDetails(@Payload() request: GetExamDetailsDto): Promise<ExamDetailDto> {
 		return await this.queryBus.execute(new GetExamDetailsQuery(request));
 	}
 
-	@SerializeOptions({ type: QuestionDetail, strategy: 'exposeAll' })
+	@SerializeOptions({ type: QuestionDetailDto, strategy: 'exposeAll' })
 	async getDetailedQuestionInfo(
 		@Payload() request: GetQuestionDetailsDto,
-	): Promise<QuestionDetail> {
+	): Promise<QuestionDetailDto> {
 		return await this.queryBus.execute(new GetQuestionDetailsQuery(request));
 	}
 
-	@SerializeOptions({ type: ExamStats, strategy: 'exposeAll' })
-	async getExamStats(@Payload() request: GetExamStatsDto): Promise<ExamStats> {
+	@SerializeOptions({ type: ExamStatsDto, strategy: 'exposeAll' })
+	async getExamStats(@Payload() request: GetExamStatsDto): Promise<ExamStatsDto> {
 		return await this.queryBus.execute(new GetExamStatsQuery(request));
 	}
 
-	@SerializeOptions({ type: AttemptData, strategy: 'exposeAll' })
-	async getAttemptSavedData(@Payload() request: GetAttemptDataDto): Promise<AttemptData> {
+	@SerializeOptions({ type: AttemptDataDto, strategy: 'exposeAll' })
+	async getAttemptSavedData(@Payload() request: GetAttemptDataDto): Promise<AttemptDataDto> {
 		return await this.queryBus.execute(new GetAttemptDataQuery(request));
 	}
 
-	@SerializeOptions({ type: AttemptReview, strategy: 'exposeAll' })
-	async getAttemptReview(@Payload() request: GetAttemptReviewDto): Promise<AttemptReview> {
+	@SerializeOptions({ type: AttemptReviewDto, strategy: 'exposeAll' })
+	async getAttemptReview(@Payload() request: GetAttemptReviewDto): Promise<AttemptReviewDto> {
 		return await this.queryBus.execute(new GetAttemptReviewQuery(request));
 	}
 
-	@SerializeOptions({ type: UserCalendar, strategy: 'exposeAll' })
-	async getUsersAttemptSummary(@Payload() request: GetUserCalendarDto): Promise<UserCalendar> {
+	@SerializeOptions({ type: UserCalendarDto, strategy: 'exposeAll' })
+	async getUsersAttemptSummary(@Payload() request: GetUserCalendarDto): Promise<UserCalendarDto> {
 		return await this.queryBus.execute(
 			new GetUserCalendarQuery({ userId: request.uid, ...request }),
 		);
 	}
 
-	@SerializeOptions({ type: AttemptsHistory, strategy: 'exposeAll' })
+	@SerializeOptions({ type: AttemptsHistoryDto, strategy: 'exposeAll' })
 	async getUsersAttemptHistory(
 		@Payload() request: GetUsersAttemptHistoryDto,
-	): Promise<AttemptsHistory> {
+	): Promise<AttemptsHistoryDto> {
 		return await this.queryBus.execute(new GetUsersAttemptHistoryQuery(request));
 	}
 
-	@SerializeOptions({ type: UserStats, strategy: 'exposeAll' })
-	async getUsesStats(@Payload() request: GetUsersStatsDto): Promise<UserStats> {
+	@SerializeOptions({ type: UserStatsDto, strategy: 'exposeAll' })
+	async getUsesStats(@Payload() request: GetUsersStatsDto): Promise<UserStatsDto> {
 		return await this.queryBus.execute(new GetUserStatsQuery({ userId: request.uid, ...request }));
 	}
 }

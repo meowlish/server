@@ -1,8 +1,8 @@
-import { FilePreview } from './file-preview.res.dto';
+import { FilePreviewDto } from './file-preview.res.dto';
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-class Choice implements exam.QuestionManagementInfo_ChoiceManagementInfo {
+class ChoiceDto implements exam.QuestionManagementInfo_ChoiceManagementInfo {
 	@Expose()
 	content?: string;
 
@@ -19,10 +19,10 @@ class Choice implements exam.QuestionManagementInfo_ChoiceManagementInfo {
 	questionId!: string;
 }
 
-export class QuestionManagementInfo implements exam.QuestionManagementInfo {
+export class QuestionManagementInfoDto implements exam.QuestionManagementInfo {
 	@Expose()
-	@Type(() => Choice)
-	choices!: Choice[];
+	@Type(() => ChoiceDto)
+	choices!: ChoiceDto[];
 
 	@Expose()
 	content!: string;
@@ -31,8 +31,8 @@ export class QuestionManagementInfo implements exam.QuestionManagementInfo {
 	explanation!: string;
 
 	@Expose()
-	@Type(() => FilePreview)
-	files!: FilePreview[];
+	@Type(() => FilePreviewDto)
+	files!: FilePreviewDto[];
 
 	@Expose()
 	id!: string;

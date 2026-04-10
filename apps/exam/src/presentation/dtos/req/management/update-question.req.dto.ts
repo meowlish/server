@@ -13,7 +13,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class AddChoice implements exam.UpdateQuestionDto_AddChoice {
+class AddChoiceDto implements exam.UpdateQuestionDto_AddChoice {
 	@IsString()
 	key!: string;
 
@@ -25,7 +25,7 @@ class AddChoice implements exam.UpdateQuestionDto_AddChoice {
 	isCorrect!: boolean;
 }
 
-class UpdateChoice implements exam.UpdateQuestionDto_UpdateChoice {
+class UpdateChoiceDto implements exam.UpdateQuestionDto_UpdateChoice {
 	@IsString()
 	id!: string;
 
@@ -47,22 +47,22 @@ class UpdateChoice implements exam.UpdateQuestionDto_UpdateChoice {
 }
 
 export class UpdateQuestionDto implements exam.UpdateQuestionDto {
-	@Type(() => AddChoice)
+	@Type(() => AddChoiceDto)
 	@IsArray()
 	@IsOptional()
 	@ValidateNested({ each: true })
-	addChoices!: AddChoice[];
+	addChoices!: AddChoiceDto[];
 
 	@IsArray()
 	@IsOptional()
 	@IsString({ each: true })
 	deleteChoicesIds!: string[];
 
-	@Type(() => UpdateChoice)
+	@Type(() => UpdateChoiceDto)
 	@IsArray()
 	@IsOptional()
 	@ValidateNested({ each: true })
-	updateChoices!: UpdateChoice[];
+	updateChoices!: UpdateChoiceDto[];
 
 	@IsOptional()
 	@IsString()

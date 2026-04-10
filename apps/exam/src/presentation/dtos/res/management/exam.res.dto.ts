@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose } from 'class-transformer';
 
-export class ExamDetailedManagementInfo implements exam.ExamManagementDetailedInfo {
+export class ExamDetailedManagementInfoDto implements exam.ExamManagementDetailedInfo {
 	@Expose()
 	createdAt!: Date;
 

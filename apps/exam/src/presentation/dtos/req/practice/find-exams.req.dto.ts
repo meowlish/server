@@ -12,7 +12,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class FilterOptions implements exam.FindExamsDto_FilterOption {
+class FilterOptionsDto implements exam.FindExamsDto_FilterOption {
 	@IsOptional()
 	@IsString()
 	name?: string;
@@ -23,7 +23,7 @@ class FilterOptions implements exam.FindExamsDto_FilterOption {
 	tags!: string[];
 }
 
-class SortOptions implements exam.FindExamsDto_SortOption {
+class SortOptionsDto implements exam.FindExamsDto_SortOption {
 	@IsIn(['attemptsCount', 'updatedAt'])
 	key!: 'attemptsCount' | 'updatedAt';
 
@@ -32,15 +32,15 @@ class SortOptions implements exam.FindExamsDto_SortOption {
 }
 
 export class FindExamsDto implements exam.FindExamsDto {
-	@Type(() => FilterOptions)
+	@Type(() => FilterOptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	filter?: FilterOptions;
+	filter?: FilterOptionsDto;
 
-	@Type(() => SortOptions)
+	@Type(() => SortOptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	sortBy?: SortOptions;
+	sortBy?: SortOptionsDto;
 
 	@IsOptional()
 	@IsString()

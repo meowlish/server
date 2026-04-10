@@ -11,7 +11,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class SortOptions implements exam.GetUsersAttemptHistoryDto_SortOption {
+class SortOptionsDto implements exam.GetUsersAttemptHistoryDto_SortOption {
 	@IsIn(['endedAt', 'startedAt', 'examId', 'score'])
 	key!: 'endedAt' | 'startedAt' | 'examId' | 'score';
 
@@ -36,8 +36,8 @@ export class GetUsersAttemptHistoryDto implements exam.GetUsersAttemptHistoryDto
 	@IsPositive()
 	limit?: number;
 
-	@Type(() => SortOptions)
+	@Type(() => SortOptionsDto)
 	@IsOptional()
 	@ValidateNested()
-	sortBy?: SortOptions;
+	sortBy?: SortOptionsDto;
 }

@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-class MinimalAttemptInfo implements exam.UsersAttemptHistory_MinimalAttemptInfo {
+class MinimalAttemptInfoDto implements exam.UsersAttemptHistory_MinimalAttemptInfo {
 	@Expose()
 	durationLimit!: number;
 
@@ -24,10 +24,10 @@ class MinimalAttemptInfo implements exam.UsersAttemptHistory_MinimalAttemptInfo 
 	totalPoints?: number;
 }
 
-export class AttemptsHistory implements exam.UsersAttemptHistory {
+export class AttemptsHistoryDto implements exam.UsersAttemptHistory {
 	@Expose()
-	@Type(() => MinimalAttemptInfo)
-	attempts!: MinimalAttemptInfo[];
+	@Type(() => MinimalAttemptInfoDto)
+	attempts!: MinimalAttemptInfoDto[];
 
 	@Expose()
 	cursor!: string;

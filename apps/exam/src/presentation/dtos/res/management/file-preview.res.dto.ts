@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose } from 'class-transformer';
 
-export class FilePreview implements exam.FilePreviewInfo {
+export class FilePreviewDto implements exam.FilePreviewInfo {
 	@Expose()
 	id!: string;
 

@@ -3,11 +3,11 @@ import { Expose, Type } from 'class-transformer';
 
 export class FoundBadgesDto implements achievement.BadgesResponseDto {
 	@Expose()
-	@Type(() => Badge)
-	badges!: Badge[];
+	@Type(() => BadgeDto)
+	badges!: BadgeDto[];
 }
 
-export class Badge implements achievement.Badges {
+export class BadgeDto implements achievement.Badges {
 	@Expose()
 	name!: string;
 

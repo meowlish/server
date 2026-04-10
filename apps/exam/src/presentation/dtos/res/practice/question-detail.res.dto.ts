@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class QuestionDetail implements exam.DetailedQuestionInfo {
+export class QuestionDetailDto implements exam.DetailedQuestionInfo {
 	@Expose()
 	content!: string;
 
@@ -18,14 +18,14 @@ export class QuestionDetail implements exam.DetailedQuestionInfo {
 	points!: number;
 
 	@Expose()
-	@Type(() => SectionContext)
-	sectionContext!: SectionContext[];
+	@Type(() => SectionContextDto)
+	sectionContext!: SectionContextDto[];
 
 	@Expose()
 	type!: string;
 }
 
-class SectionContext implements exam.DetailedQuestionInfo_SectionContext {
+class SectionContextDto implements exam.DetailedQuestionInfo_SectionContext {
 	@Expose()
 	content?: string;
 

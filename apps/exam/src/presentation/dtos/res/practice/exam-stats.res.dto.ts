@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class ExamStats implements exam.ExamStatistics {
+export class ExamStatsDto implements exam.ExamStatistics {
 	@Expose()
 	averageDuration!: number;
 
@@ -9,11 +9,11 @@ export class ExamStats implements exam.ExamStatistics {
 	averageScoreInPercentage!: number;
 
 	@Expose()
-	@Type(() => QuestionStats)
-	questions!: QuestionStats[];
+	@Type(() => QuestionStatsDto)
+	questions!: QuestionStatsDto[];
 }
 
-class QuestionStats implements exam.ExamStatistics_QuestionStatistics {
+class QuestionStatsDto implements exam.ExamStatistics_QuestionStatistics {
 	@Expose()
 	correctCount!: number;
 

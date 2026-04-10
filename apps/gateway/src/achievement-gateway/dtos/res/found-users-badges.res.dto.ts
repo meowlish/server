@@ -1,7 +1,7 @@
-import { Badge } from './found-badges.res.dto';
+import { BadgeDto } from './found-badges.res.dto';
 import { Expose } from 'class-transformer';
 
-export class UserBadge extends Badge {
+export class UserBadgeDto extends BadgeDto {
 	@Expose()
 	id!: string;
 
@@ -11,7 +11,7 @@ export class UserBadge extends Badge {
 
 export class FoundUsersBadgesDto {
 	@Expose()
-	badges!: UserBadge[];
+	badges!: UserBadgeDto[];
 
 	@Expose()
 	cursor?: string;

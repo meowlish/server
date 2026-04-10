@@ -1,7 +1,7 @@
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-class Exam implements exam.FoundExamsForManagement_ExamManagementMinimalInfo {
+class ExamDto implements exam.FoundExamsForManagement_ExamManagementMinimalInfo {
 	@Expose()
 	createdAt!: Date;
 
@@ -21,10 +21,10 @@ class Exam implements exam.FoundExamsForManagement_ExamManagementMinimalInfo {
 	updatedAt!: Date;
 }
 
-export class ExamsManagementInfo implements exam.FoundExamsForManagement {
+export class ExamsManagementInfoDto implements exam.FoundExamsForManagement {
 	@Expose()
-	@Type(() => Exam)
-	exams!: Exam[];
+	@Type(() => ExamDto)
+	exams!: ExamDto[];
 
 	@Expose()
 	cursor!: string;

@@ -1,8 +1,8 @@
-import { FilePreview } from './file-preview.res.dto';
+import { FilePreviewDto } from './file-preview.res.dto';
 import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class SectionManagementInfo implements exam.SectionManagementInfo {
+export class SectionManagementInfoDto implements exam.SectionManagementInfo {
 	@Expose()
 	contentType!: string;
 
@@ -13,8 +13,8 @@ export class SectionManagementInfo implements exam.SectionManagementInfo {
 	examId!: string;
 
 	@Expose()
-	@Type(() => FilePreview)
-	files!: FilePreview[];
+	@Type(() => FilePreviewDto)
+	files!: FilePreviewDto[];
 
 	@Expose()
 	id!: string;

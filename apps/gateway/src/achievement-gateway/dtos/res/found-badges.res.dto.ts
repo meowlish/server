@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class Badge {
+export class BadgeDto {
 	@Expose()
 	name!: string;
 
@@ -13,5 +13,5 @@ export class Badge {
 
 export class FoundBadgesDto {
 	@Expose()
-	badges!: Badge[];
+	badges!: BadgeDto[];
 }

@@ -10,7 +10,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-class AddChoice {
+class AddChoiceDto {
 	@IsString()
 	key!: string;
 
@@ -22,7 +22,7 @@ class AddChoice {
 	isCorrect!: boolean;
 }
 
-class UpdateChoice {
+class UpdateChoiceDto {
 	@IsString()
 	id!: string;
 
@@ -44,19 +44,19 @@ class UpdateChoice {
 }
 
 export class UpdateQuestionDto {
-	@Type(() => AddChoice)
+	@Type(() => AddChoiceDto)
 	@IsArray()
 	@ValidateNested({ each: true })
-	addChoices: AddChoice[] = [];
+	addChoices: AddChoiceDto[] = [];
 
 	@IsArray()
 	@IsString({ each: true })
 	deleteChoicesIds: string[] = [];
 
-	@Type(() => UpdateChoice)
+	@Type(() => UpdateChoiceDto)
 	@IsArray()
 	@ValidateNested({ each: true })
-	updateChoices: UpdateChoice[] = [];
+	updateChoices: UpdateChoiceDto[] = [];
 
 	@IsOptional()
 	@IsString()
