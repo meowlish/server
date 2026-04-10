@@ -3,6 +3,7 @@ import {
 	ExamPracticeCommandHandlers,
 } from './app/commands/handlers';
 import { IntegrationEventPublishers } from './app/events/publishers';
+import { ExamManagementQueryHandlers } from './app/queries/handlers/management';
 import { ExamPracticeQueryHandler } from './app/queries/handlers/practice';
 import { TagService } from './app/services/tag.service';
 import { bullConfig } from './configs/bullmq.config';
@@ -83,6 +84,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		...ExamManagementCommandHandlers,
+		...ExamManagementQueryHandlers,
 		...ExamPracticeCommandHandlers,
 		...ExamPracticeQueryHandler,
 		...ExamEventHandlers,

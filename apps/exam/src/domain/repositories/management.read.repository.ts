@@ -9,9 +9,15 @@ import { SortDirection } from '@server/typing';
 
 export interface IManagementReadRepository {
 	findExams(options?: {
-		filter?: { title?: string; createdBy?: string; status: ExamStatus };
-		sortBy?: { key: 'updatedAt'; direction: SortDirection };
-		lastId: string;
+		filter?: {
+			title?: string;
+			createdBy?: string;
+			status?: ExamStatus;
+			createdTimeRange?: { from: Date; to: Date };
+			updatedTimeRange?: { from: Date; to: Date };
+		};
+		sortBy?: { key: 'updatedAt' | 'createdAt'; direction: SortDirection };
+		lastId?: string;
 		limit?: number;
 	}): Promise<ExamManagementMinimalInfo[]>;
 	getExamDetail(examId: string): Promise<ExamManagementDetailedInfo>;

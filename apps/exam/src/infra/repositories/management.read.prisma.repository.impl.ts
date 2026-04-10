@@ -25,7 +25,7 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 			updatedTimeRange?: { from: Date; to: Date };
 		};
 		sortBy?: { key: 'updatedAt' | 'createdAt'; direction: SortDirection };
-		lastId: string;
+		lastId?: string;
 		limit?: number;
 	}): Promise<ExamManagementMinimalInfo[]> {
 		if (options?.limit && options.limit < 0)
