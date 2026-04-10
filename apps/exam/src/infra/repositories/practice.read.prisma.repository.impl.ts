@@ -598,14 +598,20 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 										directive: true,
 										order: true,
 										contentType: true,
-										sectionFiles: { select: { fileId: true } },
+										sectionFiles: {
+											select: { fileId: true },
+											orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+										},
 										questions: {
 											select: {
 												id: true,
 												content: true,
 												type: true,
 												order: true,
-												questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+												questionFiles: {
+													select: { fileId: true },
+													orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+												},
 												choices: { select: { key: true, content: true } },
 											},
 											orderBy: { order: 'asc' },
@@ -630,14 +636,20 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 						directive: true,
 						order: true,
 						contentType: true,
-						sectionFiles: { select: { fileId: true } },
+						sectionFiles: {
+							select: { fileId: true },
+							orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+						},
 						questions: {
 							select: {
 								id: true,
 								content: true,
 								type: true,
 								order: true,
-								questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+								questionFiles: {
+									select: { fileId: true },
+									orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+								},
 								choices: { select: { key: true, content: true } },
 							},
 							orderBy: { order: 'asc' },
@@ -732,14 +744,20 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 										directive: true,
 										order: true,
 										contentType: true,
-										sectionFiles: { select: { fileId: true } },
+										sectionFiles: {
+											select: { fileId: true },
+											orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+										},
 										questions: {
 											select: {
 												id: true,
 												content: true,
 												type: true,
 												order: true,
-												questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+												questionFiles: {
+													select: { fileId: true },
+													orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+												},
 												choices: { select: { key: true, content: true, isCorrect: true } },
 												questionTags: { select: { tag: { select: { name: true } } } },
 												points: true,
@@ -766,14 +784,20 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 						directive: true,
 						order: true,
 						contentType: true,
-						sectionFiles: { select: { fileId: true } },
+						sectionFiles: {
+							select: { fileId: true },
+							orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+						},
 						questions: {
 							select: {
 								id: true,
 								content: true,
 								type: true,
 								order: true,
-								questionFiles: { select: { fileId: true }, orderBy: { updatedAt: 'asc' } },
+								questionFiles: {
+									select: { fileId: true },
+									orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+								},
 								choices: { select: { key: true, content: true, isCorrect: true } },
 								questionTags: { select: { tag: { select: { name: true } } } },
 								points: true,
@@ -856,7 +880,13 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 						ancestors: {
 							select: {
 								ancestor: {
-									select: { directive: true, sectionFiles: { select: { fileId: true } } },
+									select: {
+										directive: true,
+										sectionFiles: {
+											select: { fileId: true },
+											orderBy: [{ updatedAt: 'asc' }, { fileId: 'asc' }],
+										},
+									},
 								},
 							},
 							orderBy: [{ depth: 'desc' }],
