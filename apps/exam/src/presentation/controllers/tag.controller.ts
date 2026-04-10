@@ -4,6 +4,8 @@ import { DeleteTagDto } from '../dtos/req/tag/delete-tag.req.dto';
 import { MoveTagDto } from '../dtos/req/tag/move-tag.req.dto';
 import { UpdateTagDto } from '../dtos/req/tag/update-tag.dto';
 import { AddedTagDto } from '../dtos/res/tag/added-tag.res.dto';
+import { TagListDto } from '../dtos/res/tag/tag-list.res.dto';
+import { TagTreesDto } from '../dtos/res/tag/tag-trees.res.dto';
 import { Controller, SerializeOptions } from '@nestjs/common';
 import { Payload } from '@nestjs/microservices';
 import { exam } from '@server/generated';
@@ -29,5 +31,15 @@ export class TagController implements exam.TagServiceController {
 
 	async updateTag(@Payload() request: UpdateTagDto): Promise<void> {
 		return this.tagService.updateTag(request.id, request.name);
+	}
+
+	@SerializeOptions({ type: TagListDto, strategy: 'exposeAll' })
+	async getTagList(): Promise<TagListDto> {
+		return { list: await this.tagService.getTagList() };
+	}
+
+	@SerializeOptions({ type: TagTreesDto, strategy: 'exposeAll' })
+	async getTagTree(): Promise<TagTreesDto> {
+		return { trees: await this.tagService.getTagTree() };
 	}
 }

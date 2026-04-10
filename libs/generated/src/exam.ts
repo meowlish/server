@@ -540,6 +540,24 @@ export interface ExamManagementDetailedInfo {
   tags: string[];
 }
 
+export interface TagList {
+  list: TagList_TagNode[];
+}
+
+export interface TagList_TagNode {
+  name: string;
+  parent?: string | undefined;
+}
+
+export interface TagTrees {
+  trees: TagTrees_TagTree[];
+}
+
+export interface TagTrees_TagTree {
+  name: string;
+  children: TagTrees_TagTree[];
+}
+
 wrappers[".google.protobuf.Timestamp"] = {
   fromObject(value: Date) {
     return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
@@ -5832,6 +5850,176 @@ export const ExamManagementDetailedInfo: MessageFns<ExamManagementDetailedInfo> 
   },
 };
 
+function createBaseTagList(): TagList {
+  return { list: [] };
+}
+
+export const TagList: MessageFns<TagList> = {
+  encode(message: TagList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.list) {
+      TagList_TagNode.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TagList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.list.push(TagList_TagNode.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTagList_TagNode(): TagList_TagNode {
+  return { name: "" };
+}
+
+export const TagList_TagNode: MessageFns<TagList_TagNode> = {
+  encode(message: TagList_TagNode, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.parent !== undefined) {
+      writer.uint32(18).string(message.parent);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TagList_TagNode {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagList_TagNode();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.parent = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTagTrees(): TagTrees {
+  return { trees: [] };
+}
+
+export const TagTrees: MessageFns<TagTrees> = {
+  encode(message: TagTrees, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.trees) {
+      TagTrees_TagTree.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TagTrees {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagTrees();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.trees.push(TagTrees_TagTree.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseTagTrees_TagTree(): TagTrees_TagTree {
+  return { name: "", children: [] };
+}
+
+export const TagTrees_TagTree: MessageFns<TagTrees_TagTree> = {
+  encode(message: TagTrees_TagTree, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    for (const v of message.children) {
+      TagTrees_TagTree.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TagTrees_TagTree {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTagTrees_TagTree();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.children.push(TagTrees_TagTree.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface ExamManagementServiceClient {
   createExam(request: CreateExamDto, metadata?: Metadata): Observable<CreatedExamDto>;
 
@@ -6439,6 +6627,12 @@ export interface TagServiceClient {
   updateTag(request: UpdateTagDto, metadata?: Metadata): Observable<Empty>;
 
   moveTag(request: MoveTagDto, metadata?: Metadata): Observable<Empty>;
+
+  /** query */
+
+  getTagTree(request: Empty, metadata?: Metadata): Observable<TagTrees>;
+
+  getTagList(request: Empty, metadata?: Metadata): Observable<TagList>;
 }
 
 export interface TagServiceController {
@@ -6449,11 +6643,17 @@ export interface TagServiceController {
   updateTag(request: UpdateTagDto, metadata?: Metadata): void | Promise<void>;
 
   moveTag(request: MoveTagDto, metadata?: Metadata): void | Promise<void>;
+
+  /** query */
+
+  getTagTree(request: Empty, metadata?: Metadata): Promise<TagTrees> | Observable<TagTrees> | TagTrees;
+
+  getTagList(request: Empty, metadata?: Metadata): Promise<TagList> | Observable<TagList> | TagList;
 }
 
 export function TagServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["addTag", "deleteTag", "updateTag", "moveTag"];
+    const grpcMethods: string[] = ["addTag", "deleteTag", "updateTag", "moveTag", "getTagTree", "getTagList"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("TagService", method)(constructor.prototype[method], method, descriptor);
@@ -6506,6 +6706,25 @@ export const TagServiceService = {
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
+  /** query */
+  getTagTree: {
+    path: "/exam.TagService/GetTagTree" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: TagTrees): Buffer => Buffer.from(TagTrees.encode(value).finish()),
+    responseDeserialize: (value: Buffer): TagTrees => TagTrees.decode(value),
+  },
+  getTagList: {
+    path: "/exam.TagService/GetTagList" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: TagList): Buffer => Buffer.from(TagList.encode(value).finish()),
+    responseDeserialize: (value: Buffer): TagList => TagList.decode(value),
+  },
 } as const;
 
 export interface TagServiceServer extends UntypedServiceImplementation {
@@ -6513,6 +6732,9 @@ export interface TagServiceServer extends UntypedServiceImplementation {
   deleteTag: handleUnaryCall<DeleteTagDto, Empty>;
   updateTag: handleUnaryCall<UpdateTagDto, Empty>;
   moveTag: handleUnaryCall<MoveTagDto, Empty>;
+  /** query */
+  getTagTree: handleUnaryCall<Empty, TagTrees>;
+  getTagList: handleUnaryCall<Empty, TagList>;
 }
 
 function toTimestamp(date: Date): Timestamp {

@@ -50,6 +50,9 @@ service TagService {
 	rpc DeleteTag(DeleteTagDto) returns (google.protobuf.Empty) {}
 	rpc UpdateTag(UpdateTagDto) returns (google.protobuf.Empty) {}
 	rpc MoveTag(MoveTagDto) returns (google.protobuf.Empty) {}
+    // query
+	rpc GetTagTree(google.protobuf.Empty) returns (TagTrees) {}
+	rpc GetTagList(google.protobuf.Empty) returns (TagList) {}
 }
 
 // Request
@@ -576,4 +579,23 @@ message ExamManagementDetailedInfo {
 	int32                     duration    = 8;
 	repeated string           section_ids = 9;
 	repeated string           tags        = 10;
+}
+
+message TagList {
+	repeated TagNode list = 1;
+
+	message TagNode {
+		string          name   = 1;
+		optional string parent = 2;
+
+	}
+}
+
+message TagTrees {
+	repeated TagTree trees = 1;
+
+	message TagTree {
+		string           name     = 1;
+		repeated TagTree children = 2;
+	}
 }
