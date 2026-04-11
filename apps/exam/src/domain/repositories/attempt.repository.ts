@@ -8,6 +8,19 @@ export interface IAttemptRepository {
 	getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null>;
 	save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void>;
 	deleteMany(ids: string[]): Promise<void>;
+	// for AI
+	getWritingResponse(
+		responseOrAttemptId: string,
+		questionId?: string,
+	): Promise<{
+		attemptedBy: string;
+		examId: string;
+		examTags: string[];
+		questionContent: string;
+		questionTags: string[];
+		answer?: string[];
+	}>;
+	saveComment(responseId: string, comment: unknown): Promise<void>;
 }
 
 export const IAttemptRepositoryToken = Symbol('IAttemptRepository');

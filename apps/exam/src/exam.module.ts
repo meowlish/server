@@ -2,6 +2,7 @@ import {
 	ExamManagementCommandHandlers,
 	ExamPracticeCommandHandlers,
 } from './app/commands/handlers';
+import { IntegrationEventHandlers } from './app/events/handlers';
 import { IntegrationEventPublishers } from './app/events/publishers';
 import { ExamManagementQueryHandlers } from './app/queries/handlers/management';
 import { ExamPracticeQueryHandler } from './app/queries/handlers/practice';
@@ -93,6 +94,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		...ExamPracticeQueryHandler,
 		...ExamEventHandlers,
 		...IntegrationEventPublishers,
+		...IntegrationEventHandlers,
 		TagService,
 		GoalService,
 		{

@@ -7,7 +7,21 @@ export const rmqSubConfig = (configService: ConfigService<IEnvVars>): RabbitMQCo
 	const rmqConfig = configService.getOrThrow('messageQueue', { infer: true });
 	return {
 		name: 'sub',
-		exchanges: [...defaultRmqExchanges],
+		exchanges: [
+			...defaultRmqExchanges,
+			{
+				name: 'exam.dlx',
+				type: 'topic',
+				options: { durable: true },
+			},
+		],
+		queues: [
+			{
+				exchange: 'exam.dlx',
+				routingKey: 'writing.result.dlq',
+				name: 'exam.writing.result.dlq',
+			},
+		],
 		uri: `amqp://${rmqConfig.user}:${rmqConfig.password}@${rmqConfig.host}:${rmqConfig.port}`,
 		connectionInitOptions: { wait: true },
 		defaultSubscribeErrorBehavior: MessageHandlerErrorBehavior.REQUEUE,

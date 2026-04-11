@@ -4,7 +4,7 @@ import {
 } from '../../repositories/attempt.repository';
 import { AttemptSubmittedEvent } from '../attempt.event';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { EventBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { AppLoggerService } from '@server/logger';
 
 @EventsHandler(AttemptSubmittedEvent)
@@ -12,6 +12,7 @@ export class AttemptSubmittedHandler implements IEventHandler<AttemptSubmittedEv
 	constructor(
 		@Inject(IAttemptRepositoryToken) private readonly attemptRepository: IAttemptRepository,
 		private readonly logger: AppLoggerService,
+		private readonly eventBus: EventBus,
 	) {}
 
 	async handle(event: AttemptSubmittedEvent) {
@@ -21,6 +22,7 @@ export class AttemptSubmittedHandler implements IEventHandler<AttemptSubmittedEv
 			if (!attempt) throw new NotFoundException('Attempt not found');
 			attempt.evaluateScore();
 			await this.attemptRepository.save(attempt);
+			this.eventBus.publishAll(attempt.getUncommittedEvents());
 		} catch (e) {
 			this.logger.error(e as string);
 		}
