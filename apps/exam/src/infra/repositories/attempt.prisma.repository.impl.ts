@@ -238,6 +238,66 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		}
 	}
 
+	async getWritingResponse(
+		responseOrAttemptId: string,
+		questionId?: string,
+	): Promise<{
+		attemptedBy: string;
+		examId: string;
+		examTags: string[];
+		questionContent: string;
+		questionTags: string[];
+		answer?: string[];
+	}> {
+		const hasAttemptId = ((questionId?: string): questionId is string => {
+			return !!questionId;
+		})(questionId);
+
+		const response = await this.txHost.tx.attemptResponse.findUnique({
+			where: {
+				...(questionId ?
+					{ attemptId_questionId: { attemptId: responseOrAttemptId, questionId: questionId } }
+				:	{ id: responseOrAttemptId }),
+			},
+			select: {
+				answers: true,
+				attempt: {
+					select: {
+						attemptedBy: true,
+						exam: {
+							select: { id: true, examTags: { select: { tag: { select: { name: true } } } } },
+						},
+					},
+				},
+				question: {
+					select: {
+						content: true,
+						questionTags: { select: { tag: { select: { name: true } } } },
+					},
+				},
+			},
+		});
+
+		if (!response) throw new NotFoundException('Response not found');
+
+		return {
+			attemptedBy: response.attempt.attemptedBy,
+			examId: response.attempt.exam.id,
+			examTags: response.attempt.exam.examTags.map(t => t.tag.name),
+			questionContent: response.question.content,
+			questionTags: response.question.questionTags.map(t => t.tag.name),
+			answer: response.answers,
+		};
+	}
+
+	async saveComment(responseId: string, comment: unknown): Promise<void> {
+		await this.txHost.tx.scorerData.upsert({
+			where: { responseId: responseId },
+			create: { responseId: responseId, comment: comment as object },
+			update: { comment: comment as object },
+		});
+	}
+
 	private async handle(event: Event<any>): Promise<void> {
 		if (event instanceof AttemptResponseCreatedEvent)
 			return await this.onAttemptResponseCreated(event);

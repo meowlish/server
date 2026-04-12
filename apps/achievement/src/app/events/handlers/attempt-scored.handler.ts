@@ -33,7 +33,7 @@ export class AttemptScoredHandler {
 	@RabbitSubscribe({
 		connection: 'sub',
 		exchange: 'eventbus',
-		routingKey: '*.attempt.scored',
+		routingKey: 'exam.attempt.scored',
 		queue: 'achievement.events.attempt.scored',
 		queueOptions: {
 			durable: true,

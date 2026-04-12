@@ -1,5 +1,6 @@
 import { QuestionType, questionTypesThatAllowNonStrictMatch } from '../../enums/question-type.enum';
 import { AttemptScoredEvent } from '../events/attempt.event';
+import { WritingSubmittedEvent } from '../events/writing-submitted';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Event, IAggregate, IEntity } from '@server/utils';
 import { isEqual } from 'lodash';
@@ -76,8 +77,17 @@ export class AttemptEvaluator
 	}
 
 	private scoreFor(question: AttemptQuestion, response: AttemptResponseResult): number {
-		// TODO: writing score logic later
-		if (question.type === QuestionType.Writing) return 0;
+		if (question.type === QuestionType.Writing) {
+			this.apply(
+				new WritingSubmittedEvent({
+					attemptId: this.id,
+					responseId: response.id,
+					questionId: question.id,
+					responseContent: response.answers[0] ?? '',
+				}),
+			);
+			return 0;
+		}
 		// If question types only need user to match one of the many correct keys
 		if (questionTypesThatAllowNonStrictMatch.includes(question.type)) {
 			if (question.correctKeys.some(k => response.answers.includes(k))) {

@@ -20,11 +20,17 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
-import { parseEnum } from '@server/utils';
 
 @Injectable()
 export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
+
+	private removeDescriptionBlock(text: string): string {
+		return text
+			.replace(/#BEGIN_DESCRIPTION[\s\S]*?#END_DESCRIPTION/g, '')
+			.replace(/\n{3,}/g, '\n\n') // clean extra newlines
+			.trim();
+	}
 
 	async getUserStats(uid: string): Promise<UserStats> {
 		const [baseStats] = await this.txHost.tx.$queryRaw<
@@ -671,11 +677,14 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				questions: s.questions.map(q => ({
 					id: q.id,
 					order: q.order,
-					content: q.content,
+					content:
+						q.type === String(QuestionType.Writing) ?
+							this.removeDescriptionBlock(q.content)
+						:	q.content,
 					type: q.type,
 					fileUrls: q.questionFiles.map(f => f.fileId),
 					choices:
-						questionTypesThatShowChoices.includes(parseEnum(QuestionType, q.type)) ?
+						questionTypesThatShowChoices.includes(q.type as QuestionType) ?
 							q.choices.map(c => ({ key: c.key, content: c.content ?? undefined }))
 						:	[],
 				})),
@@ -821,7 +830,10 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 				questions: s.questions.map(q => ({
 					id: q.id,
 					order: q.order,
-					content: q.content,
+					content:
+						q.type === String(QuestionType.Writing) ?
+							this.removeDescriptionBlock(q.content)
+						:	q.content,
 					type: q.type,
 					fileUrls: q.questionFiles.map(f => f.fileId),
 					points: q.points,
@@ -897,6 +909,9 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		});
 
 		if (!foundQuestion) throw new NotFoundException(`Question ${questionId} not found`);
+
+		if (foundQuestion.type === String(QuestionType.Writing))
+			foundQuestion.content = this.removeDescriptionBlock(foundQuestion.content);
 
 		return {
 			id: foundQuestion.id,
