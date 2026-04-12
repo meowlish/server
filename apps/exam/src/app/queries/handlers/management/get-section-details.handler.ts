@@ -5,7 +5,12 @@ import {
 	IManagementReadRepositoryToken,
 } from '../../../../domain/repositories/management.read.repository';
 import { GetSectionManagementDetailsQuery } from '../../management/get-section-details.query';
-import { Inject, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
+import {
+	Inject,
+	NotFoundException,
+	OnModuleInit,
+	ServiceUnavailableException,
+} from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ClientGrpc } from '@nestjs/microservices';
 import { file } from '@server/generated';
@@ -29,6 +34,9 @@ export class GetSectionManagementDetailsQueryHandler
 	async execute(query: GetSectionManagementDetailsQuery): Promise<SectionManagementInfo> {
 		const payload = query.payload;
 		const section = await this.managementReadRepository.getSectionDetail(payload.sectionId);
+
+		if (!section) throw new NotFoundException('Section not found');
+
 		try {
 			const urlMap = await firstValueFrom(
 				this.fileService.getUrls({ ids: section.files.map(f => f.id) }),

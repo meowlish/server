@@ -4,7 +4,7 @@ import {
 	IManagementReadRepositoryToken,
 } from '../../../../domain/repositories/management.read.repository';
 import { GetExamManagementDetailsQuery } from '../../management/get-exam-details.query';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 @QueryHandler(GetExamManagementDetailsQuery)
@@ -19,6 +19,9 @@ export class GetExamManagementDetailsQueryHandler
 	async execute(query: GetExamManagementDetailsQuery): Promise<ExamManagementDetailedInfo> {
 		const payload = query.payload;
 		const exam = await this.managementReadRepository.getExamDetail(payload.examId);
+
+		if (!exam) throw new NotFoundException('Exam not found');
+
 		return exam;
 	}
 }

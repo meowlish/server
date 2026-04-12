@@ -4,7 +4,7 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetExamStatsQuery } from '../../practice/get-exam-stats.query';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 @QueryHandler(GetExamStatsQuery)
@@ -17,6 +17,9 @@ export class GetExamStatsQueryHandler implements IQueryHandler<GetExamStatsQuery
 	async execute(query: GetExamStatsQuery): Promise<ExamStatistics> {
 		const payload = query.payload;
 		const examStats = await this.practiceReadRepository.getExamStats(payload.examId);
+
+		if (!examStats) throw new NotFoundException('Exam not found');
+
 		return examStats;
 	}
 }

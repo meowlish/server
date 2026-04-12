@@ -5,7 +5,7 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetAttemptReviewQuery } from '../../practice/get-attempt-review.query';
-import { Inject, ServiceUnavailableException } from '@nestjs/common';
+import { Inject, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ClientGrpc } from '@nestjs/microservices';
 import { file } from '@server/generated';
@@ -28,6 +28,9 @@ export class GetAttemptReviewQueryHandler implements IQueryHandler<GetAttemptRev
 	async execute(query: GetAttemptReviewQuery): Promise<DetailedAttemptReviewData> {
 		const payload = query.payload;
 		const review = await this.practiceReadRepository.getAttemptReview(payload.attemptId);
+
+		if (!review) throw new NotFoundException('Attempt not found');
+
 		const ids = new Set<string>();
 		this.treeVisitor(review.sections, this.collectFileIds.bind(this), ids);
 		try {

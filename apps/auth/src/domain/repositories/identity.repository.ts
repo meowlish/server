@@ -12,7 +12,7 @@ export interface IIdentityRepository {
 	getClaimsOfId(
 		id: string,
 		deleted?: boolean,
-	): Promise<{ roles: Role[]; permissions: Permission[] }>;
+	): Promise<{ roles: Role[]; permissions: Permission[] } | null>;
 	save(identity: Identity): Promise<void>;
 	softDelete(id: string): Promise<void>;
 }

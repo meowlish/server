@@ -4,7 +4,7 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetExamDetailsQuery } from '../../practice/get-exam-details.query';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 @QueryHandler(GetExamDetailsQuery)
@@ -17,6 +17,9 @@ export class GetExamDetailsQueryHandler implements IQueryHandler<GetExamDetailsQ
 	async execute(query: GetExamDetailsQuery): Promise<DetailedExamInfo> {
 		const payload = query.payload;
 		const exam = await this.practiceReadRepository.getExamDetail(payload.examId);
+
+		if (!exam) throw new NotFoundException('Exam not found');
+
 		return exam;
 	}
 }

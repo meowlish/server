@@ -3,7 +3,7 @@ import {
 	type IGoalRepository,
 	IGoalRepositoryToken,
 } from '../../domain/repositories/goal.repository';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class GoalService {
@@ -22,6 +22,8 @@ export class GoalService {
 	}
 
 	async getGoal(uid: string): Promise<Goal> {
-		return await this.goalRepository.getGoal(uid);
+		const goal = await this.goalRepository.getGoal(uid);
+		if (!goal) throw new NotFoundException('Goal not found');
+		return goal;
 	}
 }

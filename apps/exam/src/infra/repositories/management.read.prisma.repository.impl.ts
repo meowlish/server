@@ -8,7 +8,7 @@ import { IManagementReadRepository } from '../../domain/repositories/management.
 import { ExamStatus } from '../../enums/exam-status.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
 
@@ -67,7 +67,7 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 		return foundExams;
 	}
 
-	async getExamDetail(examId: string): Promise<ExamManagementDetailedInfo> {
+	async getExamDetail(examId: string): Promise<ExamManagementDetailedInfo | null> {
 		const foundExam = await this.txHost.tx.exam.findUnique({
 			where: { id: examId },
 			select: {
@@ -87,7 +87,9 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 				examTags: { select: { tag: { select: { name: true } } } },
 			},
 		});
-		if (!foundExam) throw new NotFoundException('Exam not found');
+
+		if (!foundExam) return null;
+
 		return {
 			...foundExam,
 			description: foundExam.description ?? undefined,
@@ -96,7 +98,7 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 		};
 	}
 
-	async getSectionDetail(sectionId: string): Promise<SectionManagementInfo> {
+	async getSectionDetail(sectionId: string): Promise<SectionManagementInfo | null> {
 		const foundSection = await this.txHost.tx.section.findUnique({
 			where: { id: sectionId },
 			select: {
@@ -111,7 +113,9 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 				sectionTags: { select: { tag: { select: { name: true } } } },
 			},
 		});
-		if (!foundSection) throw new NotFoundException('Section not found');
+
+		if (!foundSection) return null;
+
 		return {
 			...foundSection,
 			name: foundSection.name ?? undefined,
@@ -122,7 +126,7 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 		};
 	}
 
-	async getQuestionDetail(questionId: string): Promise<QuestionManagementInfo> {
+	async getQuestionDetail(questionId: string): Promise<QuestionManagementInfo | null> {
 		const foundQuestion = await this.txHost.tx.question.findUnique({
 			where: { id: questionId },
 			select: {
@@ -139,7 +143,9 @@ export class ManagementPrismaRepositoryImpl implements IManagementReadRepository
 				questionTags: { select: { tag: { select: { name: true } } } },
 			},
 		});
-		if (!foundQuestion) throw new NotFoundException('Question not found');
+
+		if (!foundQuestion) return null;
+
 		return {
 			...foundQuestion,
 			choices: foundQuestion.choices.map(c => ({ ...c, content: c.content ?? undefined })),

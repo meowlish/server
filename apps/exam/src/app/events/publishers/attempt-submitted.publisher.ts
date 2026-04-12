@@ -5,7 +5,7 @@ import {
 } from '../../../domain/repositories/attempt.repository';
 import { AttemptSubmittedIntegrationEvent } from '../attempt-submitted.event';
 import { AmqpConnectionManager } from '@golevelup/nestjs-rabbitmq';
-import { Inject, InternalServerErrorException } from '@nestjs/common';
+import { Inject, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { AppLoggerService } from '@server/logger';
 
@@ -26,6 +26,8 @@ export class AttemptSubmittedPublisher implements IEventHandler<AttemptSubmitted
 	async handle(event: AttemptSubmittedEvent) {
 		try {
 			const attemptedBy = await this.attemptRepository.getAttemptedUser(event.payload.attemptId);
+			if (!attemptedBy) throw new NotFoundException('Could not find user for the attempt');
+
 			const message: AttemptSubmittedIntegrationEvent = {
 				attemptId: event.payload.attemptId,
 				attemptedBy: attemptedBy,

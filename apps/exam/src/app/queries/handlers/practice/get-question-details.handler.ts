@@ -5,7 +5,12 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetQuestionDetailsQuery } from '../../practice/get-question-details.query';
-import { Inject, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
+import {
+	Inject,
+	NotFoundException,
+	OnModuleInit,
+	ServiceUnavailableException,
+} from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ClientGrpc } from '@nestjs/microservices';
 import { file } from '@server/generated';
@@ -30,6 +35,9 @@ export class GetQuestionDetailsQueryHandler
 	async execute(query: GetQuestionDetailsQuery): Promise<DetailedQuestionInfo> {
 		const payload = query.payload;
 		const question = await this.practiceReadRepository.getDetailedQuestionInfo(payload.questionId);
+
+		if (!question) throw new NotFoundException('Question not found');
+
 		const ids = new Set<string>();
 		for (const id of question.fileUrls) {
 			ids.add(id);

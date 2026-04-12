@@ -4,7 +4,7 @@ import { Attempt } from '../entities/attempt.entity';
 
 export interface IAttemptRepository {
 	findOne(id: string): Promise<Attempt | null>;
-	getAttemptedUser(attemptId: string): Promise<string>;
+	getAttemptedUser(attemptId: string): Promise<string | null>;
 	getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null>;
 	save(attempt: Attempt | AttemptConfig | AttemptEvaluator): Promise<void>;
 	deleteMany(ids: string[]): Promise<void>;
@@ -19,7 +19,7 @@ export interface IAttemptRepository {
 		questionContent: string;
 		questionTags: string[];
 		answer?: string[];
-	}>;
+	} | null>;
 	saveComment(responseId: string, comment: unknown): Promise<void>;
 }
 

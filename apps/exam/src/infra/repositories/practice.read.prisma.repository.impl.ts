@@ -17,7 +17,7 @@ import { type IPracticeReadRepository } from '../../domain/repositories/practice
 import { QuestionType, questionTypesThatShowChoices } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma-client/exam';
 import { SortDirection } from '@server/typing';
 
@@ -383,7 +383,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		return rows.map(r => ({ ...r, description: r.description ?? undefined }));
 	}
 
-	async getExamDetail(examId: string): Promise<DetailedExamInfo> {
+	async getExamDetail(examId: string): Promise<DetailedExamInfo | null> {
 		const [exam] = await this.txHost.tx.$queryRaw<
 			{
 				id: string;
@@ -426,9 +426,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
     `,
 		);
 
-		if (!exam) {
-			throw new NotFoundException(`Exam ${examId} not found`);
-		}
+		if (!exam) return null;
 
 		const sections = await this.txHost.tx.$queryRaw<
 			{
@@ -495,7 +493,10 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	async getExamStats(examId: string): Promise<ExamStatistics> {
+	async getExamStats(examId: string): Promise<ExamStatistics | null> {
+		const exam = await this.txHost.tx.exam.findUnique({ where: { id: examId } });
+		if (!exam) return null;
+
 		const [stats] = await this.txHost.tx.$queryRaw<
 			{
 				averageDuration: number;
@@ -574,7 +575,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	async getAttemptSavedData(attemptId: string): Promise<AttemptSavedData> {
+	async getAttemptSavedData(attemptId: string): Promise<AttemptSavedData | null> {
 		const attemptData = await this.txHost.tx.attempt.findUnique({
 			where: { id: attemptId, endedAt: null },
 			select: {
@@ -587,7 +588,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			},
 		});
 
-		if (!attemptData) throw new NotFoundException(`Attempt ${attemptId} not found`);
+		if (!attemptData) return null;
 
 		const sections = await this.txHost.tx.attemptSection.findMany({
 			where: { attemptId: attemptId },
@@ -714,7 +715,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	async getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData> {
+	async getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData | null> {
 		const attemptData = await this.txHost.tx.attempt.findUnique({
 			where: { id: attemptId, endedAt: { not: null } },
 			select: {
@@ -736,7 +737,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			},
 		});
 
-		if (!attemptData) throw new NotFoundException(`Attempt ${attemptId} not found`);
+		if (!attemptData) return null;
 
 		const sections = await this.txHost.tx.attemptSection.findMany({
 			where: { attemptId: attemptId },
@@ -874,7 +875,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 		};
 	}
 
-	async getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo> {
+	async getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo | null> {
 		const foundQuestion = await this.txHost.tx.question.findUnique({
 			where: { id: questionId },
 			select: {
@@ -908,7 +909,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 			},
 		});
 
-		if (!foundQuestion) throw new NotFoundException(`Question ${questionId} not found`);
+		if (!foundQuestion) return null;
 
 		if (foundQuestion.type === String(QuestionType.Writing))
 			foundQuestion.content = this.removeDescriptionBlock(foundQuestion.content);

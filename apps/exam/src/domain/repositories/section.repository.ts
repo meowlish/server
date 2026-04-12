@@ -7,6 +7,7 @@ export interface ISectionRepository {
 	findOneInTheSameExamAsQuestion(id: string, questionId: string): Promise<Section | null>;
 	// if we only move the order, we need to fetch the parent
 	getParentSectionOfSection(id: string): Promise<Section | null>;
+	// throw error if question doesn't exist
 	getParentSectionOfQuestion(id: string): Promise<Section>;
 	save(section: Section): Promise<void>;
 }

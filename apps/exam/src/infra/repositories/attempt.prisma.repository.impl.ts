@@ -13,7 +13,7 @@ import { IAttemptRepository } from '../../domain/repositories/attempt.repository
 import { QuestionType } from '../../enums/question-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { Injectable, MethodNotAllowedException, NotFoundException } from '@nestjs/common';
+import { Injectable, MethodNotAllowedException } from '@nestjs/common';
 import {
 	Prisma,
 	Attempt as PrismaAttempt,
@@ -150,13 +150,12 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		return AttemptPrismaMapper.toAttemptAggregate(foundAttempt, attemptQuestions);
 	}
 
-	async getAttemptedUser(attemptId: string): Promise<string> {
+	async getAttemptedUser(attemptId: string): Promise<string | null> {
 		const attempt = await this.txHost.tx.attempt.findUnique({
 			where: { id: attemptId },
 			select: { attemptedBy: true },
 		});
-		if (!attempt) throw new NotFoundException('Attempt not found');
-		return attempt.attemptedBy;
+		return attempt?.attemptedBy ?? null;
 	}
 
 	async getScoreEvaluator(attemptId: string): Promise<AttemptEvaluator | null> {
@@ -248,11 +247,7 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 		questionContent: string;
 		questionTags: string[];
 		answer?: string[];
-	}> {
-		const hasAttemptId = ((questionId?: string): questionId is string => {
-			return !!questionId;
-		})(questionId);
-
+	} | null> {
 		const response = await this.txHost.tx.attemptResponse.findUnique({
 			where: {
 				...(questionId ?
@@ -278,16 +273,16 @@ export class AttemptPrismaRepository implements IAttemptRepository {
 			},
 		});
 
-		if (!response) throw new NotFoundException('Response not found');
-
-		return {
-			attemptedBy: response.attempt.attemptedBy,
-			examId: response.attempt.exam.id,
-			examTags: response.attempt.exam.examTags.map(t => t.tag.name),
-			questionContent: response.question.content,
-			questionTags: response.question.questionTags.map(t => t.tag.name),
-			answer: response.answers,
-		};
+		return response ?
+				{
+					attemptedBy: response.attempt.attemptedBy,
+					examId: response.attempt.exam.id,
+					examTags: response.attempt.exam.examTags.map(t => t.tag.name),
+					questionContent: response.question.content,
+					questionTags: response.question.questionTags.map(t => t.tag.name),
+					answer: response.answers,
+				}
+			:	null;
 	}
 
 	async saveComment(responseId: string, comment: unknown): Promise<void> {

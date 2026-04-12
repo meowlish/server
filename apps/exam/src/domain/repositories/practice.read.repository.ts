@@ -10,11 +10,12 @@ import { UserStats } from '../read-models/practice/user-stats.read-model';
 import { SortDirection } from '@server/typing';
 
 export interface IPracticeReadRepository {
+	// if doesn't exist return default values
 	getUserStats(uid: string): Promise<UserStats>;
 	getUsersAttemptSummary(
 		uid: string,
 		range?: { from: Date; to: Date },
-	): Promise<AttemptHistorySummary>;
+	): Promise<AttemptHistorySummary | null>;
 	getUsersAttemptHistory(
 		uid: string,
 		options?: {
@@ -34,11 +35,11 @@ export interface IPracticeReadRepository {
 		};
 		limit?: number;
 	}): Promise<MinimalExamInfo[]>;
-	getExamDetail(examId: string): Promise<DetailedExamInfo>;
-	getExamStats(examId: string): Promise<ExamStatistics>;
-	getAttemptSavedData(attemptId: string): Promise<AttemptSavedData>;
-	getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData>;
-	getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo>;
+	getExamDetail(examId: string): Promise<DetailedExamInfo | null>;
+	getExamStats(examId: string): Promise<ExamStatistics | null>;
+	getAttemptSavedData(attemptId: string): Promise<AttemptSavedData | null>;
+	getAttemptReview(attemptId: string): Promise<DetailedAttemptReviewData | null>;
+	getDetailedQuestionInfo(questionId: string): Promise<DetailedQuestionInfo | null>;
 }
 
 export const IPracticeReadRepositoryToken = Symbol('IPracticeReadRepository');

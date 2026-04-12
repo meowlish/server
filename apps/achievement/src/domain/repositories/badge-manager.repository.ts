@@ -3,6 +3,7 @@ import { AttemptScoreBadgeManager } from '../entities/attempt-score-badge-manage
 import { LoginBadgeManager } from '../entities/login-badge-manager.entity';
 
 export interface IBadgeManagerRepository {
+	// get methods for managers automatically create if not exist
 	getAttemptCounterBadgeManager(uid: string): Promise<AttemptCounterBadgeManager>;
 	saveAttemptCounterBadgeManager(manager: AttemptCounterBadgeManager): Promise<void>;
 	getAttemptScoreBadgeManager(uid: string): Promise<AttemptScoreBadgeManager>;

@@ -11,7 +11,7 @@ import { IIdentityRepository } from '../../domain/repositories/identity.reposito
 import { LoginType } from '../../enums/login-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import {
 	Prisma,
 	PrismaClient,
@@ -108,7 +108,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 	async getClaimsOfId(
 		id: string,
 		deleted = false,
-	): Promise<{ roles: Role[]; permissions: Permission[] }> {
+	): Promise<{ roles: Role[]; permissions: Permission[] } | null> {
 		const foundIdentity = await this.txHost.tx.identity.findUnique({
 			where: { id: id, deletedAt: deleted ? { not: null } : null },
 			include: {
@@ -117,8 +117,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 				},
 			},
 		});
-		if (!foundIdentity)
-			throw new NotFoundException(`Could not get claims of ${id}, no matching results.`);
+		if (!foundIdentity) return null;
 		return {
 			roles: foundIdentity.identityRoles.map(rIdentityRole =>
 				IdentityPrismaMapper.mapRole(rIdentityRole.role.name),

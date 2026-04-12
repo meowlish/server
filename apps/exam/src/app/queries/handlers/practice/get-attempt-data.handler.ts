@@ -5,7 +5,7 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetAttemptDataQuery } from '../../practice/get-attempt-data.query';
-import { Inject, ServiceUnavailableException } from '@nestjs/common';
+import { Inject, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ClientGrpc } from '@nestjs/microservices';
 import { file } from '@server/generated';
@@ -28,6 +28,9 @@ export class GetAttemptDataQueryHandler implements IQueryHandler<GetAttemptDataQ
 	async execute(query: GetAttemptDataQuery): Promise<AttemptSavedData> {
 		const payload = query.payload;
 		const data = await this.practiceReadRepository.getAttemptSavedData(payload.attemptId);
+
+		if (!data) throw new NotFoundException('Attempt not found');
+
 		const ids = new Set<string>();
 		this.treeVisitor(data.sections, this.collectFileIds.bind(this), ids);
 		try {

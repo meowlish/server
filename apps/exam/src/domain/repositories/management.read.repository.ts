@@ -20,9 +20,9 @@ export interface IManagementReadRepository {
 		lastId?: string;
 		limit?: number;
 	}): Promise<ExamManagementMinimalInfo[]>;
-	getExamDetail(examId: string): Promise<ExamManagementDetailedInfo>;
-	getSectionDetail(sectionId: string): Promise<SectionManagementInfo>;
-	getQuestionDetail(questionId: string): Promise<QuestionManagementInfo>;
+	getExamDetail(examId: string): Promise<ExamManagementDetailedInfo | null>;
+	getSectionDetail(sectionId: string): Promise<SectionManagementInfo | null>;
+	getQuestionDetail(questionId: string): Promise<QuestionManagementInfo | null>;
 }
 
 export const IManagementReadRepositoryToken = Symbol('IManagementReadRepository');
