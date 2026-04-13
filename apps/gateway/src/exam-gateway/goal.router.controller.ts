@@ -1,4 +1,4 @@
-import { AuthenticatedRequest } from '../types/authenticated-request';
+import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { EXAM_CLIENT } from './constants/exam';
 import { SetGoalDto } from './dtos/req/goal/set-goal.req.dto';
 import { UpdateGoalDto } from './dtos/req/goal/update-goal.req.dto';
