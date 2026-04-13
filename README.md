@@ -1,37 +1,37 @@
-# server
+# English Application Server
 
-This repo requires three separate environment files:
+## How to Run in Development Mode
 
-- `.env.development.local` → Development environment
-- `.env` → Production environment
-- `.env.test.local` → Test environment
+**Step 1:** Check the `docker` folder, especially the `docker-compose` files.
+The `Dockerfile` has **not** been updated. Start the required services using Docker.
+
+**Step 2:** Install dependencies:
+
+```
+pnpm install
+```
+
+**Step 3:** Create environment variables according to the `.env.example` files in each service.
+
+**Step 4:** Start the development servers:
+
+```
+nx run-many -t serve
+```
 
 ---
 
-## Scripts
+## Additional Commands
 
-### Application
+There are other common project commands available, such as:
 
-| Script        | Description                                                                                                              |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `start`       | Run the built application (`node dist/main`). Doesn't specify env-file because it's implied they are passed before this. |
-| `start:dev`   | Run NestJS in development mode using `.env.development.local` with watch and SWC builder.                                |
-| `start:debug` | Run NestJS in development mode with debugger enabled.                                                                    |
-| `start:stage` | Run the built app with `.env.development.local` (staging-like environment).                                              |
-| `start:prod`  | Run the built app with `.env`.                                                                                           |
+- `prisma:push`
+- `prisma:generate`
 
-### Docker
+Check the `project.json` file in each project folder for more details, or run:
 
-| Script          | Description                                                                                                |
-| --------------- | ---------------------------------------------------------------------------------------------------------- |
-| `docker:db:dev` | Start the Postgres database container in development mode using `.env.development.local`.                  |
-| `docker:test`   | Start all containers for testing using `.env.test.local` and the `docker-compose.test.override.yaml` file. |
+```
+nx graph
+```
 
-### Prisma
-
-| Script                | Description                                                                |
-| --------------------- | -------------------------------------------------------------------------- |
-| `prisma:generate`     | Generate Prisma client based on the schema.                                |
-| `prisma:migrate:dev`  | Run migrations in development using `.env.development.local`.              |
-| `prisma:push:dev`     | Push the Prisma schema to the dev database using `.env.development.local`. |
-| `prisma:migrate:prod` | Apply migrations to production database using `.env`.                      |
+to visualize the project structure.
