@@ -34,7 +34,6 @@ import {
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { exam } from '@server/generated';
-import { query } from 'winston';
 
 @Controller('practice')
 export class ExamPracticeGatewayController implements OnModuleInit {

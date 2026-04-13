@@ -1,4 +1,3 @@
-import { Goal } from '../../../domain/entities/goal.entity';
 import { WritingSubmittedEvent } from '../../../domain/events/writing-submitted';
 import {
 	type IAttemptRepository,
