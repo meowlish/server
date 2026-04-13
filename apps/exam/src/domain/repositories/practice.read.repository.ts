@@ -15,7 +15,7 @@ export interface IPracticeReadRepository {
 	getUsersAttemptSummary(
 		uid: string,
 		range?: { from: Date; to: Date },
-	): Promise<AttemptHistorySummary | null>;
+	): Promise<AttemptHistorySummary>;
 	getUsersAttemptHistory(
 		uid: string,
 		options?: {

@@ -3,7 +3,7 @@ import {
 	IPracticeReadRepositoryToken,
 } from '../../../../domain/repositories/practice.read.repository';
 import { GetUserCalendarQuery, UsersCalendar } from '../../practice/get-user-calendar.query';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 @QueryHandler(GetUserCalendarQuery)

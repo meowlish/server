@@ -1,5 +1,5 @@
 import {
-	IAttemptRepository,
+	type IAttemptRepository,
 	IAttemptRepositoryToken,
 } from '../../../domain/repositories/attempt.repository';
 import {
