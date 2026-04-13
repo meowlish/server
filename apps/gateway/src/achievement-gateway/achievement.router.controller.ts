@@ -15,9 +15,12 @@ import {
 	SerializeOptions,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { achievement } from '@server/generated';
+import { ApiResponseEntity } from '@server/utils';
 import { Observable } from 'rxjs';
 
+@ApiTags('Achievements')
 @Controller('badges')
 export class AchievementGatewayController implements OnModuleInit {
 	private achievementService!: achievement.AchievementServiceClient;
@@ -33,12 +36,17 @@ export class AchievementGatewayController implements OnModuleInit {
 
 	@Get()
 	@IsPublic()
+	@ApiOperation({ summary: 'Get all available badges' })
+	@ApiResponseEntity(FoundBadgesDto)
 	@SerializeOptions({ type: FoundBadgesDto })
 	getAllBadges(): Observable<FoundBadgesDto> {
 		return this.achievementService.getAll({});
 	}
 
 	@Get('my')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get the authenticated user badges' })
+	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
 	getMyBadges(
 		@Query() body: GetUsersBadgesDto,
@@ -49,6 +57,8 @@ export class AchievementGatewayController implements OnModuleInit {
 
 	@Get(':uid')
 	@IsPublic()
+	@ApiOperation({ summary: 'Get badges earned by a specific user' })
+	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
 	getSomeonesBadges(
 		@Query() body: GetUsersBadgesDto,

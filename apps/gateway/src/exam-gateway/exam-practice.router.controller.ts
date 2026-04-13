@@ -33,8 +33,12 @@ import {
 	SerializeOptions,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { exam } from '@server/generated';
+import { ApiEmptyResponseEntity, ApiResponseEntity } from '@server/utils';
 
+@ApiBearerAuth()
+@ApiTags('Exam Practice')
 @Controller('practice')
 export class ExamPracticeGatewayController implements OnModuleInit {
 	private examPracticeService!: exam.ExamPracticeServiceClient;
@@ -48,6 +52,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Post(':id')
+	@ApiOperation({ summary: 'Start a practice attempt for an exam' })
+	@ApiResponseEntity(CreatedAttemptDto)
 	@SerializeOptions({ type: CreatedAttemptDto })
 	attempt(@Req() req: AuthenticatedRequest, @Param('id') examId: string, @Body() body: AttemptDto) {
 		const res = this.examPracticeService.attempt({ ...body, examId: examId, userId: req.user.sub });
@@ -55,12 +61,16 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Post('attempt/:id/submit')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Submit an attempt' })
 	endAttempt(@Param('id') id: string) {
 		const res = this.examPracticeService.endAttempt({ attemptId: id });
 		return res;
 	}
 
 	@Post('attempt/:id/answers/:questionId')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Answer a question in an attempt' })
 	answer(
 		@Param('id') id: string,
 		@Param('questionId') questionId: string,
@@ -71,6 +81,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Delete('attempt/:id/answers/:questionId')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Remove an answer from a question in an attempt' })
 	removeAnswer(
 		@Param('id') id: string,
 		@Param('questionId') questionId: string,
@@ -85,6 +97,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Patch('attempt/:id/answers/:questionId/flag')
+	@ApiOperation({ summary: 'Toggle question flag state' })
+	@ApiResponseEntity(FlagStateDto)
 	@SerializeOptions({ type: FlagStateDto })
 	toggleFlag(@Param('id') id: string, @Param('questionId') questionId: string) {
 		const res = this.examPracticeService.toggleFlag({
@@ -95,6 +109,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Patch('attempt/:id/answers/:questionId/note')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Add or update a note for a question' })
 	addNote(
 		@Param('id') id: string,
 		@Param('questionId') questionId: string,
@@ -109,6 +125,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get()
+	@ApiOperation({ summary: 'Find exams available for practice' })
+	@ApiResponseEntity(ExamsInfoDto)
 	@SerializeOptions({ type: ExamsInfoDto, strategy: 'exposeAll' })
 	findExams(@Query() query: FindExamsDto) {
 		const res = this.examPracticeService.findExams(query);
@@ -116,6 +134,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get(':id/details')
+	@ApiOperation({ summary: 'Get exam details for practice' })
+	@ApiResponseEntity(ExamDetailDto)
 	@SerializeOptions({ type: ExamDetailDto, strategy: 'exposeAll' })
 	getExamDetails(@Param('id') examId: string) {
 		const res = this.examPracticeService.getExamDetails({ examId: examId });
@@ -123,6 +143,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('questions/:id/details')
+	@ApiOperation({ summary: 'Get detailed question information for practice' })
+	@ApiResponseEntity(QuestionDetailDto)
 	@SerializeOptions({ type: QuestionDetailDto, strategy: 'exposeAll' })
 	getDetailedQuestionInfo(@Param('id') questionId: string) {
 		const res = this.examPracticeService.getDetailedQuestionInfo({ questionId: questionId });
@@ -130,6 +152,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get(':id/stats')
+	@ApiOperation({ summary: 'Get aggregate exam statistics' })
+	@ApiResponseEntity(ExamStatsDto)
 	@SerializeOptions({ type: ExamStatsDto, strategy: 'exposeAll' })
 	getExamStats(@Param('id') examId: string) {
 		const res = this.examPracticeService.getExamStats({ examId: examId });
@@ -137,6 +161,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('attempt/:id/saved')
+	@ApiOperation({ summary: 'Get saved attempt data' })
+	@ApiResponseEntity(AttemptDataDto)
 	@SerializeOptions({ type: AttemptDataDto, strategy: 'exposeAll' })
 	getAttemptSavedData(@Param('id') attemptId: string) {
 		const res = this.examPracticeService.getAttemptSavedData({ attemptId: attemptId });
@@ -144,6 +170,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('attempt/:id/review')
+	@ApiOperation({ summary: 'Get attempt review data' })
+	@ApiResponseEntity(AttemptReviewDto)
 	@SerializeOptions({ type: AttemptReviewDto, strategy: 'exposeAll' })
 	getAttemptReview(@Param('id') attemptId: string) {
 		const res = this.examPracticeService.getAttemptReview({ attemptId: attemptId });
@@ -151,6 +179,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('my/calendar')
+	@ApiOperation({ summary: 'Get the authenticated user practice calendar' })
+	@ApiResponseEntity(UserCalendarDto)
 	@SerializeOptions({ type: UserCalendarDto, strategy: 'exposeAll' })
 	getUsersAttemptSummary(@Req() request: AuthenticatedRequest, @Query() query: GetUserCalendarDto) {
 		const res = this.examPracticeService.getUsersAttemptSummary({
@@ -161,6 +191,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('my/history')
+	@ApiOperation({ summary: 'Get the authenticated user attempt history' })
+	@ApiResponseEntity(AttemptsHistoryDto)
 	@SerializeOptions({ type: AttemptsHistoryDto, strategy: 'exposeAll' })
 	getUsersAttemptHistory(
 		@Req() request: AuthenticatedRequest,
@@ -174,6 +206,8 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('my/stats')
+	@ApiOperation({ summary: 'Get the authenticated user practice stats' })
+	@ApiResponseEntity(UserStatsDto)
 	@SerializeOptions({ type: UserStatsDto, strategy: 'exposeAll' })
 	getUsesStats(@Req() request: AuthenticatedRequest) {
 		const res = this.examPracticeService.getUsersAttemptHistory({ uid: request.user.sub });

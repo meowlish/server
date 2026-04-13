@@ -3,9 +3,13 @@ import { GetPresignedUrlDto } from './dtos/req/get-presigned-url.req.dto';
 import { PresignedUrlResponseDto } from './dtos/res/presigned-url.res.dto';
 import { Body, Controller, Inject, OnModuleInit, Post, SerializeOptions } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { file } from '@server/generated';
+import { ApiResponseEntity } from '@server/utils';
 import { Observable } from 'rxjs';
 
+@ApiBearerAuth()
+@ApiTags('Files')
 @Controller()
 export class FileGatewayController implements OnModuleInit {
 	private fileService!: file.FileServiceClient;
@@ -17,6 +21,8 @@ export class FileGatewayController implements OnModuleInit {
 	}
 
 	@Post()
+	@ApiOperation({ summary: 'Create a presigned upload URL' })
+	@ApiResponseEntity(PresignedUrlResponseDto)
 	@SerializeOptions({ type: PresignedUrlResponseDto, strategy: 'exposeAll' })
 	getPresignedUrl(@Body() body: GetPresignedUrlDto): Observable<PresignedUrlResponseDto> {
 		return this.fileService.getPresignedUrl(body);

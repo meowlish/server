@@ -2,6 +2,8 @@ import { GatewayModule } from './gateway.module';
 import { INestApplicationContext, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { apiReference } from '@scalar/nestjs-api-reference';
 import { AppLoggerService } from '@server/logger';
 import 'reflect-metadata';
 
@@ -21,6 +23,16 @@ async function bootstrap() {
 	});
 	gatewayModule.enableCors();
 	useLogger(gatewayModule);
+
+	const docConfig = new DocumentBuilder().setVersion('1').build();
+	const document = SwaggerModule.createDocument(gatewayModule, docConfig);
+	gatewayModule.use(
+		'/reference',
+		apiReference({
+			content: document,
+		}),
+	);
+
 	await gatewayModule.listen(process.env.PORT ?? 3000, process.env.HOST ?? '127.0.0.1');
 }
 

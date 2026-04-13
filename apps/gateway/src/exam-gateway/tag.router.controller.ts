@@ -16,10 +16,14 @@ import {
 	SerializeOptions,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { exam } from '@server/generated';
 import { Role } from '@server/typing';
+import { ApiEmptyResponseEntity, ApiResponseEntity } from '@server/utils';
 
 @HasRoles(Role.Mod, Role.Admin)
+@ApiBearerAuth()
+@ApiTags('Tags')
 @Controller('tags')
 export class TagGatewayController implements OnModuleInit {
 	private tagService!: exam.TagServiceClient;
@@ -31,22 +35,30 @@ export class TagGatewayController implements OnModuleInit {
 	}
 
 	@Post()
+	@ApiOperation({ summary: 'Create a tag' })
+	@ApiResponseEntity(AddedTagDto)
 	@SerializeOptions({ type: AddedTagDto })
 	addTag(@Body() body: AddTagDto) {
 		return this.tagService.addTag(body);
 	}
 
 	@Delete(':id')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Delete a tag' })
 	deleteTag(@Param('id') id: string) {
 		return this.tagService.deleteTag({ id: id });
 	}
 
 	@Post(':id/move')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Move a tag under another parent' })
 	moveTag(@Body() body: MoveTagDto, @Param('id') id: string) {
 		return this.tagService.moveTag({ ...body, id: id });
 	}
 
 	@Patch(':id')
+	@ApiEmptyResponseEntity()
+	@ApiOperation({ summary: 'Rename a tag' })
 	updateTag(@Body() body: UpdateTagDto, @Param('id') id: string) {
 		return this.tagService.updateTag({ ...body, id: id });
 	}

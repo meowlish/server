@@ -9,3 +9,4 @@ export * from './interceptors';
 export * from './pipes';
 export * from './types';
 export * from './configs';
+export * from './decorators';
