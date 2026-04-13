@@ -1,6 +1,7 @@
 import { EXAM_CLIENT } from './constants/exam';
 import { ExamManagementGatewayController } from './exam-management.router.controller';
 import { ExamPracticeGatewayController } from './exam-practice.router.controller';
+import { GoalGatewayController } from './goal.router.controller';
 import { TagGatewayController } from './tag.router.controller';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { Module } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { ErrorHandlingGrpcProxy } from '@server/utils';
 		ExamManagementGatewayController,
 		ExamPracticeGatewayController,
 		TagGatewayController,
+		GoalGatewayController,
 	],
 	providers: [
 		{

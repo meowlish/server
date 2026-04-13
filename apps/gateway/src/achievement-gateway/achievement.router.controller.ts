@@ -5,12 +5,12 @@ import { GetUsersBadgesDto } from './dtos/req/get-users-badges.req.dto';
 import { FoundBadgesDto } from './dtos/res/found-badges.res.dto';
 import { FoundUsersBadgesDto } from './dtos/res/found-users-badges.res.dto';
 import {
-	Body,
 	Controller,
 	Get,
 	Inject,
 	OnModuleInit,
 	Param,
+	Query,
 	Req,
 	SerializeOptions,
 } from '@nestjs/common';
@@ -41,7 +41,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@Get('my')
 	@SerializeOptions({ type: FoundUsersBadgesDto })
 	getMyBadges(
-		@Body() body: GetUsersBadgesDto,
+		@Query() body: GetUsersBadgesDto,
 		@Req() req: AuthenticatedRequest,
 	): Observable<FoundUsersBadgesDto> {
 		return this.achievementService.getUsersBadges({ ...body, userId: req.user.sub });
@@ -51,7 +51,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@IsPublic()
 	@SerializeOptions({ type: FoundUsersBadgesDto })
 	getSomeonesBadges(
-		@Body() body: GetUsersBadgesDto,
+		@Query() body: GetUsersBadgesDto,
 		@Param('uid') uid: string,
 	): Observable<FoundUsersBadgesDto> {
 		return this.achievementService.getUsersBadges({ ...body, userId: uid });

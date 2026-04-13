@@ -1,7 +1,6 @@
-import { exam } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
-export class AttemptDataDto implements exam.AttemptSavedData {
+export class AttemptDataDto {
 	@Expose()
 	durationLimit!: number;
 
@@ -17,7 +16,7 @@ export class AttemptDataDto implements exam.AttemptSavedData {
 	startedAt!: Date;
 }
 
-class SectionDataDto implements exam.AttemptSavedData_AttemptSectionData {
+class SectionDataDto {
 	@Expose()
 	directive!: string;
 
@@ -45,7 +44,7 @@ class SectionDataDto implements exam.AttemptSavedData_AttemptSectionData {
 	type!: string;
 }
 
-class QuestionDataDto implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData {
+class QuestionDataDto {
 	@Expose()
 	@Type(() => ChoiceDataDto)
 	choices!: ChoiceDataDto[];
@@ -66,9 +65,7 @@ class QuestionDataDto implements exam.AttemptSavedData_AttemptSectionData_Attemp
 	type!: string;
 }
 
-class ChoiceDataDto
-	implements exam.AttemptSavedData_AttemptSectionData_AttemptQuestionData_AttemptChoiceData
-{
+class ChoiceDataDto {
 	@Expose()
 	content?: string;
 
@@ -76,7 +73,7 @@ class ChoiceDataDto
 	key!: string;
 }
 
-class ResponseDataDto implements exam.AttemptSavedData_AttemptSavedResponse {
+class ResponseDataDto {
 	@Expose()
 	answers!: string[];
 

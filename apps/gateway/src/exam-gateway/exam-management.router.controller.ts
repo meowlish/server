@@ -5,6 +5,7 @@ import { EXAM_CLIENT } from './constants/exam';
 import { CreateExamDto } from './dtos/req/management/create-exam.req.dto';
 import { CreateQuestionDto } from './dtos/req/management/create-question.req.dto';
 import { CreateSectionDto } from './dtos/req/management/create-section.req.dto';
+import { FindExamsForManagentDto } from './dtos/req/management/find-exams.req.dto';
 import { MoveQuestionDto } from './dtos/req/management/move-question.req.dto';
 import { MoveSectionDto } from './dtos/req/management/move-section.req.dto';
 import { ReviewExamDto } from './dtos/req/management/review-exam.req.dto';
@@ -14,15 +15,21 @@ import { UpdateSectionDto } from './dtos/req/management/update-section.req.dto';
 import { CreatedExamDto } from './dtos/res/management/created-exam.res.dto';
 import { CreatedQuestionDto } from './dtos/res/management/created-question.res.dto';
 import { CreatedSectionDto } from './dtos/res/management/created-section.res.dto';
+import { ExamDetailedManagementInfoDto } from './dtos/res/management/exam.res.dto';
+import { ExamsManagementInfoDto } from './dtos/res/management/exams.res.dto';
+import { QuestionManagementInfoDto } from './dtos/res/management/question.res.dto';
+import { SectionManagementInfoDto } from './dtos/res/management/sections.res.dto';
 import {
 	Body,
 	Controller,
 	Delete,
+	Get,
 	Inject,
 	OnModuleInit,
 	Param,
 	Patch,
 	Post,
+	Query,
 	Req,
 	SerializeOptions,
 } from '@nestjs/common';
@@ -123,6 +130,34 @@ export class ExamManagementGatewayController implements OnModuleInit {
 	@HasPermissions(Permission.EXAM_APPROVE)
 	reviewExam(@Param('id') id: string, @Body() body: ReviewExamDto) {
 		const res = this.examManagementService.reviewExam({ ...body, id: id });
+		return res;
+	}
+
+	@Get('exams')
+	@SerializeOptions({ type: ExamsManagementInfoDto, strategy: 'exposeAll' })
+	findExams(@Query() query: FindExamsForManagentDto) {
+		const res = this.examManagementService.findExams(query);
+		return res;
+	}
+
+	@Get('exams/:id')
+	@SerializeOptions({ type: ExamDetailedManagementInfoDto, strategy: 'exposeAll' })
+	getExamDetails(@Param('id') examId: string) {
+		const res = this.examManagementService.getExamDetails({ examId: examId });
+		return res;
+	}
+
+	@Get('sections/:id')
+	@SerializeOptions({ type: SectionManagementInfoDto, strategy: 'exposeAll' })
+	getSectionDetails(@Param('id') sectionId: string) {
+		const res = this.examManagementService.getSectionDetails({ sectionId: sectionId });
+		return res;
+	}
+
+	@Get('questions/:id')
+	@SerializeOptions({ type: QuestionManagementInfoDto, strategy: 'exposeAll' })
+	getQuestionDetails(@Param('id') questionId: string) {
+		const res = this.examManagementService.getQuestionDetails({ questionId: questionId });
 		return res;
 	}
 }
