@@ -8,7 +8,7 @@ import { LoginType } from '../../../enums/login-type.enum';
 import { Tokens } from '../../../types/tokens.type';
 import { TokenService } from '../../services/token.service';
 import { MailRegisterCommand } from '../auth.mail-register.command';
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(MailRegisterCommand)
