@@ -68,6 +68,8 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password}
     volumes:
       - rabbitmq_data:/data
+    networks:
+      - api-network
 
 networks:
   api-network:
