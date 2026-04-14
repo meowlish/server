@@ -75,6 +75,7 @@ export class FindExamsForManagentDto {
 	@ApiPropertyOptional({ type: () => FilterOptionsDto })
 	filter?: FilterOptionsDto;
 
+	@Type(() => Number)
 	@IsNumber()
 	@IsOptional()
 	@ApiPropertyOptional({ type: Number })

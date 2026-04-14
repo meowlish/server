@@ -32,6 +32,7 @@ export class GetUsersAttemptHistoryDto {
 	@ApiPropertyOptional()
 	cursor?: string;
 
+	@Type(() => Number)
 	@IsNumber()
 	@IsOptional()
 	@IsPositive()

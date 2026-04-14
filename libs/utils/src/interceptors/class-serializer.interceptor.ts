@@ -7,7 +7,7 @@ export class GlobalClassSerializerInterceptor extends ClassSerializerInterceptor
 		super(reflector, {
 			excludeExtraneousValues: true,
 			exposeUnsetFields: true,
-			enableImplicitConversion: true,
+			enableImplicitConversion: false,
 			strategy: 'excludeAll',
 		});
 	}

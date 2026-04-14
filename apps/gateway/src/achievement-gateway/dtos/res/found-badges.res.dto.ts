@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class BadgeDto {
 	@Expose()
@@ -17,6 +17,7 @@ export class BadgeDto {
 
 export class FoundBadgesDto {
 	@Expose()
+	@Type(() => BadgeDto)
 	@ApiProperty({ type: () => [BadgeDto] })
 	badges!: BadgeDto[];
 }

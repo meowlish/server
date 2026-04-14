@@ -53,6 +53,7 @@ export class FindExamsDto {
 	@ApiPropertyOptional()
 	cursor?: string;
 
+	@Type(() => Number)
 	@IsNumber()
 	@IsOptional()
 	@IsPositive()

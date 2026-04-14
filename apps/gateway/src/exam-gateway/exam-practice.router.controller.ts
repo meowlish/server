@@ -1,3 +1,4 @@
+import { IsPublic } from '../auth/decorators/public.decorator';
 import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { EXAM_CLIENT } from './constants/exam';
 import { AddNoteDto } from './dtos/req/practice/add-note.req.dto';
@@ -125,6 +126,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get()
+	@IsPublic()
 	@ApiOperation({ summary: 'Find exams available for practice' })
 	@ApiResponseEntity(ExamsInfoDto)
 	@SerializeOptions({ type: ExamsInfoDto, strategy: 'exposeAll' })
@@ -134,6 +136,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get(':id/details')
+	@IsPublic()
 	@ApiOperation({ summary: 'Get exam details for practice' })
 	@ApiResponseEntity(ExamDetailDto)
 	@SerializeOptions({ type: ExamDetailDto, strategy: 'exposeAll' })
@@ -143,6 +146,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get('questions/:id/details')
+	@IsPublic()
 	@ApiOperation({ summary: 'Get detailed question information for practice' })
 	@ApiResponseEntity(QuestionDetailDto)
 	@SerializeOptions({ type: QuestionDetailDto, strategy: 'exposeAll' })
@@ -152,6 +156,7 @@ export class ExamPracticeGatewayController implements OnModuleInit {
 	}
 
 	@Get(':id/stats')
+	@IsPublic()
 	@ApiOperation({ summary: 'Get aggregate exam statistics' })
 	@ApiResponseEntity(ExamStatsDto)
 	@SerializeOptions({ type: ExamStatsDto, strategy: 'exposeAll' })

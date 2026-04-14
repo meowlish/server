@@ -24,7 +24,7 @@ async function bootstrap() {
 	gatewayModule.enableCors();
 	useLogger(gatewayModule);
 
-	const docConfig = new DocumentBuilder().setVersion('1').build();
+	const docConfig = new DocumentBuilder().setVersion('1').addBearerAuth().build();
 	const document = SwaggerModule.createDocument(gatewayModule, docConfig);
 	gatewayModule.use(
 		'/reference',

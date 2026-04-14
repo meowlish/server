@@ -1,6 +1,6 @@
 import { BadgeDto } from './found-badges.res.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class UserBadgeDto extends BadgeDto {
 	@Expose()
@@ -14,6 +14,7 @@ export class UserBadgeDto extends BadgeDto {
 
 export class FoundUsersBadgesDto {
 	@Expose()
+	@Type(() => UserBadgeDto)
 	@ApiProperty({ type: () => [UserBadgeDto] })
 	badges!: UserBadgeDto[];
 
