@@ -1,0 +1,9 @@
+model AttemptCriteria {
+  uid     String @id
+  version Int    @default(0)
+  total   Int    @default(0)
+  perfect Int    @default(0)
+  good    Int    @default(0)
+
+  @@map("attempt_criteria")
+}

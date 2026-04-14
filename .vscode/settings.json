@@ -1,0 +1,51 @@
+{
+	"files.eol": "\n",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"prettier.configPath": ".prettierrc",
+	"eslint.useFlatConfig": true,
+	"eslint.validate": ["typescript"],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.tsdk.promptToUseWorkspaceVersion": true,
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[dockerfile]": {
+		"editor.defaultFormatter": "ms-vscode-remote.remote-containers"
+	},
+	"[dockercompose]": {
+		"editor.defaultFormatter": "ms-vscode-remote.remote-containers"
+	},
+	"[yaml]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
+	"[prisma]": {
+		"editor.defaultFormatter": "Prisma.prisma",
+		"editor.tabSize": 2
+	},
+	"[github-actions-workflow]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	},
+	"files.associations": {
+		"*.y*ml": "yaml"
+	},
+	"files.insertFinalNewline": true,
+	"files.trimTrailingWhitespace": true,
+	"material-icon-theme.folders.associations": {
+		"entities": "Class",
+		"entity": "Class",
+		"dto": "Messages",
+		"dtos": "Messages"
+	},
+	"material-icon-theme.activeIconPack": "nest",
+	"prisma.pinToPrisma6": true
+}

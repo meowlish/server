@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+package auth;
+
+service AuthService {
+	rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
+	rpc LoginMail(LoginMailDto) returns (Tokens) {}
+	rpc Refresh(RefreshDto) returns (Tokens) {}
+	rpc ValidateRefresh(ValidateRefreshDto) returns (Claims) {}
+	rpc ValidateAccess(ValidateAccessDto) returns (google.protobuf.Empty) {}
+	rpc LogOutAll(LogOutAllDto) returns (google.protobuf.Empty) {}
+}
+
+// Request
+message RegisterMailDto {
+	google.protobuf.StringValue username = 1;
+	google.protobuf.StringValue mail     = 2;
+	google.protobuf.StringValue password = 3;
+}
+
+message LoginMailDto {
+	google.protobuf.StringValue mail     = 1;
+	google.protobuf.StringValue password = 2;
+}
+
+message RefreshDto {
+	google.protobuf.StringValue identity_id = 1;
+}
+
+message ValidateRefreshDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.Int32Value  iat         = 2;
+}
+
+message ValidateAccessDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.Int32Value  iat         = 2;
+}
+
+message LogOutAllDto {
+	google.protobuf.StringValue identity_id = 1;
+}
+
+// Response
+message Tokens {
+	string          access_token  = 1;
+	optional string refresh_token = 2;
+}
+
+message Identity {
+	string          id       = 1;
+	string          username = 2;
+	repeated string roles    = 3;
+}
+
+message Role {
+	string          id          = 1;
+	string          name        = 2;
+	repeated string permissions = 3;
+}
+
+message Claims {
+	string          sub         = 1;
+	repeated string roles       = 2;
+	repeated string permissions = 3;
+}

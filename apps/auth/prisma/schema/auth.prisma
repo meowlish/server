@@ -1,0 +1,65 @@
+model Credential {
+  id         String   @id @default(uuid())
+  identityId String   @map("identity_id")
+  identifier String   @db.VarChar(255)
+  secretHash String?  @map("secret_hash") @db.VarChar(255)
+  loginType  String   @map("login_type")
+  identity   Identity @relation(fields: [identityId], references: [id])
+
+  @@unique([identifier, loginType])
+  @@index([identifier, loginType])
+  @@map("credentials")
+}
+
+model Identity {
+  id            String         @id @default(uuid())
+  version       Int            @default(0)
+  username      String
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  deletedAt     DateTime?      @map("deleted_at")
+  credentials   Credential[]
+  identityRoles IdentityRole[]
+
+  @@unique([username])
+  @@map("identities")
+}
+
+model IdentityRole {
+  identityId String @map("identity_id")
+  roleId     String @map("role_id")
+
+  role     Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  identity Identity @relation(fields: [identityId], references: [id], onDelete: Cascade)
+
+  @@id([identityId, roleId])
+  @@map("identity_roles")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String           @db.VarChar(255)
+  rolePermissions RolePermission[]
+  identityRoles   IdentityRole[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("roles_permissions")
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  name            String           @db.VarChar(255)
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}

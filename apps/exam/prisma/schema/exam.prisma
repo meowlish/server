@@ -1,0 +1,91 @@
+model Exam {
+  id          String   @id @default(uuid())
+  createdBy   String   @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  version     Int      @default(0)
+  title       String
+  description String?
+  status      String
+  // duration in seconds
+  duration    Int
+
+  sections     Section[]
+  examAttempts Attempt[]
+  examTags     ExamTag[]
+
+  @@index([status])
+  @@index([version])
+  @@index([updatedAt, id])
+  @@map("exams")
+}
+
+model Section {
+  id          String  @id @default(uuid())
+  examId      String  @map("exam_id")
+  parentId    String? @map("parent_id")
+  name        String?
+  directive   String  @default("")
+  order       Int
+  contentType String  @default("SECTION") @map("content_type")
+
+  exam          Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  parentSection Section?   @relation("SectionParent", fields: [parentId], references: [id], onDelete: Cascade)
+  questions     Question[]
+
+  ancestors       SectionClosure[] @relation("Descendants")
+  descendants     SectionClosure[] @relation("Ancestors")
+  childSections   Section[]        @relation("SectionParent")
+  attemptSections AttemptSection[]
+  sectionFiles    SectionFile[]
+  sectionTags     SectionTag[]
+
+  @@index([examId])
+  @@map("sections")
+}
+
+model SectionClosure {
+  ancestorId   String @map("ancestor_id")
+  descendantId String @map("descendant_id")
+  depth        Int
+
+  ancestor   Section @relation("Ancestors", fields: [ancestorId], references: [id], onDelete: Cascade)
+  descendant Section @relation("Descendants", fields: [descendantId], references: [id], onDelete: Cascade)
+
+  @@id([ancestorId, descendantId])
+  @@index([ancestorId])
+  @@index([descendantId])
+  @@map("section_closures")
+}
+
+model Question {
+  id          String @id @default(uuid())
+  sectionId   String @map("section_id")
+  content     String @default("")
+  type        String @default("MCQ")
+  points      Int    @default(1)
+  explanation String @default("")
+  order       Int
+
+  choices          Choice[]
+  section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  attemptResponses AttemptResponse[]
+  questionFiles    QuestionFile[]
+  questionTags     QuestionTag[]
+
+  @@index([sectionId])
+  @@map("questions")
+}
+
+model Choice {
+  id         String  @id @default(uuid())
+  key        String
+  content    String?
+  isCorrect  Boolean @map("is_correct")
+  questionId String  @map("question_id")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("choices")
+}

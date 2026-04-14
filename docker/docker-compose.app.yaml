@@ -1,0 +1,18 @@
+services:
+  api:
+    container_name: english-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - api-network
+
+volumes:
+  postgresql-data:

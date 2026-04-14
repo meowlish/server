@@ -1,0 +1,26 @@
+model SectionFile {
+  sectionId String   @map("section_id")
+  fileId    String   @map("file_id")
+  updatedAt DateTime @updatedAt
+
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([sectionId, fileId])
+  @@map("section_files")
+}
+
+model QuestionFile {
+  questionId String   @map("question_id")
+  fileId     String   @map("file_id")
+  updatedAt  DateTime @updatedAt
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, fileId])
+  @@map("question_files")
+}
+
+model DeletedFile {
+  fileId String @id @map("file_id")
+
+  @@map("deleted_files")
+}

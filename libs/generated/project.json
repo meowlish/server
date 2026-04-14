@@ -1,0 +1,19 @@
+{
+	"name": "generated",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/generated/src",
+	"projectType": "library",
+	"tags": [],
+	"// targets": "to see all targets run: nx show project generated --web",
+	"targets": {
+		"generate": {
+			"executor": "nx:run-commands",
+			"outputs": ["{projectRoot}/src"],
+			"inputs": ["{workspaceRoot}/proto/**/*.proto"],
+			"options": {
+				"command": "pnpm proto:gen:window"
+			}
+		},
+		"lint": { "executor": "nx:noop" }
+	}
+}

@@ -1,0 +1,8 @@
+model Goal {
+  uid    String   @id @default(uuid())
+  date   DateTime
+  target Int
+  type   String
+
+  @@map("goals")
+}

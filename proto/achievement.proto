@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package achievement;
+
+service AchievementService {
+	rpc GetAll(google.protobuf.Empty) returns(BadgesResponseDto) {}
+	rpc GetUsersBadges(UserBadgesRequestDto) returns(UserBadgesResponseDto) {}
+}
+
+message Badges {
+	string name         = 1;
+	string display_name = 2;
+	string description  = 3;
+}
+
+message UserBadges {
+	string                    id           = 1;
+	string                    name         = 2;
+	string                    display_name = 3;
+	string                    description  = 4;
+	google.protobuf.Timestamp date         = 5;
+}
+
+message BadgesResponseDto {
+	repeated Badges badges = 1;
+}
+
+message UserBadgesRequestDto {
+	google.protobuf.StringValue          user_id = 1;
+	optional google.protobuf.StringValue cursor  = 2;
+	optional google.protobuf.Int32Value  limit   = 3;
+}
+
+message UserBadgesResponseDto {
+	repeated UserBadges badges = 1;
+	optional string     cursor = 2;
+}

@@ -1,0 +1,65 @@
+model Attempt {
+  id            String    @id @default(uuid())
+  attemptedBy   String    @map("attempted_by")
+  examId        String    @map("exam_id")
+  startedAt     DateTime  @map("started_at")
+  endedAt       DateTime? @map("ended_at")
+  durationLimit Int       @map("duration_limit")
+  score         Int?
+  totalPoints   Int?      @map("total_points")
+  isStrict      Boolean   @map("is_strict")
+  order         Int // To ensure no 2 active attempts can co-exist (with same examId and userId), assign order = count(endedAt !== null)
+
+  exam             Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  attemptResponses AttemptResponse[]
+  attemptSections  AttemptSection[]
+
+  @@unique([examId, attemptedBy, order])
+  @@index([examId, attemptedBy, endedAt])
+  @@index([endedAt, id])
+  @@index([startedAt, id])
+  @@index([examId, id])
+  @@index([score, id])
+  @@index([attemptedBy])
+  @@index([examId])
+  @@map("attempts")
+}
+
+model AttemptSection {
+  attemptId String @map("attempt_id")
+  sectionId String @map("section_id")
+
+  attempt Attempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@id([attemptId, sectionId])
+  @@map("attempt_sections")
+}
+
+model AttemptResponse {
+  id         String   @id @default(uuid())
+  attemptId  String   @map("attempt_id")
+  questionId String   @map("question_id")
+  answers    String[]
+  isCorrect  Boolean? @map("is_correct")
+  isFlagged  Boolean  @default(false) @map("is_flagged")
+  note       String?
+
+  attempt     Attempt      @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question    Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  scorerDatas ScorerData[]
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@index([questionId])
+  @@map("attempt_responses")
+}
+
+model ScorerData {
+  responseId String @id @map("response_id")
+  comment    Json
+
+  response AttemptResponse @relation(fields: [responseId], references: [id])
+
+  @@map("scorer_data")
+}

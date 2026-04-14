@@ -1,0 +1,4 @@
+{
+	"entry": ["{apps,libs}/**/src/index.{ts,tsx}", "{apps,libs}/**/src/main.{ts,tsx}"],
+	"project": ["{apps,libs}/**/src/**/*.{ts,tsx}"]
+}

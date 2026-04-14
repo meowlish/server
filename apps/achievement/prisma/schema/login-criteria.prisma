@@ -1,0 +1,12 @@
+model LoginCriteria {
+  uid           String   @id
+  version       Int      @default(0)
+  longestStreak Int      @default(0) @map("longest_streak")
+  total         Int      @default(0)
+  startedAt     DateTime @map("started_at")
+  lastLogin     DateTime @map("last_login")
+
+  // if the new loginTime.date() - lastLogin.date() > 2 then reset the startedAt
+  // if the lastLogin.date() - startedAt.date() > longestStreak then update longestStreak
+  @@map("login_criteria")
+}

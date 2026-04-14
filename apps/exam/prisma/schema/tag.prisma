@@ -1,0 +1,52 @@
+model TagTableLock {
+  version Int @id @default(0)
+
+  @@map("tags_table_lock")
+}
+
+model Tag {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  lft          Int
+  rgt          Int
+  examTags     ExamTag[]
+  sectionTags  SectionTag[]
+  questionTags QuestionTag[]
+
+  @@index([lft, rgt])
+  @@index([name])
+  @@map("tags")
+}
+
+model ExamTag {
+  examId String @map("exam_id")
+  tagId  String @map("tag_id")
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([examId, tagId])
+  @@map("exam_tags")
+}
+
+model SectionTag {
+  sectionId String @map("section_id")
+  tagId     String @map("tag_id")
+
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([sectionId, tagId])
+  @@map("section_tags")
+}
+
+model QuestionTag {
+  questionId String @map("question_id")
+  tagId      String @map("tag_id")
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, tagId])
+  @@map("question_tags")
+}

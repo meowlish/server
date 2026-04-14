@@ -1,0 +1,22 @@
+model UserBadge {
+  id        String @id @default(uuid())
+  uid       String
+  badgeName String @map("badge")
+
+  badge Badge @relation(fields: [badgeName], references: [name], onUpdate: Cascade)
+
+  updatedAt DateTime @updatedAt
+
+  @@index([updatedAt, id])
+  @@map("user_badges")
+}
+
+model Badge {
+  name        String      @id
+  type        String
+  description String
+  displayName String      @map("display_name")
+  userBadges  UserBadge[]
+
+  @@map("badges")
+}

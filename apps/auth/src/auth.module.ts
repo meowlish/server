@@ -1,0 +1,110 @@
+import { AuthCommandHandlers } from './app/commands/handlers';
+import { IntegrationEventPublishers } from './app/events/publisher';
+import { TokenService } from './app/services/token.service';
+import { IEnvVars, config } from './configs/config';
+import JwtRefreshConfig from './configs/jwt-refresh.config';
+import JwtAccessConfig from './configs/jwt.config';
+import { redisConfig } from './configs/redis.config';
+import { rmqPubConfig } from './configs/rmq.pub.config';
+import { rmqSubConfig } from './configs/rmq.sub.config';
+import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
+import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.repository.impl';
+import { AuthController } from './presentation/controllers';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
+import { ClsPluginTransactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaClient } from '@prisma-client/auth';
+import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
+import { LoggerModule } from '@server/logger';
+import {
+	Any2RpcExceptionFilter,
+	GlobalClassSerializerInterceptor,
+	GlobalValidationPipe,
+	Http2gRPCExceptionFilter,
+} from '@server/utils';
+import { ClsGuard, ClsModule } from 'nestjs-cls';
+
+@Module({
+	controllers: [AuthController],
+	imports: [
+		ConfigModule.forRoot({
+			expandVariables: true,
+			cache: true,
+			isGlobal: true,
+			load: [config],
+		}),
+		CqrsModule.forRoot(),
+		ClsModule.forRoot({
+			global: true,
+			guard: { mount: false },
+			plugins: [
+				new ClsPluginTransactional({
+					imports: [DatabaseModule.forRoot(PrismaClient)],
+					adapter: new TransactionalAdapterPrisma({
+						prismaInjectionToken: DATABASE_SERVICE,
+						sqlFlavor: 'postgresql',
+					}),
+				}),
+			],
+		}),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqPubConfig }),
+		RabbitMQModule.forRootAsync({ inject: [ConfigService], useFactory: rmqSubConfig }),
+		LoggerModule.forRoot({ appName: 'AuthModule' }),
+		RedisModule.forRootAsync({
+			inject: [ConfigService],
+			useFactory: redisConfig as (...args: unknown[]) => RedisModuleOptions,
+		}),
+	],
+	providers: [
+		TokenService,
+		...AuthCommandHandlers,
+		...IntegrationEventPublishers,
+		{
+			inject: [ConfigService],
+			provide: 'JWT_ACCESS_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtAccessConfig(configService);
+				return new JwtService(config);
+			},
+		},
+		{
+			inject: [ConfigService],
+			provide: 'JWT_REFRESH_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtRefreshConfig(configService);
+				return new JwtService(config);
+			},
+		},
+		{
+			provide: IIdentityRepositoryToken,
+			useClass: IdentityPrismaRepository,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ClsGuard,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Any2RpcExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_PIPE,
+			useClass: GlobalValidationPipe,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: GlobalClassSerializerInterceptor,
+		},
+	],
+})
+export class AuthModule {}
