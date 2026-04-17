@@ -6,12 +6,36 @@ import "google/protobuf/wrappers.proto";
 package auth;
 
 service AuthService {
+    // mail
 	rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
 	rpc LoginMail(LoginMailDto) returns (Tokens) {}
+	rpc AddMailCredential(AddMailCredDto) returns (google.protobuf.Empty) {}
+	rpc RemoveMailCredential(RemoveMailCredDto) returns (google.protobuf.Empty) {}
+    // google
+	rpc RegisterOrLoginGoogle(RegisterOrLoginGoogleDto) returns (Tokens) {}
+	rpc AddGoogleCredential(AddGoogleCredDto) returns (google.protobuf.Empty) {}
+	rpc RemoveGoogleCredential(RemoveGoogleCredDto) returns (google.protobuf.Empty) {}
+    // common
 	rpc Refresh(RefreshDto) returns (Tokens) {}
 	rpc ValidateRefresh(ValidateRefreshDto) returns (Claims) {}
 	rpc ValidateAccess(ValidateAccessDto) returns (google.protobuf.Empty) {}
 	rpc LogOutAll(LogOutAllDto) returns (google.protobuf.Empty) {}
+    // roles
+	rpc GetRoleList(google.protobuf.Empty) returns (RoleList) {}
+	rpc GetPermList(google.protobuf.Empty) returns (PermList) {}
+	rpc AssignRoleTo(AssignRoleToDto) returns (google.protobuf.Empty) {}
+	rpc RemoveRoleFrom(RemoveRoleFromDto) returns (google.protobuf.Empty) {}
+    // identity
+	rpc UpdateIdentity(UpdateIdentityDto) returns (google.protobuf.Empty) {}
+    // qol
+	rpc FindIdentityIds(FindIdentityIdsDto) returns (IdentityIds){}
+	rpc FindIdentities(FindIdentitiesDto) returns (Identities) {}
+}
+
+service ProfileService {
+	rpc InitProfile(InitProfileDto) returns (google.protobuf.Empty) {}
+	rpc UpdateProfile(UpdateProfileDto) returns (google.protobuf.Empty) {}
+	rpc GetProfile(GetProfileDto) returns (Profile) {}
 }
 
 // Request
@@ -24,6 +48,32 @@ message RegisterMailDto {
 message LoginMailDto {
 	google.protobuf.StringValue mail     = 1;
 	google.protobuf.StringValue password = 2;
+}
+
+message AddMailCredDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.StringValue mail        = 2;
+	google.protobuf.StringValue password    = 3;
+}
+
+message RemoveMailCredDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.StringValue mail        = 2;
+}
+
+message RegisterOrLoginGoogleDto {
+	google.protobuf.StringValue identifier = 1;
+	google.protobuf.StringValue username   = 2;
+}
+
+message AddGoogleCredDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.StringValue identifier  = 2;
+}
+
+message RemoveGoogleCredDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.StringValue id          = 2;
 }
 
 message RefreshDto {
@@ -42,6 +92,51 @@ message ValidateAccessDto {
 
 message LogOutAllDto {
 	google.protobuf.StringValue identity_id = 1;
+}
+
+message UpdateIdentityDto {
+	google.protobuf.StringValue identity_id = 1;
+	google.protobuf.StringValue username    = 2;
+}
+
+message AssignRoleToDto {
+	google.protobuf.StringValue role_id     = 1;
+	google.protobuf.StringValue identity_id = 2;
+}
+
+message RemoveRoleFromDto {
+	google.protobuf.StringValue role_id     = 1;
+	google.protobuf.StringValue identity_id = 2;
+}
+
+message InitProfileDto {
+	google.protobuf.StringValue          identity_id    = 1;
+	google.protobuf.StringValue          full_name      = 2;
+	optional google.protobuf.StringValue display_name   = 3;
+	optional google.protobuf.StringValue bio            = 4;
+	optional google.protobuf.StringValue avatar_file_id = 5;
+}
+
+message UpdateProfileDto {
+	google.protobuf.StringValue          identity_id    = 1;
+	optional google.protobuf.StringValue full_name      = 2;
+	optional google.protobuf.StringValue display_name   = 3;
+	optional google.protobuf.StringValue bio            = 4;
+	optional google.protobuf.StringValue avatar_file_id = 5;
+}
+
+message GetProfileDto {
+	google.protobuf.StringValue identity_id = 1;
+}
+
+message FindIdentityIdsDto {
+	optional google.protobuf.StringValue username_or_cred_identifier = 1;
+}
+
+message FindIdentitiesDto {
+	optional google.protobuf.StringValue username_or_cred_identifier = 1;
+	repeated google.protobuf.StringValue has_roles                   = 2;
+	repeated google.protobuf.StringValue has_perms                   = 3;
 }
 
 // Response
@@ -66,4 +161,29 @@ message Claims {
 	string          sub         = 1;
 	repeated string roles       = 2;
 	repeated string permissions = 3;
+}
+
+message RoleList {
+	repeated Role roles = 1;
+}
+
+message PermList {
+	repeated string perms = 1;
+}
+
+message Profile {
+	string          full_name      = 1;
+	optional string display_name   = 2;
+	optional string bio            = 3;
+	optional string avatar_file_id = 4;
+}
+
+message IdentityIds {
+	repeated string ids    = 1;
+	string          cursor = 2;
+}
+
+message Identities {
+	repeated Claims claims = 1;
+	string          cursor = 2;
 }

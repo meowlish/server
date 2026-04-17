@@ -24,6 +24,32 @@ export interface LoginMailDto {
   password: string | undefined;
 }
 
+export interface AddMailCredDto {
+  identityId: string | undefined;
+  mail: string | undefined;
+  password: string | undefined;
+}
+
+export interface RemoveMailCredDto {
+  identityId: string | undefined;
+  mail: string | undefined;
+}
+
+export interface RegisterOrLoginGoogleDto {
+  identifier: string | undefined;
+  username: string | undefined;
+}
+
+export interface AddGoogleCredDto {
+  identityId: string | undefined;
+  identifier: string | undefined;
+}
+
+export interface RemoveGoogleCredDto {
+  identityId: string | undefined;
+  id: string | undefined;
+}
+
 export interface RefreshDto {
   identityId: string | undefined;
 }
@@ -40,6 +66,51 @@ export interface ValidateAccessDto {
 
 export interface LogOutAllDto {
   identityId: string | undefined;
+}
+
+export interface UpdateIdentityDto {
+  identityId: string | undefined;
+  username: string | undefined;
+}
+
+export interface AssignRoleToDto {
+  roleId: string | undefined;
+  identityId: string | undefined;
+}
+
+export interface RemoveRoleFromDto {
+  roleId: string | undefined;
+  identityId: string | undefined;
+}
+
+export interface InitProfileDto {
+  identityId: string | undefined;
+  fullName: string | undefined;
+  displayName?: string | undefined;
+  bio?: string | undefined;
+  avatarFileId?: string | undefined;
+}
+
+export interface UpdateProfileDto {
+  identityId: string | undefined;
+  fullName?: string | undefined;
+  displayName?: string | undefined;
+  bio?: string | undefined;
+  avatarFileId?: string | undefined;
+}
+
+export interface GetProfileDto {
+  identityId: string | undefined;
+}
+
+export interface FindIdentityIdsDto {
+  usernameOrCredIdentifier?: string | undefined;
+}
+
+export interface FindIdentitiesDto {
+  usernameOrCredIdentifier?: string | undefined;
+  hasRoles: string[];
+  hasPerms: string[];
 }
 
 /** Response */
@@ -64,6 +135,31 @@ export interface Claims {
   sub: string;
   roles: string[];
   permissions: string[];
+}
+
+export interface RoleList {
+  roles: Role[];
+}
+
+export interface PermList {
+  perms: string[];
+}
+
+export interface Profile {
+  fullName: string;
+  displayName?: string | undefined;
+  bio?: string | undefined;
+  avatarFileId?: string | undefined;
+}
+
+export interface IdentityIds {
+  ids: string[];
+  cursor: string;
+}
+
+export interface Identities {
+  claims: Claims[];
+  cursor: string;
 }
 
 function createBaseRegisterMailDto(): RegisterMailDto {
@@ -161,6 +257,257 @@ export const LoginMailDto: MessageFns<LoginMailDto> = {
           }
 
           message.password = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddMailCredDto(): AddMailCredDto {
+  return { identityId: undefined, mail: undefined, password: undefined };
+}
+
+export const AddMailCredDto: MessageFns<AddMailCredDto> = {
+  encode(message: AddMailCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.mail !== undefined) {
+      StringValue.encode({ value: message.mail! }, writer.uint32(18).fork()).join();
+    }
+    if (message.password !== undefined) {
+      StringValue.encode({ value: message.password! }, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddMailCredDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddMailCredDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.mail = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.password = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveMailCredDto(): RemoveMailCredDto {
+  return { identityId: undefined, mail: undefined };
+}
+
+export const RemoveMailCredDto: MessageFns<RemoveMailCredDto> = {
+  encode(message: RemoveMailCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.mail !== undefined) {
+      StringValue.encode({ value: message.mail! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveMailCredDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRemoveMailCredDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.mail = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRegisterOrLoginGoogleDto(): RegisterOrLoginGoogleDto {
+  return { identifier: undefined, username: undefined };
+}
+
+export const RegisterOrLoginGoogleDto: MessageFns<RegisterOrLoginGoogleDto> = {
+  encode(message: RegisterOrLoginGoogleDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identifier !== undefined) {
+      StringValue.encode({ value: message.identifier! }, writer.uint32(10).fork()).join();
+    }
+    if (message.username !== undefined) {
+      StringValue.encode({ value: message.username! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RegisterOrLoginGoogleDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRegisterOrLoginGoogleDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identifier = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.username = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAddGoogleCredDto(): AddGoogleCredDto {
+  return { identityId: undefined, identifier: undefined };
+}
+
+export const AddGoogleCredDto: MessageFns<AddGoogleCredDto> = {
+  encode(message: AddGoogleCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.identifier !== undefined) {
+      StringValue.encode({ value: message.identifier! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AddGoogleCredDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAddGoogleCredDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.identifier = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveGoogleCredDto(): RemoveGoogleCredDto {
+  return { identityId: undefined, id: undefined };
+}
+
+export const RemoveGoogleCredDto: MessageFns<RemoveGoogleCredDto> = {
+  encode(message: RemoveGoogleCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveGoogleCredDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRemoveGoogleCredDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -331,6 +678,445 @@ export const LogOutAllDto: MessageFns<LogOutAllDto> = {
           }
 
           message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateIdentityDto(): UpdateIdentityDto {
+  return { identityId: undefined, username: undefined };
+}
+
+export const UpdateIdentityDto: MessageFns<UpdateIdentityDto> = {
+  encode(message: UpdateIdentityDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.username !== undefined) {
+      StringValue.encode({ value: message.username! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateIdentityDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateIdentityDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.username = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseAssignRoleToDto(): AssignRoleToDto {
+  return { roleId: undefined, identityId: undefined };
+}
+
+export const AssignRoleToDto: MessageFns<AssignRoleToDto> = {
+  encode(message: AssignRoleToDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roleId !== undefined) {
+      StringValue.encode({ value: message.roleId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AssignRoleToDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAssignRoleToDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roleId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveRoleFromDto(): RemoveRoleFromDto {
+  return { roleId: undefined, identityId: undefined };
+}
+
+export const RemoveRoleFromDto: MessageFns<RemoveRoleFromDto> = {
+  encode(message: RemoveRoleFromDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roleId !== undefined) {
+      StringValue.encode({ value: message.roleId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveRoleFromDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRemoveRoleFromDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roleId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseInitProfileDto(): InitProfileDto {
+  return { identityId: undefined, fullName: undefined };
+}
+
+export const InitProfileDto: MessageFns<InitProfileDto> = {
+  encode(message: InitProfileDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.fullName !== undefined) {
+      StringValue.encode({ value: message.fullName! }, writer.uint32(18).fork()).join();
+    }
+    if (message.displayName !== undefined) {
+      StringValue.encode({ value: message.displayName! }, writer.uint32(26).fork()).join();
+    }
+    if (message.bio !== undefined) {
+      StringValue.encode({ value: message.bio! }, writer.uint32(34).fork()).join();
+    }
+    if (message.avatarFileId !== undefined) {
+      StringValue.encode({ value: message.avatarFileId! }, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): InitProfileDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInitProfileDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayName = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.bio = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.avatarFileId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateProfileDto(): UpdateProfileDto {
+  return { identityId: undefined };
+}
+
+export const UpdateProfileDto: MessageFns<UpdateProfileDto> = {
+  encode(message: UpdateProfileDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.fullName !== undefined) {
+      StringValue.encode({ value: message.fullName! }, writer.uint32(18).fork()).join();
+    }
+    if (message.displayName !== undefined) {
+      StringValue.encode({ value: message.displayName! }, writer.uint32(26).fork()).join();
+    }
+    if (message.bio !== undefined) {
+      StringValue.encode({ value: message.bio! }, writer.uint32(34).fork()).join();
+    }
+    if (message.avatarFileId !== undefined) {
+      StringValue.encode({ value: message.avatarFileId! }, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateProfileDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateProfileDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.displayName = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.bio = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.avatarFileId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetProfileDto(): GetProfileDto {
+  return { identityId: undefined };
+}
+
+export const GetProfileDto: MessageFns<GetProfileDto> = {
+  encode(message: GetProfileDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetProfileDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetProfileDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindIdentityIdsDto(): FindIdentityIdsDto {
+  return {};
+}
+
+export const FindIdentityIdsDto: MessageFns<FindIdentityIdsDto> = {
+  encode(message: FindIdentityIdsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.usernameOrCredIdentifier !== undefined) {
+      StringValue.encode({ value: message.usernameOrCredIdentifier! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindIdentityIdsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindIdentityIdsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.usernameOrCredIdentifier = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseFindIdentitiesDto(): FindIdentitiesDto {
+  return { hasRoles: [], hasPerms: [] };
+}
+
+export const FindIdentitiesDto: MessageFns<FindIdentitiesDto> = {
+  encode(message: FindIdentitiesDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.usernameOrCredIdentifier !== undefined) {
+      StringValue.encode({ value: message.usernameOrCredIdentifier! }, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.hasRoles) {
+      StringValue.encode({ value: v!! }, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.hasPerms) {
+      StringValue.encode({ value: v!! }, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): FindIdentitiesDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFindIdentitiesDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.usernameOrCredIdentifier = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.hasRoles.push(StringValue.decode(reader, reader.uint32()).value);
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.hasPerms.push(StringValue.decode(reader, reader.uint32()).value);
           continue;
         }
       }
@@ -568,10 +1354,266 @@ export const Claims: MessageFns<Claims> = {
   },
 };
 
+function createBaseRoleList(): RoleList {
+  return { roles: [] };
+}
+
+export const RoleList: MessageFns<RoleList> = {
+  encode(message: RoleList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.roles) {
+      Role.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RoleList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRoleList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roles.push(Role.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePermList(): PermList {
+  return { perms: [] };
+}
+
+export const PermList: MessageFns<PermList> = {
+  encode(message: PermList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.perms) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PermList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePermList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.perms.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseProfile(): Profile {
+  return { fullName: "" };
+}
+
+export const Profile: MessageFns<Profile> = {
+  encode(message: Profile, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.fullName !== "") {
+      writer.uint32(10).string(message.fullName);
+    }
+    if (message.displayName !== undefined) {
+      writer.uint32(18).string(message.displayName);
+    }
+    if (message.bio !== undefined) {
+      writer.uint32(26).string(message.bio);
+    }
+    if (message.avatarFileId !== undefined) {
+      writer.uint32(34).string(message.avatarFileId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Profile {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProfile();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.displayName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.bio = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.avatarFileId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseIdentityIds(): IdentityIds {
+  return { ids: [], cursor: "" };
+}
+
+export const IdentityIds: MessageFns<IdentityIds> = {
+  encode(message: IdentityIds, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.ids) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.cursor !== "") {
+      writer.uint32(18).string(message.cursor);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): IdentityIds {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIdentityIds();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.ids.push(reader.string());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseIdentities(): Identities {
+  return { claims: [], cursor: "" };
+}
+
+export const Identities: MessageFns<Identities> = {
+  encode(message: Identities, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.claims) {
+      Claims.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.cursor !== "") {
+      writer.uint32(18).string(message.cursor);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Identities {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIdentities();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.claims.push(Claims.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface AuthServiceClient {
+  /** mail */
+
   registerMail(request: RegisterMailDto, metadata?: Metadata): Observable<Tokens>;
 
   loginMail(request: LoginMailDto, metadata?: Metadata): Observable<Tokens>;
+
+  addMailCredential(request: AddMailCredDto, metadata?: Metadata): Observable<Empty>;
+
+  removeMailCredential(request: RemoveMailCredDto, metadata?: Metadata): Observable<Empty>;
+
+  /** google */
+
+  registerOrLoginGoogle(request: RegisterOrLoginGoogleDto, metadata?: Metadata): Observable<Tokens>;
+
+  addGoogleCredential(request: AddGoogleCredDto, metadata?: Metadata): Observable<Empty>;
+
+  removeGoogleCredential(request: RemoveGoogleCredDto, metadata?: Metadata): Observable<Empty>;
+
+  /** common */
 
   refresh(request: RefreshDto, metadata?: Metadata): Observable<Tokens>;
 
@@ -580,12 +1622,51 @@ export interface AuthServiceClient {
   validateAccess(request: ValidateAccessDto, metadata?: Metadata): Observable<Empty>;
 
   logOutAll(request: LogOutAllDto, metadata?: Metadata): Observable<Empty>;
+
+  /** roles */
+
+  getRoleList(request: Empty, metadata?: Metadata): Observable<RoleList>;
+
+  getPermList(request: Empty, metadata?: Metadata): Observable<PermList>;
+
+  assignRoleTo(request: AssignRoleToDto, metadata?: Metadata): Observable<Empty>;
+
+  removeRoleFrom(request: RemoveRoleFromDto, metadata?: Metadata): Observable<Empty>;
+
+  /** identity */
+
+  updateIdentity(request: UpdateIdentityDto, metadata?: Metadata): Observable<Empty>;
+
+  /** qol */
+
+  findIdentityIds(request: FindIdentityIdsDto, metadata?: Metadata): Observable<IdentityIds>;
+
+  findIdentities(request: FindIdentitiesDto, metadata?: Metadata): Observable<Identities>;
 }
 
 export interface AuthServiceController {
+  /** mail */
+
   registerMail(request: RegisterMailDto, metadata?: Metadata): Promise<Tokens> | Observable<Tokens> | Tokens;
 
   loginMail(request: LoginMailDto, metadata?: Metadata): Promise<Tokens> | Observable<Tokens> | Tokens;
+
+  addMailCredential(request: AddMailCredDto, metadata?: Metadata): void | Promise<void>;
+
+  removeMailCredential(request: RemoveMailCredDto, metadata?: Metadata): void | Promise<void>;
+
+  /** google */
+
+  registerOrLoginGoogle(
+    request: RegisterOrLoginGoogleDto,
+    metadata?: Metadata,
+  ): Promise<Tokens> | Observable<Tokens> | Tokens;
+
+  addGoogleCredential(request: AddGoogleCredDto, metadata?: Metadata): void | Promise<void>;
+
+  removeGoogleCredential(request: RemoveGoogleCredDto, metadata?: Metadata): void | Promise<void>;
+
+  /** common */
 
   refresh(request: RefreshDto, metadata?: Metadata): Promise<Tokens> | Observable<Tokens> | Tokens;
 
@@ -594,6 +1675,32 @@ export interface AuthServiceController {
   validateAccess(request: ValidateAccessDto, metadata?: Metadata): void | Promise<void>;
 
   logOutAll(request: LogOutAllDto, metadata?: Metadata): void | Promise<void>;
+
+  /** roles */
+
+  getRoleList(request: Empty, metadata?: Metadata): Promise<RoleList> | Observable<RoleList> | RoleList;
+
+  getPermList(request: Empty, metadata?: Metadata): Promise<PermList> | Observable<PermList> | PermList;
+
+  assignRoleTo(request: AssignRoleToDto, metadata?: Metadata): void | Promise<void>;
+
+  removeRoleFrom(request: RemoveRoleFromDto, metadata?: Metadata): void | Promise<void>;
+
+  /** identity */
+
+  updateIdentity(request: UpdateIdentityDto, metadata?: Metadata): void | Promise<void>;
+
+  /** qol */
+
+  findIdentityIds(
+    request: FindIdentityIdsDto,
+    metadata?: Metadata,
+  ): Promise<IdentityIds> | Observable<IdentityIds> | IdentityIds;
+
+  findIdentities(
+    request: FindIdentitiesDto,
+    metadata?: Metadata,
+  ): Promise<Identities> | Observable<Identities> | Identities;
 }
 
 export function AuthServiceControllerMethods() {
@@ -601,10 +1708,22 @@ export function AuthServiceControllerMethods() {
     const grpcMethods: string[] = [
       "registerMail",
       "loginMail",
+      "addMailCredential",
+      "removeMailCredential",
+      "registerOrLoginGoogle",
+      "addGoogleCredential",
+      "removeGoogleCredential",
       "refresh",
       "validateRefresh",
       "validateAccess",
       "logOutAll",
+      "getRoleList",
+      "getPermList",
+      "assignRoleTo",
+      "removeRoleFrom",
+      "updateIdentity",
+      "findIdentityIds",
+      "findIdentities",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
@@ -622,6 +1741,7 @@ export const AUTH_SERVICE_NAME = "AuthService";
 
 export type AuthServiceService = typeof AuthServiceService;
 export const AuthServiceService = {
+  /** mail */
   registerMail: {
     path: "/auth.AuthService/RegisterMail" as const,
     requestStream: false as const,
@@ -640,6 +1760,54 @@ export const AuthServiceService = {
     responseSerialize: (value: Tokens): Buffer => Buffer.from(Tokens.encode(value).finish()),
     responseDeserialize: (value: Buffer): Tokens => Tokens.decode(value),
   },
+  addMailCredential: {
+    path: "/auth.AuthService/AddMailCredential" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AddMailCredDto): Buffer => Buffer.from(AddMailCredDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AddMailCredDto => AddMailCredDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  removeMailCredential: {
+    path: "/auth.AuthService/RemoveMailCredential" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveMailCredDto): Buffer => Buffer.from(RemoveMailCredDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveMailCredDto => RemoveMailCredDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  /** google */
+  registerOrLoginGoogle: {
+    path: "/auth.AuthService/RegisterOrLoginGoogle" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RegisterOrLoginGoogleDto): Buffer =>
+      Buffer.from(RegisterOrLoginGoogleDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RegisterOrLoginGoogleDto => RegisterOrLoginGoogleDto.decode(value),
+    responseSerialize: (value: Tokens): Buffer => Buffer.from(Tokens.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Tokens => Tokens.decode(value),
+  },
+  addGoogleCredential: {
+    path: "/auth.AuthService/AddGoogleCredential" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AddGoogleCredDto): Buffer => Buffer.from(AddGoogleCredDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AddGoogleCredDto => AddGoogleCredDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  removeGoogleCredential: {
+    path: "/auth.AuthService/RemoveGoogleCredential" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveGoogleCredDto): Buffer => Buffer.from(RemoveGoogleCredDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveGoogleCredDto => RemoveGoogleCredDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  /** common */
   refresh: {
     path: "/auth.AuthService/Refresh" as const,
     requestStream: false as const,
@@ -676,15 +1844,169 @@ export const AuthServiceService = {
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
+  /** roles */
+  getRoleList: {
+    path: "/auth.AuthService/GetRoleList" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: RoleList): Buffer => Buffer.from(RoleList.encode(value).finish()),
+    responseDeserialize: (value: Buffer): RoleList => RoleList.decode(value),
+  },
+  getPermList: {
+    path: "/auth.AuthService/GetPermList" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: PermList): Buffer => Buffer.from(PermList.encode(value).finish()),
+    responseDeserialize: (value: Buffer): PermList => PermList.decode(value),
+  },
+  assignRoleTo: {
+    path: "/auth.AuthService/AssignRoleTo" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: AssignRoleToDto): Buffer => Buffer.from(AssignRoleToDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): AssignRoleToDto => AssignRoleToDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  removeRoleFrom: {
+    path: "/auth.AuthService/RemoveRoleFrom" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveRoleFromDto): Buffer => Buffer.from(RemoveRoleFromDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveRoleFromDto => RemoveRoleFromDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  /** identity */
+  updateIdentity: {
+    path: "/auth.AuthService/UpdateIdentity" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateIdentityDto): Buffer => Buffer.from(UpdateIdentityDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateIdentityDto => UpdateIdentityDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  /** qol */
+  findIdentityIds: {
+    path: "/auth.AuthService/FindIdentityIds" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: FindIdentityIdsDto): Buffer => Buffer.from(FindIdentityIdsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): FindIdentityIdsDto => FindIdentityIdsDto.decode(value),
+    responseSerialize: (value: IdentityIds): Buffer => Buffer.from(IdentityIds.encode(value).finish()),
+    responseDeserialize: (value: Buffer): IdentityIds => IdentityIds.decode(value),
+  },
+  findIdentities: {
+    path: "/auth.AuthService/FindIdentities" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: FindIdentitiesDto): Buffer => Buffer.from(FindIdentitiesDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): FindIdentitiesDto => FindIdentitiesDto.decode(value),
+    responseSerialize: (value: Identities): Buffer => Buffer.from(Identities.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Identities => Identities.decode(value),
+  },
 } as const;
 
 export interface AuthServiceServer extends UntypedServiceImplementation {
+  /** mail */
   registerMail: handleUnaryCall<RegisterMailDto, Tokens>;
   loginMail: handleUnaryCall<LoginMailDto, Tokens>;
+  addMailCredential: handleUnaryCall<AddMailCredDto, Empty>;
+  removeMailCredential: handleUnaryCall<RemoveMailCredDto, Empty>;
+  /** google */
+  registerOrLoginGoogle: handleUnaryCall<RegisterOrLoginGoogleDto, Tokens>;
+  addGoogleCredential: handleUnaryCall<AddGoogleCredDto, Empty>;
+  removeGoogleCredential: handleUnaryCall<RemoveGoogleCredDto, Empty>;
+  /** common */
   refresh: handleUnaryCall<RefreshDto, Tokens>;
   validateRefresh: handleUnaryCall<ValidateRefreshDto, Claims>;
   validateAccess: handleUnaryCall<ValidateAccessDto, Empty>;
   logOutAll: handleUnaryCall<LogOutAllDto, Empty>;
+  /** roles */
+  getRoleList: handleUnaryCall<Empty, RoleList>;
+  getPermList: handleUnaryCall<Empty, PermList>;
+  assignRoleTo: handleUnaryCall<AssignRoleToDto, Empty>;
+  removeRoleFrom: handleUnaryCall<RemoveRoleFromDto, Empty>;
+  /** identity */
+  updateIdentity: handleUnaryCall<UpdateIdentityDto, Empty>;
+  /** qol */
+  findIdentityIds: handleUnaryCall<FindIdentityIdsDto, IdentityIds>;
+  findIdentities: handleUnaryCall<FindIdentitiesDto, Identities>;
+}
+
+export interface ProfileServiceClient {
+  initProfile(request: InitProfileDto, metadata?: Metadata): Observable<Empty>;
+
+  updateProfile(request: UpdateProfileDto, metadata?: Metadata): Observable<Empty>;
+
+  getProfile(request: GetProfileDto, metadata?: Metadata): Observable<Profile>;
+}
+
+export interface ProfileServiceController {
+  initProfile(request: InitProfileDto, metadata?: Metadata): void | Promise<void>;
+
+  updateProfile(request: UpdateProfileDto, metadata?: Metadata): void | Promise<void>;
+
+  getProfile(request: GetProfileDto, metadata?: Metadata): Promise<Profile> | Observable<Profile> | Profile;
+}
+
+export function ProfileServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ["initProfile", "updateProfile", "getProfile"];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const PROFILE_SERVICE_NAME = "ProfileService";
+
+export type ProfileServiceService = typeof ProfileServiceService;
+export const ProfileServiceService = {
+  initProfile: {
+    path: "/auth.ProfileService/InitProfile" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: InitProfileDto): Buffer => Buffer.from(InitProfileDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): InitProfileDto => InitProfileDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateProfile: {
+    path: "/auth.ProfileService/UpdateProfile" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateProfileDto): Buffer => Buffer.from(UpdateProfileDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateProfileDto => UpdateProfileDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  getProfile: {
+    path: "/auth.ProfileService/GetProfile" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetProfileDto): Buffer => Buffer.from(GetProfileDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetProfileDto => GetProfileDto.decode(value),
+    responseSerialize: (value: Profile): Buffer => Buffer.from(Profile.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Profile => Profile.decode(value),
+  },
+} as const;
+
+export interface ProfileServiceServer extends UntypedServiceImplementation {
+  initProfile: handleUnaryCall<InitProfileDto, Empty>;
+  updateProfile: handleUnaryCall<UpdateProfileDto, Empty>;
+  getProfile: handleUnaryCall<GetProfileDto, Profile>;
 }
 
 interface MessageFns<T> {

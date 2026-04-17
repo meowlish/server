@@ -1,6 +1,11 @@
 import { DeepStringify } from '@server/typing';
 import { z } from 'zod/v4';
 
+const redisVarsSchema = z.object({
+	host: z.string(),
+	port: z.coerce.number(),
+});
+
 const jwtVarsSchema = z.object({
 	accessSecret: z.string(),
 	refreshSecret: z.string(),
@@ -30,11 +35,17 @@ const servicesSchema = z.object({
 	}),
 });
 
+const vpsEnvSchema = z.object({
+	baseUrl: z.url(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
+	redis: redisVarsSchema,
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2Schema,
 	microservicesConnection: servicesSchema,
+	vps: vpsEnvSchema,
 });
 
 export type IEnvVars = z.infer<typeof envFileSchema>;
@@ -42,6 +53,10 @@ export type IEnvVars = z.infer<typeof envFileSchema>;
 // map your env vars to ConfigService's properties
 const loadEnv = (): DeepStringify<IEnvVars> => ({
 	env: process.env.NODE_ENV,
+	redis: {
+		host: process.env.REDIS_HOST,
+		port: process.env.REDIS_PORT,
+	},
 	jwt: {
 		accessSecret: process.env.JWT_SECRET,
 		refreshSecret: process.env.JWT_REFRESH_SECRET,
@@ -68,6 +83,7 @@ const loadEnv = (): DeepStringify<IEnvVars> => ({
 			host: process.env.ACHIEVEMENT_SERVICE_HOST,
 		},
 	},
+	vps: { baseUrl: process.env.BASE_URL?.trim().replace(/\/+$/, '') },
 });
 
 // validate and optionally transform your env variables here

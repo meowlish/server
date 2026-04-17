@@ -57,6 +57,7 @@ class IdentityPrismaMapper {
 	static toIdentityAggregate(from: ExtendedIdentity): Identity {
 		return new Identity({
 			id: from.id,
+			version: from.version,
 			username: from.username,
 			createdAt: from.createdAt,
 			deletedAt: from.deletedAt,

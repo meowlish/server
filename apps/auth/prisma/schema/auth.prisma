@@ -4,7 +4,7 @@ model Credential {
   identifier String   @db.VarChar(255)
   secretHash String?  @map("secret_hash") @db.VarChar(255)
   loginType  String   @map("login_type")
-  identity   Identity @relation(fields: [identityId], references: [id])
+  identity   Identity @relation(fields: [identityId], references: [id], onDelete: Cascade)
 
   @@unique([identifier, loginType])
   @@index([identifier, loginType])
@@ -20,6 +20,7 @@ model Identity {
   deletedAt     DateTime?      @map("deleted_at")
   credentials   Credential[]
   identityRoles IdentityRole[]
+  profiles      profile[]
 
   @@unique([username])
   @@map("identities")
