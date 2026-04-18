@@ -67,3 +67,9 @@ model Permission {
 
   @@map("permissions")
 }
+
+model DeletedFile {
+  fileId String @id @map("file_id")
+
+  @@map("deleted_files")
+}
