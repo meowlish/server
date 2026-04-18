@@ -3,7 +3,7 @@ import {
 	type ICredentialReadRepository,
 	ICredentialReadRepositoryToken,
 } from '../../../domain/repositories/credential.read.repository';
-import { GetCredentialsQuery } from '../get-credentials.query';
+import { GetCredentialsQuery } from '../auth.get-credentials.query';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 

@@ -6,7 +6,7 @@ import {
 	GetUsersBadgesCursor,
 	GetUsersBadgesQuery,
 	GetUsersBadgesQueryResult,
-} from '../get-users-badges.query';
+} from '../achievement.get-users-badges.query';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { CursorPaginationHelper } from '@server/utils';

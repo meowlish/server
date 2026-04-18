@@ -1,5 +1,5 @@
-import { GetBadgesQuery } from '../../app/queries/get-badges.query';
-import { GetUsersBadgesQuery } from '../../app/queries/get-users-badges.query';
+import { GetBadgesQuery } from '../../app/queries/achievement.get-badges.query';
+import { GetUsersBadgesQuery } from '../../app/queries/achievement.get-users-badges.query';
 import { GetUsersBadgesDto } from '../dtos/req/get-users-badges.req.dto';
 import { FoundBadgesDto } from '../dtos/res/found-badges.res.dto';
 import { FoundUsersBadgesDto } from '../dtos/res/found-users-badges.res.dto';

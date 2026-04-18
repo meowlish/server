@@ -6,7 +6,7 @@ import {
 	GetUsersAttemptHistoryCursor,
 	GetUsersAttemptHistoryQuery,
 	GetUsersAttemptHistoryQueryResult,
-} from '../../practice/get-users-attempt-history.query';
+} from '../../practice/exam.get-users-attempt-history.query';
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { CursorPaginationHelper } from '@server/utils';

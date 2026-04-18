@@ -32,9 +32,9 @@ import {
 } from '../../app/commands/auth.validate-refresh.command';
 import { FindIdentitiesQuery } from '../../app/queries/auth.find-identities.query';
 import { FindIdentityIdsQuery } from '../../app/queries/auth.find-identity-ids.query';
-import { GetCredentialsQuery } from '../../app/queries/get-credentials.query';
-import { GetPermissionsQuery } from '../../app/queries/get-permissions.query';
-import { GetRolesQuery } from '../../app/queries/get-roles.query';
+import { GetCredentialsQuery } from '../../app/queries/auth.get-credentials.query';
+import { GetPermissionsQuery } from '../../app/queries/auth.get-permissions.query';
+import { GetRolesQuery } from '../../app/queries/auth.get-roles.query';
 import { AddGoogleCredDto } from '../dtos/req/add-google-cred.req.dto';
 import { AddMailCredDto } from '../dtos/req/add-mail-cred.req.dto';
 import { AssignRoleToDto } from '../dtos/req/assign-role-to.req.dto';
