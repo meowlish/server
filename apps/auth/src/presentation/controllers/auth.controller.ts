@@ -1,5 +1,6 @@
 import { AddGoogleCredCommand } from '../../app/commands/auth.add-google-cred.command';
 import { AddMailCredCommand } from '../../app/commands/auth.add-mail-cred.command';
+import { AssignRoleToCommand } from '../../app/commands/auth.assign-role-to.command';
 import { GoogleRegisterOrLoginCommand } from '../../app/commands/auth.google-register-or-login.command';
 import {
 	LogoutAllCommand,
@@ -15,6 +16,9 @@ import {
 } from '../../app/commands/auth.mail-register.command';
 import { RefreshCommand, RefreshCommandPayload } from '../../app/commands/auth.refresh.command';
 import { RemoveCredCommand } from '../../app/commands/auth.remove-cred.command';
+import { RemoveRoleFromCommand } from '../../app/commands/auth.remove-role-from.command';
+import { UpdateIdentityCommand } from '../../app/commands/auth.update-identity.command';
+import { UpdatePasswordCommand } from '../../app/commands/auth.update-password.command';
 import {
 	ValidateAccessCommand,
 	ValidateAccessCommandPayload,
@@ -28,6 +32,7 @@ import { GetPermissionsQuery } from '../../app/queries/get-permissions.query';
 import { GetRolesQuery } from '../../app/queries/get-roles.query';
 import { AddGoogleCredDto } from '../dtos/req/add-google-cred.req.dto';
 import { AddMailCredDto } from '../dtos/req/add-mail-cred.req.dto';
+import { AssignRoleToDto } from '../dtos/req/assign-role-to.req.dto';
 import { GetCredsDto } from '../dtos/req/get-creds.req.dto';
 import { LoginMailDto } from '../dtos/req/login-mail.req.dto';
 import { LogOutAllDto } from '../dtos/req/logout-all.req.dto';
@@ -35,6 +40,9 @@ import { RefreshDto } from '../dtos/req/refresh-dto.req.dto';
 import { RegisterMailDto } from '../dtos/req/register-mail.req.dto';
 import { RegisterOrLoginGoogleDto } from '../dtos/req/register-or-login-google.req.dto';
 import { RemoveCredDto } from '../dtos/req/remove-cred.req.dto';
+import { RemoveRoleFromDto } from '../dtos/req/remove-role-from.req.dto';
+import { UpdateIdentityDto } from '../dtos/req/update-identity.req.dto';
+import { UpdateMailPasswordDto } from '../dtos/req/update-password.req.dto';
 import { ValidateAccessDto } from '../dtos/req/validate-access.req.dto';
 import { ValidateRefreshDto } from '../dtos/req/validate-refresh.req.dto';
 import { ClaimsDto } from '../dtos/res/claims.res.dto';
@@ -123,23 +131,27 @@ export class AuthController implements auth.AuthServiceController {
 	}
 
 	@SerializeOptions({ type: CredentialsDto })
-	async getCredentials(request: GetCredsDto): Promise<CredentialsDto> {
+	async getCredentials(@Payload() request: GetCredsDto): Promise<CredentialsDto> {
 		return { credentials: await this.queryBus.execute(new GetCredentialsQuery(request)) };
 	}
 
-	assignRoleTo(@Payload() request: auth.AssignRoleToDto): void | Promise<void> {
-		return;
+	async assignRoleTo(@Payload() request: AssignRoleToDto): Promise<void> {
+		await this.commandBus.execute(new AssignRoleToCommand(request));
 	}
 
-	removeRoleFrom(@Payload() request: auth.RemoveRoleFromDto): void | Promise<void> {
-		return;
+	async removeRoleFrom(@Payload() request: RemoveRoleFromDto): Promise<void> {
+		await this.commandBus.execute(new RemoveRoleFromCommand(request));
 	}
 
-	findIdentities(request: auth.FindIdentitiesDto): Promise<auth.Identities> | auth.Identities {
+	findIdentities(
+		@Payload() request: auth.FindIdentitiesDto,
+	): Promise<auth.Identities> | auth.Identities {
 		return {} as auth.Identities;
 	}
 
-	findIdentityIds(request: auth.FindIdentityIdsDto): Promise<auth.IdentityIds> | auth.IdentityIds {
+	findIdentityIds(
+		@Payload() request: auth.FindIdentityIdsDto,
+	): Promise<auth.IdentityIds> | auth.IdentityIds {
 		return {} as auth.IdentityIds;
 	}
 
@@ -153,7 +165,11 @@ export class AuthController implements auth.AuthServiceController {
 		return { perms: await this.queryBus.execute(new GetPermissionsQuery()) };
 	}
 
-	updateIdentity(@Payload() request: auth.UpdateIdentityDto): void | Promise<void> {
-		return;
+	async updateIdentity(@Payload() request: UpdateIdentityDto): Promise<void> {
+		await this.commandBus.execute(new UpdateIdentityCommand(request));
+	}
+
+	async updateMailPassword(@Payload() request: UpdateMailPasswordDto): Promise<void> {
+		await this.commandBus.execute(new UpdatePasswordCommand(request));
 	}
 }

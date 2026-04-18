@@ -35,7 +35,7 @@ export class Credential implements IEntity<Credential> {
 
 	public update(options: CredentialUpdatableProperties): void {
 		if (options.identifier) this.identifier = options.identifier;
-		if (options.secretHash) this.secretHash = options.secretHash;
+		if (options.secretHash) this.setSecretHash(options.secretHash);
 	}
 }
 

@@ -30,6 +30,12 @@ export interface AddMailCredDto {
   password: string | undefined;
 }
 
+export interface UpdateMailPasswordDto {
+  identityId: string | undefined;
+  id: string | undefined;
+  password: string | undefined;
+}
+
 export interface RegisterOrLoginGoogleDto {
   identifier: string | undefined;
   username: string | undefined;
@@ -316,6 +322,65 @@ export const AddMailCredDto: MessageFns<AddMailCredDto> = {
           }
 
           message.mail = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.password = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateMailPasswordDto(): UpdateMailPasswordDto {
+  return { identityId: undefined, id: undefined, password: undefined };
+}
+
+export const UpdateMailPasswordDto: MessageFns<UpdateMailPasswordDto> = {
+  encode(message: UpdateMailPasswordDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.id !== undefined) {
+      StringValue.encode({ value: message.id! }, writer.uint32(18).fork()).join();
+    }
+    if (message.password !== undefined) {
+      StringValue.encode({ value: message.password! }, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateMailPasswordDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateMailPasswordDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.id = StringValue.decode(reader, reader.uint32()).value;
           continue;
         }
         case 3: {
@@ -1685,6 +1750,8 @@ export interface AuthServiceClient {
 
   addMailCredential(request: AddMailCredDto, metadata?: Metadata): Observable<Empty>;
 
+  updateMailPassword(request: UpdateMailPasswordDto, metadata?: Metadata): Observable<Empty>;
+
   /** google */
 
   registerOrLoginGoogle(request: RegisterOrLoginGoogleDto, metadata?: Metadata): Observable<Tokens>;
@@ -1736,6 +1803,8 @@ export interface AuthServiceController {
   loginMail(request: LoginMailDto, metadata?: Metadata): Promise<Tokens> | Observable<Tokens> | Tokens;
 
   addMailCredential(request: AddMailCredDto, metadata?: Metadata): void | Promise<void>;
+
+  updateMailPassword(request: UpdateMailPasswordDto, metadata?: Metadata): void | Promise<void>;
 
   /** google */
 
@@ -1798,6 +1867,7 @@ export function AuthServiceControllerMethods() {
       "registerMail",
       "loginMail",
       "addMailCredential",
+      "updateMailPassword",
       "registerOrLoginGoogle",
       "addGoogleCredential",
       "getCredentials",
@@ -1855,6 +1925,16 @@ export const AuthServiceService = {
     responseStream: false as const,
     requestSerialize: (value: AddMailCredDto): Buffer => Buffer.from(AddMailCredDto.encode(value).finish()),
     requestDeserialize: (value: Buffer): AddMailCredDto => AddMailCredDto.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateMailPassword: {
+    path: "/auth.AuthService/UpdateMailPassword" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateMailPasswordDto): Buffer =>
+      Buffer.from(UpdateMailPasswordDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateMailPasswordDto => UpdateMailPasswordDto.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
@@ -2007,6 +2087,7 @@ export interface AuthServiceServer extends UntypedServiceImplementation {
   registerMail: handleUnaryCall<RegisterMailDto, Tokens>;
   loginMail: handleUnaryCall<LoginMailDto, Tokens>;
   addMailCredential: handleUnaryCall<AddMailCredDto, Empty>;
+  updateMailPassword: handleUnaryCall<UpdateMailPasswordDto, Empty>;
   /** google */
   registerOrLoginGoogle: handleUnaryCall<RegisterOrLoginGoogleDto, Tokens>;
   addGoogleCredential: handleUnaryCall<AddGoogleCredDto, Empty>;
