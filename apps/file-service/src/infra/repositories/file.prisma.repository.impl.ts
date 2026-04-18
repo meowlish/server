@@ -28,11 +28,17 @@ export class FilePrismaRepository implements IFileRepository {
 		});
 	}
 
-	async decrementRef(ids: string[], count = 1): Promise<void> {
-		await this.txHost.tx.file.updateMany({
-			where: { id: { in: ids } },
-			data: { refCount: { decrement: count } },
-		});
+	async decrementRef(files: { id: string; count?: number }[]): Promise<void> {
+		await Promise.all(
+			files.map(({ id, count = 1 }) =>
+				this.txHost.tx.file.update({
+					where: { id: id },
+					data: {
+						refCount: { decrement: count },
+					},
+				}),
+			),
+		);
 	}
 
 	async remove(ids: string[]): Promise<void> {

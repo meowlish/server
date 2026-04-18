@@ -9,7 +9,7 @@ import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from '
 import { AppLoggerService } from '@server/logger';
 import { Job, Queue } from 'bullmq';
 
-@Processor('exam')
+@Processor('auth')
 export class FilesRemovedPublisher extends WorkerHost {
 	constructor(
 		@Inject(IFileRepositoryToken) private readonly fileRepository: IFileRepository,
@@ -34,7 +34,7 @@ export class FilesRemovedPublisher extends WorkerHost {
 				const message: FileRemovedIntegrationEvent = {
 					files: files,
 				};
-				await this.amqpConnection.publish('eventbus', 'exam.files.removed', message, {
+				await this.amqpConnection.publish('eventbus', 'auth.files.removed', message, {
 					persistent: true,
 				});
 			}
@@ -48,7 +48,7 @@ export class FilesRemovedPublisher extends WorkerHost {
 @Injectable()
 export class FilesRemovedScheduler implements OnModuleInit {
 	constructor(
-		@InjectQueue('exam')
+		@InjectQueue('auth')
 		private readonly queue: Queue,
 	) {}
 
