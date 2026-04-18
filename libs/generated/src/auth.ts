@@ -155,7 +155,7 @@ export interface Identities_Identity {
   username: string;
   fullName?: string | undefined;
   bio?: string | undefined;
-  avatarId?: string | undefined;
+  avatarUrl?: string | undefined;
   roles: string[];
   permissions: string[];
 }
@@ -1508,8 +1508,8 @@ export const Identities_Identity: MessageFns<Identities_Identity> = {
     if (message.bio !== undefined) {
       writer.uint32(34).string(message.bio);
     }
-    if (message.avatarId !== undefined) {
-      writer.uint32(42).string(message.avatarId);
+    if (message.avatarUrl !== undefined) {
+      writer.uint32(42).string(message.avatarUrl);
     }
     for (const v of message.roles) {
       writer.uint32(50).string(v!);
@@ -1564,7 +1564,7 @@ export const Identities_Identity: MessageFns<Identities_Identity> = {
             break;
           }
 
-          message.avatarId = reader.string();
+          message.avatarUrl = reader.string();
           continue;
         }
         case 6: {

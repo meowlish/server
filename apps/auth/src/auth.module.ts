@@ -9,6 +9,7 @@ import JwtAccessConfig from './configs/jwt.config';
 import { redisConfig } from './configs/redis.config';
 import { rmqPubConfig } from './configs/rmq.pub.config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
+import { FILE_CLIENT } from './constants/file';
 import { ICredentialReadRepositoryToken } from './domain/repositories/credential.read.repository';
 import { IFileRepositoryToken } from './domain/repositories/file.repository';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
@@ -19,6 +20,7 @@ import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.r
 import { RoleReadPrismaRepositoryImpl } from './infra/repositories/role.read.prisma.repository.impl';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
@@ -30,9 +32,11 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma-client/auth';
 import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
+import { file } from '@server/generated';
 import { LoggerModule } from '@server/logger';
 import {
 	Any2RpcExceptionFilter,
+	ErrorHandlingGrpcProxy,
 	GlobalClassSerializerInterceptor,
 	GlobalValidationPipe,
 	Http2gRPCExceptionFilter,
@@ -92,6 +96,19 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 				const config = JwtRefreshConfig(configService);
 				return new JwtService(config);
 			},
+		},
+		{
+			provide: FILE_CLIENT,
+			useFactory: () =>
+				new ErrorHandlingGrpcProxy({
+					url:
+						process.env.FILE_SERVICE_URL ??
+						`${process.env.FILE_SERVICE_HOST}:${process.env.FILE_SERVICE_PORT}`,
+					package: 'file',
+					packageDefinition: {
+						[`file.${file.FILE_SERVICE_NAME}`]: file.FileServiceService,
+					} satisfies PackageDefinition,
+				}),
 		},
 		{
 			provide: IIdentityRepositoryToken,

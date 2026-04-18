@@ -247,7 +247,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 			id: i.id,
 			username: i.username,
 			fullName: i.fullName ?? undefined,
-			avatarFileId: i.avatarFileId ?? undefined,
+			avatarUrl: i.avatarFileId ?? undefined,
 			bio: i.bio ?? undefined,
 			roles: i.identityRoles.map(rIdentityRole =>
 				IdentityPrismaMapper.mapRole(rIdentityRole.role.name),
