@@ -8,10 +8,12 @@ import JwtAccessConfig from './configs/jwt.config';
 import { redisConfig } from './configs/redis.config';
 import { rmqPubConfig } from './configs/rmq.pub.config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
+import { ICredentialReadRepositoryToken } from './domain/repositories/credential.read.repository';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import { IRoleReadRepositoryToken } from './domain/repositories/role.read.repository';
+import { CredentialReadPrismaRepositoryImpl } from './infra/repositories/credential.read.prisma.repository.impl';
 import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.repository.impl';
-import { RoleReadPrismaRepositoryImpl } from './infra/repositories/role.reaf.prisma.repository.impl';
+import { RoleReadPrismaRepositoryImpl } from './infra/repositories/role.read.prisma.repository.impl';
 import { AuthController } from './presentation/controllers';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
@@ -92,6 +94,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: IRoleReadRepositoryToken,
 			useClass: RoleReadPrismaRepositoryImpl,
+		},
+		{
+			provide: ICredentialReadRepositoryToken,
+			useClass: CredentialReadPrismaRepositoryImpl,
 		},
 		{
 			provide: APP_GUARD,

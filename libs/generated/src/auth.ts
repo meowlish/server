@@ -30,11 +30,6 @@ export interface AddMailCredDto {
   password: string | undefined;
 }
 
-export interface RemoveMailCredDto {
-  identityId: string | undefined;
-  mail: string | undefined;
-}
-
 export interface RegisterOrLoginGoogleDto {
   identifier: string | undefined;
   username: string | undefined;
@@ -45,7 +40,11 @@ export interface AddGoogleCredDto {
   identifier: string | undefined;
 }
 
-export interface RemoveGoogleCredDto {
+export interface GetCredsDto {
+  identityId: string | undefined;
+}
+
+export interface RemoveCredDto {
   identityId: string | undefined;
   id: string | undefined;
 }
@@ -160,6 +159,15 @@ export interface IdentityIds {
 export interface Identities {
   claims: Claims[];
   cursor: string;
+}
+
+export interface Credentials {
+  credentials: Credentials_Credential[];
+}
+
+export interface Credentials_Credential {
+  id: string;
+  type: string;
 }
 
 function createBaseRegisterMailDto(): RegisterMailDto {
@@ -328,54 +336,6 @@ export const AddMailCredDto: MessageFns<AddMailCredDto> = {
   },
 };
 
-function createBaseRemoveMailCredDto(): RemoveMailCredDto {
-  return { identityId: undefined, mail: undefined };
-}
-
-export const RemoveMailCredDto: MessageFns<RemoveMailCredDto> = {
-  encode(message: RemoveMailCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.identityId !== undefined) {
-      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
-    }
-    if (message.mail !== undefined) {
-      StringValue.encode({ value: message.mail! }, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): RemoveMailCredDto {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRemoveMailCredDto();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.identityId = StringValue.decode(reader, reader.uint32()).value;
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.mail = StringValue.decode(reader, reader.uint32()).value;
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
 function createBaseRegisterOrLoginGoogleDto(): RegisterOrLoginGoogleDto {
   return { identifier: undefined, username: undefined };
 }
@@ -472,12 +432,49 @@ export const AddGoogleCredDto: MessageFns<AddGoogleCredDto> = {
   },
 };
 
-function createBaseRemoveGoogleCredDto(): RemoveGoogleCredDto {
+function createBaseGetCredsDto(): GetCredsDto {
+  return { identityId: undefined };
+}
+
+export const GetCredsDto: MessageFns<GetCredsDto> = {
+  encode(message: GetCredsDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.identityId !== undefined) {
+      StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetCredsDto {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetCredsDto();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.identityId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveCredDto(): RemoveCredDto {
   return { identityId: undefined, id: undefined };
 }
 
-export const RemoveGoogleCredDto: MessageFns<RemoveGoogleCredDto> = {
-  encode(message: RemoveGoogleCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+export const RemoveCredDto: MessageFns<RemoveCredDto> = {
+  encode(message: RemoveCredDto, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.identityId !== undefined) {
       StringValue.encode({ value: message.identityId! }, writer.uint32(10).fork()).join();
     }
@@ -487,10 +484,10 @@ export const RemoveGoogleCredDto: MessageFns<RemoveGoogleCredDto> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): RemoveGoogleCredDto {
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveCredDto {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRemoveGoogleCredDto();
+    const message = createBaseRemoveCredDto();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1594,6 +1591,91 @@ export const Identities: MessageFns<Identities> = {
   },
 };
 
+function createBaseCredentials(): Credentials {
+  return { credentials: [] };
+}
+
+export const Credentials: MessageFns<Credentials> = {
+  encode(message: Credentials, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.credentials) {
+      Credentials_Credential.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Credentials {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCredentials();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.credentials.push(Credentials_Credential.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCredentials_Credential(): Credentials_Credential {
+  return { id: "", type: "" };
+}
+
+export const Credentials_Credential: MessageFns<Credentials_Credential> = {
+  encode(message: Credentials_Credential, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Credentials_Credential {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCredentials_Credential();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface AuthServiceClient {
   /** mail */
 
@@ -1603,15 +1685,17 @@ export interface AuthServiceClient {
 
   addMailCredential(request: AddMailCredDto, metadata?: Metadata): Observable<Empty>;
 
-  removeMailCredential(request: RemoveMailCredDto, metadata?: Metadata): Observable<Empty>;
-
   /** google */
 
   registerOrLoginGoogle(request: RegisterOrLoginGoogleDto, metadata?: Metadata): Observable<Tokens>;
 
   addGoogleCredential(request: AddGoogleCredDto, metadata?: Metadata): Observable<Empty>;
 
-  removeGoogleCredential(request: RemoveGoogleCredDto, metadata?: Metadata): Observable<Empty>;
+  /** creds */
+
+  getCredentials(request: GetCredsDto, metadata?: Metadata): Observable<Credentials>;
+
+  removeCredential(request: RemoveCredDto, metadata?: Metadata): Observable<Empty>;
 
   /** common */
 
@@ -1653,8 +1737,6 @@ export interface AuthServiceController {
 
   addMailCredential(request: AddMailCredDto, metadata?: Metadata): void | Promise<void>;
 
-  removeMailCredential(request: RemoveMailCredDto, metadata?: Metadata): void | Promise<void>;
-
   /** google */
 
   registerOrLoginGoogle(
@@ -1664,7 +1746,14 @@ export interface AuthServiceController {
 
   addGoogleCredential(request: AddGoogleCredDto, metadata?: Metadata): void | Promise<void>;
 
-  removeGoogleCredential(request: RemoveGoogleCredDto, metadata?: Metadata): void | Promise<void>;
+  /** creds */
+
+  getCredentials(
+    request: GetCredsDto,
+    metadata?: Metadata,
+  ): Promise<Credentials> | Observable<Credentials> | Credentials;
+
+  removeCredential(request: RemoveCredDto, metadata?: Metadata): void | Promise<void>;
 
   /** common */
 
@@ -1709,10 +1798,10 @@ export function AuthServiceControllerMethods() {
       "registerMail",
       "loginMail",
       "addMailCredential",
-      "removeMailCredential",
       "registerOrLoginGoogle",
       "addGoogleCredential",
-      "removeGoogleCredential",
+      "getCredentials",
+      "removeCredential",
       "refresh",
       "validateRefresh",
       "validateAccess",
@@ -1769,15 +1858,6 @@ export const AuthServiceService = {
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
-  removeMailCredential: {
-    path: "/auth.AuthService/RemoveMailCredential" as const,
-    requestStream: false as const,
-    responseStream: false as const,
-    requestSerialize: (value: RemoveMailCredDto): Buffer => Buffer.from(RemoveMailCredDto.encode(value).finish()),
-    requestDeserialize: (value: Buffer): RemoveMailCredDto => RemoveMailCredDto.decode(value),
-    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
-    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
-  },
   /** google */
   registerOrLoginGoogle: {
     path: "/auth.AuthService/RegisterOrLoginGoogle" as const,
@@ -1798,12 +1878,22 @@ export const AuthServiceService = {
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
-  removeGoogleCredential: {
-    path: "/auth.AuthService/RemoveGoogleCredential" as const,
+  /** creds */
+  getCredentials: {
+    path: "/auth.AuthService/GetCredentials" as const,
     requestStream: false as const,
     responseStream: false as const,
-    requestSerialize: (value: RemoveGoogleCredDto): Buffer => Buffer.from(RemoveGoogleCredDto.encode(value).finish()),
-    requestDeserialize: (value: Buffer): RemoveGoogleCredDto => RemoveGoogleCredDto.decode(value),
+    requestSerialize: (value: GetCredsDto): Buffer => Buffer.from(GetCredsDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetCredsDto => GetCredsDto.decode(value),
+    responseSerialize: (value: Credentials): Buffer => Buffer.from(Credentials.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Credentials => Credentials.decode(value),
+  },
+  removeCredential: {
+    path: "/auth.AuthService/RemoveCredential" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveCredDto): Buffer => Buffer.from(RemoveCredDto.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveCredDto => RemoveCredDto.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
@@ -1917,11 +2007,12 @@ export interface AuthServiceServer extends UntypedServiceImplementation {
   registerMail: handleUnaryCall<RegisterMailDto, Tokens>;
   loginMail: handleUnaryCall<LoginMailDto, Tokens>;
   addMailCredential: handleUnaryCall<AddMailCredDto, Empty>;
-  removeMailCredential: handleUnaryCall<RemoveMailCredDto, Empty>;
   /** google */
   registerOrLoginGoogle: handleUnaryCall<RegisterOrLoginGoogleDto, Tokens>;
   addGoogleCredential: handleUnaryCall<AddGoogleCredDto, Empty>;
-  removeGoogleCredential: handleUnaryCall<RemoveGoogleCredDto, Empty>;
+  /** creds */
+  getCredentials: handleUnaryCall<GetCredsDto, Credentials>;
+  removeCredential: handleUnaryCall<RemoveCredDto, Empty>;
   /** common */
   refresh: handleUnaryCall<RefreshDto, Tokens>;
   validateRefresh: handleUnaryCall<ValidateRefreshDto, Claims>;

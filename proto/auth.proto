@@ -10,11 +10,12 @@ service AuthService {
 	rpc RegisterMail(RegisterMailDto) returns (Tokens) {}
 	rpc LoginMail(LoginMailDto) returns (Tokens) {}
 	rpc AddMailCredential(AddMailCredDto) returns (google.protobuf.Empty) {}
-	rpc RemoveMailCredential(RemoveMailCredDto) returns (google.protobuf.Empty) {}
     // google
 	rpc RegisterOrLoginGoogle(RegisterOrLoginGoogleDto) returns (Tokens) {}
 	rpc AddGoogleCredential(AddGoogleCredDto) returns (google.protobuf.Empty) {}
-	rpc RemoveGoogleCredential(RemoveGoogleCredDto) returns (google.protobuf.Empty) {}
+    // creds
+	rpc GetCredentials(GetCredsDto) returns (Credentials) {}
+	rpc RemoveCredential(RemoveCredDto) returns (google.protobuf.Empty) {}
     // common
 	rpc Refresh(RefreshDto) returns (Tokens) {}
 	rpc ValidateRefresh(ValidateRefreshDto) returns (Claims) {}
@@ -56,11 +57,6 @@ message AddMailCredDto {
 	google.protobuf.StringValue password    = 3;
 }
 
-message RemoveMailCredDto {
-	google.protobuf.StringValue identity_id = 1;
-	google.protobuf.StringValue mail        = 2;
-}
-
 message RegisterOrLoginGoogleDto {
 	google.protobuf.StringValue identifier = 1;
 	google.protobuf.StringValue username   = 2;
@@ -71,7 +67,11 @@ message AddGoogleCredDto {
 	google.protobuf.StringValue identifier  = 2;
 }
 
-message RemoveGoogleCredDto {
+message GetCredsDto {
+	google.protobuf.StringValue identity_id = 1;
+}
+
+message RemoveCredDto {
 	google.protobuf.StringValue identity_id = 1;
 	google.protobuf.StringValue id          = 2;
 }
@@ -186,4 +186,13 @@ message IdentityIds {
 message Identities {
 	repeated Claims claims = 1;
 	string          cursor = 2;
+}
+
+message Credentials {
+	repeated Credential credentials = 1;
+
+	message Credential {
+		string id   = 1;
+		string type = 2;
+	}
 }
