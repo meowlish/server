@@ -27,12 +27,16 @@ import {
 	ValidateRefreshCommand,
 	ValidateRefreshCommandPayload,
 } from '../../app/commands/auth.validate-refresh.command';
+import { FindIdentitiesQuery } from '../../app/queries/auth.find-identities.query';
+import { FindIdentityIdsQuery } from '../../app/queries/auth.find-identity-ids.query';
 import { GetCredentialsQuery } from '../../app/queries/get-credentials.query';
 import { GetPermissionsQuery } from '../../app/queries/get-permissions.query';
 import { GetRolesQuery } from '../../app/queries/get-roles.query';
 import { AddGoogleCredDto } from '../dtos/req/add-google-cred.req.dto';
 import { AddMailCredDto } from '../dtos/req/add-mail-cred.req.dto';
 import { AssignRoleToDto } from '../dtos/req/assign-role-to.req.dto';
+import { FindIdentitiesDto } from '../dtos/req/find-identities.req.dto';
+import { FindIdentityIdsDto } from '../dtos/req/find-identity-ids.req.dto';
 import { GetCredsDto } from '../dtos/req/get-creds.req.dto';
 import { LoginMailDto } from '../dtos/req/login-mail.req.dto';
 import { LogOutAllDto } from '../dtos/req/logout-all.req.dto';
@@ -47,7 +51,9 @@ import { ValidateAccessDto } from '../dtos/req/validate-access.req.dto';
 import { ValidateRefreshDto } from '../dtos/req/validate-refresh.req.dto';
 import { ClaimsDto } from '../dtos/res/claims.res.dto';
 import { CredentialsDto } from '../dtos/res/credentials.res.dto';
-import { PermissionsDto } from '../dtos/res/permissions.dto';
+import { IdentitiesDto } from '../dtos/res/identities.res.dto';
+import { IdentityIdsDto } from '../dtos/res/identity-ids.res.dto';
+import { PermissionsDto } from '../dtos/res/permissions.res.dto';
 import { RolesDto } from '../dtos/res/roles.res.dto';
 import { TokensDto } from '../dtos/res/tokens.res.dto';
 import { Controller, SerializeOptions } from '@nestjs/common';
@@ -143,16 +149,14 @@ export class AuthController implements auth.AuthServiceController {
 		await this.commandBus.execute(new RemoveRoleFromCommand(request));
 	}
 
-	findIdentities(
-		@Payload() request: auth.FindIdentitiesDto,
-	): Promise<auth.Identities> | auth.Identities {
-		return {} as auth.Identities;
+	@SerializeOptions({ type: IdentitiesDto })
+	async findIdentities(@Payload() request: FindIdentitiesDto): Promise<IdentitiesDto> {
+		return await this.queryBus.execute(new FindIdentitiesQuery(request));
 	}
 
-	findIdentityIds(
-		@Payload() request: auth.FindIdentityIdsDto,
-	): Promise<auth.IdentityIds> | auth.IdentityIds {
-		return {} as auth.IdentityIds;
+	@SerializeOptions({ type: IdentityIdsDto })
+	async findIdentityIds(@Payload() request: FindIdentityIdsDto): Promise<IdentityIdsDto> {
+		return await this.queryBus.execute(new FindIdentityIdsQuery(request));
 	}
 
 	@SerializeOptions({ type: RolesDto })

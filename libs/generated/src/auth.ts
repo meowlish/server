@@ -110,12 +110,16 @@ export interface GetProfileDto {
 
 export interface FindIdentityIdsDto {
   usernameOrCredIdentifier?: string | undefined;
+  cursor?: string | undefined;
+  limit?: number | undefined;
 }
 
 export interface FindIdentitiesDto {
   usernameOrCredIdentifier?: string | undefined;
   hasRoles: string[];
   hasPerms: string[];
+  cursor?: string | undefined;
+  limit?: number | undefined;
 }
 
 /** Response */
@@ -1104,6 +1108,12 @@ export const FindIdentityIdsDto: MessageFns<FindIdentityIdsDto> = {
     if (message.usernameOrCredIdentifier !== undefined) {
       StringValue.encode({ value: message.usernameOrCredIdentifier! }, writer.uint32(10).fork()).join();
     }
+    if (message.cursor !== undefined) {
+      StringValue.encode({ value: message.cursor! }, writer.uint32(18).fork()).join();
+    }
+    if (message.limit !== undefined) {
+      Int32Value.encode({ value: message.limit! }, writer.uint32(26).fork()).join();
+    }
     return writer;
   },
 
@@ -1120,6 +1130,22 @@ export const FindIdentityIdsDto: MessageFns<FindIdentityIdsDto> = {
           }
 
           message.usernameOrCredIdentifier = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
@@ -1146,6 +1172,12 @@ export const FindIdentitiesDto: MessageFns<FindIdentitiesDto> = {
     }
     for (const v of message.hasPerms) {
       StringValue.encode({ value: v!! }, writer.uint32(26).fork()).join();
+    }
+    if (message.cursor !== undefined) {
+      StringValue.encode({ value: message.cursor! }, writer.uint32(34).fork()).join();
+    }
+    if (message.limit !== undefined) {
+      Int32Value.encode({ value: message.limit! }, writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -1179,6 +1211,22 @@ export const FindIdentitiesDto: MessageFns<FindIdentitiesDto> = {
           }
 
           message.hasPerms.push(StringValue.decode(reader, reader.uint32()).value);
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.cursor = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
           continue;
         }
       }
