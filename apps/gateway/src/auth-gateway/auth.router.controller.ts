@@ -1,4 +1,5 @@
 import { IsPublic } from '../auth/decorators/public.decorator';
+import { GoogleOAuth2Guard } from '../auth/guards/google-oauth2.guard';
 import { JwtRefreshAuthGuard } from '../auth/guards/jwt-refresh-auth.guard';
 import { type AuthenticatedRequest } from '../types/authenticated-request';
 import { AUTH_CLIENT } from './constants/auth';
@@ -8,6 +9,7 @@ import { ResponseTokensDto } from './dtos/res/auth.res.dto';
 import {
 	Body,
 	Controller,
+	Get,
 	Inject,
 	OnModuleInit,
 	Post,
@@ -19,7 +21,7 @@ import { type ClientGrpc } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { auth } from '@server/generated';
 import { ApiEmptyResponseEntity, ApiResponseEntity } from '@server/utils';
-import { Observable, lastValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @ApiTags('Auth')
 @Controller()
@@ -37,7 +39,7 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Register with email and password' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
-	register(@Body() body: RegisterMailDto): Observable<ResponseTokensDto> {
+	registerMail(@Body() body: RegisterMailDto): Observable<ResponseTokensDto> {
 		const res = this.authService.registerMail(body);
 		return res;
 	}
@@ -47,7 +49,7 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Log in with email and password' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
-	login(@Body() body: LoginMailDto): Observable<ResponseTokensDto> {
+	loginMail(@Body() body: LoginMailDto): Observable<ResponseTokensDto> {
 		const res = this.authService.loginMail(body);
 		return res;
 	}
@@ -68,8 +70,28 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiBearerAuth()
 	@ApiEmptyResponseEntity()
 	@ApiOperation({ summary: 'Log out from all active sessions' })
-	async logoutAll(@Req() req: AuthenticatedRequest) {
-		await lastValueFrom(this.authService.logOutAll({ identityId: req.user.sub }));
-		return null;
+	logoutAll(@Req() req: AuthenticatedRequest) {
+		return this.authService.logOutAll({ identityId: req.user.sub });
+	}
+
+	@Get('google')
+	@UseGuards(GoogleOAuth2Guard)
+	@IsPublic()
+	loginOrRegisterGoogle() {
+		return;
+	}
+
+	@Get('google/callback')
+	@UseGuards(GoogleOAuth2Guard)
+	@IsPublic()
+	@SerializeOptions({ type: ResponseTokensDto })
+	googleCallback(@Req() request: { user: auth.Tokens | boolean }): auth.Tokens | boolean {
+		return request.user;
+	}
+
+	@Get('add/google')
+	@UseGuards(GoogleOAuth2Guard)
+	addGoogleCred() {
+		return;
 	}
 }

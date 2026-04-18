@@ -4,9 +4,10 @@ model Credential {
   identifier String   @db.VarChar(255)
   secretHash String?  @map("secret_hash") @db.VarChar(255)
   loginType  String   @map("login_type")
-  identity   Identity @relation(fields: [identityId], references: [id])
+  identity   Identity @relation(fields: [identityId], references: [id], onDelete: Cascade)
 
   @@unique([identifier, loginType])
+  @@unique([identityId, loginType])
   @@index([identifier, loginType])
   @@map("credentials")
 }
@@ -15,6 +16,9 @@ model Identity {
   id            String         @id @default(uuid())
   version       Int            @default(0)
   username      String
+  fullName      String?        @map("full_name") @db.VarChar(255)
+  bio           String?        @db.VarChar(500)
+  avatarFileId  String?        @map("avatar_file_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   deletedAt     DateTime?      @map("deleted_at")
