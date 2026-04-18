@@ -11,7 +11,6 @@ import {
 	Controller,
 	Get,
 	Inject,
-	InternalServerErrorException,
 	OnModuleInit,
 	Post,
 	Req,

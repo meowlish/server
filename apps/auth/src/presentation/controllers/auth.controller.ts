@@ -21,6 +21,8 @@ import {
 	ValidateRefreshCommand,
 	ValidateRefreshCommandPayload,
 } from '../../app/commands/auth.validate-refresh.command';
+import { GetPermissionsQuery } from '../../app/queries/get-permissions.query';
+import { GetRolesQuery } from '../../app/queries/get-roles.query';
 import { AddGoogleCredDto } from '../dtos/req/add-google-cred.req.dto';
 import { LoginMailDto } from '../dtos/req/login-mail.req.dto';
 import { LogOutAllDto } from '../dtos/req/logout-all.req.dto';
@@ -30,10 +32,11 @@ import { RegisterOrLoginGoogleDto } from '../dtos/req/register-or-login-google.r
 import { ValidateAccessDto } from '../dtos/req/validate-access.req.dto';
 import { ValidateRefreshDto } from '../dtos/req/validate-refresh.req.dto';
 import { ClaimsDto } from '../dtos/res/claims.res.dto';
+import { PermissionsDto } from '../dtos/res/permissions.dto';
+import { RolesDto } from '../dtos/res/roles.res.dto';
 import { TokensDto } from '../dtos/res/tokens.res.dto';
-import { Metadata } from '@grpc/grpc-js';
 import { Controller, SerializeOptions } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Payload } from '@nestjs/microservices';
 import { auth } from '@server/generated';
 import { Observable } from 'rxjs';
@@ -41,7 +44,10 @@ import { Observable } from 'rxjs';
 @auth.AuthServiceControllerMethods()
 @Controller()
 export class AuthController implements auth.AuthServiceController {
-	constructor(private readonly commandBus: CommandBus) {}
+	constructor(
+		private readonly commandBus: CommandBus,
+		private readonly queryBus: QueryBus,
+	) {}
 
 	@SerializeOptions({ type: TokensDto })
 	async loginMail(@Payload() request: LoginMailDto): Promise<TokensDto> {
@@ -132,12 +138,14 @@ export class AuthController implements auth.AuthServiceController {
 		return {} as auth.IdentityIds;
 	}
 
-	getRoleList(): Promise<auth.RoleList> | Observable<auth.RoleList> | auth.RoleList {
-		return {} as auth.RoleList;
+	@SerializeOptions({ type: RolesDto })
+	async getRoleList(): Promise<RolesDto> {
+		return { roles: await this.queryBus.execute(new GetRolesQuery()) };
 	}
 
-	getPermList(): Promise<auth.PermList> | Observable<auth.PermList> | auth.PermList {
-		return {} as auth.PermList;
+	@SerializeOptions({ type: PermissionsDto })
+	async getPermList(): Promise<PermissionsDto> {
+		return { perms: await this.queryBus.execute(new GetPermissionsQuery()) };
 	}
 
 	updateIdentity(request: auth.UpdateIdentityDto): void | Promise<void> {
