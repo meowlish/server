@@ -2,6 +2,7 @@ import {
 	CredAddedEvent,
 	CredDeletedEvent,
 	CredUpdatedEvent,
+	IdentityUpdatedEvent,
 	RoleAddedEvent,
 	RoleDeletedEvent,
 } from '../events/identity-update.events';
@@ -18,6 +19,9 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	public readonly id: string;
 	public readonly version: number;
 	public username: string;
+	public fullName: string | null;
+	public bio: string | null;
+	public avatarFileId: string | null;
 	public roleIds: Set<string>;
 	public credentials: Credential[];
 	public readonly createdAt: Date;
@@ -28,6 +32,9 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 		id?: string;
 		version?: number;
 		username: string;
+		fullName?: string | null;
+		bio?: string | null;
+		avatarFileId?: string | null;
 		createdAt?: Date;
 		updatedAt?: Date;
 		deletedAt?: Date | null;
@@ -38,6 +45,9 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 		this.id = constructorOptions.id ?? Identity.newId();
 		this.version = constructorOptions.version ?? 0;
 		this.username = constructorOptions.username;
+		this.fullName = constructorOptions.fullName ?? null;
+		this.bio = constructorOptions.bio ?? null;
+		this.avatarFileId = constructorOptions.avatarFileId ?? null;
 		this.createdAt = constructorOptions.createdAt ?? new Date();
 		this.updatedAt = constructorOptions.updatedAt ?? new Date();
 		this.deletedAt = constructorOptions.deletedAt ?? null;
@@ -47,6 +57,11 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 
 	public updateDetails(options: IdentityUpdatableProperties): void {
 		if (options.username) this.username = options.username;
+		if (options.fullName || options.fullName === null) this.fullName = options.fullName;
+		if (options.bio || options.bio === null) this.bio = options.bio;
+		if (options.avatarFileId || options.avatarFileId === null)
+			this.avatarFileId = options.avatarFileId;
+		this.apply(new IdentityUpdatedEvent({ identityId: this.id, data: structuredClone(this) }));
 	}
 
 	public addRole(roleId: string): void {
@@ -111,4 +126,6 @@ export class Identity extends AggregateRoot<Event<any>> implements IAggregate<Id
 	}
 }
 
-type IdentityUpdatableProperties = Partial<Pick<Identity, 'username'>>;
+type IdentityUpdatableProperties = Partial<
+	Pick<Identity, 'username' | 'fullName' | 'bio' | 'avatarFileId'>
+>;

@@ -1,11 +1,33 @@
-import { ClaimsDto } from './claims.res.dto';
 import { auth } from '@server/generated';
 import { Expose, Type } from 'class-transformer';
 
+class IdentityDto implements auth.Identities_Identity {
+	@Expose()
+	avatarId?: string;
+
+	@Expose()
+	bio?: string;
+
+	@Expose()
+	fullName?: string;
+
+	@Expose()
+	id!: string;
+
+	@Expose()
+	permissions!: string[];
+
+	@Expose()
+	roles!: string[];
+
+	@Expose()
+	username!: string;
+}
+
 export class IdentitiesDto implements auth.Identities {
 	@Expose()
-	@Type(() => ClaimsDto)
-	claims!: ClaimsDto[];
+	@Type(() => IdentityDto)
+	identities!: IdentityDto[];
 
 	@Expose()
 	cursor!: string;

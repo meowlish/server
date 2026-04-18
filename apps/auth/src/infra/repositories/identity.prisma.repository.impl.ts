@@ -1,5 +1,6 @@
 import { Credential } from '../../domain/entities/credential.entity';
 import { Identity } from '../../domain/entities/identity.entity';
+import { IdentityReadModel } from '../../domain/entities/identity.read-model';
 import {
 	CredAddedEvent,
 	CredDeletedEvent,
@@ -19,7 +20,7 @@ import {
 	Identity as PrismaIdentity,
 } from '@prisma-client/auth';
 import { Permission, Role } from '@server/typing';
-import { Claims, parseEnum } from '@server/utils';
+import { parseEnum } from '@server/utils';
 import { Event } from '@server/utils';
 
 class IdentityPrismaMapper {
@@ -40,6 +41,9 @@ class IdentityPrismaMapper {
 			id: from.id,
 			version: from.version,
 			username: from.username,
+			fullName: from.fullName,
+			bio: from.bio,
+			avatarFileId: from.avatarFileId,
 			deletedAt: from.deletedAt,
 		};
 	}
@@ -59,6 +63,9 @@ class IdentityPrismaMapper {
 			id: from.id,
 			version: from.version,
 			username: from.username,
+			fullName: from.fullName,
+			bio: from.bio,
+			avatarFileId: from.avatarFileId,
 			createdAt: from.createdAt,
 			deletedAt: from.deletedAt,
 			updatedAt: from.updatedAt,
@@ -170,7 +177,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 		hasPerms?: string[];
 		lastId?: string;
 		limit?: number;
-	}): Promise<Claims[]> {
+	}): Promise<IdentityReadModel[]> {
 		if (options?.limit && options.limit < 0)
 			throw new BadRequestException('Limit must be positive');
 
@@ -221,16 +228,27 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 				}),
 			},
 			orderBy: { id: 'asc' },
-			include: {
+			select: {
+				id: true,
 				identityRoles: {
-					include: { role: { include: { rolePermissions: { include: { permission: true } } } } },
+					select: {
+						role: { select: { name: true, rolePermissions: { select: { permission: true } } } },
+					},
 				},
+				username: true,
+				fullName: true,
+				avatarFileId: true,
+				bio: true,
 			},
 			...(options?.lastId && { cursor: { id: options.lastId }, skip: 1 }),
 			take: options?.limit ?? 10,
 		});
 		return foundIdentities.map(i => ({
-			sub: i.id,
+			id: i.id,
+			username: i.username,
+			fullName: i.fullName ?? undefined,
+			avatarFileId: i.avatarFileId ?? undefined,
+			bio: i.bio ?? undefined,
 			roles: i.identityRoles.map(rIdentityRole =>
 				IdentityPrismaMapper.mapRole(rIdentityRole.role.name),
 			),

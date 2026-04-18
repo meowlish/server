@@ -17,7 +17,10 @@ import {
 import { RefreshCommand, RefreshCommandPayload } from '../../app/commands/auth.refresh.command';
 import { RemoveCredCommand } from '../../app/commands/auth.remove-cred.command';
 import { RemoveRoleFromCommand } from '../../app/commands/auth.remove-role-from.command';
-import { UpdateIdentityCommand } from '../../app/commands/auth.update-identity.command';
+import {
+	UpdateIdentityCommand,
+	UpdateIdentityCommandPayload,
+} from '../../app/commands/auth.update-identity.command';
 import { UpdatePasswordCommand } from '../../app/commands/auth.update-password.command';
 import {
 	ValidateAccessCommand,
@@ -170,7 +173,9 @@ export class AuthController implements auth.AuthServiceController {
 	}
 
 	async updateIdentity(@Payload() request: UpdateIdentityDto): Promise<void> {
-		await this.commandBus.execute(new UpdateIdentityCommand(request));
+		await this.commandBus.execute(
+			new UpdateIdentityCommand(new UpdateIdentityCommandPayload(request)),
+		);
 	}
 
 	async updateMailPassword(@Payload() request: UpdateMailPasswordDto): Promise<void> {

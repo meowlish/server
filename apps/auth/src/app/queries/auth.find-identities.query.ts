@@ -1,7 +1,8 @@
-import { Claims, Query } from '@server/utils';
+import { IdentityReadModel } from '../../domain/entities/identity.read-model';
+import { Query } from '@server/utils';
 
 export type FindIdentitiesQueryResult = {
-	claims: Claims[];
+	identities: IdentityReadModel[];
 	cursor: string;
 };
 

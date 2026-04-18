@@ -1,7 +1,9 @@
 import { type Credential } from '../entities/credential.entity';
+import { Identity } from '../entities/identity.entity';
 import { Event } from '@server/utils';
 
 // events
+export class IdentityUpdatedEvent extends Event<{ identityId: string; data: Identity }> {}
 export class RoleAddedEvent extends Event<{ identityId: string; roleId: string }> {}
 export class RoleDeletedEvent extends Event<{ identityId: string; roleId: string }> {}
 export class CredAddedEvent extends Event<{ identityId: string; data: Credential }> {}

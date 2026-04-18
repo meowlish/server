@@ -47,10 +47,10 @@ export class FindIdentitiesQueryHandler implements IQueryHandler<FindIdentitiesQ
 			usernameOrCredential: inUseIdentifier,
 			hasRoles: inUseHasRoles,
 			hasPerms: inUseHasPerms,
-			lastId: identities.at(-1)?.sub,
+			lastId: identities.at(-1)?.id,
 			limit: inUseLimit,
 		});
 
-		return { claims: identities, cursor: encodedCursor };
+		return { identities: identities, cursor: encodedCursor };
 	}
 }

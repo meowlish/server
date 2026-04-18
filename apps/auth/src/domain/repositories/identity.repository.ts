@@ -1,7 +1,7 @@
 import { LoginType } from '../../enums/login-type.enum';
 import { Identity } from '../entities/identity.entity';
+import { IdentityReadModel } from '../entities/identity.read-model';
 import { Permission, Role } from '@server/typing';
-import { Claims } from '@server/utils';
 
 export interface IIdentityRepository {
 	findOneById(id: string, deleted?: boolean): Promise<Identity | null>;
@@ -27,7 +27,7 @@ export interface IIdentityRepository {
 		hasPerms?: string[];
 		lastId?: string;
 		limit?: number;
-	}): Promise<Claims[]>;
+	}): Promise<IdentityReadModel[]>;
 }
 
 export const IIdentityRepositoryToken = Symbol('IIdentityRepository');

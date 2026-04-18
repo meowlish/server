@@ -14,7 +14,7 @@ import { IRoleReadRepositoryToken } from './domain/repositories/role.read.reposi
 import { CredentialReadPrismaRepositoryImpl } from './infra/repositories/credential.read.prisma.repository.impl';
 import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.repository.impl';
 import { RoleReadPrismaRepositoryImpl } from './infra/repositories/role.read.prisma.repository.impl';
-import { AuthController } from './presentation/controllers';
+import { AuthController } from './presentation/controllers/auth.controller';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';

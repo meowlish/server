@@ -34,12 +34,6 @@ service AuthService {
 	rpc FindIdentities(FindIdentitiesDto) returns (Identities) {}
 }
 
-service ProfileService {
-	rpc InitProfile(InitProfileDto) returns (google.protobuf.Empty) {}
-	rpc UpdateProfile(UpdateProfileDto) returns (google.protobuf.Empty) {}
-	rpc GetProfile(GetProfileDto) returns (Profile) {}
-}
-
 // Request
 message RegisterMailDto {
 	google.protobuf.StringValue username = 1;
@@ -102,8 +96,14 @@ message LogOutAllDto {
 }
 
 message UpdateIdentityDto {
-	google.protobuf.StringValue identity_id = 1;
-	google.protobuf.StringValue username    = 2;
+	google.protobuf.StringValue          identity_id        = 1;
+	optional google.protobuf.StringValue username           = 2;
+	optional google.protobuf.StringValue full_name          = 3;
+	optional google.protobuf.BoolValue   set_full_name_null = 4;
+	optional google.protobuf.StringValue bio                = 5;
+	optional google.protobuf.BoolValue   set_bio_null       = 6;
+	optional google.protobuf.StringValue avatar_id          = 7;
+	optional google.protobuf.BoolValue   set_avatar_id_null = 8;
 }
 
 message AssignRoleToDto {
@@ -114,26 +114,6 @@ message AssignRoleToDto {
 message RemoveRoleFromDto {
 	google.protobuf.StringValue role_id     = 1;
 	google.protobuf.StringValue identity_id = 2;
-}
-
-message InitProfileDto {
-	google.protobuf.StringValue          identity_id    = 1;
-	google.protobuf.StringValue          full_name      = 2;
-	optional google.protobuf.StringValue display_name   = 3;
-	optional google.protobuf.StringValue bio            = 4;
-	optional google.protobuf.StringValue avatar_file_id = 5;
-}
-
-message UpdateProfileDto {
-	google.protobuf.StringValue          identity_id    = 1;
-	optional google.protobuf.StringValue full_name      = 2;
-	optional google.protobuf.StringValue display_name   = 3;
-	optional google.protobuf.StringValue bio            = 4;
-	optional google.protobuf.StringValue avatar_file_id = 5;
-}
-
-message GetProfileDto {
-	google.protobuf.StringValue identity_id = 1;
 }
 
 message FindIdentityIdsDto {
@@ -182,21 +162,24 @@ message PermList {
 	repeated string perms = 1;
 }
 
-message Profile {
-	string          full_name      = 1;
-	optional string display_name   = 2;
-	optional string bio            = 3;
-	optional string avatar_file_id = 4;
-}
-
 message IdentityIds {
 	repeated string ids    = 1;
 	string          cursor = 2;
 }
 
 message Identities {
-	repeated Claims claims = 1;
-	string          cursor = 2;
+	repeated Identity identities = 1;
+	string            cursor     = 2;
+
+	message Identity {
+		string          id          = 1;
+		string          username    = 2;
+		optional string full_name   = 3;
+		optional string bio         = 4;
+		optional string avatar_id   = 5;
+		repeated string roles       = 6;
+		repeated string permissions = 7;
+	}
 }
 
 message Credentials {
