@@ -48,8 +48,8 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get the authenticated user badges' })
 	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
-	getMyBadges(@Query() body: GetUsersBadgesDto, @Req() req: AuthenticatedRequest) {
-		return this.achievementService.getUsersBadges({ ...body, userId: req.user.sub });
+	getMyBadges(@Query() query: GetUsersBadgesDto, @Req() req: AuthenticatedRequest) {
+		return this.achievementService.getUsersBadges({ ...query, userId: req.user.sub });
 	}
 
 	@Get(':uid')
@@ -57,8 +57,8 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get badges earned by a specific user' })
 	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
-	getSomeonesBadges(@Query() body: GetUsersBadgesDto, @Param('uid') uid: string) {
-		return this.achievementService.getUsersBadges({ ...body, userId: uid });
+	getSomeonesBadges(@Query() query: GetUsersBadgesDto, @Param('uid') uid: string) {
+		return this.achievementService.getUsersBadges({ ...query, userId: uid });
 	}
 
 	@Get('my/progress')
