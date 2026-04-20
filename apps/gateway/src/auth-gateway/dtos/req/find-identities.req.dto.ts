@@ -6,7 +6,7 @@ export class FindIdentitiesDto {
 	@IsOptional()
 	@IsString()
 	@ApiPropertyOptional()
-	usernameOrCredIdentifier?: string;
+	usernameOrCredIdentifierOrId?: string;
 
 	@IsArray()
 	@IsOptional()

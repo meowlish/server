@@ -42,13 +42,14 @@ export class FindIdentitiesQueryHandler
 				this.cursorPaginationHelper.decodeCursor<FindIdentitiesCursor>(payload.cursor)
 			:	undefined;
 
-		const inUseIdentifier = decodedCursor?.usernameOrCredential ?? payload.usernameOrCredential;
+		const inUseIdentifier =
+			decodedCursor?.usernameOrCredentialOrId ?? payload.usernameOrCredentialOrId;
 		const inUseHasRoles = decodedCursor?.hasRoles ?? payload.hasRoles;
 		const inUseHasPerms = decodedCursor?.hasPerms ?? payload.hasPerms;
 		const inUseLimit = payload.limit ?? decodedCursor?.limit ?? 10;
 
 		const identities = await this.identityRepository.findIdentities({
-			usernameOrCredentialIdentifier: inUseIdentifier,
+			usernameOrCredentialIdentifierOrId: inUseIdentifier,
 			hasRoles: inUseHasRoles,
 			hasPerms: inUseHasPerms,
 			lastId: decodedCursor?.lastId,
@@ -66,7 +67,7 @@ export class FindIdentitiesQueryHandler
 		}
 
 		const encodedCursor = this.cursorPaginationHelper.encodeCursor<FindIdentitiesCursor>({
-			usernameOrCredential: inUseIdentifier,
+			usernameOrCredentialOrId: inUseIdentifier,
 			hasRoles: inUseHasRoles,
 			hasPerms: inUseHasPerms,
 			lastId: identities.at(-1)?.id,

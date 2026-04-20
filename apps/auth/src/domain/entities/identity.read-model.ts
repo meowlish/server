@@ -7,3 +7,5 @@ export type IdentityReadModel = {
 	permissions: string[];
 	roles: string[];
 };
+
+export type HydratedIdentityReadModel = Omit<IdentityReadModel, 'permissions' | 'roles'>;

@@ -1,6 +1,9 @@
 import { Credential } from '../../domain/entities/credential.entity';
 import { Identity } from '../../domain/entities/identity.entity';
-import { IdentityReadModel } from '../../domain/entities/identity.read-model';
+import {
+	HydratedIdentityReadModel,
+	IdentityReadModel,
+} from '../../domain/entities/identity.read-model';
 import {
 	CredAddedEvent,
 	CredDeletedEvent,
@@ -172,7 +175,7 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 
 	// raw SQL join might be better without processing in-app but time is of the essence
 	async findIdentities(options?: {
-		usernameOrCredentialIdentifier?: string;
+		usernameOrCredentialIdentifierOrId?: string;
 		hasRoles?: string[];
 		hasPerms?: string[];
 		lastId?: string;
@@ -213,14 +216,15 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 
 		const foundIdentities = await this.txHost.tx.identity.findMany({
 			where: {
-				...(options?.usernameOrCredentialIdentifier && {
+				...(options?.usernameOrCredentialIdentifierOrId && {
 					OR: [
-						{ username: { contains: options.usernameOrCredentialIdentifier } },
+						{ username: { contains: options.usernameOrCredentialIdentifierOrId } },
 						{
 							credentials: {
-								some: { identifier: { contains: options.usernameOrCredentialIdentifier } },
+								some: { identifier: { contains: options.usernameOrCredentialIdentifierOrId } },
 							},
 						},
+						{ id: { contains: options.usernameOrCredentialIdentifierOrId } },
 					],
 				}),
 				...(roleOr.length && {
@@ -261,6 +265,49 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 					),
 				),
 			],
+		}));
+	}
+
+	async hydrate(id: string): Promise<HydratedIdentityReadModel | null> {
+		const foundIdentity = await this.txHost.tx.identity.findUnique({
+			where: { id: id },
+			select: {
+				id: true,
+				username: true,
+				fullName: true,
+				avatarFileId: true,
+				bio: true,
+			},
+		});
+		return foundIdentity ?
+				{
+					id: foundIdentity.id,
+					username: foundIdentity.username,
+					fullName: foundIdentity.fullName ?? undefined,
+					avatarUrl: foundIdentity.avatarFileId ?? undefined,
+					bio: foundIdentity.bio ?? undefined,
+				}
+			:	null;
+	}
+
+	async hydrateMany(ids: string[]): Promise<HydratedIdentityReadModel[]> {
+		const foundIdentities = await this.txHost.tx.identity.findMany({
+			where: { id: { in: ids } },
+			select: {
+				id: true,
+				username: true,
+				fullName: true,
+				avatarFileId: true,
+				bio: true,
+			},
+		});
+
+		return foundIdentities.map(i => ({
+			id: i.id,
+			username: i.username,
+			fullName: i.fullName ?? undefined,
+			avatarUrl: i.avatarFileId ?? undefined,
+			bio: i.bio ?? undefined,
 		}));
 	}
 

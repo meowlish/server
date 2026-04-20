@@ -1,6 +1,6 @@
 import { LoginType } from '../../enums/login-type.enum';
 import { Identity } from '../entities/identity.entity';
-import { IdentityReadModel } from '../entities/identity.read-model';
+import { HydratedIdentityReadModel, IdentityReadModel } from '../entities/identity.read-model';
 import { Permission, Role } from '@server/typing';
 
 export interface IIdentityRepository {
@@ -22,12 +22,14 @@ export interface IIdentityRepository {
 		limit?: number;
 	}): Promise<string[]>;
 	findIdentities(options?: {
-		usernameOrCredentialIdentifier?: string;
+		usernameOrCredentialIdentifierOrId?: string;
 		hasRoles?: string[];
 		hasPerms?: string[];
 		lastId?: string;
 		limit?: number;
 	}): Promise<IdentityReadModel[]>;
+	hydrate(id: string): Promise<HydratedIdentityReadModel | null>;
+	hydrateMany(ids: string[]): Promise<HydratedIdentityReadModel[]>;
 }
 
 export const IIdentityRepositoryToken = Symbol('IIdentityRepository');

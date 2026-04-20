@@ -16,6 +16,7 @@ import { UpdateIdentityDto } from './dtos/req/update-identity.req.dto';
 import { UpdateMailPasswordDto } from './dtos/req/update-password.req.dto';
 import { ResponseTokensDto } from './dtos/res/auth.res.dto';
 import { CredentialsDto } from './dtos/res/credentials.res.dto';
+import { HydratedIdentitiesDto, HydratedIdentityDto } from './dtos/res/hydrated-identities.dto';
 import { IdentitiesDto } from './dtos/res/identities.res.dto';
 import { IdentityIdsDto } from './dtos/res/identity-ids.res.dto';
 import { LimitedIdentitiesDto } from './dtos/res/limited-identities.res.dto';
@@ -216,10 +217,36 @@ export class AuthGatewayController implements OnModuleInit {
 		return this.authService.updateIdentity({ ...body, identityId: request.user.sub });
 	}
 
+	@Get('my/identity')
+	@ApiOperation({ summary: 'Get your own identity information' })
+	@ApiResponseEntity(HydratedIdentityDto)
+	@SerializeOptions({ type: HydratedIdentityDto })
+	getOwnIdentity(@Req() request: AuthenticatedRequest) {
+		return this.authService.hydrateIdentity({ identityId: request.user.sub });
+	}
+
 	@Post('credentials/mail/password')
 	@ApiEmptyResponseEntity()
 	@ApiOperation({ summary: 'Change password' })
 	updateMailPassword(@Body() body: UpdateMailPasswordDto, @Req() request: AuthenticatedRequest) {
 		return this.authService.updateMailPassword({ ...body, identityId: request.user.sub });
+	}
+
+	@Get('hydrate-many')
+	@IsPublic()
+	@ApiOperation({ summary: 'Hydrate ids to identities' })
+	@ApiResponseEntity(HydratedIdentitiesDto)
+	@SerializeOptions({ type: HydratedIdentitiesDto })
+	hydrateIdentities(@Query('ids') ids: string[]) {
+		return this.authService.hydrateIdentities({ identityIds: ids });
+	}
+
+	@Get('hydrate')
+	@IsPublic()
+	@ApiOperation({ summary: 'Hydrate an id to an identity' })
+	@ApiResponseEntity(HydratedIdentityDto)
+	@SerializeOptions({ type: HydratedIdentityDto })
+	hydrateIdentity(@Query('id') id: string) {
+		return this.authService.hydrateIdentity({ identityId: id });
 	}
 }
