@@ -50,6 +50,12 @@
 			"configurations": {
 				"development": {
 					"command": "pnpm exec prisma migrate dev {args}"
+				},
+				"reset": {
+					"command": "pnpm exec prisma migrate reset {args}"
+				},
+				"production": {
+					"command": "pnpm exec prisma migrate deploy {args}"
 				}
 			},
 			"defaultConfiguration": "development"
