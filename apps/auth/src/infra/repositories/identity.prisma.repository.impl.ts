@@ -1,16 +1,16 @@
 import { Credential } from '../../domain/entities/credential.entity';
 import { Identity } from '../../domain/entities/identity.entity';
 import {
-	HydratedIdentityReadModel,
-	IdentityReadModel,
-} from '../../domain/entities/identity.read-model';
-import {
 	CredAddedEvent,
 	CredDeletedEvent,
 	CredUpdatedEvent,
 	RoleAddedEvent,
 	RoleDeletedEvent,
 } from '../../domain/events/identity-update.events';
+import {
+	HydratedIdentityReadModel,
+	IdentityReadModel,
+} from '../../domain/read-models/identity.read-model';
 import { IIdentityRepository } from '../../domain/repositories/identity.repository';
 import { LoginType } from '../../enums/login-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';

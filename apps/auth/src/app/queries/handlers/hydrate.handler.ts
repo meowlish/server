@@ -1,4 +1,4 @@
-import { HydratedIdentityReadModel } from '../../../domain/entities/identity.read-model';
+import { HydratedIdentityReadModel } from '../../../domain/read-models/identity.read-model';
 import {
 	type IIdentityRepository,
 	IIdentityRepositoryToken,

@@ -1,4 +1,4 @@
-import { IdentityReadModel } from '../../domain/entities/identity.read-model';
+import { IdentityReadModel } from '../../domain/read-models/identity.read-model';
 import { Query } from '@server/utils';
 
 export type FindIdentitiesQueryResult = {

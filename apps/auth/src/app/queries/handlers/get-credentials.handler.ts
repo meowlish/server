@@ -1,4 +1,4 @@
-import { CredentialReadModel } from '../../../domain/entities/credential.read-model';
+import { CredentialReadModel } from '../../../domain/read-models/credential.read-model';
 import {
 	type ICredentialReadRepository,
 	ICredentialReadRepositoryToken,

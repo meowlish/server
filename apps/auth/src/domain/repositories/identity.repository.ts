@@ -1,6 +1,6 @@
 import { LoginType } from '../../enums/login-type.enum';
 import { Identity } from '../entities/identity.entity';
-import { HydratedIdentityReadModel, IdentityReadModel } from '../entities/identity.read-model';
+import { HydratedIdentityReadModel, IdentityReadModel } from '../read-models/identity.read-model';
 import { Permission, Role } from '@server/typing';
 
 export interface IIdentityRepository {
