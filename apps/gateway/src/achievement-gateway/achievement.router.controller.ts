@@ -4,6 +4,7 @@ import { ACHIEVEMENT_CLIENT } from './constants/achievement';
 import { GetUsersBadgesDto } from './dtos/req/get-users-badges.req.dto';
 import { FoundBadgesDto } from './dtos/res/found-badges.res.dto';
 import { FoundUsersBadgesDto } from './dtos/res/found-users-badges.res.dto';
+import { ProgressDto } from './dtos/res/progress.res.dto';
 import {
 	Controller,
 	Get,
@@ -65,5 +66,14 @@ export class AchievementGatewayController implements OnModuleInit {
 		@Param('uid') uid: string,
 	): Observable<FoundUsersBadgesDto> {
 		return this.achievementService.getUsersBadges({ ...body, userId: uid });
+	}
+
+	@Get('my/progress')
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get the authenticated user badges progress' })
+	@ApiResponseEntity(ProgressDto)
+	@SerializeOptions({ type: ProgressDto })
+	getMyProgress(@Req() req: AuthenticatedRequest): Observable<ProgressDto> {
+		return this.achievementService.getUsersProgess({ userId: req.user.sub });
 	}
 }
