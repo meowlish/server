@@ -5,7 +5,7 @@ import { Prisma } from '@prisma-client/exam';
 export class IeltsLExamSect12Seeder {
 	constructor(private readonly tagNamesToIdInputs: (names: string[]) => { tagId: string }[]) {}
 
-	seed() {
+	seed(): Prisma.SectionCreateWithoutExamInput[] {
 		return [
 			// ─────────────────────────────────────────────────────────────────
 			// PART 1 — Short Stay Accommodation Form (Q1–10)
@@ -40,9 +40,7 @@ export class IeltsLExamSect12Seeder {
 <strong>Price Range:</strong> up to $ ____10____ a week</p></div>`,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: 'SYLVIA', isCorrect: true },
-								],
+								create: [{ key: 'SYLVIA', isCorrect: true }],
 							},
 							questionFiles: { create: [{ fileId: 'SYSTEM_sim_0101.mp3' }] },
 							questionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
@@ -51,9 +49,7 @@ export class IeltsLExamSect12Seeder {
 							order: 2,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: 'ENGLAND', isCorrect: true },
-								],
+								create: [{ key: 'ENGLAND', isCorrect: true }],
 							},
 						},
 						{
@@ -94,18 +90,14 @@ export class IeltsLExamSect12Seeder {
 							order: 6,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: 'APARTMENT', isCorrect: true },
-								],
+								create: [{ key: 'APARTMENT', isCorrect: true }],
 							},
 						},
 						{
 							order: 7,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: 'SECURE', isCorrect: true },
-								],
+								create: [{ key: 'SECURE', isCorrect: true }],
 							},
 						},
 						{
@@ -127,18 +119,14 @@ export class IeltsLExamSect12Seeder {
 							order: 9,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: 'PALM BEACH', isCorrect: true },
-								],
+								create: [{ key: 'PALM BEACH', isCorrect: true }],
 							},
 						},
 						{
 							order: 10,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
-								create: [
-									{ key: '1500', isCorrect: true },
-								],
+								create: [{ key: '1500', isCorrect: true }],
 							},
 						},
 					],
@@ -241,9 +229,7 @@ export class IeltsLExamSect12Seeder {
 </tbody></table></div>`,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'TRAMPING', isCorrect: true },
-											],
+											create: [{ key: 'TRAMPING', isCorrect: true }],
 										},
 										questionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
 									},
@@ -271,27 +257,21 @@ export class IeltsLExamSect12Seeder {
 										order: 18,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'VARIABLE', isCorrect: true },
-											],
+											create: [{ key: 'VARIABLE', isCorrect: true }],
 										},
 									},
 									{
 										order: 19,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'MYSTERY', isCorrect: true },
-											],
+											create: [{ key: 'MYSTERY', isCorrect: true }],
 										},
 									},
 									{
 										order: 20,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'CHAIRMAN', isCorrect: true },
-											],
+											create: [{ key: 'CHAIRMAN', isCorrect: true }],
 										},
 									},
 								],

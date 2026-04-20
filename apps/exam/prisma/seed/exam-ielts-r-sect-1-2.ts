@@ -1,5 +1,6 @@
 import { QuestionType } from '../../src/enums/question-type.enum';
 import { SectionType } from '../../src/enums/section-type.enum';
+import { Prisma } from '@prisma-client/exam';
 
 // ─── Passage texts ────────────────────────────────────────────────────────────
 const PASSAGE_1 = `<div class="context-wrapper"><div class="context-content text-highlightable"><div>
@@ -71,7 +72,7 @@ G. Roger Ebert</p></div>`;
 export class IeltsRExamSect12Seeder {
 	constructor(private readonly tagNamesToIdInputs: (names: string[]) => { tagId: string }[]) {}
 
-	seed() {
+	seed(): Prisma.SectionCreateWithoutExamInput[] {
 		return [
 			// ─────────────────────────────────────────────────────────────────
 			// PASSAGE 1 — A disaster of Titanic proportions (Q1–13)
@@ -100,7 +101,13 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'FLEET', isCorrect: true },
 											],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs([
+												'IELTS Reading P1-3',
+												'Detail Information',
+												'Form Schedule List',
+											]),
+										},
 									},
 									{
 										order: 2,
@@ -108,7 +115,9 @@ export class IeltsRExamSect12Seeder {
 										choices: {
 											create: [{ key: 'LOOKOUT', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 3,
@@ -122,7 +131,9 @@ export class IeltsRExamSect12Seeder {
 												{ key: '12 AM', isCorrect: true },
 											],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 4,
@@ -130,7 +141,9 @@ export class IeltsRExamSect12Seeder {
 										choices: {
 											create: [{ key: 'LIFEBOATS', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 5,
@@ -138,7 +151,9 @@ export class IeltsRExamSect12Seeder {
 										choices: {
 											create: [{ key: 'WIRELESS OPERATORS', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 6,
@@ -149,7 +164,9 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'MESSAGE', isCorrect: true },
 											],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 								],
 							},
@@ -165,7 +182,9 @@ export class IeltsRExamSect12Seeder {
 								create: [
 									{
 										order: 7,
-										content: P1_G2_INSTRUCTION + '<p>The binoculars for the men on watch had been left in a crew locker in Southampton.</p>',
+										content:
+											P1_G2_INSTRUCTION +
+											'<p>The binoculars for the men on watch had been left in a crew locker in Southampton.</p>',
 										type: QuestionType.MultipleChoiceSingle,
 										choices: {
 											create: [
@@ -186,7 +205,8 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'NOT GIVEN', content: 'NOT GIVEN', isCorrect: true },
 											],
 										},
-										content: 'The missing binoculars were the major factor leading to the collision with the iceberg.',
+										content:
+											'The missing binoculars were the major factor leading to the collision with the iceberg.',
 										questionTags: { create: this.tagNamesToIdInputs(['True False NG']) },
 									},
 									{
@@ -199,7 +219,8 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'NOT GIVEN', content: 'NOT GIVEN', isCorrect: false },
 											],
 										},
-										content: 'Philips missed notification about the ice from Evans because the Titanic\'s wireless system was not functioning at the time.',
+										content:
+											"Philips missed notification about the ice from Evans because the Titanic's wireless system was not functioning at the time.",
 										questionTags: { create: this.tagNamesToIdInputs(['True False NG']) },
 									},
 									{
@@ -225,7 +246,8 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'NOT GIVEN', content: 'NOT GIVEN', isCorrect: false },
 											],
 										},
-										content: "Howell believed the captain's failure to reduce speed was an irresponsible action.",
+										content:
+											"Howell believed the captain's failure to reduce speed was an irresponsible action.",
 										questionTags: { create: this.tagNamesToIdInputs(['True False NG']) },
 									},
 									{
@@ -238,7 +260,8 @@ export class IeltsRExamSect12Seeder {
 												{ key: 'NOT GIVEN', content: 'NOT GIVEN', isCorrect: false },
 											],
 										},
-										content: 'The Titanic was able to seat more passengers in lifeboats than the Board of Trade required.',
+										content:
+											'The Titanic was able to seat more passengers in lifeboats than the Board of Trade required.',
 										questionTags: { create: this.tagNamesToIdInputs(['True False NG']) },
 									},
 									{
@@ -287,7 +310,9 @@ export class IeltsRExamSect12Seeder {
 										choices: {
 											create: [{ key: 'V', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Matching Headings']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Matching Headings']),
+										},
 									},
 									{
 										order: 15,
@@ -348,12 +373,16 @@ export class IeltsRExamSect12Seeder {
 								create: [
 									{
 										order: 20,
-										content: P2_G2_INSTRUCTION + '<p>3-D conflicts with our mental construct of our surroundings.</p>',
+										content:
+											P2_G2_INSTRUCTION +
+											'<p>3-D conflicts with our mental construct of our surroundings.</p>',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'F', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Detail Information']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Detail Information']),
+										},
 									},
 									{
 										order: 21,
@@ -366,7 +395,8 @@ export class IeltsRExamSect12Seeder {
 									},
 									{
 										order: 22,
-										content: 'Effective use of 3-D technology may increase our sensation of elevation.',
+										content:
+											'Effective use of 3-D technology may increase our sensation of elevation.',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'C', isCorrect: true }],
@@ -393,7 +423,8 @@ export class IeltsRExamSect12Seeder {
 									},
 									{
 										order: 25,
-										content: "Avatar's strength is found in its visual splendour, not in aspects of story.",
+										content:
+											"Avatar's strength is found in its visual splendour, not in aspects of story.",
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'A', isCorrect: true }],
@@ -402,7 +433,8 @@ export class IeltsRExamSect12Seeder {
 									},
 									{
 										order: 26,
-										content: 'People already have the mental capacity to see ordinary movies in three dimensions.',
+										content:
+											'People already have the mental capacity to see ordinary movies in three dimensions.',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'G', isCorrect: true }],

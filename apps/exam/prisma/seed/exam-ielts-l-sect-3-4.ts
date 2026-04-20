@@ -5,7 +5,7 @@ import { Prisma } from '@prisma-client/exam';
 export class IeltsLExamSect34Seeder {
 	constructor(private readonly tagNamesToIdInputs: (names: string[]) => { tagId: string }[]) {}
 
-	seed() {
+	seed(): Prisma.SectionCreateWithoutExamInput[] {
 		return [
 			// ─────────────────────────────────────────────────────────────────
 			// PART 3 — OECD Report: Students and Technology (Q21–30)
@@ -60,9 +60,7 @@ export class IeltsLExamSect34Seeder {
 										order: 22,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'DOCUMENT', isCorrect: true },
-											],
+											create: [{ key: 'DOCUMENT', isCorrect: true }],
 										},
 									},
 									{
@@ -79,18 +77,14 @@ export class IeltsLExamSect34Seeder {
 										order: 24,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'IMPACT', isCorrect: true },
-											],
+											create: [{ key: 'IMPACT', isCorrect: true }],
 										},
 									},
 									{
 										order: 25,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'WRITTEN REVIEW', isCorrect: true },
-											],
+											create: [{ key: 'WRITTEN REVIEW', isCorrect: true }],
 										},
 									},
 									{
@@ -130,9 +124,7 @@ export class IeltsLExamSect34Seeder {
 </tbody></table></div>`,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'TOWER', isCorrect: true },
-											],
+											create: [{ key: 'TOWER', isCorrect: true }],
 										},
 										questionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
 									},
@@ -140,27 +132,21 @@ export class IeltsLExamSect34Seeder {
 										order: 28,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: '2008', isCorrect: true },
-											],
+											create: [{ key: '2008', isCorrect: true }],
 										},
 									},
 									{
 										order: 29,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'BROWN', isCorrect: true },
-											],
+											create: [{ key: 'BROWN', isCorrect: true }],
 										},
 									},
 									{
 										order: 30,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'KNOWLEDGE POLICY', isCorrect: true },
-											],
+											create: [{ key: 'KNOWLEDGE POLICY', isCorrect: true }],
 										},
 									},
 								],
@@ -201,9 +187,7 @@ export class IeltsLExamSect34Seeder {
 <p>People became interested in the immune system after noticing that ____36____ seemed to pass on immunity. This led to further research and eventually a successful ____37____.</p></div>`,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'ATTACKS', isCorrect: true },
-											],
+											create: [{ key: 'ATTACKS', isCorrect: true }],
 										},
 										questionFiles: { create: [{ fileId: 'SYSTEM_sim_0104.mp3' }] },
 										questionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
@@ -222,9 +206,7 @@ export class IeltsLExamSect34Seeder {
 										order: 33,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'ACTIVE', isCorrect: true },
-											],
+											create: [{ key: 'ACTIVE', isCorrect: true }],
 										},
 									},
 									{
@@ -242,27 +224,21 @@ export class IeltsLExamSect34Seeder {
 										order: 35,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'BLOOD', isCorrect: true },
-											],
+											create: [{ key: 'BLOOD', isCorrect: true }],
 										},
 									},
 									{
 										order: 36,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'INFECTED COWS', isCorrect: true },
-											],
+											create: [{ key: 'INFECTED COWS', isCorrect: true }],
 										},
 									},
 									{
 										order: 37,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'EXPERIMENT', isCorrect: true },
-											],
+											create: [{ key: 'EXPERIMENT', isCorrect: true }],
 										},
 									},
 								],
@@ -285,9 +261,7 @@ export class IeltsLExamSect34Seeder {
 <p>____38____ (B-lymphocyte)</p></div>`,
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'F', isCorrect: true },
-											],
+											create: [{ key: 'F', isCorrect: true }],
 										},
 										questionFiles: {
 											create: [{ fileId: 'SYSTEM_444c3d348da9908c25bbfb578d51c993a52b9854.jpg' }],
@@ -299,9 +273,7 @@ export class IeltsLExamSect34Seeder {
 										content: '<p>____39____ (antibody)</p>',
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'A', isCorrect: true },
-											],
+											create: [{ key: 'A', isCorrect: true }],
 										},
 									},
 									{
@@ -309,9 +281,7 @@ export class IeltsLExamSect34Seeder {
 										content: '<p>____40____ (antigen)</p>',
 										type: QuestionType.FillAnyInTheBlank,
 										choices: {
-											create: [
-												{ key: 'C', isCorrect: true },
-											],
+											create: [{ key: 'C', isCorrect: true }],
 										},
 									},
 								],

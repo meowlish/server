@@ -1,5 +1,6 @@
 import { QuestionType } from '../../src/enums/question-type.enum';
 import { SectionType } from '../../src/enums/section-type.enum';
+import { Prisma } from '@prisma-client/exam';
 
 // ─── Passage 3 text ───────────────────────────────────────────────────────────
 const PASSAGE_3 = `<div class="context-wrapper"><div class="context-content text-highlightable"><div>
@@ -40,7 +41,7 @@ const P3_G2_INSTRUCTION = `<div><p><em>Complete the table below.</em><br/>
 export class IeltsRExamSect3Seeder {
 	constructor(private readonly tagNamesToIdInputs: (names: string[]) => { tagId: string }[]) {}
 
-	seed() {
+	seed(): Prisma.SectionCreateWithoutExamInput[] {
 		return [
 			// ─────────────────────────────────────────────────────────────────
 			// PASSAGE 3 — Does water have memory? (Q27–40)
@@ -61,12 +62,17 @@ export class IeltsRExamSect3Seeder {
 								create: [
 									{
 										order: 27,
-										content: PASSAGE_3 + P3_G1_INSTRUCTION + '<p>In the late 18th century, Hahnemann discovered that quinine was able to</p>',
+										content:
+											PASSAGE_3 +
+											P3_G1_INSTRUCTION +
+											'<p>In the late 18th century, Hahnemann discovered that quinine was able to</p>',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'C', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Text Completion']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Text Completion']),
+										},
 									},
 									{
 										order: 28,
@@ -79,7 +85,8 @@ export class IeltsRExamSect3Seeder {
 									},
 									{
 										order: 29,
-										content: 'Benveniste argued in the journal Nature that water molecules possess the ability to',
+										content:
+											'Benveniste argued in the journal Nature that water molecules possess the ability to',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'I', isCorrect: true }],
@@ -106,7 +113,8 @@ export class IeltsRExamSect3Seeder {
 									},
 									{
 										order: 32,
-										content: 'Classical homeopaths suggest combination remedies have been created to',
+										content:
+											'Classical homeopaths suggest combination remedies have been created to',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'J', isCorrect: true }],
@@ -132,7 +140,13 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'ACTIVE', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3', 'Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs([
+												'IELTS Reading P1-3',
+												'Detail Information',
+												'Form Schedule List',
+											]),
+										},
 									},
 									{
 										order: 34,
@@ -140,7 +154,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'TOXIC', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 35,
@@ -148,7 +164,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'SYSTEMATIC DESIGN', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 36,
@@ -156,7 +174,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'MONITOR', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 37,
@@ -167,7 +187,9 @@ export class IeltsRExamSect3Seeder {
 												{ key: 'SIDE EFFECTS', isCorrect: true },
 											],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 38,
@@ -175,7 +197,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'SYMPTOMS', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 39,
@@ -183,7 +207,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'PLACEBO EFFECT', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 									{
 										order: 40,
@@ -191,7 +217,9 @@ export class IeltsRExamSect3Seeder {
 										choices: {
 											create: [{ key: 'UNCONSCIOUS', isCorrect: true }],
 										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']) },
+										questionTags: {
+											create: this.tagNamesToIdInputs(['Detail Information', 'Form Schedule List']),
+										},
 									},
 								],
 							},
