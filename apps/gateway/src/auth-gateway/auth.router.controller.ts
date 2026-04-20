@@ -41,7 +41,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { auth } from '@server/generated';
 import { Role } from '@server/typing';
 import { ApiEmptyResponseEntity, ApiResponseEntity } from '@server/utils';
-import { Observable } from 'rxjs';
 
 @ApiBearerAuth()
 @ApiTags('Auth')
@@ -60,7 +59,7 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Register with email and password' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
-	registerMail(@Body() body: RegisterMailDto): Observable<ResponseTokensDto> {
+	registerMail(@Body() body: RegisterMailDto) {
 		const res = this.authService.registerMail(body);
 		return res;
 	}
@@ -70,7 +69,7 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Log in with email and password' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
-	loginMail(@Body() body: LoginMailDto): Observable<ResponseTokensDto> {
+	loginMail(@Body() body: LoginMailDto) {
 		const res = this.authService.loginMail(body);
 		return res;
 	}
@@ -81,7 +80,7 @@ export class AuthGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Refresh access tokens using a refresh token' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
-	refresh(@Req() req: AuthenticatedRequest): Observable<ResponseTokensDto> {
+	refresh(@Req() req: AuthenticatedRequest) {
 		const res = this.authService.refresh({ identityId: req.user.sub });
 		return res;
 	}

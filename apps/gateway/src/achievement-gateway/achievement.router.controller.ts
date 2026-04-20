@@ -19,7 +19,6 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { achievement } from '@server/generated';
 import { ApiResponseEntity } from '@server/utils';
-import { Observable } from 'rxjs';
 
 @ApiBearerAuth()
 @ApiTags('Achievements')
@@ -41,7 +40,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get all available badges' })
 	@ApiResponseEntity(FoundBadgesDto)
 	@SerializeOptions({ type: FoundBadgesDto })
-	getAllBadges(): Observable<FoundBadgesDto> {
+	getAllBadges() {
 		return this.achievementService.getAll({});
 	}
 
@@ -49,10 +48,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get the authenticated user badges' })
 	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
-	getMyBadges(
-		@Query() body: GetUsersBadgesDto,
-		@Req() req: AuthenticatedRequest,
-	): Observable<FoundUsersBadgesDto> {
+	getMyBadges(@Query() body: GetUsersBadgesDto, @Req() req: AuthenticatedRequest) {
 		return this.achievementService.getUsersBadges({ ...body, userId: req.user.sub });
 	}
 
@@ -61,10 +57,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get badges earned by a specific user' })
 	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
-	getSomeonesBadges(
-		@Query() body: GetUsersBadgesDto,
-		@Param('uid') uid: string,
-	): Observable<FoundUsersBadgesDto> {
+	getSomeonesBadges(@Query() body: GetUsersBadgesDto, @Param('uid') uid: string) {
 		return this.achievementService.getUsersBadges({ ...body, userId: uid });
 	}
 
@@ -72,7 +65,7 @@ export class AchievementGatewayController implements OnModuleInit {
 	@ApiOperation({ summary: 'Get the authenticated user badges progress' })
 	@ApiResponseEntity(ProgressDto)
 	@SerializeOptions({ type: ProgressDto })
-	getMyProgress(@Req() req: AuthenticatedRequest): Observable<ProgressDto> {
+	getMyProgress(@Req() req: AuthenticatedRequest) {
 		return this.achievementService.getUsersProgess({ userId: req.user.sub });
 	}
 }
