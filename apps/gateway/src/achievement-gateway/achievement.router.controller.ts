@@ -21,6 +21,7 @@ import { achievement } from '@server/generated';
 import { ApiResponseEntity } from '@server/utils';
 import { Observable } from 'rxjs';
 
+@ApiBearerAuth()
 @ApiTags('Achievements')
 @Controller('badges')
 export class AchievementGatewayController implements OnModuleInit {
@@ -45,7 +46,6 @@ export class AchievementGatewayController implements OnModuleInit {
 	}
 
 	@Get('my')
-	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Get the authenticated user badges' })
 	@ApiResponseEntity(FoundUsersBadgesDto)
 	@SerializeOptions({ type: FoundUsersBadgesDto })
@@ -69,7 +69,6 @@ export class AchievementGatewayController implements OnModuleInit {
 	}
 
 	@Get('my/progress')
-	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Get the authenticated user badges progress' })
 	@ApiResponseEntity(ProgressDto)
 	@SerializeOptions({ type: ProgressDto })

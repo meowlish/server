@@ -43,6 +43,7 @@ import { Role } from '@server/typing';
 import { ApiEmptyResponseEntity, ApiResponseEntity } from '@server/utils';
 import { Observable } from 'rxjs';
 
+@ApiBearerAuth()
 @ApiTags('Auth')
 @Controller()
 export class AuthGatewayController implements OnModuleInit {
@@ -77,7 +78,6 @@ export class AuthGatewayController implements OnModuleInit {
 	@Post('refresh')
 	@UseGuards(JwtRefreshAuthGuard)
 	@IsPublic()
-	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Refresh access tokens using a refresh token' })
 	@ApiResponseEntity(ResponseTokensDto)
 	@SerializeOptions({ type: ResponseTokensDto })
@@ -87,7 +87,6 @@ export class AuthGatewayController implements OnModuleInit {
 	}
 
 	@Post('logout-all')
-	@ApiBearerAuth()
 	@ApiEmptyResponseEntity()
 	@ApiOperation({ summary: 'Log out from all active sessions' })
 	logoutAll(@Req() req: AuthenticatedRequest) {
