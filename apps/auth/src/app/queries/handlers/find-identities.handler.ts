@@ -1,8 +1,8 @@
 import { FILE_CLIENT } from '../../../constants/file';
 import {
-	type IIdentityRepository,
-	IIdentityRepositoryToken,
-} from '../../../domain/repositories/identity.repository';
+	type IIdentityReadRepository,
+	IIdentityReadRepositoryToken,
+} from '../../../domain/repositories/identity.read.repository';
 import {
 	FindIdentitiesCursor,
 	FindIdentitiesQuery,
@@ -23,7 +23,8 @@ export class FindIdentitiesQueryHandler
 	private fileService!: file.FileServiceClient;
 
 	constructor(
-		@Inject(IIdentityRepositoryToken) private readonly identityRepository: IIdentityRepository,
+		@Inject(IIdentityReadRepositoryToken)
+		private readonly identityReadRepository: IIdentityReadRepository,
 		@Inject(FILE_CLIENT) private readonly fileClient: ClientGrpc,
 	) {
 		this.cursorPaginationHelper = new CursorPaginationHelper(
@@ -48,7 +49,7 @@ export class FindIdentitiesQueryHandler
 		const inUseHasPerms = decodedCursor?.hasPerms ?? payload.hasPerms;
 		const inUseLimit = payload.limit ?? decodedCursor?.limit ?? 10;
 
-		const identities = await this.identityRepository.findIdentities({
+		const identities = await this.identityReadRepository.findIdentities({
 			usernameOrCredentialIdentifierOrId: inUseIdentifier,
 			hasRoles: inUseHasRoles,
 			hasPerms: inUseHasPerms,

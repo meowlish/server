@@ -12,11 +12,13 @@ import { rmqSubConfig } from './configs/rmq.sub.config';
 import { FILE_CLIENT } from './constants/file';
 import { ICredentialReadRepositoryToken } from './domain/repositories/credential.read.repository';
 import { IFileRepositoryToken } from './domain/repositories/file.repository';
+import { IIdentityReadRepositoryToken } from './domain/repositories/identity.read.repository';
 import { IIdentityRepositoryToken } from './domain/repositories/identity.repository';
 import { IRoleReadRepositoryToken } from './domain/repositories/role.read.repository';
 import { CredentialReadPrismaRepositoryImpl } from './infra/repositories/credential.read.prisma.repository.impl';
 import { FilePrismaRepositoryImpl } from './infra/repositories/file.prisma.repository.impl';
-import { IdentityPrismaRepository } from './infra/repositories/identity.prisma.repository.impl';
+import { IdentityPrismaRepositoryImpl } from './infra/repositories/identity.prisma.repository.impl';
+import { IdentityReadPrismaRepositoryImpl } from './infra/repositories/identity.read.prisma.repository.impl';
 import { RoleReadPrismaRepositoryImpl } from './infra/repositories/role.read.prisma.repository.impl';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
@@ -112,7 +114,11 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		},
 		{
 			provide: IIdentityRepositoryToken,
-			useClass: IdentityPrismaRepository,
+			useClass: IdentityPrismaRepositoryImpl,
+		},
+		{
+			provide: IIdentityReadRepositoryToken,
+			useClass: IdentityReadPrismaRepositoryImpl,
 		},
 		{
 			provide: IRoleReadRepositoryToken,

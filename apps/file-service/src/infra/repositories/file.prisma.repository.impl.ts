@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma-client/file';
 
 @Injectable()
-export class FilePrismaRepository implements IFileRepository {
+export class FilePrismaRepositoryImpl implements IFileRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async create(fileMetadata: FileMetadata, isPublic: boolean): Promise<string> {

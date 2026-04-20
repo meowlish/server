@@ -7,15 +7,11 @@ import {
 	RoleAddedEvent,
 	RoleDeletedEvent,
 } from '../../domain/events/identity-update.events';
-import {
-	HydratedIdentityReadModel,
-	IdentityReadModel,
-} from '../../domain/read-models/identity.read-model';
 import { IIdentityRepository } from '../../domain/repositories/identity.repository';
 import { LoginType } from '../../enums/login-type.enum';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import {
 	Prisma,
 	PrismaClient,
@@ -86,7 +82,7 @@ class IdentityPrismaMapper {
 }
 
 @Injectable()
-export class IdentityPrismaRepository implements IIdentityRepository {
+export class IdentityPrismaRepositoryImpl implements IIdentityRepository {
 	constructor(private readonly txHost: TransactionHost<TransactionalAdapterPrisma<PrismaClient>>) {}
 
 	async findOneById(id: string, deleted = false): Promise<Identity | null> {
@@ -143,172 +139,6 @@ export class IdentityPrismaRepository implements IIdentityRepository {
 				),
 			],
 		};
-	}
-
-	async findIdentityIds(options?: {
-		usernameOrCredentialIdentifier?: string;
-		lastId?: string;
-		limit?: number;
-	}): Promise<string[]> {
-		if (options?.limit && options.limit < 0)
-			throw new BadRequestException('Limit must be positive');
-		const foundIdentities = await this.txHost.tx.identity.findMany({
-			where: {
-				...(options?.usernameOrCredentialIdentifier && {
-					OR: [
-						{ username: { contains: options.usernameOrCredentialIdentifier } },
-						{
-							credentials: {
-								some: { identifier: { contains: options.usernameOrCredentialIdentifier } },
-							},
-						},
-					],
-				}),
-			},
-			orderBy: { id: 'asc' },
-			select: { id: true },
-			...(options?.lastId && { cursor: { id: options.lastId }, skip: 1 }),
-			take: options?.limit ?? 10,
-		});
-		return foundIdentities.map(i => i.id);
-	}
-
-	// raw SQL join might be better without processing in-app but time is of the essence
-	async findIdentities(options?: {
-		usernameOrCredentialIdentifierOrId?: string;
-		hasRoles?: string[];
-		hasPerms?: string[];
-		lastId?: string;
-		limit?: number;
-	}): Promise<IdentityReadModel[]> {
-		if (options?.limit && options.limit < 0)
-			throw new BadRequestException('Limit must be positive');
-
-		const roleOr: Prisma.IdentityWhereInput[] = [];
-		if (options?.hasRoles?.length) {
-			roleOr.push({
-				identityRoles: {
-					some: {
-						role: {
-							name: { in: options.hasRoles },
-						},
-					},
-				},
-			});
-		}
-		if (options?.hasPerms?.length) {
-			roleOr.push({
-				identityRoles: {
-					some: {
-						role: {
-							rolePermissions: {
-								some: {
-									permission: {
-										name: { in: options.hasPerms },
-									},
-								},
-							},
-						},
-					},
-				},
-			});
-		}
-
-		const foundIdentities = await this.txHost.tx.identity.findMany({
-			where: {
-				...(options?.usernameOrCredentialIdentifierOrId && {
-					OR: [
-						{ username: { contains: options.usernameOrCredentialIdentifierOrId } },
-						{
-							credentials: {
-								some: { identifier: { contains: options.usernameOrCredentialIdentifierOrId } },
-							},
-						},
-						{ id: { contains: options.usernameOrCredentialIdentifierOrId } },
-					],
-				}),
-				...(roleOr.length && {
-					OR: roleOr,
-				}),
-			},
-			orderBy: { id: 'asc' },
-			select: {
-				id: true,
-				identityRoles: {
-					select: {
-						role: { select: { name: true, rolePermissions: { select: { permission: true } } } },
-					},
-				},
-				username: true,
-				fullName: true,
-				avatarFileId: true,
-				bio: true,
-			},
-			...(options?.lastId && { cursor: { id: options.lastId }, skip: 1 }),
-			take: options?.limit ?? 10,
-		});
-		return foundIdentities.map(i => ({
-			id: i.id,
-			username: i.username,
-			fullName: i.fullName ?? undefined,
-			avatarUrl: i.avatarFileId ?? undefined,
-			bio: i.bio ?? undefined,
-			roles: i.identityRoles.map(rIdentityRole =>
-				IdentityPrismaMapper.mapRole(rIdentityRole.role.name),
-			),
-			permissions: [
-				...new Set<Permission>(
-					i.identityRoles.flatMap(rIdentityRole =>
-						rIdentityRole.role.rolePermissions.map(rPermission =>
-							IdentityPrismaMapper.mapPermission(rPermission.permission.name),
-						),
-					),
-				),
-			],
-		}));
-	}
-
-	async hydrate(id: string): Promise<HydratedIdentityReadModel | null> {
-		const foundIdentity = await this.txHost.tx.identity.findUnique({
-			where: { id: id },
-			select: {
-				id: true,
-				username: true,
-				fullName: true,
-				avatarFileId: true,
-				bio: true,
-			},
-		});
-		return foundIdentity ?
-				{
-					id: foundIdentity.id,
-					username: foundIdentity.username,
-					fullName: foundIdentity.fullName ?? undefined,
-					avatarUrl: foundIdentity.avatarFileId ?? undefined,
-					bio: foundIdentity.bio ?? undefined,
-				}
-			:	null;
-	}
-
-	async hydrateMany(ids: string[]): Promise<HydratedIdentityReadModel[]> {
-		const foundIdentities = await this.txHost.tx.identity.findMany({
-			where: { id: { in: ids } },
-			select: {
-				id: true,
-				username: true,
-				fullName: true,
-				avatarFileId: true,
-				bio: true,
-			},
-		});
-
-		return foundIdentities.map(i => ({
-			id: i.id,
-			username: i.username,
-			fullName: i.fullName ?? undefined,
-			avatarUrl: i.avatarFileId ?? undefined,
-			bio: i.bio ?? undefined,
-		}));
 	}
 
 	async save(identity: Identity): Promise<void> {
