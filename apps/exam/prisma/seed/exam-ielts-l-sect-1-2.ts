@@ -16,11 +16,7 @@ export class IeltsLExamSect12Seeder {
 				id: 's21',
 				order: 1,
 				contentType: SectionType.Question,
-				questions: {
-					create: [
-						{
-							order: 1,
-							content: `<div><p><em>Complete the form below.</em><br/>
+				directive: `<div><p><em>Complete the form below.</em><br/>
 <em>Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.</em></p>
 <p><strong>SHORT STAY ACCOMMODATION</strong></p>
 <p><strong>Family Name:</strong> Mackinlay<br/>
@@ -38,6 +34,10 @@ export class IeltsLExamSect12Seeder {
 <strong>Name of Town:</strong> ____9____<br/>
 <strong>Client's Email:</strong> smac13@hotmail.com<br/>
 <strong>Price Range:</strong> up to $ ____10____ a week</p></div>`,
+				questions: {
+					create: [
+						{
+							order: 1,
 							type: QuestionType.FillAnyInTheBlank,
 							choices: {
 								create: [{ key: 'SYLVIA', isCorrect: true }],
