@@ -16,32 +16,32 @@ export class ToeicLrExamSect34Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Q32–34
-						{
-							id: 's131',
-							examId: '1',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 32,
-										content: 'How do the speakers know each other?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'They met through a friend.', isCorrect: false },
-												{ key: 'B', content: 'They take a class together.', isCorrect: false },
-												{
-													key: 'C',
-													content: 'They live in the same apartment complex.',
-													isCorrect: false,
-												},
-												{ key: 'D', content: 'They work at the same company.', isCorrect: true },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q32-34.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q32–34
+					{
+						id: 's131',
+						examId: '1',
+						order: 1,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q32-34.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 32,
+									content: 'How do the speakers know each other?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'They met through a friend.', isCorrect: false },
+											{ key: 'B', content: 'They take a class together.', isCorrect: false },
+											{
+												key: 'C',
+												content: 'They live in the same apartment complex.',
+												isCorrect: false,
+											},
+											{ key: 'D', content: 'They work at the same company.', isCorrect: true },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 33,
@@ -78,28 +78,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q35–37
-						{
-							id: 's132',
-							examId: '1',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 35,
-										content: 'Why is the man calling?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'He forgot a document password.', isCorrect: false },
-												{ key: 'B', content: 'He needs an important document.', isCorrect: true },
-												{ key: 'C', content: 'He wants to apply for a job.', isCorrect: false },
-												{ key: 'D', content: 'His computer is not working.', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q35-37.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
+					// Q35–37
+					{
+						id: 's132',
+						examId: '1',
+						order: 2,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q35-37.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 35,
+									content: 'Why is the man calling?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'He forgot a document password.', isCorrect: false },
+											{ key: 'B', content: 'He needs an important document.', isCorrect: true },
+											{ key: 'C', content: 'He wants to apply for a job.', isCorrect: false },
+											{ key: 'D', content: 'His computer is not working.', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
 									},
 									{
 										order: 36,
@@ -132,28 +132,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q38–40
-						{
-							id: 's133',
-							examId: '1',
-							order: 3,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 38,
-										content: 'Where does the woman work?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'At a restaurant', isCorrect: false },
-												{ key: 'B', content: 'At a university', isCorrect: false },
-												{ key: 'C', content: 'At a movie theater', isCorrect: false },
-												{ key: 'D', content: 'At a hotel', isCorrect: true },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q38-40.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q38–40
+					{
+						id: 's133',
+						examId: '1',
+						order: 3,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q38-40.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 38,
+									content: 'Where does the woman work?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'At a restaurant', isCorrect: false },
+											{ key: 'B', content: 'At a university', isCorrect: false },
+											{ key: 'C', content: 'At a movie theater', isCorrect: false },
+											{ key: 'D', content: 'At a hotel', isCorrect: true },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 39,
@@ -190,28 +190,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q41–43
-						{
-							id: 's134',
-							examId: '1',
-							order: 4,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 41,
-										content: 'What are the speakers mainly discussing?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'A new recipe', isCorrect: false },
-												{ key: 'B', content: 'A grand opening', isCorrect: false },
-												{ key: 'C', content: 'A magazine article', isCorrect: true },
-												{ key: 'D', content: 'A detailed itinerary', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q41-43.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
+					// Q41–43
+					{
+						id: 's134',
+						examId: '1',
+						order: 4,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q41-43.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 41,
+									content: 'What are the speakers mainly discussing?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'A new recipe', isCorrect: false },
+											{ key: 'B', content: 'A grand opening', isCorrect: false },
+											{ key: 'C', content: 'A magazine article', isCorrect: true },
+											{ key: 'D', content: 'A detailed itinerary', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
 									},
 									{
 										order: 42,
@@ -244,28 +244,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q44–46
-						{
-							id: 's135',
-							examId: '1',
-							order: 5,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 44,
-										content: 'Where is the conversation taking place?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'At a theater', isCorrect: false },
-												{ key: 'B', content: 'At a furniture store', isCorrect: false },
-												{ key: 'C', content: 'At a pet store', isCorrect: true },
-												{ key: 'D', content: 'At a restaurant', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q44-46.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q44–46
+					{
+						id: 's135',
+						examId: '1',
+						order: 5,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q44-46.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 44,
+									content: 'Where is the conversation taking place?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'At a theater', isCorrect: false },
+											{ key: 'B', content: 'At a furniture store', isCorrect: false },
+											{ key: 'C', content: 'At a pet store', isCorrect: true },
+											{ key: 'D', content: 'At a restaurant', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 45,
@@ -306,28 +306,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q47–49
-						{
-							id: 's136',
-							examId: '1',
-							order: 6,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 47,
-										content: 'Who most likely is the man?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'A recording technician', isCorrect: false },
-												{ key: 'B', content: 'A tour guide', isCorrect: false },
-												{ key: 'C', content: 'A musician', isCorrect: false },
-												{ key: 'D', content: 'A radio host', isCorrect: true },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q47-49.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q47–49
+					{
+						id: 's136',
+						examId: '1',
+						order: 6,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q47-49.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 47,
+									content: 'Who most likely is the man?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'A recording technician', isCorrect: false },
+											{ key: 'B', content: 'A tour guide', isCorrect: false },
+											{ key: 'C', content: 'A musician', isCorrect: false },
+											{ key: 'D', content: 'A radio host', isCorrect: true },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 48,
@@ -361,28 +361,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q50–52
-						{
-							id: 's137',
-							examId: '1',
-							order: 7,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 50,
-										content: 'Who is Mr. Hyatt?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Building Manager', isCorrect: false },
-												{ key: 'B', content: 'Fund Manager', isCorrect: true },
-												{ key: 'C', content: 'Accountant', isCorrect: false },
-												{ key: 'D', content: 'Construction worker', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q50-52.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q50–52
+					{
+						id: 's137',
+						examId: '1',
+						order: 7,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q50-52.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 50,
+									content: 'Who is Mr. Hyatt?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Building Manager', isCorrect: false },
+											{ key: 'B', content: 'Fund Manager', isCorrect: true },
+											{ key: 'C', content: 'Accountant', isCorrect: false },
+											{ key: 'D', content: 'Construction worker', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 51,
@@ -415,28 +415,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q53–55
-						{
-							id: 's138',
-							examId: '1',
-							order: 8,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 53,
-										content: 'What does the woman say about the restaurant space?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: "She thinks it's too big.", isCorrect: false },
-												{ key: 'B', content: 'It has a good location.', isCorrect: true },
-												{ key: 'C', content: 'The location is not good.', isCorrect: false },
-												{ key: 'D', content: "It's a bit far from her office.", isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q53-55.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q53–55
+					{
+						id: 's138',
+						examId: '1',
+						order: 8,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q53-55.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 53,
+									content: 'What does the woman say about the restaurant space?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: "She thinks it's too big.", isCorrect: false },
+											{ key: 'B', content: 'It has a good location.', isCorrect: true },
+											{ key: 'C', content: 'The location is not good.', isCorrect: false },
+											{ key: 'D', content: "It's a bit far from her office.", isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 54,
@@ -470,28 +470,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q56–58
-						{
-							id: 's139',
-							examId: '1',
-							order: 9,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 56,
-										content: 'What are the speakers discussing?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Sales results of last quarter', isCorrect: false },
-												{ key: 'B', content: 'Sales results of last month', isCorrect: true },
-												{ key: 'C', content: 'Sales of the new range', isCorrect: false },
-												{ key: 'D', content: 'Sales for the coming month', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q56-58.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
+					// Q56–58
+					{
+						id: 's139',
+						examId: '1',
+						order: 9,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q56-58.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 56,
+									content: 'What are the speakers discussing?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Sales results of last quarter', isCorrect: false },
+											{ key: 'B', content: 'Sales results of last month', isCorrect: true },
+											{ key: 'C', content: 'Sales of the new range', isCorrect: false },
+											{ key: 'D', content: 'Sales for the coming month', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
 									},
 									{
 										order: 57,
@@ -532,28 +532,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q59–61
-						{
-							id: 's13_10',
-							examId: '1',
-							order: 10,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 59,
-										content: 'Where most likely are the speakers?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'At an office', isCorrect: false },
-												{ key: 'B', content: "At a lawyer's office", isCorrect: false },
-												{ key: 'C', content: 'At a hardware store', isCorrect: true },
-												{ key: 'D', content: 'At a local mall', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q59-61.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q59–61
+					{
+						id: 's13_10',
+						examId: '1',
+						order: 10,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q59-61.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 59,
+									content: 'Where most likely are the speakers?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'At an office', isCorrect: false },
+											{ key: 'B', content: "At a lawyer's office", isCorrect: false },
+											{ key: 'C', content: 'At a hardware store', isCorrect: true },
+											{ key: 'D', content: 'At a local mall', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 60,
@@ -602,34 +602,34 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q62–64 (graphic)
-						{
-							id: 's13_11',
-							examId: '1',
-							order: 11,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 62,
-										content: 'What did the man recently do?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'He met with a photographer.', isCorrect: false },
-												{ key: 'B', content: 'He met with a sales associate.', isCorrect: false },
-												{
-													key: 'C',
-													content: 'He met with an interior decorator.',
-													isCorrect: true,
-												},
-												{ key: 'D', content: 'He had lunch.', isCorrect: false },
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q62-64.mp3' }, { fileId: 'SYSTEM_62-64.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q62–64 (graphic)
+					{
+						id: 's13_11',
+						examId: '1',
+						order: 11,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q62-64.mp3' }, { fileId: 'SYSTEM_62-64.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 62,
+									content: 'What did the man recently do?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'He met with a photographer.', isCorrect: false },
+											{ key: 'B', content: 'He met with a sales associate.', isCorrect: false },
+											{
+												key: 'C',
+												content: 'He met with an interior decorator.',
+												isCorrect: true,
+											},
+											{ key: 'D', content: 'He had lunch.', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 63,
@@ -678,30 +678,30 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q65–67 (graphic)
-						{
-							id: 's13_12',
-							examId: '1',
-							order: 12,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 65,
-										content: 'What did the man say about next week?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'There will be an inspection.', isCorrect: false },
-												{ key: 'B', content: 'Some new computers will arrive.', isCorrect: false },
-												{ key: 'C', content: 'They will have fire drills.', isCorrect: true },
-												{ key: 'D', content: 'Someone called in sick.', isCorrect: false },
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q65-67.mp3' }, { fileId: 'SYSTEM_65-67.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q65–67 (graphic)
+					{
+						id: 's13_12',
+						examId: '1',
+						order: 12,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q65-67.mp3' }, { fileId: 'SYSTEM_65-67.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 65,
+									content: 'What did the man say about next week?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'There will be an inspection.', isCorrect: false },
+											{ key: 'B', content: 'Some new computers will arrive.', isCorrect: false },
+											{ key: 'C', content: 'They will have fire drills.', isCorrect: true },
+											{ key: 'D', content: 'Someone called in sick.', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 66,
@@ -734,30 +734,30 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q68–70 (graphic)
-						{
-							id: 's13_13',
-							examId: '1',
-							order: 13,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 68,
-										content: 'Where does the man most likely work?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Chemist', isCorrect: false },
-												{ key: 'B', content: 'Hardware store', isCorrect: false },
-												{ key: 'C', content: 'Model shop', isCorrect: true },
-												{ key: 'D', content: 'Medical clinic', isCorrect: false },
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q68-70.mp3' }, { fileId: 'SYSTEM_68-70.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q68–70 (graphic)
+					{
+						id: 's13_13',
+						examId: '1',
+						order: 13,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q68-70.mp3' }, { fileId: 'SYSTEM_68-70.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 68,
+									content: 'Where does the man most likely work?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Chemist', isCorrect: false },
+											{ key: 'B', content: 'Hardware store', isCorrect: false },
+											{ key: 'C', content: 'Model shop', isCorrect: true },
+											{ key: 'D', content: 'Medical clinic', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 69,
@@ -804,28 +804,28 @@ export class ToeicLrExamSect34Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Q71–73
-						{
-							id: 's141',
-							examId: '1',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 71,
-										content: 'What did the listener offer to do?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Attend a meeting', isCorrect: false },
-												{ key: 'B', content: 'Go to New York', isCorrect: false },
-												{ key: 'C', content: "Take care of the speaker's child", isCorrect: true },
-												{ key: 'D', content: 'Lend a personal item', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q71-73.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q71–73
+					{
+						id: 's141',
+						examId: '1',
+						order: 1,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q71-73.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 71,
+									content: 'What did the listener offer to do?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Attend a meeting', isCorrect: false },
+											{ key: 'B', content: 'Go to New York', isCorrect: false },
+											{ key: 'C', content: "Take care of the speaker's child", isCorrect: true },
+											{ key: 'D', content: 'Lend a personal item', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 72,
@@ -858,28 +858,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q74–76
-						{
-							id: 's142',
-							examId: '1',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 74,
-										content: 'Where most likely is this announcement being made?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'In a factory', isCorrect: false },
-												{ key: 'B', content: 'On an airplane', isCorrect: false },
-												{ key: 'C', content: 'At a bus terminal', isCorrect: false },
-												{ key: 'D', content: 'At an airport', isCorrect: true },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q74-76.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q74–76
+					{
+						id: 's142',
+						examId: '1',
+						order: 2,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q74-76.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 74,
+									content: 'Where most likely is this announcement being made?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'In a factory', isCorrect: false },
+											{ key: 'B', content: 'On an airplane', isCorrect: false },
+											{ key: 'C', content: 'At a bus terminal', isCorrect: false },
+											{ key: 'D', content: 'At an airport', isCorrect: true },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 75,
@@ -912,28 +912,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q77–79
-						{
-							id: 's143',
-							examId: '1',
-							order: 3,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 77,
-										content: 'Where most likely is the speaker?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'In a museum', isCorrect: true },
-												{ key: 'B', content: 'In a library', isCorrect: false },
-												{ key: 'C', content: 'In a lecture hall', isCorrect: false },
-												{ key: 'D', content: 'In a gift shop', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q77-79.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q77–79
+					{
+						id: 's143',
+						examId: '1',
+						order: 3,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q77-79.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 77,
+									content: 'Where most likely is the speaker?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'In a museum', isCorrect: true },
+											{ key: 'B', content: 'In a library', isCorrect: false },
+											{ key: 'C', content: 'In a lecture hall', isCorrect: false },
+											{ key: 'D', content: 'In a gift shop', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 78,
@@ -970,28 +970,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q80–82
-						{
-							id: 's144',
-							examId: '1',
-							order: 4,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 80,
-										content: 'What is the speaker mainly discussing?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'A company picnic', isCorrect: false },
-												{ key: 'B', content: 'A job opportunity', isCorrect: false },
-												{ key: 'C', content: 'A new benefit', isCorrect: true },
-												{ key: 'D', content: 'Overseas expansion', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q80-82.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
+					// Q80–82
+					{
+						id: 's144',
+						examId: '1',
+						order: 4,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q80-82.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 80,
+									content: 'What is the speaker mainly discussing?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'A company picnic', isCorrect: false },
+											{ key: 'B', content: 'A job opportunity', isCorrect: false },
+											{ key: 'C', content: 'A new benefit', isCorrect: true },
+											{ key: 'D', content: 'Overseas expansion', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Topic Purpose']) },
 									},
 									{
 										order: 81,
@@ -1024,28 +1024,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q83–85
-						{
-							id: 's145',
-							examId: '1',
-							order: 5,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 83,
-										content: 'Who most likely are the listeners?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Lawyers', isCorrect: false },
-												{ key: 'B', content: 'Accountants', isCorrect: true },
-												{ key: 'C', content: 'Bankers', isCorrect: false },
-												{ key: 'D', content: 'Chefs', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q83-85.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
+					// Q83–85
+					{
+						id: 's145',
+						examId: '1',
+						order: 5,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q83-85.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 83,
+									content: 'Who most likely are the listeners?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Lawyers', isCorrect: false },
+											{ key: 'B', content: 'Accountants', isCorrect: true },
+											{ key: 'C', content: 'Bankers', isCorrect: false },
+											{ key: 'D', content: 'Chefs', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Inference']) },
 									},
 									{
 										order: 84,
@@ -1083,28 +1083,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q86–88
-						{
-							id: 's146',
-							examId: '1',
-							order: 6,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 86,
-										content: "What product does the speaker's company sell?",
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Electronics', isCorrect: true },
-												{ key: 'B', content: 'Food', isCorrect: false },
-												{ key: 'C', content: 'Clothing', isCorrect: false },
-												{ key: 'D', content: 'Apparel', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q86-88.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q86–88
+					{
+						id: 's146',
+						examId: '1',
+						order: 6,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q86-88.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 86,
+									content: "What product does the speaker's company sell?",
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Electronics', isCorrect: true },
+											{ key: 'B', content: 'Food', isCorrect: false },
+											{ key: 'C', content: 'Clothing', isCorrect: false },
+											{ key: 'D', content: 'Apparel', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 87,
@@ -1157,28 +1157,28 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q89–91
-						{
-							id: 's147',
-							examId: '1',
-							order: 7,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 89,
-										content: "What product does the speaker's company sell?",
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Heating products', isCorrect: true },
-												{ key: 'B', content: 'Air conditioners', isCorrect: false },
-												{ key: 'C', content: 'Vacuum cleaners', isCorrect: false },
-												{ key: 'D', content: 'Magazines', isCorrect: false },
-											],
-										},
-										questionFiles: { create: [{ fileId: 'SYSTEM_q89-91.mp3' }] },
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q89–91
+					{
+						id: 's147',
+						examId: '1',
+						order: 7,
+						contentType: SectionType.Question,
+						sectionFiles: { create: [{ fileId: 'SYSTEM_q89-91.mp3' }] },
+						questions: {
+							create: [
+								{
+									order: 89,
+									content: "What product does the speaker's company sell?",
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Heating products', isCorrect: true },
+											{ key: 'B', content: 'Air conditioners', isCorrect: false },
+											{ key: 'C', content: 'Vacuum cleaners', isCorrect: false },
+											{ key: 'D', content: 'Magazines', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 90,
@@ -1219,46 +1219,46 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q92–94 (graphic)
-						{
-							id: 's148',
-							examId: '1',
-							order: 8,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 92,
-										content: 'What is indicated about Springfield Dance Troupe?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{
-													key: 'A',
-													content: 'They are changing the music they like.',
-													isCorrect: false,
-												},
-												{
-													key: 'B',
-													content: 'They are moving to a new location.',
-													isCorrect: false,
-												},
-												{
-													key: 'C',
-													content: 'They want to find a new swing class instructor.',
-													isCorrect: false,
-												},
-												{
-													key: 'D',
-													content: 'They are changing the courses they will offer.',
-													isCorrect: true,
-												},
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q92-94.mp3' }, { fileId: 'SYSTEM_92-94.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q92–94 (graphic)
+					{
+						id: 's148',
+						examId: '1',
+						order: 8,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q92-94.mp3' }, { fileId: 'SYSTEM_92-94.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 92,
+									content: 'What is indicated about Springfield Dance Troupe?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{
+												key: 'A',
+												content: 'They are changing the music they like.',
+												isCorrect: false,
+											},
+											{
+												key: 'B',
+												content: 'They are moving to a new location.',
+												isCorrect: false,
+											},
+											{
+												key: 'C',
+												content: 'They want to find a new swing class instructor.',
+												isCorrect: false,
+											},
+											{
+												key: 'D',
+												content: 'They are changing the courses they will offer.',
+												isCorrect: true,
+											},
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 93,
@@ -1303,48 +1303,48 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q95–97 (graphic)
-						{
-							id: 's149',
-							examId: '1',
-							order: 9,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 95,
-										content: 'What is indicated in the advertisement?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{
-													key: 'A',
-													content:
-														'Presidential Tailoring is just getting started in their business',
-													isCorrect: false,
-												},
-												{
-													key: 'B',
-													content:
-														'Jeffrey Frye is an experienced American tailor trained overseas',
-													isCorrect: true,
-												},
-												{
-													key: 'C',
-													content: 'Presidential Tailors is having a big sale',
-													isCorrect: false,
-												},
-												{
-													key: 'D',
-													content: 'They only have one tailor on staff',
-													isCorrect: false,
-												},
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q95-97.mp3' }, { fileId: 'SYSTEM_95-97.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
+					// Q95–97 (graphic)
+					{
+						id: 's149',
+						examId: '1',
+						order: 9,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q95-97.mp3' }, { fileId: 'SYSTEM_95-97.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 95,
+									content: 'What is indicated in the advertisement?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{
+												key: 'A',
+												content:
+													'Presidential Tailoring is just getting started in their business',
+												isCorrect: false,
+											},
+											{
+												key: 'B',
+												content:
+													'Jeffrey Frye is an experienced American tailor trained overseas',
+												isCorrect: true,
+											},
+											{
+												key: 'C',
+												content: 'Presidential Tailors is having a big sale',
+												isCorrect: false,
+											},
+											{
+												key: 'D',
+												content: 'They only have one tailor on staff',
+												isCorrect: false,
+											},
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Detail Information']) },
 									},
 									{
 										order: 96,
@@ -1389,30 +1389,30 @@ export class ToeicLrExamSect34Seeder {
 								],
 							},
 						},
-						// Q98–100 (graphic)
-						{
-							id: 's14_10',
-							examId: '1',
-							order: 10,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 98,
-										content: 'Look at the graphic. Which volume discounts are incorrect?',
-										type: QuestionType.MultipleChoiceSingle,
-										choices: {
-											create: [
-												{ key: 'A', content: 'Foot stools 3%', isCorrect: true },
-												{ key: 'B', content: 'Chairs 0%', isCorrect: false },
-												{ key: 'C', content: 'Small end tables 5%', isCorrect: false },
-												{ key: 'D', content: 'Large end tables 5%', isCorrect: false },
-											],
-										},
-										questionFiles: {
-											create: [{ fileId: 'SYSTEM_q98-100.mp3' }, { fileId: 'SYSTEM_98-100.jpg' }],
-										},
-										questionTags: { create: this.tagNamesToIdInputs(['Graphic Based']) },
+					// Q98–100 (graphic)
+					{
+						id: 's14_10',
+						examId: '1',
+						order: 10,
+						contentType: SectionType.Question,
+						sectionFiles: {
+							create: [{ fileId: 'SYSTEM_q98-100.mp3' }, { fileId: 'SYSTEM_98-100.jpg' }],
+						},
+						questions: {
+							create: [
+								{
+									order: 98,
+									content: 'Look at the graphic. Which volume discounts are incorrect?',
+									type: QuestionType.MultipleChoiceSingle,
+									choices: {
+										create: [
+											{ key: 'A', content: 'Foot stools 3%', isCorrect: true },
+											{ key: 'B', content: 'Chairs 0%', isCorrect: false },
+											{ key: 'C', content: 'Small end tables 5%', isCorrect: false },
+											{ key: 'D', content: 'Large end tables 5%', isCorrect: false },
+										],
+									},
+									questionTags: { create: this.tagNamesToIdInputs(['Graphic Based']) },
 									},
 									{
 										order: 99,

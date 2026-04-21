@@ -17,17 +17,13 @@ export class IeltsLExamSect34Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Group 1: Notes fill Q21–26
-						{
-							id: 's231',
-							examId: '2',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 21,
-										content: `<div><p><em>Complete the notes below.</em><br/>
+					// Group 1: Notes fill Q21–26
+					{
+						id: 's231',
+						examId: '2',
+						order: 1,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Complete the notes below.</em><br/>
 <em>Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.</em></p>
 <p><strong>OECD Report: Students and Technology</strong></p>
 <p>Background notes from conversation with Dr Judy Chen<br/>
@@ -46,7 +42,11 @@ export class IeltsLExamSect34Seeder {
 </ul>
 <p>Dr Chen's involvement:<br/>
 – gave ____26____ at national education conference</p></div>`,
-										type: QuestionType.FillAnyInTheBlank,
+						questions: {
+							create: [
+								{
+									order: 21,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [
 												{ key: 'ED 995', isCorrect: true },
@@ -102,17 +102,13 @@ export class IeltsLExamSect34Seeder {
 							},
 							sectionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
 						},
-						// Group 2: Table fill Q27–30
-						{
-							id: 's232',
-							examId: '2',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 27,
-										content: `<div><p><em>Complete the table below.</em><br/>
+					// Group 2: Table fill Q27–30
+					{
+						id: 's232',
+						examId: '2',
+						order: 2,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Complete the table below.</em><br/>
 <em>Write <strong>NO MORE THAN TWO WORDS AND/OR A NUMBER</strong> for each answer.</em></p>
 <table><tbody>
 <tr><td>Research projects using this database</td><td>Method</td><td>Year</td><td>Researcher</td></tr>
@@ -122,7 +118,11 @@ export class IeltsLExamSect34Seeder {
 <tr><td>Technological Pedagogical Content Knowledge</td><td>practitioner observation</td><td>2019</td><td>Prof. A. Yuen</td></tr>
 <tr><td>Technology and the Knowledge Society</td><td>literature review</td><td>2006</td><td>____30____</td></tr>
 </tbody></table></div>`,
-										type: QuestionType.FillAnyInTheBlank,
+						questions: {
+							create: [
+								{
+									order: 27,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [{ key: 'TOWER', isCorrect: true }],
 										},
@@ -168,24 +168,24 @@ export class IeltsLExamSect34Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Group 1: Summary fill Q31–37
-						{
-							id: 's241',
-							examId: '2',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 31,
-										content: `<div><p><em>Complete the summary below.</em><br/>
+					// Group 1: Summary fill Q31–37
+					{
+						id: 's241',
+						examId: '2',
+						order: 1,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Complete the summary below.</em><br/>
 <em>Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.</em></p>
 <p><strong>Immunology</strong></p>
 <p>Most people understand that the immune system ____31____ infection and disease, but few know how it works. The immune system recognises the cell proteins of the body and deals with any substance that might cause ____32____.</p>
 <p>Most of the time our immune system is not ____33____. The ____34____ includes skin as well as organs and cells.</p>
 <p>The white blood cells found in the ____35____ are part of the immune system and are central to its response to pathogens.</p>
 <p>People became interested in the immune system after noticing that ____36____ seemed to pass on immunity. This led to further research and eventually a successful ____37____.</p></div>`,
-										type: QuestionType.FillAnyInTheBlank,
+						questions: {
+							create: [
+								{
+									order: 31,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [{ key: 'ATTACKS', isCorrect: true }],
 										},
@@ -245,21 +245,21 @@ export class IeltsLExamSect34Seeder {
 							},
 							sectionTags: { create: this.tagNamesToIdInputs(['IELTS Listening P1-4']) },
 						},
-						// Group 2: Diagram label Q38–40
-						{
-							id: 's242',
-							examId: '2',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 38,
-										content: `<div><p><em>Label the diagram below.</em><br/>
+					// Group 2: Diagram label Q38–40
+					{
+						id: 's242',
+						examId: '2',
+						order: 2,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Label the diagram below.</em><br/>
 <em>Write <strong>NO MORE THAN TWO WORDS</strong> for each answer.</em></p>
-<img src="SYSTEM_444c3d348da9908c25bbfb578d51c993a52b9854.jpg" alt="Immune response diagram"/>
-<p>____38____ (B-lymphocyte)</p></div>`,
-										type: QuestionType.FillAnyInTheBlank,
+<img src="SYSTEM_444c3d348da9908c25bbfb578d51c993a52b9854.jpg" alt="Immune response diagram"/></div>`,
+						questions: {
+							create: [
+								{
+									order: 38,
+									content: `<p>____38____ (B-lymphocyte)</p>`,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [{ key: 'F', isCorrect: true }],
 										},

@@ -144,18 +144,18 @@ export class IeltsLExamSect12Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Group 1: MCQ Q11–14
-						{
-							id: 's221',
-							examId: '2',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 11,
-										content: `<div><p><em>Choose the correct letter, A, B or C.</em></p></div>`,
-										type: QuestionType.MultipleChoiceSingle,
+					// Group 1: MCQ Q11–14
+					{
+						id: 's221',
+						examId: '2',
+						order: 1,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Choose the correct letter, A, B or C.</em></p></div>`,
+						questions: {
+							create: [
+								{
+									order: 11,
+									type: QuestionType.MultipleChoiceSingle,
 										choices: {
 											create: [
 												{ key: 'A', content: 'at the front counter.', isCorrect: false },
@@ -208,17 +208,13 @@ export class IeltsLExamSect12Seeder {
 								],
 							},
 						},
-						// Group 2: Fill table Q15–20
-						{
-							id: 's222',
-							examId: '2',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 15,
-										content: `<div><p><em>Complete the table below.</em><br/>
+					// Group 2: Fill table Q15–20
+					{
+						id: 's222',
+						examId: '2',
+						order: 2,
+						contentType: SectionType.Question,
+						directive: `<div><p><em>Complete the table below.</em><br/>
 <em>Write <strong>NO MORE THAN ONE WORD AND/OR A NUMBER</strong> for each answer.</em></p>
 <table><tbody>
 <tr><td>Activity</td><td>Day(s)</td><td>Duration</td><td>Contact person</td></tr>
@@ -227,7 +223,11 @@ export class IeltsLExamSect12Seeder {
 <tr><td>Wanderers</td><td>Sunday</td><td>____18____</td><td>leader</td></tr>
 <tr><td>____19____ Weekends</td><td>Saturday &amp; Sunday</td><td>all weekend</td><td>____20____</td></tr>
 </tbody></table></div>`,
-										type: QuestionType.FillAnyInTheBlank,
+						questions: {
+							create: [
+								{
+									order: 15,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [{ key: 'TRAMPING', isCorrect: true }],
 										},

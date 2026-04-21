@@ -52,20 +52,19 @@ export class IeltsRExamSect3Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-						// Group 1: Sentence completion matching Q27–32
-						{
-							id: 's331',
-							examId: '3',
-							order: 1,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 27,
-										content:
-											PASSAGE_3 +
-											P3_G1_INSTRUCTION +
-											'<p>In the late 18th century, Hahnemann discovered that quinine was able to</p>',
+					// Group 1: Sentence completion matching Q27–32
+					{
+						id: 's331',
+						examId: '3',
+						order: 1,
+						contentType: SectionType.Question,
+						directive: PASSAGE_3 + P3_G1_INSTRUCTION,
+						questions: {
+							create: [
+								{
+									order: 27,
+									content:
+										'<p>In the late 18th century, Hahnemann discovered that quinine was able to</p>',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'C', isCorrect: true }],
@@ -125,18 +124,18 @@ export class IeltsRExamSect3Seeder {
 							},
 							sectionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3']) },
 						},
-						// Group 2: Table fill Q33–40
-						{
-							id: 's332',
-							examId: '3',
-							order: 2,
-							contentType: SectionType.Question,
-							questions: {
-								create: [
-									{
-										order: 33,
-										content: P3_G2_INSTRUCTION,
-										type: QuestionType.FillAnyInTheBlank,
+					// Group 2: Table fill Q33–40
+					{
+						id: 's332',
+						examId: '3',
+						order: 2,
+						contentType: SectionType.Question,
+						directive: P3_G2_INSTRUCTION,
+						questions: {
+							create: [
+								{
+									order: 33,
+									type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [{ key: 'ACTIVE', isCorrect: true }],
 										},
