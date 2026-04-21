@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package live;
+
+service LiveService {
+	rpc PlaceHolder(google.protobuf.Empty) returns(google.protobuf.Empty) {}
+}

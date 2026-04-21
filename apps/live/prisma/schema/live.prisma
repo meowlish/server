@@ -1,0 +1,20 @@
+model Room {
+  id               String    @id @default(uuid())
+  name             String
+  createdBy        String
+  scheduledLiveUrl String?
+  scheduledDate    DateTime?
+  logs             Log[]
+
+  @@map("rooms")
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  roomId    String
+  createdAt DateTime @default(now()) @map("created_at")
+  fromId    String
+  content   String
+
+  room Room @relation(fields: [roomId], references: [id])
+}
