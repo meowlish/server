@@ -1,15 +1,11 @@
 import { auth } from '@server/generated';
-import { Exclude, Expose, Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-@Exclude()
 export class ValidateAccessDto implements auth.ValidateAccessDto {
-	@Expose()
+	@IsNotEmpty()
 	@IsString()
 	identityId!: string;
 
-	@Expose()
-	@Type(() => Number)
 	@IsNumber()
 	iat!: number;
 }

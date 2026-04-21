@@ -124,9 +124,9 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Debug blog with Nx",
+			"name": "Debug resource with Nx",
 			"runtimeExecutable": "pnpm exec",
-			"runtimeArgs": ["nx", "serve", "blog"],
+			"runtimeArgs": ["nx", "serve", "resource"],
 			"env": {
 				"NODE_OPTIONS": "--inspect=9237"
 			},
@@ -134,7 +134,7 @@
 			"internalConsoleOptions": "neverOpen",
 			"skipFiles": ["<node_internals>/**"],
 			"sourceMaps": true,
-			"outFiles": ["${workspaceFolder}/apps/blog/dist/**/*.(m|c|)js", "!**/node_modules/**"]
+			"outFiles": ["${workspaceFolder}/apps/resource/dist/**/*.(m|c|)js", "!**/node_modules/**"]
 		}
 	]
 }
