@@ -15,41 +15,41 @@ export class ToeicLrExamSect7Seeder {
 					create: [
 						// ── Group 1: Q147–148 — Memo ────────────────────────────────────
 						{
-						id: 's171',
-						examId: '1',
-						order: 1,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_147-148.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 147,
-									content: 'What is the purpose of this memo?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{
-												key: 'A',
-												content: 'To ask employees not to take the elevator',
-												isCorrect: false,
-											},
-											{
-												key: 'B',
-												content: 'To inform employees of elevator maintenance',
-												isCorrect: true,
-											},
-											{
-												key: 'C',
-												content: 'To address employee complaints about the elevator',
-												isCorrect: false,
-											},
-											{
-												key: 'D',
-												content: 'To notify employees of the new elevator schedule',
-												isCorrect: false,
-											},
-										],
-									},
+							id: 's171',
+							examId: '1',
+							order: 1,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_147-148.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 147,
+										content: 'What is the purpose of this memo?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{
+													key: 'A',
+													content: 'To ask employees not to take the elevator',
+													isCorrect: false,
+												},
+												{
+													key: 'B',
+													content: 'To inform employees of elevator maintenance',
+													isCorrect: true,
+												},
+												{
+													key: 'C',
+													content: 'To address employee complaints about the elevator',
+													isCorrect: false,
+												},
+												{
+													key: 'D',
+													content: 'To notify employees of the new elevator schedule',
+													isCorrect: false,
+												},
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Email Letter Memo']),
 										},
@@ -73,25 +73,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 2: Q149–150 — Notice ──────────────────────────────────
 						{
-						id: 's172',
-						examId: '1',
-						order: 2,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_149-150.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 149,
-									content: 'What is the notice mainly about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A product replacement program', isCorrect: true },
-											{ key: 'B', content: 'How to use a product correctly', isCorrect: false },
-											{ key: 'C', content: 'Safe storage of electrical items', isCorrect: false },
-											{ key: 'D', content: 'A new cooking appliance', isCorrect: false },
-										],
-									},
+							id: 's172',
+							examId: '1',
+							order: 2,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_149-150.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 149,
+										content: 'What is the notice mainly about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A product replacement program', isCorrect: true },
+												{ key: 'B', content: 'How to use a product correctly', isCorrect: false },
+												{ key: 'C', content: 'Safe storage of electrical items', isCorrect: false },
+												{ key: 'D', content: 'A new cooking appliance', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Announcement Notice']),
 										},
@@ -115,25 +115,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 3: Q151–152 — E-mail ──────────────────────────────────
 						{
-						id: 's173',
-						examId: '1',
-						order: 3,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_151-152.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 151,
-									content: 'What is the e-mail about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A new product launch', isCorrect: false },
-											{ key: 'B', content: 'A job opening', isCorrect: true },
-											{ key: 'C', content: 'A company policy update', isCorrect: false },
-											{ key: 'D', content: 'A client meeting', isCorrect: false },
-										],
-									},
+							id: 's173',
+							examId: '1',
+							order: 3,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_151-152.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 151,
+										content: 'What is the e-mail about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A new product launch', isCorrect: false },
+												{ key: 'B', content: 'A job opening', isCorrect: true },
+												{ key: 'C', content: 'A company policy update', isCorrect: false },
+												{ key: 'D', content: 'A client meeting', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Email Letter Memo']),
 										},
@@ -157,25 +157,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 4: Q153–154 — Notice ──────────────────────────────────
 						{
-						id: 's174',
-						examId: '1',
-						order: 4,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_153-154.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 153,
-									content: 'Where would this notice most likely be found?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'In a restaurant', isCorrect: false },
-											{ key: 'B', content: 'In a gym', isCorrect: true },
-											{ key: 'C', content: 'At a school', isCorrect: false },
-											{ key: 'D', content: 'At a hotel', isCorrect: false },
-										],
-									},
+							id: 's174',
+							examId: '1',
+							order: 4,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_153-154.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 153,
+										content: 'Where would this notice most likely be found?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'In a restaurant', isCorrect: false },
+												{ key: 'B', content: 'In a gym', isCorrect: true },
+												{ key: 'C', content: 'At a school', isCorrect: false },
+												{ key: 'D', content: 'At a hotel', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Inference', 'Announcement Notice']),
 										},
@@ -199,25 +199,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 5: Q155–157 — Letter ──────────────────────────────────
 						{
-						id: 's175',
-						examId: '1',
-						order: 5,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_155-157.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 155,
-									content: 'Who is the letter addressed to?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A new employee', isCorrect: false },
-											{ key: 'B', content: 'A job applicant', isCorrect: true },
-											{ key: 'C', content: 'A long-term customer', isCorrect: false },
-											{ key: 'D', content: 'A business partner', isCorrect: false },
-										],
-									},
+							id: 's175',
+							examId: '1',
+							order: 5,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_155-157.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 155,
+										content: 'Who is the letter addressed to?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A new employee', isCorrect: false },
+												{ key: 'B', content: 'A job applicant', isCorrect: true },
+												{ key: 'C', content: 'A long-term customer', isCorrect: false },
+												{ key: 'D', content: 'A business partner', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Detail Information', 'Email Letter Memo']),
 										},
@@ -255,25 +255,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 6: Q158–160 — Advertisement ───────────────────────────
 						{
-						id: 's176',
-						examId: '1',
-						order: 6,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_158-160.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 158,
-									content: 'What is being advertised?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A cooking class', isCorrect: false },
-											{ key: 'B', content: 'A catering service', isCorrect: false },
-											{ key: 'C', content: 'A kitchen appliance', isCorrect: true },
-											{ key: 'D', content: 'A food delivery service', isCorrect: false },
-										],
-									},
+							id: 's176',
+							examId: '1',
+							order: 6,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_158-160.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 158,
+										content: 'What is being advertised?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A cooking class', isCorrect: false },
+												{ key: 'B', content: 'A catering service', isCorrect: false },
+												{ key: 'C', content: 'A kitchen appliance', isCorrect: true },
+												{ key: 'D', content: 'A food delivery service', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -311,25 +311,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 7: Q161–163 — Article ─────────────────────────────────
 						{
-						id: 's177',
-						examId: '1',
-						order: 7,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_161-163.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 161,
-									content: 'What is the article mainly about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A new transit system', isCorrect: false },
-											{ key: 'B', content: 'A city planning project', isCorrect: true },
-											{ key: 'C', content: 'A local business initiative', isCorrect: false },
-											{ key: 'D', content: 'Environmental regulations', isCorrect: false },
-										],
-									},
+							id: 's177',
+							examId: '1',
+							order: 7,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_161-163.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 161,
+										content: 'What is the article mainly about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A new transit system', isCorrect: false },
+												{ key: 'B', content: 'A city planning project', isCorrect: true },
+												{ key: 'C', content: 'A local business initiative', isCorrect: false },
+												{ key: 'D', content: 'Environmental regulations', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -367,25 +367,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 8: Q164–167 — E-mail ──────────────────────────────────
 						{
-						id: 's178',
-						examId: '1',
-						order: 8,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_164-167.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 164,
-									content: 'What is the purpose of the e-mail?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'To respond to a complaint', isCorrect: false },
-											{ key: 'B', content: 'To request feedback on a service', isCorrect: true },
-											{ key: 'C', content: 'To announce a new policy', isCorrect: false },
-											{ key: 'D', content: 'To confirm a reservation', isCorrect: false },
-										],
-									},
+							id: 's178',
+							examId: '1',
+							order: 8,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_164-167.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 164,
+										content: 'What is the purpose of the e-mail?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'To respond to a complaint', isCorrect: false },
+												{ key: 'B', content: 'To request feedback on a service', isCorrect: true },
+												{ key: 'C', content: 'To announce a new policy', isCorrect: false },
+												{ key: 'D', content: 'To confirm a reservation', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Email Letter Memo']),
 										},
@@ -437,25 +437,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 9: Q168–171 — Advertisement ───────────────────────────
 						{
-						id: 's179',
-						examId: '1',
-						order: 9,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_168-171.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 168,
-									content: 'What type of business is described in the passage?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'An accounting firm', isCorrect: false },
-											{ key: 'B', content: 'A software company', isCorrect: true },
-											{ key: 'C', content: 'A retail store', isCorrect: false },
-											{ key: 'D', content: 'A consulting agency', isCorrect: false },
-										],
-									},
+							id: 's179',
+							examId: '1',
+							order: 9,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_168-171.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 168,
+										content: 'What type of business is described in the passage?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'An accounting firm', isCorrect: false },
+												{ key: 'B', content: 'A software company', isCorrect: true },
+												{ key: 'C', content: 'A retail store', isCorrect: false },
+												{ key: 'D', content: 'A consulting agency', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs([
 												'Detail Information',
@@ -510,25 +510,25 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 10: Q172–175 — Article ────────────────────────────────
 						{
-						id: 's17_10',
-						examId: '1',
-						order: 10,
-						contentType: SectionType.Question,
-						sectionFiles: { create: [{ fileId: 'SYSTEM_172-175.jpg' }] },
-						questions: {
-							create: [
-								{
-									order: 172,
-									content: 'What is the article mainly about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A new product launch', isCorrect: false },
-											{ key: 'B', content: 'An award-winning company', isCorrect: true },
-											{ key: 'C', content: 'A stock market update', isCorrect: false },
-											{ key: 'D', content: 'An industry report', isCorrect: false },
-										],
-									},
+							id: 's17_10',
+							examId: '1',
+							order: 10,
+							contentType: SectionType.Question,
+							sectionFiles: { create: [{ fileId: 'SYSTEM_172-175.jpg' }] },
+							questions: {
+								create: [
+									{
+										order: 172,
+										content: 'What is the article mainly about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A new product launch', isCorrect: false },
+												{ key: 'B', content: 'An award-winning company', isCorrect: true },
+												{ key: 'C', content: 'A stock market update', isCorrect: false },
+												{ key: 'D', content: 'An industry report', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -596,30 +596,27 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 11: Q176–180 — Double passage (Form + E-mail) ─────────
 						{
-						id: 's17_11',
-						examId: '1',
-						order: 11,
-						contentType: SectionType.Question,
-						sectionFiles: {
-							create: [
-								{ fileId: 'SYSTEM_176-180.jpg' },
-								{ fileId: 'SYSTEM_176-180_2.jpg' },
-							],
-						},
-						questions: {
-							create: [
-								{
-									order: 176,
-									content: 'What is the first document about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A job posting', isCorrect: false },
-											{ key: 'B', content: 'A company newsletter', isCorrect: false },
-											{ key: 'C', content: 'A service agreement', isCorrect: true },
-											{ key: 'D', content: 'A product manual', isCorrect: false },
-										],
-									},
+							id: 's17_11',
+							examId: '1',
+							order: 11,
+							contentType: SectionType.Question,
+							sectionFiles: {
+								create: [{ fileId: 'SYSTEM_176-180.jpg' }, { fileId: 'SYSTEM_176-180_2.jpg' }],
+							},
+							questions: {
+								create: [
+									{
+										order: 176,
+										content: 'What is the first document about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A job posting', isCorrect: false },
+												{ key: 'B', content: 'A company newsletter', isCorrect: false },
+												{ key: 'C', content: 'A service agreement', isCorrect: true },
+												{ key: 'D', content: 'A product manual', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Form Schedule List']),
 										},
@@ -705,30 +702,27 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 12: Q181–185 — Double passage (Ad + E-mail) ───────────
 						{
-						id: 's17_12',
-						examId: '1',
-						order: 12,
-						contentType: SectionType.Question,
-						sectionFiles: {
-							create: [
-								{ fileId: 'SYSTEM_181-185.jpg' },
-								{ fileId: 'SYSTEM_181-185_2.jpg' },
-							],
-						},
-						questions: {
-							create: [
-								{
-									order: 181,
-									content: 'What is the first passage about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A training program', isCorrect: false },
-											{ key: 'B', content: 'A promotional event', isCorrect: true },
-											{ key: 'C', content: 'A budget proposal', isCorrect: false },
-											{ key: 'D', content: 'A company relocation', isCorrect: false },
-										],
-									},
+							id: 's17_12',
+							examId: '1',
+							order: 12,
+							contentType: SectionType.Question,
+							sectionFiles: {
+								create: [{ fileId: 'SYSTEM_181-185.jpg' }, { fileId: 'SYSTEM_181-185_2.jpg' }],
+							},
+							questions: {
+								create: [
+									{
+										order: 181,
+										content: 'What is the first passage about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A training program', isCorrect: false },
+												{ key: 'B', content: 'A promotional event', isCorrect: true },
+												{ key: 'C', content: 'A budget proposal', isCorrect: false },
+												{ key: 'D', content: 'A company relocation', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -804,30 +798,27 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 13: Q186–190 — Double passage (Ad + Letter) ───────────
 						{
-						id: 's17_13',
-						examId: '1',
-						order: 13,
-						contentType: SectionType.Question,
-						sectionFiles: {
-							create: [
-								{ fileId: 'SYSTEM_186-190.jpg' },
-								{ fileId: 'SYSTEM_186-190_2.jpg' },
-							],
-						},
-						questions: {
-							create: [
-								{
-									order: 186,
-									content: 'What is the first document?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A job advertisement', isCorrect: true },
-											{ key: 'B', content: 'A meeting agenda', isCorrect: false },
-											{ key: 'C', content: 'A press release', isCorrect: false },
-											{ key: 'D', content: 'A company memo', isCorrect: false },
-										],
-									},
+							id: 's17_13',
+							examId: '1',
+							order: 13,
+							contentType: SectionType.Question,
+							sectionFiles: {
+								create: [{ fileId: 'SYSTEM_186-190.jpg' }, { fileId: 'SYSTEM_186-190_2.jpg' }],
+							},
+							questions: {
+								create: [
+									{
+										order: 186,
+										content: 'What is the first document?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A job advertisement', isCorrect: true },
+												{ key: 'B', content: 'A meeting agenda', isCorrect: false },
+												{ key: 'C', content: 'A press release', isCorrect: false },
+												{ key: 'D', content: 'A company memo', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -903,31 +894,31 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 14: Q191–195 — Triple passage ──────────────────────────
 						{
-						id: 's17_14',
-						examId: '1',
-						order: 14,
-						contentType: SectionType.Question,
-						sectionFiles: {
-							create: [
-								{ fileId: 'SYSTEM_191-195.jpg' },
-								{ fileId: 'SYSTEM_191-195_2.jpg' },
-								{ fileId: 'SYSTEM_191-195_3.jpg' },
-							],
-						},
-						questions: {
-							create: [
-								{
-									order: 191,
-									content: 'What is the topic of the first passage?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A conference schedule', isCorrect: false },
-											{ key: 'B', content: 'A product review', isCorrect: true },
-											{ key: 'C', content: 'An employee survey', isCorrect: false },
-											{ key: 'D', content: 'A financial report', isCorrect: false },
-										],
-									},
+							id: 's17_14',
+							examId: '1',
+							order: 14,
+							contentType: SectionType.Question,
+							sectionFiles: {
+								create: [
+									{ fileId: 'SYSTEM_191-195.jpg' },
+									{ fileId: 'SYSTEM_191-195_2.jpg' },
+									{ fileId: 'SYSTEM_191-195_3.jpg' },
+								],
+							},
+							questions: {
+								create: [
+									{
+										order: 191,
+										content: 'What is the topic of the first passage?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A conference schedule', isCorrect: false },
+												{ key: 'B', content: 'A product review', isCorrect: true },
+												{ key: 'C', content: 'An employee survey', isCorrect: false },
+												{ key: 'D', content: 'A financial report', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Advertisement Article']),
 										},
@@ -1005,31 +996,31 @@ export class ToeicLrExamSect7Seeder {
 						},
 						// ── Group 15: Q196–200 — Triple passage ──────────────────────────
 						{
-						id: 's17_15',
-						examId: '1',
-						order: 15,
-						contentType: SectionType.Question,
-						sectionFiles: {
-							create: [
-								{ fileId: 'SYSTEM_196-200.jpg' },
-								{ fileId: 'SYSTEM_196-200_2.jpg' },
-								{ fileId: 'SYSTEM_196-200_3.jpg' },
-							],
-						},
-						questions: {
-							create: [
-								{
-									order: 196,
-									content: 'What is the first document about?',
-									type: QuestionType.MultipleChoiceSingle,
-									choices: {
-										create: [
-											{ key: 'A', content: 'A travel itinerary', isCorrect: false },
-											{ key: 'B', content: 'A hotel booking confirmation', isCorrect: true },
-											{ key: 'C', content: 'A flight reservation', isCorrect: false },
-											{ key: 'D', content: 'A rental car agreement', isCorrect: false },
-										],
-									},
+							id: 's17_15',
+							examId: '1',
+							order: 15,
+							contentType: SectionType.Question,
+							sectionFiles: {
+								create: [
+									{ fileId: 'SYSTEM_196-200.jpg' },
+									{ fileId: 'SYSTEM_196-200_2.jpg' },
+									{ fileId: 'SYSTEM_196-200_3.jpg' },
+								],
+							},
+							questions: {
+								create: [
+									{
+										order: 196,
+										content: 'What is the first document about?',
+										type: QuestionType.MultipleChoiceSingle,
+										choices: {
+											create: [
+												{ key: 'A', content: 'A travel itinerary', isCorrect: false },
+												{ key: 'B', content: 'A hotel booking confirmation', isCorrect: true },
+												{ key: 'C', content: 'A flight reservation', isCorrect: false },
+												{ key: 'D', content: 'A rental car agreement', isCorrect: false },
+											],
+										},
 										questionTags: {
 											create: this.tagNamesToIdInputs(['Topic Purpose', 'Form Schedule List']),
 										},

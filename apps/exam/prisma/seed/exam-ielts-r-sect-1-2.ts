@@ -83,18 +83,18 @@ export class IeltsRExamSect12Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-					// Group 1: Table fill Q1–6
-					{
-						id: 's311',
-						examId: '3',
-						order: 1,
-						contentType: SectionType.Question,
-						directive: PASSAGE_1 + P1_G1_INSTRUCTION,
-						questions: {
-							create: [
-								{
-									order: 1,
-									type: QuestionType.FillAnyInTheBlank,
+						// Group 1: Table fill Q1–6
+						{
+							id: 's311',
+							examId: '3',
+							order: 1,
+							contentType: SectionType.Question,
+							directive: PASSAGE_1 + P1_G1_INSTRUCTION,
+							questions: {
+								create: [
+									{
+										order: 1,
+										type: QuestionType.FillAnyInTheBlank,
 										choices: {
 											create: [
 												{ key: 'FREDERICK FLEET', isCorrect: true },
@@ -172,19 +172,19 @@ export class IeltsRExamSect12Seeder {
 							},
 							sectionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3']) },
 						},
-					// Group 2: TRUE / FALSE / NOT GIVEN Q7–13
-					{
-						id: 's312',
-						examId: '3',
-						order: 2,
-						contentType: SectionType.Question,
-						directive: P1_G2_INSTRUCTION,
-						questions: {
-							create: [
-								{
-									order: 7,
-									content:
-										'<p>The binoculars for the men on watch had been left in a crew locker in Southampton.</p>',
+						// Group 2: TRUE / FALSE / NOT GIVEN Q7–13
+						{
+							id: 's312',
+							examId: '3',
+							order: 2,
+							contentType: SectionType.Question,
+							directive: P1_G2_INSTRUCTION,
+							questions: {
+								create: [
+									{
+										order: 7,
+										content:
+											'<p>The binoculars for the men on watch had been left in a crew locker in Southampton.</p>',
 										type: QuestionType.MultipleChoiceSingle,
 										choices: {
 											create: [
@@ -295,18 +295,18 @@ export class IeltsRExamSect12Seeder {
 				contentType: SectionType.Section,
 				childSections: {
 					create: [
-					// Group 1: Heading match Q14–19
-					{
-						id: 's321',
-						examId: '3',
-						order: 1,
-						contentType: SectionType.Question,
-						directive: PASSAGE_2 + P2_G1_INSTRUCTION,
-						questions: {
-							create: [
-								{
-									order: 14,
-									content: '<p>Section A</p>',
+						// Group 1: Heading match Q14–19
+						{
+							id: 's321',
+							examId: '3',
+							order: 1,
+							contentType: SectionType.Question,
+							directive: PASSAGE_2 + P2_G1_INSTRUCTION,
+							questions: {
+								create: [
+									{
+										order: 14,
+										content: '<p>Section A</p>',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'V', isCorrect: true }],
@@ -364,19 +364,18 @@ export class IeltsRExamSect12Seeder {
 							},
 							sectionTags: { create: this.tagNamesToIdInputs(['IELTS Reading P1-3']) },
 						},
-					// Group 2: Match statement to person Q20–26
-					{
-						id: 's322',
-						examId: '3',
-						order: 2,
-						contentType: SectionType.Question,
-						directive: P2_G2_INSTRUCTION,
-						questions: {
-							create: [
-								{
-									order: 20,
-									content:
-										'<p>3-D conflicts with our mental construct of our surroundings.</p>',
+						// Group 2: Match statement to person Q20–26
+						{
+							id: 's322',
+							examId: '3',
+							order: 2,
+							contentType: SectionType.Question,
+							directive: P2_G2_INSTRUCTION,
+							questions: {
+								create: [
+									{
+										order: 20,
+										content: '<p>3-D conflicts with our mental construct of our surroundings.</p>',
 										type: QuestionType.FillExactInTheBlank,
 										choices: {
 											create: [{ key: 'F', isCorrect: true }],
