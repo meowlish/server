@@ -17,6 +17,7 @@ export class Any2RpcExceptionFilter implements ExceptionFilter {
 
 		const contextType = host.getType<ContextType | typeof RABBIT_CONTEXT_TYPE_KEY>();
 		if (contextType === RABBIT_CONTEXT_TYPE_KEY) throw exception;
+		if (contextType === 'http') throw exception;
 
 		return throwError(() => ({
 			code: status.UNKNOWN,

@@ -1,8 +1,11 @@
+import { RedisIoAdapter } from './app/infra/adaptor/redis-io.adaptor';
 import { LiveModule } from './live.module';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
-import { INestApplicationContext } from '@nestjs/common';
+import { INestApplication, INestApplicationContext } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { live } from '@server/generated';
 import { AppLoggerService } from '@server/logger';
 import 'reflect-metadata';
@@ -12,19 +15,30 @@ const useLogger = (module: INestApplicationContext) => {
 	module.useLogger(logger);
 };
 
+const useRedisWsAdapter = async (module: INestApplication) => {
+	const redisAdapter = new RedisIoAdapter(module, module.get(ConfigService));
+	await redisAdapter.connectToRedis();
+	module.useWebSocketAdapter(redisAdapter);
+};
+
 async function bootstrap() {
-	const liveModule = await NestFactory.createMicroservice<MicroserviceOptions>(LiveModule, {
+	const liveModule = await NestFactory.create<NestExpressApplication>(LiveModule);
+	liveModule.enableCors();
+
+	liveModule.connectMicroservice<MicroserviceOptions>({
 		transport: Transport.GRPC,
 		options: {
-			url: `${process.env.HOST ?? '127.0.0.1'}:${process.env.PORT ?? 50050}`,
+			url: `${process.env.GRPC_HOST ?? '127.0.0.1'}:${process.env.GRPC_PORT ?? 50050}`,
 			package: 'live',
 			packageDefinition: {
 				[`live.${live.LIVE_SERVICE_NAME}`]: live.LiveServiceService,
 			} satisfies PackageDefinition,
 		},
 	});
+	await liveModule.startAllMicroservices();
 	useLogger(liveModule);
-	await liveModule.listen();
+	await useRedisWsAdapter(liveModule);
+	await liveModule.listen(process.env.HTTP_PORT ?? 3000, process.env.HTTP_HOST ?? '127.0.0.1');
 }
 
 bootstrap().catch(console.error);

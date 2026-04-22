@@ -1,3 +1,5 @@
+import { RedisIoAdapter } from './app/infra/adaptor/redis-io.adaptor';
+import { ChatGateway } from './app/services/chat.gateway';
 import { bullConfig } from './configs/bullmq.config';
 import { config } from './configs/config';
 import { rmqSubConfig } from './configs/rmq.sub.config';
@@ -14,12 +16,15 @@ import { LoggerModule } from '@server/logger';
 import {
 	Any2RpcExceptionFilter,
 	GlobalClassSerializerInterceptor,
+	GlobalHttpExceptionFilter,
 	GlobalValidationPipe,
 	Http2gRPCExceptionFilter,
+	HttpExceptionFilter,
 } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
 @Module({
+	exports: [],
 	controllers: [],
 	imports: [
 		ConfigModule.forRoot({
@@ -47,6 +52,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		LoggerModule.forRoot({ appName: 'LiveModule' }),
 	],
 	providers: [
+		ChatGateway,
 		{
 			provide: APP_GUARD,
 			useClass: ClsGuard,
@@ -58,6 +64,14 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: APP_FILTER,
 			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: GlobalHttpExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: HttpExceptionFilter,
 		},
 		{
 			provide: APP_PIPE,
