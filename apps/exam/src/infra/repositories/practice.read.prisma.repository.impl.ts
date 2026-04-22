@@ -28,7 +28,7 @@ export class PracticeReadPrismaRepositoryImpl implements IPracticeReadRepository
 
 	private removeDescriptionBlock(text: string): string {
 		return text
-			.replace(/#BEGIN[\s\S]*?#END/g, '')
+			.replace(/#BEGIN_DESCRIPTION[\s\S]*?#END_DESCRIPTION/g, '')
 			.replace(/\n{3,}/g, '\n\n') // clean extra newlines
 			.trim();
 	}
