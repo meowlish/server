@@ -545,8 +545,9 @@ export interface TagList {
 }
 
 export interface TagList_TagNode {
+  id: string;
   name: string;
-  parent?: string | undefined;
+  parentId?: string | undefined;
 }
 
 export interface TagTrees {
@@ -554,6 +555,7 @@ export interface TagTrees {
 }
 
 export interface TagTrees_TagTree {
+  id: string;
   name: string;
   children: TagTrees_TagTree[];
 }
@@ -5917,16 +5919,19 @@ export const TagList: MessageFns<TagList> = {
 };
 
 function createBaseTagList_TagNode(): TagList_TagNode {
-  return { name: "" };
+  return { id: "", name: "" };
 }
 
 export const TagList_TagNode: MessageFns<TagList_TagNode> = {
   encode(message: TagList_TagNode, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
-    if (message.parent !== undefined) {
-      writer.uint32(18).string(message.parent);
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(26).string(message.parentId);
     }
     return writer;
   },
@@ -5943,7 +5948,7 @@ export const TagList_TagNode: MessageFns<TagList_TagNode> = {
             break;
           }
 
-          message.name = reader.string();
+          message.id = reader.string();
           continue;
         }
         case 2: {
@@ -5951,7 +5956,15 @@ export const TagList_TagNode: MessageFns<TagList_TagNode> = {
             break;
           }
 
-          message.parent = reader.string();
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.parentId = reader.string();
           continue;
         }
       }
@@ -6002,16 +6015,19 @@ export const TagTrees: MessageFns<TagTrees> = {
 };
 
 function createBaseTagTrees_TagTree(): TagTrees_TagTree {
-  return { name: "", children: [] };
+  return { id: "", name: "", children: [] };
 }
 
 export const TagTrees_TagTree: MessageFns<TagTrees_TagTree> = {
   encode(message: TagTrees_TagTree, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
     if (message.name !== "") {
-      writer.uint32(10).string(message.name);
+      writer.uint32(18).string(message.name);
     }
     for (const v of message.children) {
-      TagTrees_TagTree.encode(v!, writer.uint32(18).fork()).join();
+      TagTrees_TagTree.encode(v!, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -6028,11 +6044,19 @@ export const TagTrees_TagTree: MessageFns<TagTrees_TagTree> = {
             break;
           }
 
-          message.name = reader.string();
+          message.id = reader.string();
           continue;
         }
         case 2: {
           if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
             break;
           }
 

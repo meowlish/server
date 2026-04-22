@@ -592,8 +592,9 @@ message TagList {
 	repeated TagNode list = 1;
 
 	message TagNode {
-		string          name   = 1;
-		optional string parent = 2;
+		string          id        = 1;
+		string          name      = 2;
+		optional string parent_id = 3;
 
 	}
 }
@@ -602,8 +603,9 @@ message TagTrees {
 	repeated TagTree trees = 1;
 
 	message TagTree {
-		string           name     = 1;
-		repeated TagTree children = 2;
+		string           id       = 1;
+		string           name     = 2;
+		repeated TagTree children = 3;
 	}
 }
 
