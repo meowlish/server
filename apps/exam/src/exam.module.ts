@@ -55,6 +55,7 @@ import {
 	Any2RpcExceptionFilter,
 	ErrorHandlingGrpcProxy,
 	GlobalClassSerializerInterceptor,
+	GlobalRmqExceptionFilter,
 } from '@server/utils';
 import { Http2gRPCExceptionFilter } from '@server/utils';
 import { GlobalValidationPipe } from '@server/utils';
@@ -163,6 +164,10 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 		{
 			provide: APP_FILTER,
 			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: GlobalRmqExceptionFilter,
 		},
 		{
 			provide: APP_PIPE,

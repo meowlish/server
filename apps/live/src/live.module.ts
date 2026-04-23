@@ -20,6 +20,7 @@ import {
 	GlobalValidationPipe,
 	Http2gRPCExceptionFilter,
 	HttpExceptionFilter,
+	WsExceptionFilter,
 } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
 
@@ -53,6 +54,7 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	],
 	providers: [
 		ChatGateway,
+		WsExceptionFilter,
 		{
 			provide: APP_GUARD,
 			useClass: ClsGuard,

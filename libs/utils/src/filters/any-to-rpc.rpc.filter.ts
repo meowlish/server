@@ -1,6 +1,5 @@
-import { RABBIT_CONTEXT_TYPE_KEY } from '@golevelup/nestjs-rabbitmq';
 import { status } from '@grpc/grpc-js';
-import { ArgumentsHost, Catch, ContextType, ExceptionFilter } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ContextType, ExceptionFilter } from '@nestjs/common';
 import { AppLoggerService } from '@server/logger';
 import { throwError } from 'rxjs';
 
@@ -9,15 +8,14 @@ export class Any2RpcExceptionFilter implements ExceptionFilter {
 	constructor(private readonly logger: AppLoggerService) {}
 
 	catch(exception: Error, host: ArgumentsHost) {
+		const contextType = host.getType<ContextType>();
+		if (contextType !== 'rpc') throw exception;
+
 		this.logger.error(
 			`[${this.constructor.name}] Exception Caught - ${exception.message}`,
 			'',
 			exception.stack,
 		);
-
-		const contextType = host.getType<ContextType | typeof RABBIT_CONTEXT_TYPE_KEY>();
-		if (contextType === RABBIT_CONTEXT_TYPE_KEY) throw exception;
-		if (contextType === 'http') throw exception;
 
 		return throwError(() => ({
 			code: status.UNKNOWN,

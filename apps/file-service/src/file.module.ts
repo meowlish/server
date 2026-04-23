@@ -21,6 +21,7 @@ import { LoggerModule } from '@server/logger';
 import {
 	Any2RpcExceptionFilter,
 	GlobalClassSerializerInterceptor,
+	GlobalRmqExceptionFilter,
 	GlobalValidationPipe,
 	Http2gRPCExceptionFilter,
 } from '@server/utils';
@@ -75,6 +76,10 @@ import { NestMinioModule } from 'nestjs-minio';
 		{
 			provide: APP_FILTER,
 			useClass: Http2gRPCExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: GlobalRmqExceptionFilter,
 		},
 		{
 			provide: APP_PIPE,
