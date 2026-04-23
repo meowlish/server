@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { AppLoggerService } from '@server/logger';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import 'reflect-metadata';
 
 const useLogger = (module: INestApplicationContext) => {
@@ -24,6 +25,18 @@ async function bootstrap() {
 	gatewayModule.enableCors();
 	useLogger(gatewayModule);
 
+	// born to modularize
+	// forced to initialize proxy on main
+	gatewayModule.use(
+		'/socket.io',
+		createProxyMiddleware({
+			target: 'http://localhost:8081',
+			changeOrigin: true,
+			ws: true,
+		}),
+	);
+
+	// HTTP API docs
 	const docConfig = new DocumentBuilder().setVersion('1').addBearerAuth().build();
 	const document = SwaggerModule.createDocument(gatewayModule, docConfig);
 	gatewayModule.use(
