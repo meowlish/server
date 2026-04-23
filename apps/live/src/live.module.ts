@@ -9,17 +9,16 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { PrismaClient } from '@prisma-client/live';
 import { DATABASE_SERVICE, DatabaseModule } from '@server/database';
 import { LoggerModule } from '@server/logger';
 import {
-	Any2RpcExceptionFilter,
 	GlobalClassSerializerInterceptor,
 	GlobalHttpExceptionFilter,
+	GlobalRpcExceptionFilter,
 	GlobalValidationPipe,
 	GlobalWsExceptionFilter,
-	Http2gRPCExceptionFilter,
 	HttpExceptionFilter,
 } from '@server/utils';
 import { ClsGuard, ClsModule } from 'nestjs-cls';
@@ -55,25 +54,12 @@ import { ClsGuard, ClsModule } from 'nestjs-cls';
 	providers: [
 		ChatGateway,
 		GlobalWsExceptionFilter,
+		GlobalRpcExceptionFilter,
+		GlobalHttpExceptionFilter,
+		HttpExceptionFilter,
 		{
 			provide: APP_GUARD,
 			useClass: ClsGuard,
-		},
-		{
-			provide: APP_FILTER,
-			useClass: Any2RpcExceptionFilter,
-		},
-		{
-			provide: APP_FILTER,
-			useClass: Http2gRPCExceptionFilter,
-		},
-		{
-			provide: APP_FILTER,
-			useClass: GlobalHttpExceptionFilter,
-		},
-		{
-			provide: APP_FILTER,
-			useClass: HttpExceptionFilter,
 		},
 		{
 			provide: APP_PIPE,
