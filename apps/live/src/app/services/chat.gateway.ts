@@ -1,4 +1,4 @@
-import { MethodNotAllowedException } from '@nestjs/common';
+import { MethodNotAllowedException, NotFoundException, UseFilters } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -8,8 +8,11 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
+import { GlobalWsExceptionFilter } from '@server/utils';
 import { Server, Socket } from 'socket.io';
 
+// cannot register using APP_FILTER
+@UseFilters(GlobalWsExceptionFilter)
 @WebSocketGateway({
 	cors: {
 		origin: '*',
@@ -42,8 +45,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleLeave(@MessageBody() roomId: string, @ConnectedSocket() socket: Socket) {
 		const currentRoomId = this.socketRoomMap.get(socket.id);
 		if (!currentRoomId) throw new MethodNotAllowedException('Client has not joined a room');
-		if (currentRoomId != roomId)
-			throw new MethodNotAllowedException(`Client is not in room ${roomId}`);
+		if (currentRoomId != roomId) throw new NotFoundException(`Client is not in room ${roomId}`);
+		this.socketRoomMap.delete(socket.id);
 		await socket.leave(roomId);
 	}
 
