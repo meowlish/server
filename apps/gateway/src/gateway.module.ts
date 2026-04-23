@@ -3,6 +3,7 @@ import { AuthGatewayModule } from './auth-gateway/auth.router.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './auth/guards/permissions.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { WsJwtMiddleware } from './auth/middlewares/ws-connection.middleware';
 import { config } from './configs/config';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 import { FileGatewayModule } from './file-gateway/file.router.module';
@@ -48,6 +49,7 @@ import { GlobalValidationPipe } from '@server/utils';
 		AchievementGatewayModule,
 	],
 	providers: [
+		WsJwtMiddleware,
 		{
 			provide: APP_PIPE,
 			useClass: GlobalValidationPipe,
@@ -89,5 +91,6 @@ import { GlobalValidationPipe } from '@server/utils';
 			useClass: GlobalClassSerializerInterceptor,
 		},
 	],
+	exports: [WsJwtMiddleware],
 })
 export class GatewayModule {}
