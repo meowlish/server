@@ -51,7 +51,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage('chat')
-	handlePing(@MessageBody() data: any): void {
-		console.log(`Client sent ${data}`);
+	handlePing(@MessageBody() data: any, @ConnectedSocket() socket: Socket): void {
+		const roomId = this.socketRoomMap.get(socket.id);
+		if (!roomId) throw new NotFoundException('Client is not in a room');
+		socket.to(roomId).emit('message', data);
 	}
 }
