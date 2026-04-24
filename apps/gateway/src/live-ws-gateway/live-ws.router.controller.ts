@@ -11,7 +11,9 @@ import { ExtractJwt } from 'passport-jwt';
 @Controller('socket.io')
 export class LiveWsGatewayController {
 	private proxy = createProxyMiddleware({
-		target: 'http://localhost:8081',
+		target:
+			process.env.LIVE_SERVICE_WS_URL ??
+			`${process.env.LIVE_SERVICE_WS_HOST}:${process.env.LIVE_SERVICE_WS_PORT}`,
 		changeOrigin: true,
 		ws: true,
 		pathRewrite: {
