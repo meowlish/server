@@ -1,4 +1,4 @@
-import { RedisIoAdapter } from './app/infra/adaptor/redis-io.adaptor';
+import { RedisIoAdapter } from './app/infra/adapter/redis-io.adapter';
 import { LiveModule } from './live.module';
 import { PackageDefinition } from '@grpc/grpc-js/build/src/make-client';
 import { INestApplication, INestApplicationContext } from '@nestjs/common';
