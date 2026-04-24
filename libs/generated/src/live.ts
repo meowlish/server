@@ -5,22 +5,728 @@
 // source: live.proto
 
 /* eslint-disable */
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import type { handleUnaryCall, Metadata, UntypedServiceImplementation } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { wrappers } from "protobufjs";
 import { Observable } from "rxjs";
 import { Empty } from "./google/protobuf/empty";
+import { Timestamp } from "./google/protobuf/timestamp";
+import { BoolValue, Int32Value, StringValue } from "./google/protobuf/wrappers";
+
+export interface Chat {
+  uid: string;
+  message: string;
+  createdAt: Date | undefined;
+}
+
+export interface GetChatOfRequest {
+  roomId: string | undefined;
+}
+
+export interface GetChatOfResponse {
+  chats: Chat[];
+}
+
+export interface GetChatLogRequest {
+  roomId: string | undefined;
+  uid?: string | undefined;
+  date?: GetChatLogRequest_DateRange | undefined;
+  nextCursor?: string | undefined;
+  prevCursor?: string | undefined;
+  limit?: number | undefined;
+}
+
+export interface GetChatLogRequest_DateRange {
+  from: Date | undefined;
+  to: Date | undefined;
+}
+
+export interface GetChatLogResponse {
+  chats: Chat[];
+  nextCursor: string;
+  prevCursor: string;
+}
+
+export interface CreateRoomRequest {
+  roomId: string | undefined;
+}
+
+export interface RemoveRoomRequest {
+  roomId: string | undefined;
+}
+
+export interface UpdateRoomScheduleRequest {
+  roomId: string | undefined;
+  link?: string | undefined;
+  time?: Date | undefined;
+  setLinkNull?: boolean | undefined;
+  setTimeNull?: boolean | undefined;
+}
+
+export interface BanUserFromRoomRequest {
+  uid: string | undefined;
+  roomId: string | undefined;
+  reason?: string | undefined;
+}
+
+export interface UnbanUserFromRoomRequest {
+  uid: string | undefined;
+  roomId: string | undefined;
+}
+
+wrappers[".google.protobuf.Timestamp"] = {
+  fromObject(value: Date) {
+    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
+  },
+  toObject(message: { seconds: number; nanos: number }) {
+    return new Date(message.seconds * 1000 + message.nanos / 1e6);
+  },
+} as any;
+
+function createBaseChat(): Chat {
+  return { uid: "", message: "", createdAt: undefined };
+}
+
+export const Chat: MessageFns<Chat> = {
+  encode(message: Chat, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== "") {
+      writer.uint32(10).string(message.uid);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    if (message.createdAt !== undefined) {
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Chat {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChat();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.message = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetChatOfRequest(): GetChatOfRequest {
+  return { roomId: undefined };
+}
+
+export const GetChatOfRequest: MessageFns<GetChatOfRequest> = {
+  encode(message: GetChatOfRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetChatOfRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetChatOfRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetChatOfResponse(): GetChatOfResponse {
+  return { chats: [] };
+}
+
+export const GetChatOfResponse: MessageFns<GetChatOfResponse> = {
+  encode(message: GetChatOfResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.chats) {
+      Chat.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetChatOfResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetChatOfResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chats.push(Chat.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetChatLogRequest(): GetChatLogRequest {
+  return { roomId: undefined };
+}
+
+export const GetChatLogRequest: MessageFns<GetChatLogRequest> = {
+  encode(message: GetChatLogRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(18).fork()).join();
+    }
+    if (message.date !== undefined) {
+      GetChatLogRequest_DateRange.encode(message.date, writer.uint32(26).fork()).join();
+    }
+    if (message.nextCursor !== undefined) {
+      StringValue.encode({ value: message.nextCursor! }, writer.uint32(34).fork()).join();
+    }
+    if (message.prevCursor !== undefined) {
+      StringValue.encode({ value: message.prevCursor! }, writer.uint32(42).fork()).join();
+    }
+    if (message.limit !== undefined) {
+      Int32Value.encode({ value: message.limit! }, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetChatLogRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetChatLogRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.date = GetChatLogRequest_DateRange.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.nextCursor = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.prevCursor = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.limit = Int32Value.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetChatLogRequest_DateRange(): GetChatLogRequest_DateRange {
+  return { from: undefined, to: undefined };
+}
+
+export const GetChatLogRequest_DateRange: MessageFns<GetChatLogRequest_DateRange> = {
+  encode(message: GetChatLogRequest_DateRange, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.from !== undefined) {
+      Timestamp.encode(toTimestamp(message.from), writer.uint32(10).fork()).join();
+    }
+    if (message.to !== undefined) {
+      Timestamp.encode(toTimestamp(message.to), writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetChatLogRequest_DateRange {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetChatLogRequest_DateRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.from = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.to = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetChatLogResponse(): GetChatLogResponse {
+  return { chats: [], nextCursor: "", prevCursor: "" };
+}
+
+export const GetChatLogResponse: MessageFns<GetChatLogResponse> = {
+  encode(message: GetChatLogResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.chats) {
+      Chat.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.nextCursor !== "") {
+      writer.uint32(18).string(message.nextCursor);
+    }
+    if (message.prevCursor !== "") {
+      writer.uint32(26).string(message.prevCursor);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetChatLogResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetChatLogResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chats.push(Chat.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.nextCursor = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.prevCursor = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateRoomRequest(): CreateRoomRequest {
+  return { roomId: undefined };
+}
+
+export const CreateRoomRequest: MessageFns<CreateRoomRequest> = {
+  encode(message: CreateRoomRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateRoomRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateRoomRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseRemoveRoomRequest(): RemoveRoomRequest {
+  return { roomId: undefined };
+}
+
+export const RemoveRoomRequest: MessageFns<RemoveRoomRequest> = {
+  encode(message: RemoveRoomRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RemoveRoomRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRemoveRoomRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateRoomScheduleRequest(): UpdateRoomScheduleRequest {
+  return { roomId: undefined };
+}
+
+export const UpdateRoomScheduleRequest: MessageFns<UpdateRoomScheduleRequest> = {
+  encode(message: UpdateRoomScheduleRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(10).fork()).join();
+    }
+    if (message.link !== undefined) {
+      StringValue.encode({ value: message.link! }, writer.uint32(18).fork()).join();
+    }
+    if (message.time !== undefined) {
+      Timestamp.encode(toTimestamp(message.time), writer.uint32(26).fork()).join();
+    }
+    if (message.setLinkNull !== undefined) {
+      BoolValue.encode({ value: message.setLinkNull! }, writer.uint32(34).fork()).join();
+    }
+    if (message.setTimeNull !== undefined) {
+      BoolValue.encode({ value: message.setTimeNull! }, writer.uint32(42).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateRoomScheduleRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateRoomScheduleRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.link = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.time = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.setLinkNull = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.setTimeNull = BoolValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseBanUserFromRoomRequest(): BanUserFromRoomRequest {
+  return { uid: undefined, roomId: undefined };
+}
+
+export const BanUserFromRoomRequest: MessageFns<BanUserFromRoomRequest> = {
+  encode(message: BanUserFromRoomRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(18).fork()).join();
+    }
+    if (message.reason !== undefined) {
+      StringValue.encode({ value: message.reason! }, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BanUserFromRoomRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBanUserFromRoomRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.reason = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUnbanUserFromRoomRequest(): UnbanUserFromRoomRequest {
+  return { uid: undefined, roomId: undefined };
+}
+
+export const UnbanUserFromRoomRequest: MessageFns<UnbanUserFromRoomRequest> = {
+  encode(message: UnbanUserFromRoomRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.uid !== undefined) {
+      StringValue.encode({ value: message.uid! }, writer.uint32(10).fork()).join();
+    }
+    if (message.roomId !== undefined) {
+      StringValue.encode({ value: message.roomId! }, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UnbanUserFromRoomRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUnbanUserFromRoomRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.uid = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.roomId = StringValue.decode(reader, reader.uint32()).value;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
 
 export interface LiveServiceClient {
-  placeHolder(request: Empty, metadata?: Metadata): Observable<Empty>;
+  getChatOf(request: GetChatOfRequest, metadata?: Metadata): Observable<GetChatOfResponse>;
+
+  getChatLog(request: GetChatLogRequest, metadata?: Metadata): Observable<GetChatLogResponse>;
+
+  createRoom(request: CreateRoomRequest, metadata?: Metadata): Observable<Empty>;
+
+  removeRoom(request: RemoveRoomRequest, metadata?: Metadata): Observable<Empty>;
+
+  updateRoomSchedule(request: UpdateRoomScheduleRequest, metadata?: Metadata): Observable<Empty>;
+
+  banUserFromRoom(request: BanUserFromRoomRequest, metadata?: Metadata): Observable<Empty>;
+
+  unbanUserFromRoom(request: UnbanUserFromRoomRequest, metadata?: Metadata): Observable<Empty>;
 }
 
 export interface LiveServiceController {
-  placeHolder(request: Empty, metadata?: Metadata): void | Promise<void>;
+  getChatOf(
+    request: GetChatOfRequest,
+    metadata?: Metadata,
+  ): Promise<GetChatOfResponse> | Observable<GetChatOfResponse> | GetChatOfResponse;
+
+  getChatLog(
+    request: GetChatLogRequest,
+    metadata?: Metadata,
+  ): Promise<GetChatLogResponse> | Observable<GetChatLogResponse> | GetChatLogResponse;
+
+  createRoom(request: CreateRoomRequest, metadata?: Metadata): void | Promise<void>;
+
+  removeRoom(request: RemoveRoomRequest, metadata?: Metadata): void | Promise<void>;
+
+  updateRoomSchedule(request: UpdateRoomScheduleRequest, metadata?: Metadata): void | Promise<void>;
+
+  banUserFromRoom(request: BanUserFromRoomRequest, metadata?: Metadata): void | Promise<void>;
+
+  unbanUserFromRoom(request: UnbanUserFromRoomRequest, metadata?: Metadata): void | Promise<void>;
 }
 
 export function LiveServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["placeHolder"];
+    const grpcMethods: string[] = [
+      "getChatOf",
+      "getChatLog",
+      "createRoom",
+      "removeRoom",
+      "updateRoomSchedule",
+      "banUserFromRoom",
+      "unbanUserFromRoom",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("LiveService", method)(constructor.prototype[method], method, descriptor);
@@ -37,17 +743,97 @@ export const LIVE_SERVICE_NAME = "LiveService";
 
 export type LiveServiceService = typeof LiveServiceService;
 export const LiveServiceService = {
-  placeHolder: {
-    path: "/live.LiveService/PlaceHolder" as const,
+  getChatOf: {
+    path: "/live.LiveService/GetChatOf" as const,
     requestStream: false as const,
     responseStream: false as const,
-    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
-    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    requestSerialize: (value: GetChatOfRequest): Buffer => Buffer.from(GetChatOfRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetChatOfRequest => GetChatOfRequest.decode(value),
+    responseSerialize: (value: GetChatOfResponse): Buffer => Buffer.from(GetChatOfResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GetChatOfResponse => GetChatOfResponse.decode(value),
+  },
+  getChatLog: {
+    path: "/live.LiveService/GetChatLog" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetChatLogRequest): Buffer => Buffer.from(GetChatLogRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetChatLogRequest => GetChatLogRequest.decode(value),
+    responseSerialize: (value: GetChatLogResponse): Buffer => Buffer.from(GetChatLogResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GetChatLogResponse => GetChatLogResponse.decode(value),
+  },
+  createRoom: {
+    path: "/live.LiveService/CreateRoom" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: CreateRoomRequest): Buffer => Buffer.from(CreateRoomRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): CreateRoomRequest => CreateRoomRequest.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  removeRoom: {
+    path: "/live.LiveService/RemoveRoom" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: RemoveRoomRequest): Buffer => Buffer.from(RemoveRoomRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): RemoveRoomRequest => RemoveRoomRequest.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  updateRoomSchedule: {
+    path: "/live.LiveService/UpdateRoomSchedule" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpdateRoomScheduleRequest): Buffer =>
+      Buffer.from(UpdateRoomScheduleRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpdateRoomScheduleRequest => UpdateRoomScheduleRequest.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  banUserFromRoom: {
+    path: "/live.LiveService/BanUserFromRoom" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: BanUserFromRoomRequest): Buffer =>
+      Buffer.from(BanUserFromRoomRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): BanUserFromRoomRequest => BanUserFromRoomRequest.decode(value),
+    responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
+  },
+  unbanUserFromRoom: {
+    path: "/live.LiveService/UnbanUserFromRoom" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UnbanUserFromRoomRequest): Buffer =>
+      Buffer.from(UnbanUserFromRoomRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UnbanUserFromRoomRequest => UnbanUserFromRoomRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
 } as const;
 
 export interface LiveServiceServer extends UntypedServiceImplementation {
-  placeHolder: handleUnaryCall<Empty, Empty>;
+  getChatOf: handleUnaryCall<GetChatOfRequest, GetChatOfResponse>;
+  getChatLog: handleUnaryCall<GetChatLogRequest, GetChatLogResponse>;
+  createRoom: handleUnaryCall<CreateRoomRequest, Empty>;
+  removeRoom: handleUnaryCall<RemoveRoomRequest, Empty>;
+  updateRoomSchedule: handleUnaryCall<UpdateRoomScheduleRequest, Empty>;
+  banUserFromRoom: handleUnaryCall<BanUserFromRoomRequest, Empty>;
+  unbanUserFromRoom: handleUnaryCall<UnbanUserFromRoomRequest, Empty>;
+}
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (t.seconds || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
 }

@@ -64,7 +64,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		socket.to(data.roomId).emit('message', { message: data.message, uid: socket.data.uid });
 	}
 
-	disconnectUser(uid: string) {
-		this.server.in(uid).disconnectSockets(true);
+	disconnectUser(uid: string, roomId: string) {
+		this.server.in(uid).socketsLeave(roomId);
 	}
 }

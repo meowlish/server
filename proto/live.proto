@@ -1,9 +1,78 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package live;
 
 service LiveService {
-	rpc PlaceHolder(google.protobuf.Empty) returns(google.protobuf.Empty) {}
+	rpc GetChatOf(GetChatOfRequest) returns(GetChatOfResponse);
+	rpc GetChatLog(GetChatLogRequest) returns(GetChatLogResponse);
+	rpc CreateRoom(CreateRoomRequest) returns(google.protobuf.Empty);
+	rpc RemoveRoom(RemoveRoomRequest) returns(google.protobuf.Empty);
+	rpc UpdateRoomSchedule(UpdateRoomScheduleRequest) returns(google.protobuf.Empty);
+	rpc BanUserFromRoom(BanUserFromRoomRequest) returns(google.protobuf.Empty);
+	rpc UnbanUserFromRoom(UnbanUserFromRoomRequest) returns(google.protobuf.Empty);
+}
+
+message Chat {
+	string                    uid        = 1;
+	string                    message    = 2;
+	google.protobuf.Timestamp created_at = 3;
+}
+
+message GetChatOfRequest {
+	google.protobuf.StringValue room_id = 1;
+}
+
+message GetChatOfResponse {
+	repeated Chat chats = 1;
+}
+
+message GetChatLogRequest {
+	google.protobuf.StringValue          room_id     = 1;
+	optional google.protobuf.StringValue uid         = 2;
+	optional DateRange                   date        = 3;
+	optional google.protobuf.StringValue next_cursor = 4;
+	optional google.protobuf.StringValue prev_cursor = 5;
+	optional google.protobuf.Int32Value  limit       = 6;
+
+	message DateRange {
+		google.protobuf.Timestamp from = 1;
+		google.protobuf.Timestamp to   = 2;
+	}
+}
+
+message GetChatLogResponse {
+	repeated Chat chats       = 1;
+	string        next_cursor = 2;
+	string        prev_cursor = 3;
+}
+
+message CreateRoomRequest {
+	google.protobuf.StringValue room_id = 1;
+}
+
+message RemoveRoomRequest {
+	google.protobuf.StringValue room_id = 1;
+}
+
+message UpdateRoomScheduleRequest {
+	google.protobuf.StringValue          room_id       = 1;
+	optional google.protobuf.StringValue link          = 2;
+	optional google.protobuf.Timestamp   time          = 3;
+	optional google.protobuf.BoolValue   set_link_null = 4;
+	optional google.protobuf.BoolValue   set_time_null = 5;
+}
+
+message BanUserFromRoomRequest {
+	google.protobuf.StringValue          uid     = 1;
+	google.protobuf.StringValue          room_id = 2;
+	optional google.protobuf.StringValue reason  = 3;
+}
+
+message UnbanUserFromRoomRequest {
+	google.protobuf.StringValue uid     = 1;
+	google.protobuf.StringValue room_id = 2;
 }
