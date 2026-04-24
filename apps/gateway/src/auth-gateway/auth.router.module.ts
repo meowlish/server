@@ -37,6 +37,6 @@ import { ErrorHandlingGrpcProxy } from '@server/utils';
 		JwtStrategy,
 		GoogleOAuth2Strategy,
 	],
-	exports: [AUTH_CLIENT],
+	exports: [],
 })
 export class AuthGatewayModule {}

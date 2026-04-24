@@ -3,10 +3,10 @@ import { AuthGatewayModule } from './auth-gateway/auth.router.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './auth/guards/permissions.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
-import { WsJwtMiddleware } from './auth/middlewares/ws-connection.middleware';
 import { config } from './configs/config';
 import { ExamGatewayModule } from './exam-gateway/exam.router.module';
 import { FileGatewayModule } from './file-gateway/file.router.module';
+import { LiveWsGatewayModule } from './live-ws-gateway/live-ws.router.module';
 import { RouteModule } from './router.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -47,9 +47,10 @@ import { GlobalValidationPipe } from '@server/utils';
 		ExamGatewayModule,
 		FileGatewayModule,
 		AchievementGatewayModule,
+		// ws proxy modules
+		LiveWsGatewayModule,
 	],
 	providers: [
-		WsJwtMiddleware,
 		{
 			provide: APP_PIPE,
 			useClass: GlobalValidationPipe,
@@ -91,6 +92,6 @@ import { GlobalValidationPipe } from '@server/utils';
 			useClass: GlobalClassSerializerInterceptor,
 		},
 	],
-	exports: [WsJwtMiddleware],
+	exports: [],
 })
 export class GatewayModule {}

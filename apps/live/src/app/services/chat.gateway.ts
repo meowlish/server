@@ -1,4 +1,5 @@
-import { MethodNotAllowedException, NotFoundException, UseFilters } from '@nestjs/common';
+import { ChatDto } from '../presentation/dtos/req/chat.req.dto';
+import { ForbiddenException, UseFilters, UsePipes } from '@nestjs/common';
 import {
 	ConnectedSocket,
 	MessageBody,
@@ -8,38 +9,30 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { GlobalWsExceptionFilter } from '@server/utils';
+import { AppLoggerService } from '@server/logger';
+import { GlobalValidationPipe, GlobalWsExceptionFilter } from '@server/utils';
 import { Server, Socket } from 'socket.io';
-import { z } from 'zod/v4';
 
-const UserSchema = z.object({
-	sub: z.string(),
-	roles: z.array(z.string()),
-	permissions: z.array(z.string()),
-});
+type ModifiedSocket = Omit<Socket, 'data'> & { data: { uid: string } };
 
-type ModifiedSocket = Omit<Socket, 'data'> & { data: { user: z.infer<typeof UserSchema> } };
-
-// cannot register using APP_FILTER
+// cannot register using APP_FILTER, APP_PIPE
+@UsePipes(GlobalValidationPipe)
 @UseFilters(GlobalWsExceptionFilter)
 @WebSocketGateway({
 	cors: {
 		origin: '*',
 	},
-	namespace: 'chat',
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+	constructor(private logger: AppLoggerService) {}
+
 	@WebSocketServer()
 	server!: Server;
 
-	private socketRoomMap = new Map<string, string>();
-
 	handleConnection(socket: ModifiedSocket) {
 		try {
-			if (!socket.handshake.headers['x-user']) throw new Error('Missing x-user header');
-			const userJsonString = z.string().parse(socket.handshake.headers['x-user']);
-			const user = UserSchema.parse(JSON.parse(userJsonString));
-			socket.data.user = user;
+			if (!socket.handshake.headers.authorization) throw new Error('Missing authorization header');
+			socket.data.uid = socket.handshake.headers.authorization;
 		} catch {
 			socket.disconnect(true);
 		}
@@ -47,33 +40,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(socket: ModifiedSocket) {
 		try {
-			console.log(`Client disconnected: ${socket.id}`);
+			this.logger.debug(`Client disconnected: ${socket.id}`);
 		} catch {
 			socket.disconnect(true);
 		}
 	}
 
 	@SubscribeMessage('join-room')
-	async handleJoin(@MessageBody() roomId: string, @ConnectedSocket() socket: Socket) {
-		const currentRoomId = this.socketRoomMap.get(socket.id);
-		if (currentRoomId) throw new MethodNotAllowedException('Client has already joined a room');
-		this.socketRoomMap.set(socket.id, roomId);
+	async handleJoin(@MessageBody() roomId: string, @ConnectedSocket() socket: ModifiedSocket) {
 		await socket.join(roomId);
 	}
 
 	@SubscribeMessage('leave-room')
 	async handleLeave(@MessageBody() roomId: string, @ConnectedSocket() socket: ModifiedSocket) {
-		const currentRoomId = this.socketRoomMap.get(socket.id);
-		if (!currentRoomId) throw new MethodNotAllowedException('Client has not joined a room');
-		if (currentRoomId != roomId) throw new NotFoundException(`Client is not in room ${roomId}`);
-		this.socketRoomMap.delete(socket.id);
 		await socket.leave(roomId);
 	}
 
 	@SubscribeMessage('chat')
-	handlePing(@MessageBody() data: any, @ConnectedSocket() socket: ModifiedSocket): void {
-		const roomId = this.socketRoomMap.get(socket.id);
-		if (!roomId) throw new NotFoundException('Client is not in a room');
-		socket.to(roomId).emit('message', { ...data, user: socket.data.user });
+	handlePing(@MessageBody() data: ChatDto, @ConnectedSocket() socket: ModifiedSocket): void {
+		if (!socket.rooms.has(data.roomId))
+			throw new ForbiddenException('You need to join the room before sending a message');
+		socket.to(data.roomId).emit('message', { message: data.message, uid: socket.data.uid });
 	}
 }
