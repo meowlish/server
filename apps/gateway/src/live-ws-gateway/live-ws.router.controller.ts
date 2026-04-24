@@ -13,7 +13,7 @@ export class LiveWsGatewayController {
 	private proxy = createProxyMiddleware({
 		target:
 			process.env.LIVE_SERVICE_WS_URL ??
-			`${process.env.LIVE_SERVICE_WS_HOST}:${process.env.LIVE_SERVICE_WS_PORT}`,
+			`http://${process.env.LIVE_SERVICE_WS_HOST}:${process.env.LIVE_SERVICE_WS_PORT}`,
 		changeOrigin: true,
 		ws: true,
 		pathRewrite: {
