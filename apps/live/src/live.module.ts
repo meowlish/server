@@ -1,4 +1,3 @@
-import { RedisIoAdapter } from './app/infra/adaptor/redis-io.adaptor';
 import { ChatGateway } from './app/services/chat.gateway';
 import { bullConfig } from './configs/bullmq.config';
 import { config } from './configs/config';

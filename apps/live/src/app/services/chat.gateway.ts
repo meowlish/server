@@ -29,10 +29,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server!: Server;
 
-	handleConnection(socket: ModifiedSocket) {
+	async handleConnection(socket: ModifiedSocket) {
 		try {
 			if (!socket.handshake.headers.authorization) throw new Error('Missing authorization header');
 			socket.data.uid = socket.handshake.headers.authorization;
+			await socket.join(socket.data.uid);
 		} catch {
 			socket.disconnect(true);
 		}
@@ -61,5 +62,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (!socket.rooms.has(data.roomId))
 			throw new ForbiddenException('You need to join the room before sending a message');
 		socket.to(data.roomId).emit('message', { message: data.message, uid: socket.data.uid });
+	}
+
+	disconnectUser(uid: string) {
+		this.server.in(uid).disconnectSockets(true);
 	}
 }
